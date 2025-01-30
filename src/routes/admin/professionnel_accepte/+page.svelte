@@ -54,7 +54,7 @@
 		loading = true; // Active le spinner de chargement
     try {
         const res = await apiFetch(true,"/civilite/")
-        console.log(res);
+     
         if (res) {
             main_data = res.data as Permission[];
         } else {
@@ -312,7 +312,7 @@ async function refreshDataIfNeeded() {
 </section>
 
 <!-- Modales -->
-<Add bind:open={openAdd} data={current_data} sizeModal="xl" userUpdateId={user.id} />
-<Edit bind:open={openEdit} data={current_data} sizeModal="xl" userUpdateId={user.id}  />
+<Add bind:open={openAdd} data={current_data} sizeModal="xl" userUpdateId={user?.id} />
+<Edit bind:open={openEdit} data={current_data} sizeModal="xl" userUpdateId={user?.id}  />
 <Show bind:open={openShow} data={current_data} sizeModal="xl" />
 <Delete bind:open={openDelete} data={current_data} />
