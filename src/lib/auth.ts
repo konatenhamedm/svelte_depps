@@ -24,6 +24,8 @@ export async function login(username_fiel: string, password: string) {
         const jsonData = await response.json();
         const { token, data: { id, username, role, type, status,payement } } = jsonData;
 
+
+        
         // Stocker l'objet utilisateur (id, role) dans un cookie
         document.cookie = cookie.serialize('auth', JSON.stringify({ id:id,username:username, role: role , token: token,type: type,status:status,payement:payement }), {
             path: '/',
@@ -32,10 +34,12 @@ export async function login(username_fiel: string, password: string) {
             maxAge: 60 * 60 * 24 // Durée de vie du cookie (1 jour ici)
         });
 
-        return true;
+        return jsonData;
     } catch (error) {
-        console.error('Erreur lors de la connexion', error);
-        return false;
+       
+        return {
+          token:null
+        };
     }
 }
 

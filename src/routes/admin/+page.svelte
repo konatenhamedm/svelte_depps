@@ -2,8 +2,9 @@
   import { onMount } from "svelte";
   import type { User } from "../../types";
   import { getAuthCookie } from "$lib/auth";
+  import Check from "$components/inputs/Check.svelte";
 
-
+  let isChecked = true;
 
 let user: User;
 
@@ -87,6 +88,7 @@ let user: User;
 
     { JSON.stringify(user)} 
 
+    <Check label="Accepter les conditions" bind:checked={isChecked} />
    
     
   </section>

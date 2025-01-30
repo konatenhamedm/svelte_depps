@@ -24,8 +24,8 @@
     event.preventDefault();
     try {
       const success = await login(username, password);
-	  console.log(success);
-      if (success) {
+	
+      if (success.token != null) {
         window.location.href = "/admin";
       } else {
         message = "Veuillez vérifier vos identifiants";
