@@ -125,9 +125,9 @@ async function refreshDataIfNeeded() {
 </script>
 
 <Entete
-  libelle="Gestion des civilités"
+  libelle="Gestion des dossiers"
   parent="Parametres"
-  descr="Liste des civilités"
+  descr="Liste des dossiers en attentes"
 />
 <section class="content">
   <div class="row">
@@ -135,7 +135,7 @@ async function refreshDataIfNeeded() {
       <div class="box">
         <div class="box-header with-border flex justify-between items-center">
           <h4 class="box-title text-xl font-medium">
-            Liste des civilités
+            Liste des dossiers en attentes
           </h4>
 
           <div>
