@@ -208,13 +208,13 @@ function init(form: HTMLFormElement) {
                 <div slot="footer" class="w-full">
                     <div class="w-full grid grid-cols-3">
                         <div class="col-span-2">
-                            <Button
-                                color="alternative"
-                                style="background-color: green !important; color: white;"
-                                on:click={() => (open = false)}
-                                type="submit">{"Accepter dossier"}</Button
-                                >
-                                
+                          
+                                <Button
+                                    color="alternative"
+                                    style="background-color: red !important; color: white;"
+                                    on:click={() => (open = false)}
+                                    type="submit">{"Refuser dossier"}</Button
+                                    >
                                     </div>
                                     <div class="flex justify-end">
                                         <Button
