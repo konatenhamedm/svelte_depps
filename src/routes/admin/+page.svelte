@@ -3,15 +3,34 @@
   import type { User } from "../../types";
   import { getAuthCookie } from "$lib/auth";
   import Check from "$components/inputs/Check.svelte";
+  import InputImage from "$components/inputs/InputImage.svelte";
 
   let isChecked = true;
 
 let user: User;
+let infoImg = {
+        signedUrl: "",
+        key: "",
+    };
 
 
   onMount(async () => {
     user = getAuthCookie();
   });
+
+  async function onFileSelected(file: any) {
+        if (file) {
+            const uploadResult = await handleImageUpload(file);
+
+            if (uploadResult) {
+                infoImg.signedUrl = uploadResult.signedUrl;
+                infoImg.key = uploadResult.key;
+            } else {
+                console.error("Image upload failed.");
+            }
+        }
+    }
+
 </script>
 
 
@@ -90,6 +109,10 @@ let user: User;
 
     <Check label="Accepter les conditions" bind:checked={isChecked} />
    
+    <InputImage
+    imageUrl={""}
+    on:file-selected={(event) => onFileSelected(event.detail)}
+/>
     
   </section>
 </div>

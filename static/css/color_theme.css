@@ -5,7 +5,7 @@
 /*Theme Colors For Dark*/
 /* gray bg */
 .bg-gray-100 {
-  background-color: #f3f6f9 !important; }
+  background-color: #4f9dd9 !important; }
 
 .bg-gray-200 {
   background-color: #ebedf3 !important; }
@@ -476,7 +476,7 @@ Theme Primary Color
 .theme-primary.fixed .main-header {
   background-color: #fff }
 .theme-primary .main-header {
-  background: #fff; }
+  background: #0E0E23; }
 
 .theme-primary.onlyheader .art-bg {
   background-image: none; }
@@ -526,7 +526,7 @@ Theme Primary Color
   .theme-primary.light-skin .sidebar-menu > li.active.treeview > a:after {
     border-color: transparent #fafafa transparent transparent !important; }
 .theme-primary.light-skin .sidebar-menu > li.treeview .treeview-menu li a {
-  color: #172b4c; }
+  color: #ffffff; }
 .theme-primary.light-skin.sidebar-mini.sidebar-collapse .sidebar-menu > li.active > a > span {
   background: #0052cc !important; }
 .theme-primary.dark-skin .sidebar-menu > li.active > a:after {

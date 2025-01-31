@@ -16,19 +16,33 @@ let user: User;
 
 <header class="main-header">
     <div class="flex items-center logo-box justify-start">  
-         <!-- Logo -->
+        <!-- Logo -->
+        <a href="index.html" class="logo">
+            <!-- logo-->
+             <div class="logo-mini w-40">
+                 <span class="light-logo"><img src="https://mydepps.ci/_files/logo-depps.png" alt="logo"></span>
+                 <span class="dark-logo"><img src="../../../images/logo-white-letter.png" alt="logo"></span>
+             </div>
+             <div class="logo-lg">
+                 <span class="light-logo"><img src="../../../images/logo-light-text.png" alt="logo"></span>
+                 <span class="dark-logo"><img src="../../../images/logo-text.png" alt="logo"></span>
+             </div>
+        </a>    
+   </div>
+   <!--  <div class="flex items-center logo-box justify-start">  
+        
          <a href="index.html" class="logo">
-             <!-- logo-->
+            
               <div class="logo-mini w-60">
                   <span class="light-logo"><img src="https://mydepps.ci/_files/logo-depps.png" alt="logo"></span>
                   <span class="dark-logo"><img src="https://mydepps.ci/_files/logo-depps.png" alt="logo"></span>
               </div>
               <div class="logo-lg">
-                  <span class="light-logo"><!-- <img src="/lebedoo_inline_logo.png" alt="logo"> --></span>
-                  <span class="dark-logo"><!-- <img src="/images/logo-text.png" alt="logo"> --></span>
+                  <span class="light-logo"></span>
+                  <span class="dark-logo"></span>
               </div>
          </a>    
-    </div>   
+    </div>   --> 
     <!-- Header Navbar --> 
     <nav class="navbar navbar-static-top flow-root">
          <!-- Sidebar toggle button-->

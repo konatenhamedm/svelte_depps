@@ -22,7 +22,7 @@ File: scss
   color: #ffffff; }
 .light-skin .main-header .navbar .nav > li > a:hover, .light-skin .main-header .navbar .nav > li > a:active, .light-skin .main-header .navbar .nav > li > a:focus {
   background-color: rgba(0, 0, 0, 0.03);
-  color: #4d7cff; }
+  color: #ff944d; }
 .light-skin .main-header .navbar .nav .open > a {
   background-color: rgba(0, 0, 0, 0.05); }
   .light-skin .main-header .navbar .nav .open > a:hover, .light-skin .main-header .navbar .nav .open > a:focus {
@@ -33,7 +33,7 @@ File: scss
   color: #3a3a90; }
 .light-skin .main-sidebar {
   border-right: 1px solid rgba(95, 99, 121, 0.16);
-  background-color: #ffffff;
+  background-color: #0E0E23;
   -webkit-box-shadow: 0 0 35px 0 rgba(154, 161, 171, 0);
   box-shadow: 0 0 35px 0 rgba(154, 161, 171, 0); }
 .light-skin .user-panel > .info {
@@ -41,9 +41,9 @@ File: scss
   .light-skin .user-panel > .info > a {
     color: #ffffff; }
 .light-skin .sidebar-menu > li:hover > a, .light-skin .sidebar-menu > li:active > a, .light-skin .sidebar-menu > li.active > a {
-  color: #0E0E23; }
+  color: #ffffff; }
 .light-skin .sidebar-menu > li.active > a {
-  background-color: #0E0E23;
+  background-color: #ffffff;
   color: #ffffff;
   box-shadow: 0 3px 5px 1px rgba(0, 0, 0, 0); }
   .light-skin .sidebar-menu > li.active > a > i {
@@ -80,7 +80,7 @@ File: scss
   background: #ffffff !important;
   color: #ffffff; }
 .light-skin .sidebar a {
-  color: #172b4c; }
+  color: #ffffff; }
   .light-skin .sidebar a:hover {
     text-decoration: none; }
 .light-skin .sidebar-form {
@@ -120,7 +120,7 @@ File: scss
   .light-skin .control-sidebar .nav-tabs.control-sidebar-tabs {
     border-bottom: 1px solid #cccccc; }
     .light-skin .control-sidebar .nav-tabs.control-sidebar-tabs > li > a {
-      color: #0E0E23;
+      color: #ffffff;
       border-bottom-color: #cccccc; }
       .light-skin .control-sidebar .nav-tabs.control-sidebar-tabs > li > a:hover, .light-skin .control-sidebar .nav-tabs.control-sidebar-tabs > li > a:active, .light-skin .control-sidebar .nav-tabs.control-sidebar-tabs > li > a:focus {
         border-bottom-color: #cccccc;
@@ -130,9 +130,9 @@ File: scss
         .light-skin .control-sidebar .nav-tabs.control-sidebar-tabs > li > a.active:hover, .light-skin .control-sidebar .nav-tabs.control-sidebar-tabs > li > a.active:active, .light-skin .control-sidebar .nav-tabs.control-sidebar-tabs > li > a.active:focus {
           background-color: transparent; }
   .light-skin .control-sidebar .control-sidebar-heading {
-    color: #0E0E23; }
+    color: #ffffff; }
   .light-skin .control-sidebar .control-sidebar-subheading {
-    color: #0E0E23; }
+    color: #ffffff; }
   .light-skin .control-sidebar .control-sidebar-menu {
     margin-left: -14px; }
     .light-skin .control-sidebar .control-sidebar-menu > li > a:hover {
@@ -833,7 +833,7 @@ body.dark-skin {
 .dark-skin .sidebar-menu > li {
   border-left: 0px solid #0E0E23; }
 .dark-skin .main-sidebar .sidebar-footer {
-  background-color: #0E0E23; }
+  background-color: #0E0E23 !important; }
 .dark-skin .sidebar-menu > li.treeview.menu-open > a {
   opacity: 1; }
 .dark-skin .sidebar-menu > li:hover > a {
