@@ -30,6 +30,8 @@
       }
     }
   }
+
+  let choix : any = "";
 </script>
 
 <div class="">
@@ -120,6 +122,18 @@
     {JSON.stringify(user)}
 
     <Check label="Accepter les conditions" bind:checked={isChecked} />
+
+    <select
+    id="role"
+    bind:value={choix}
+    class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+>
+    <option value="" disabled selected>Choisir un rôle</option>
+    <option value="admin">Administrateur</option>
+    <option value="user">Utilisateur</option>
+    <option value="moderateur">Modérateur</option>
+    <option value="invite">Invité</option>
+</select>
 
     <!--  <InputImage
     imageUrl={""}
