@@ -19,21 +19,18 @@
   import Pagination from "../../../components/_includes/Pagination.svelte";
  // Importer le store pageSize
   import { get } from "svelte/store";
-  import type { professionnel, User } from "../../../types";
+  import type { Permission, User, UserAdmin } from "../../../types";
   import { apiFetch } from "$lib/api";
   import { pageSize } from "../../../store"; // Importer le store pageSize
   import { onMount } from "svelte";
-
   import { getAuthCookie } from "$lib/auth";
-  import Show from "./Show.svelte";
-  import Delete from "./Delete.svelte";
 
   let user: User;
 
 
 
 
-  let main_data: professionnel[] = [];
+  let main_data: UserAdmin[] = [];
     let searchQuery = ''; // Pour la recherche par texte
     let selectedService : any = ""; // Pour filtrer par service
     let selectedStatus : any = ""; // Pour filtrer par status
@@ -51,10 +48,10 @@
     async function fetchData() {
 		loading = true; // Active le spinner de chargement
     try {
-        const res = await apiFetch(true,"/professionnel/ACTIVE")
-        console.log(res);
+        const res = await apiFetch(true,"/user/get/admin")
+        console.log("rrrerere",res);
         if (res) {
-            main_data = res.data as professionnel[];
+            main_data = res.data as UserAdmin[];
         } else {
             console.error("Erreur lors de la récupération des données:", res.statusText);
         }
@@ -74,10 +71,7 @@
     $: filteredData = main_data.filter(item => {
         return (
             item.nom.toLowerCase().includes(searchQuery.toLowerCase()) ||
-            item.prenoms.toLowerCase().includes(searchQuery.toLowerCase()) ||
-            item.phone.toLowerCase().includes(searchQuery.toLowerCase()) ||
-            item.email.toLowerCase().includes(searchQuery.toLowerCase()) 
-
+            item.prenoms.toLowerCase().includes(searchQuery.toLowerCase())
         );
        ;
     });
@@ -126,9 +120,9 @@ async function refreshDataIfNeeded() {
 </script>
 
 <Entete
-  libelle="Liste des historiques de paiement"
+  libelle="Gestion des membre"
   parent="Parametres"
-  descr="Liste des historiques de paiement"
+  descr="Etablissements de santé"
 />
 <section class="content">
   <div class="row">
@@ -136,10 +130,10 @@ async function refreshDataIfNeeded() {
       <div class="box">
         <div class="box-header with-border flex justify-between items-center">
           <h4 class="box-title text-xl font-medium">
-            Liste des historiques de paiement
+            Etablissements de santé
           </h4>
 
-     
+        
         </div>
         <!-- /.box-header -->
         <div class="box-body">
@@ -158,8 +152,7 @@ async function refreshDataIfNeeded() {
               <TableHead
                 class="border-y border-gray-200 bg-gray-100 dark:border-gray-700"
               >
-
-                {#each ["Type","nom", "prénoms","Téléphone" ,"email" ,"Montant", "Date"] as title}
+                {#each ["nom", "prénoms","Type de compte","Téléphone","email" ,"type"] as title}
                   <TableHeadCell class="ps-4 font-normal border border-gray-300"
                     >{title}</TableHeadCell
                   >
@@ -214,46 +207,21 @@ async function refreshDataIfNeeded() {
                         >{item.prenoms}</TableBodyCell
                       >
                       <TableBodyCell class="p-4 border border-gray-300"
-                        >{item.user.phone}</TableBodyCell
+                        >{item.typeUser}</TableBodyCell
                       >
                       <TableBodyCell class="p-4 border border-gray-300"
-                        >{item.user.email}</TableBodyCell
+                        >{item.phone}</TableBodyCell
                       >
-                        <TableBodyCell class="p-4 border border-gray-300"
-                        >{item.user.typeUser}</TableBodyCell
+                      <TableBodyCell class="p-4 border border-gray-300"
+                        >{item.email}</TableBodyCell
                       >
+                      <TableBodyCell class="p-4 border border-gray-300"
+                        >{item.username}</TableBodyCell
+                      >
+                      
                       <!--  <TableBodyCell class="p-4 border border-gray-300">{item.sous_menu.libelle}</TableBodyCell>
                                    -->
-                      <TableBodyCell
-                        class="space-x-1 p-2 w-8 border border-gray-300"
-                      >
-                        <Button
-                          color="green"
-                          style="background-color: green"
-                          size="sm"
-                          class="gap-2 px-3 bg-green-800"
-                          on:click={() => (
-                            (current_data = item), (openShow = true)
-                          )}
-                        >
-                          <EyeOutline size="sm" />
-                        </Button>
-                        <Button
-                          color="red"
-                          style="background-color: red"
-                          size="sm"
-                          class="gap-2 px-3 bg-red-800"
-                          on:click={() => (
-                            (current_data = item), (openDelete = true)
-                          )}
-                        >
-                          <TrashBinSolid size="sm" />
-                        </Button>
-
-                       
-
-                       
-                      </TableBodyCell>
+                    
                     </TableBodyRow>
                   {/each}
                 {/if}
@@ -295,5 +263,3 @@ async function refreshDataIfNeeded() {
 </section>
 
 <!-- Modales -->
-<Show bind:open={openShow} data={current_data} sizeModal="xl" />
-<Delete bind:open={openDelete} data={current_data} />

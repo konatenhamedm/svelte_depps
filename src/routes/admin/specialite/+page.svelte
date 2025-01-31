@@ -19,21 +19,18 @@
   import Pagination from "../../../components/_includes/Pagination.svelte";
  // Importer le store pageSize
   import { get } from "svelte/store";
-  import type { professionnel, User } from "../../../types";
+  import type { Permission, sMenu, User } from "../../../types";
   import { apiFetch } from "$lib/api";
   import { pageSize } from "../../../store"; // Importer le store pageSize
   import { onMount } from "svelte";
-
   import { getAuthCookie } from "$lib/auth";
-  import Show from "./Show.svelte";
-  import Delete from "./Delete.svelte";
 
   let user: User;
 
 
 
 
-  let main_data: professionnel[] = [];
+  let main_data: sMenu[] = [];
     let searchQuery = ''; // Pour la recherche par texte
     let selectedService : any = ""; // Pour filtrer par service
     let selectedStatus : any = ""; // Pour filtrer par status
@@ -51,10 +48,10 @@
     async function fetchData() {
 		loading = true; // Active le spinner de chargement
     try {
-        const res = await apiFetch(true,"/professionnel/ACTIVE")
+        const res = await apiFetch(true,"/genre/")
         console.log(res);
         if (res) {
-            main_data = res.data as professionnel[];
+            main_data = res.data as sMenu[];
         } else {
             console.error("Erreur lors de la récupération des données:", res.statusText);
         }
@@ -73,11 +70,7 @@
 
     $: filteredData = main_data.filter(item => {
         return (
-            item.nom.toLowerCase().includes(searchQuery.toLowerCase()) ||
-            item.prenoms.toLowerCase().includes(searchQuery.toLowerCase()) ||
-            item.phone.toLowerCase().includes(searchQuery.toLowerCase()) ||
-            item.email.toLowerCase().includes(searchQuery.toLowerCase()) 
-
+            item.libelle.toLowerCase().includes(searchQuery.toLowerCase())
         );
        ;
     });
@@ -126,20 +119,23 @@ async function refreshDataIfNeeded() {
 </script>
 
 <Entete
-  libelle="Liste des historiques de paiement"
-  parent="Parametres"
-  descr="Liste des historiques de paiement"
+  libelle="Répartition par specialite"
+  parent="Statistiques"
+   
+  descr="specialite"
 />
 <section class="content">
   <div class="row">
     <div class="col-12">
-      <div class="box">
+      <div class="grid grid-cols-3 gap-4">
+  <div class="col-span-2  p-4 h-64">
+     <div class="box">
         <div class="box-header with-border flex justify-between items-center">
           <h4 class="box-title text-xl font-medium">
-            Liste des historiques de paiement
+            Liste dRépartition par specialite
           </h4>
 
-     
+        
         </div>
         <!-- /.box-header -->
         <div class="box-body">
@@ -158,11 +154,11 @@ async function refreshDataIfNeeded() {
               <TableHead
                 class="border-y border-gray-200 bg-gray-100 dark:border-gray-700"
               >
-
-                {#each ["Type","nom", "prénoms","Téléphone" ,"email" ,"Montant", "Date"] as title}
+                {#each ["specialite",  "Nombre"] as title}
                   <TableHeadCell class="ps-4 font-normal border border-gray-300"
                     >{title}</TableHeadCell
                   >
+                  
                 {/each}
               </TableHead>
               <TableBody>
@@ -207,52 +203,18 @@ async function refreshDataIfNeeded() {
                 {:else}
                   {#each paginatedProducts as item}
                     <TableBodyRow class="text-base border border-gray-300">
+                      
                       <TableBodyCell class="p-4 border border-gray-300"
-                        >{item.nom}</TableBodyCell
+                        >{item.libelle}</TableBodyCell
                       >
-                      <TableBodyCell class="p-4 border border-gray-300"
-                        >{item.prenoms}</TableBodyCell
-                      >
-                      <TableBodyCell class="p-4 border border-gray-300"
-                        >{item.user.phone}</TableBodyCell
-                      >
-                      <TableBodyCell class="p-4 border border-gray-300"
-                        >{item.user.email}</TableBodyCell
-                      >
-                        <TableBodyCell class="p-4 border border-gray-300"
-                        >{item.user.typeUser}</TableBodyCell
-                      >
+                      
                       <!--  <TableBodyCell class="p-4 border border-gray-300">{item.sous_menu.libelle}</TableBodyCell>
                                    -->
                       <TableBodyCell
-                        class="space-x-1 p-2 w-8 border border-gray-300"
+                        class="p-4 border border-gray-300"
                       >
-                        <Button
-                          color="green"
-                          style="background-color: green"
-                          size="sm"
-                          class="gap-2 px-3 bg-green-800"
-                          on:click={() => (
-                            (current_data = item), (openShow = true)
-                          )}
-                        >
-                          <EyeOutline size="sm" />
-                        </Button>
-                        <Button
-                          color="red"
-                          style="background-color: red"
-                          size="sm"
-                          class="gap-2 px-3 bg-red-800"
-                          on:click={() => (
-                            (current_data = item), (openDelete = true)
-                          )}
-                        >
-                          <TrashBinSolid size="sm" />
-                        </Button>
-
-                       
-
-                       
+                     
+                      
                       </TableBodyCell>
                     </TableBodyRow>
                   {/each}
@@ -289,11 +251,20 @@ async function refreshDataIfNeeded() {
         </div>
         <!-- /.box-body -->
       </div>
+  </div>
+  <div class=" p-4 h-32">
+   <div class="boX">
+   <div class="box-header with-border flex justify-between items-center">
+graphique
+   </div>
+    
+   </div>
+  </div>
+      </div>
+     
       <!-- /.box -->
     </div>
   </div>
 </section>
 
 <!-- Modales -->
-<Show bind:open={openShow} data={current_data} sizeModal="xl" />
-<Delete bind:open={openDelete} data={current_data} />

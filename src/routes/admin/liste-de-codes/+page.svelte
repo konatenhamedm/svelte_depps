@@ -19,21 +19,20 @@
   import Pagination from "../../../components/_includes/Pagination.svelte";
  // Importer le store pageSize
   import { get } from "svelte/store";
-  import type { professionnel, User } from "../../../types";
+  import type { Permission, User } from "../../../types";
   import { apiFetch } from "$lib/api";
   import { pageSize } from "../../../store"; // Importer le store pageSize
   import { onMount } from "svelte";
 
   import { getAuthCookie } from "$lib/auth";
-  import Show from "./Show.svelte";
-  import Delete from "./Delete.svelte";
+  import Add from "./Add.svelte";
 
   let user: User;
 
 
 
 
-  let main_data: professionnel[] = [];
+  let main_data: Permission[] = [];
     let searchQuery = ''; // Pour la recherche par texte
     let selectedService : any = ""; // Pour filtrer par service
     let selectedStatus : any = ""; // Pour filtrer par status
@@ -51,10 +50,10 @@
     async function fetchData() {
 		loading = true; // Active le spinner de chargement
     try {
-        const res = await apiFetch(true,"/professionnel/ACTIVE")
+        const res = await apiFetch(true,"/civilite/")
         console.log(res);
         if (res) {
-            main_data = res.data as professionnel[];
+            main_data = res.data as Permission[];
         } else {
             console.error("Erreur lors de la récupération des données:", res.statusText);
         }
@@ -73,11 +72,8 @@
 
     $: filteredData = main_data.filter(item => {
         return (
-            item.nom.toLowerCase().includes(searchQuery.toLowerCase()) ||
-            item.prenoms.toLowerCase().includes(searchQuery.toLowerCase()) ||
-            item.phone.toLowerCase().includes(searchQuery.toLowerCase()) ||
-            item.email.toLowerCase().includes(searchQuery.toLowerCase()) 
-
+            item.code.toLowerCase().includes(searchQuery.toLowerCase()) ||
+            item.libelle.toLowerCase().includes(searchQuery.toLowerCase())
         );
        ;
     });
@@ -126,9 +122,9 @@ async function refreshDataIfNeeded() {
 </script>
 
 <Entete
-  libelle="Liste des historiques de paiement"
-  parent="Parametres"
-  descr="Liste des historiques de paiement"
+  libelle="Liste des codes générés"
+  parent="accueil"
+  descr="Liste des codes générés"
 />
 <section class="content">
   <div class="row">
@@ -136,10 +132,22 @@ async function refreshDataIfNeeded() {
       <div class="box">
         <div class="box-header with-border flex justify-between items-center">
           <h4 class="box-title text-xl font-medium">
-            Liste des historiques de paiement
+          Liste des codes générés
           </h4>
 
-     
+          <div>
+          
+                <a
+                    class="py-[5px] px-3 waves-effect waves-light btn btn-info mb-5"
+                    on:click={() => (
+                        (current_data = {}),
+                        (openAdd = true)
+                    )}
+                >
+                    + Nouvelle  codes générés
+                </a>
+        
+        </div>
         </div>
         <!-- /.box-header -->
         <div class="box-body">
@@ -158,8 +166,7 @@ async function refreshDataIfNeeded() {
               <TableHead
                 class="border-y border-gray-200 bg-gray-100 dark:border-gray-700"
               >
-
-                {#each ["Type","nom", "prénoms","Téléphone" ,"email" ,"Montant", "Date"] as title}
+                {#each ["code", "statut"] as title}
                   <TableHeadCell class="ps-4 font-normal border border-gray-300"
                     >{title}</TableHeadCell
                   >
@@ -208,52 +215,15 @@ async function refreshDataIfNeeded() {
                   {#each paginatedProducts as item}
                     <TableBodyRow class="text-base border border-gray-300">
                       <TableBodyCell class="p-4 border border-gray-300"
-                        >{item.nom}</TableBodyCell
+                        >{item.code}</TableBodyCell
                       >
                       <TableBodyCell class="p-4 border border-gray-300"
-                        >{item.prenoms}</TableBodyCell
+                        >{item.libelle}</TableBodyCell
                       >
-                      <TableBodyCell class="p-4 border border-gray-300"
-                        >{item.user.phone}</TableBodyCell
-                      >
-                      <TableBodyCell class="p-4 border border-gray-300"
-                        >{item.user.email}</TableBodyCell
-                      >
-                        <TableBodyCell class="p-4 border border-gray-300"
-                        >{item.user.typeUser}</TableBodyCell
-                      >
+                    
                       <!--  <TableBodyCell class="p-4 border border-gray-300">{item.sous_menu.libelle}</TableBodyCell>
                                    -->
-                      <TableBodyCell
-                        class="space-x-1 p-2 w-8 border border-gray-300"
-                      >
-                        <Button
-                          color="green"
-                          style="background-color: green"
-                          size="sm"
-                          class="gap-2 px-3 bg-green-800"
-                          on:click={() => (
-                            (current_data = item), (openShow = true)
-                          )}
-                        >
-                          <EyeOutline size="sm" />
-                        </Button>
-                        <Button
-                          color="red"
-                          style="background-color: red"
-                          size="sm"
-                          class="gap-2 px-3 bg-red-800"
-                          on:click={() => (
-                            (current_data = item), (openDelete = true)
-                          )}
-                        >
-                          <TrashBinSolid size="sm" />
-                        </Button>
-
-                       
-
-                       
-                      </TableBodyCell>
+                    
                     </TableBodyRow>
                   {/each}
                 {/if}
@@ -295,5 +265,5 @@ async function refreshDataIfNeeded() {
 </section>
 
 <!-- Modales -->
-<Show bind:open={openShow} data={current_data} sizeModal="xl" />
-<Delete bind:open={openDelete} data={current_data} />
+<Add bind:open={openAdd} data={current_data} sizeModal="xl" userUpdateId={user?.id} />
+

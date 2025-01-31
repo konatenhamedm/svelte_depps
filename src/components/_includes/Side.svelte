@@ -57,9 +57,41 @@
 			<li><a href="/admin/historique_paiement"><i data-feather="users"><span class="path1"></span><span class="path2"></span></i>Historique de paiement</a></li> 
 			
 
-			<li><a href="/admin/administrateur"><i data-feather="users"><span class="path1"></span><span class="path2"></span></i>Etablissements de sante</a></li> 
+			<li class="treeview">
+				<a href="#">
+				<i data-feather="settings"></i>
+				<span>Statistiques </span>
+				<span class="pull-right-container">
+				 <i class="fa fa-angle-right pull-right"></i>
+				</span>
+				</a>                  
+				<ul class="treeview-menu">                    
+				<li><a href="/admin/genre"><i class="icon-Commit"><span class="path1"></span><span class="path2"></span></i>Genre</a></li>  
+				 <li><a href="/admin/geolocation"><i class="icon-Commit"><span class="path1"></span><span class="path2"></span></i>Geolocation </a></li> 
+				 <li><a href="/admin/specialite"><i class="icon-Commit"><span class="path1"></span><span class="path2"></span></i>Specialite </a></li>        
+				</ul>
+			</li>
+
+
+
+			<li class="treeview">
+				<a href="#">
+				<i data-feather="settings"></i>
+				<span>Code d'identification </span>
+				<span class="pull-right-container">
+				 <i class="fa fa-angle-right pull-right"></i>
+				</span>
+				</a>                  
+				<ul class="treeview-menu">                    
+				<li><a href="/admin/liste-de-codes"><i class="icon-Commit"><span class="path1"></span><span class="path2"></span></i>liste codes</a></li>  
+				</ul>
+			</li>
+
+			<li><a href="/admin/etablissements"><i data-feather="users"><span class="path1"></span><span class="path2"></span></i>Etablissements de sante</a></li> 
 			
 			
+			<li>
+
 			</ul>
 			
 			
