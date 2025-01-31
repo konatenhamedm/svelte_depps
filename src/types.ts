@@ -322,6 +322,20 @@ export interface Select {
   id: number;
   libelle: string;
 }
+export interface professionnel {
+  nom: string;
+  prenoms: string;
+  phone: string;
+  email: string;
+  type: string;
+
+  user: {
+    username: string;
+    email: string;
+    phone: string;
+    typeUser: string;
+  };
+}
 export interface EndUser {
   id: string; // Identifiant unique de l'utilisateur
   public_id: string; // Identifiant public

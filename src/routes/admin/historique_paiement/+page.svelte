@@ -25,8 +25,6 @@
   import { onMount } from "svelte";
 
   import { getAuthCookie } from "$lib/auth";
-  import Add from "./Add.svelte";
-  import Edit from "./Edit.svelte";
   import Show from "./Show.svelte";
   import Delete from "./Delete.svelte";
 
@@ -53,7 +51,7 @@
     async function fetchData() {
 		loading = true; // Active le spinner de chargement
     try {
-        const res = await apiFetch(true,"/professionnel/ACCEPT")
+        const res = await apiFetch(true,"/professionnel/ACTIVE")
         console.log(res);
         if (res) {
             main_data = res.data as professionnel[];
@@ -128,9 +126,9 @@ async function refreshDataIfNeeded() {
 </script>
 
 <Entete
-  libelle=" dossiers acceptés "
+  libelle="Liste des historiques de paiement"
   parent="Parametres"
-  descr="Liste des dossiers acceptés"
+  descr="Liste des historiques de paiement"
 />
 <section class="content">
   <div class="row">
@@ -138,10 +136,10 @@ async function refreshDataIfNeeded() {
       <div class="box">
         <div class="box-header with-border flex justify-between items-center">
           <h4 class="box-title text-xl font-medium">
-            Liste des dossiers accepte
+            Liste des historiques de paiement
           </h4>
 
-        
+     
         </div>
         <!-- /.box-header -->
         <div class="box-body">
@@ -239,19 +237,19 @@ async function refreshDataIfNeeded() {
                         >
                           <EyeOutline size="sm" />
                         </Button>
-
-                       
-                         <Button
-                          color="green"
-                          style="background-color: green"
+                        <Button
+                          color="red"
+                          style="background-color: red"
                           size="sm"
-                          class="gap-2 px-3 bg-green-800"
+                          class="gap-2 px-3 bg-red-800"
                           on:click={() => (
-                            (current_data = item), (openShow = true)
+                            (current_data = item), (openDelete = true)
                           )}
                         >
-                          <EyeOutline size="sm" />
+                          <TrashBinSolid size="sm" />
                         </Button>
+
+                       
 
                        
                       </TableBodyCell>
@@ -296,7 +294,5 @@ async function refreshDataIfNeeded() {
 </section>
 
 <!-- Modales -->
-<Add bind:open={openAdd} data={current_data} sizeModal="xl" userUpdateId={user?.id} />
-<Edit bind:open={openEdit} data={current_data} sizeModal="xl" userUpdateId={user?.id}  />
 <Show bind:open={openShow} data={current_data} sizeModal="xl" />
 <Delete bind:open={openDelete} data={current_data} />

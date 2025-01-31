@@ -76,7 +76,7 @@
 				<li><a href="/admin/professionnel_attente"><i class="icon-Commit"><span class="path1"></span><span class="path2"></span></i>Dossiers en attentes</a></li>  
 				 <li><a href="/admin/professionnel_accepte"><i class="icon-Commit"><span class="path1"></span><span class="path2"></span></i>Dossiers accéptés </a></li> 
 				 <li><a href="/admin/professionnel_valide"><i class="icon-Commit"><span class="path1"></span><span class="path2"></span></i>Dossiers validés </a></li> 
-				 <li><a href="/admin/professionnel_valide"><i class="icon-Commit"><span class="path1"></span><span class="path2"></span></i>Dossiers refusés </a></li> 
+				 <li><a href="/admin/professionnel_refuse"><i class="icon-Commit"><span class="path1"></span><span class="path2"></span></i>Dossiers refusés </a></li> 
 				 <li><a href="/admin/professionnel_renouvellement"><i class="icon-Commit"><span class="path1"></span><span class="path2"></span></i>Attentes de renouvellement</a></li>         
 				 <li><a href="/admin/professionnel_ajour"><i class="icon-Commit"><span class="path1"></span><span class="path2"></span></i>Dossiers à jour</a></li>         
 				</ul>
