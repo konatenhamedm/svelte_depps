@@ -2,14 +2,11 @@
     import { onMount } from 'svelte';
     import Highcharts from 'highcharts';
     import Highcharts3D from 'highcharts/highcharts-3d';
-  export let classe : any;
-    // Initialisation du module 3D
-    Highcharts3D(Highcharts);
-  
+
     let pie3;
   
     onMount(() => {
-      pie3 = Highcharts.chart(`${classe}`, {
+      pie3 = Highcharts.chart('container3', {
       chart: {
         plotBackgroundColor: null,
         plotBorderWidth: null,
@@ -62,5 +59,5 @@
     });
   </script>
   
-  <div id="{classe}" style="width:100%; height:400px;"></div>
+  <div id="container3" style="width:100%; height:400px;"></div>
   

@@ -1,6 +1,7 @@
 <script lang="ts">
 import InputCheck from "$components/inputs/InputCheck.svelte";
 import InputSimple from "$components/inputs/InputSimple.svelte";
+  import { BASE_URL_API } from "$lib/api";
 import {
     Button,
     Modal
@@ -12,7 +13,7 @@ import {
 export let open: boolean = false;
 export let sizeModal: any = "lg";
 export let data: Record < string, string > = {};
- const  url_image = "https://depps.leadagro.net/uploads/";
+
 let number = "";
 let nom = "";
 let prenoms = "";
@@ -141,20 +142,20 @@ function init(form: HTMLFormElement) {
 
                    <div class="w-full h-9 flex justify-center bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 border border-blue-700 rounded">
 						
-                        <a href={url_image + CVpath + '/' + CValt} target="_blank">
+                        <a href={BASE_URL_API + "/uploads/" + CVpath + '/' + CValt} target="_blank">
                             Voir le CV
                         </a>
                     </div>
 					<div class="w-full h-9 flex justify-center bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 border border-blue-700 rounded">
 						
-                        <a href="{url_image + diplomeFilePath + '/' + diplomeFileAlt}"  target="_blank">
+                        <a href="{BASE_URL_API + "/uploads/" + diplomeFilePath + '/' + diplomeFileAlt}"  target="_blank">
                             Voir le diplome
                         </a>
                     </div>
 					
 						<div class="w-full h-9 flex justify-center bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 border border-blue-700 rounded">
 						
-                        <a href="{url_image + casierPath + '/' + casierAlt}"  target="_blank">
+                        <a href="{BASE_URL_API + "/uploads/" + casierPath + '/' + casierAlt}"  target="_blank">
                             Voir le casier
                         </a>
                     </div>
@@ -163,20 +164,20 @@ function init(form: HTMLFormElement) {
                     
                     <div class="w-full h-9 flex justify-center bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 border border-blue-700 rounded">
 						
-                        <a href={url_image + certificatPath + '/' + certificatAlt} target="_blank">
+                        <a href={BASE_URL_API + "/uploads/" + certificatPath + '/' + certificatAlt} target="_blank">
                             Voir le certificat
                         </a>
                     </div>
 					<div class="w-full h-9 flex justify-center bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 border border-blue-700 rounded">
 						
-						<a href={url_image + Photopath + '/' + Photoalt} target="_blank">
+						<a href={BASE_URL_API + "/uploads/" + Photopath + '/' + Photoalt} target="_blank">
 							Voir la photo
 						</a>
 					</div>
 
 					 <div class="w-full h-9 flex justify-center bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 border border-blue-700 rounded">
 						
-                        <a href={url_image + cniPath + '/' + cniAlt} target="_blank">
+                        <a href={BASE_URL_API + "/uploads/" + cniPath + '/' + cniAlt} target="_blank">
                             Voir cni
                         </a>
                     </div>

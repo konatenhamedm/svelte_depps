@@ -66,5 +66,5 @@
     });
   </script>
   
-  <div id="container3" style="width:100%; height:400px;"></div>
+  <div id="container3" style="width:100%; height:200px;"></div>
   

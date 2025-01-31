@@ -121,7 +121,7 @@
 
     {JSON.stringify(user)}
 
-    <Check label="Accepter les conditions" bind:checked={isChecked} />
+   <!--  <Check label="Accepter les conditions" bind:checked={isChecked} />
 
     <select
     id="role"
@@ -135,11 +135,8 @@
     <option value="invite">Invité</option>
 </select>
 
-    <!--  <InputImage
-    imageUrl={""}
-    on:file-selected={(event) => onFileSelected(event.detail)}
-/> -->
+ 
 
-    <Donut />
+    <Donut /> -->
   </section>
 </div>
