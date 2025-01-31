@@ -23,10 +23,6 @@
   import { apiFetch } from "$lib/api";
   import { pageSize } from "../../../store"; // Importer le store pageSize
   import { onMount } from "svelte";
-  import Add from "./Add.svelte";
-  import Edit from "./Edit.svelte";
-  import Show from "./Show.svelte";
-  import Delete from "./Delete.svelte";
   import { getAuthCookie } from "$lib/auth";
 
   let user: User;
@@ -124,31 +120,22 @@ async function refreshDataIfNeeded() {
 
 <Entete
   libelle="Gestion des genres"
-  parent="Parametres"
-  descr="Liste des genres"
+  parent="Statistiques"
+   
+  descr="genres"
 />
 <section class="content">
   <div class="row">
     <div class="col-12">
-      <div class="box">
+      <div class="grid grid-cols-3 gap-4">
+  <div class="col-span-2  p-4 h-64">
+     <div class="box">
         <div class="box-header with-border flex justify-between items-center">
           <h4 class="box-title text-xl font-medium">
             Liste des genres {user?.id}
           </h4>
 
-          <div>
-          
-                <a
-                    class="py-[5px] px-3 waves-effect waves-light btn btn-info mb-5"
-                    on:click={() => (
-                        (current_data = {}),
-                        (openAdd = true)
-                    )}
-                >
-                    + Nouvelle genre
-                </a>
         
-        </div>
         </div>
         <!-- /.box-header -->
         <div class="box-body">
@@ -167,10 +154,11 @@ async function refreshDataIfNeeded() {
               <TableHead
                 class="border-y border-gray-200 bg-gray-100 dark:border-gray-700"
               >
-                {#each ["libelle",  "Action"] as title}
+                {#each ["libelle",  "description"] as title}
                   <TableHeadCell class="ps-4 font-normal border border-gray-300"
                     >{title}</TableHeadCell
                   >
+                  
                 {/each}
               </TableHead>
               <TableBody>
@@ -223,43 +211,10 @@ async function refreshDataIfNeeded() {
                       <!--  <TableBodyCell class="p-4 border border-gray-300">{item.sous_menu.libelle}</TableBodyCell>
                                    -->
                       <TableBodyCell
-                        class="space-x-1 p-2 w-8 border border-gray-300"
+                        class="p-4 border border-gray-300"
                       >
-                        <Button
-                          color="green"
-                          style="background-color: green"
-                          size="sm"
-                          class="gap-2 px-3 bg-green-800"
-                          on:click={() => (
-                            (current_data = item), (openShow = true)
-                          )}
-                        >
-                          <EyeOutline size="sm" />
-                        </Button>
-
-                        <Button
-                          color="blue"
-                          size="sm"
-                          style="background-color: blue"
-                          class="gap-2 px-3 bg-blue-600"
-                          on:click={() => (
-                            (current_data = item), (openEdit = true)
-                          )}
-                        >
-                          <EditOutline size="sm" />
-                        </Button>
-
-                        <Button
-                          color="red"
-                          size="sm"
-                          style="background-color: red"
-                          class="gap-2 px-3 bg-red-600"
-                          on:click={() => (
-                            (current_data = item), (openDelete = true)
-                          )}
-                        >
-                          <TrashBinSolid size="sm" />
-                        </Button>
+                     
+                      
                       </TableBodyCell>
                     </TableBodyRow>
                   {/each}
@@ -296,13 +251,20 @@ async function refreshDataIfNeeded() {
         </div>
         <!-- /.box-body -->
       </div>
+  </div>
+  <div class=" p-4 h-32">
+   <div class="boX">
+   <div class="box-header with-border flex justify-between items-center">
+graphique
+   </div>
+    
+   </div>
+  </div>
+      </div>
+     
       <!-- /.box -->
     </div>
   </div>
 </section>
 
 <!-- Modales -->
-<Add bind:open={openAdd} data={current_data} sizeModal="xl" userUpdateId={user?.id} />
-<Edit bind:open={openEdit} data={current_data} sizeModal="xl" userUpdateId={user?.id}  />
-<Show bind:open={openShow} data={current_data} sizeModal="xl" />
-<Delete bind:open={openDelete} data={current_data} />

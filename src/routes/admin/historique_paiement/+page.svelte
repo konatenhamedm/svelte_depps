@@ -158,7 +158,8 @@ async function refreshDataIfNeeded() {
               <TableHead
                 class="border-y border-gray-200 bg-gray-100 dark:border-gray-700"
               >
-                {#each ["nom", "prénoms","Téléphone" ,"email" ,"type", "Action"] as title}
+
+                {#each ["Type","nom", "prénoms","Téléphone" ,"email" ,"Montant", "Date"] as title}
                   <TableHeadCell class="ps-4 font-normal border border-gray-300"
                     >{title}</TableHeadCell
                   >

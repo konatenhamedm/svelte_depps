@@ -9,14 +9,16 @@
   let notificationMessage = "";
   let notificationType = "info";
 
-  export let userUpdateId: any;
   export let open: boolean = false;
   let isLoad = false;
 
-  let genre: any = {
-    libelle: "",
+  let icons: any = {
+    
+   Nombre: "",
+    spetialite: "",
   };
   export let sizeModal: any = "lg";
+  export let userUpdateId: any;
 
   export let data: Record<string, string> = {};
 
@@ -25,14 +27,15 @@
   async function SaveFunction() {
     isLoad = true;
     try {
-      const res = await fetch(BASE_URL_API + "/genre/create", {
+      const res = await fetch(BASE_URL_API + "/civilite/create", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          userUpdate: userUpdateId,
-          libelle: genre.libelle,
+          Nombre: icons.Nombre,
+          spetialite: icons.spetialite,
+          userUpdateId: userUpdateId,
         }),
       });
 
@@ -60,7 +63,7 @@
 
 <Modal
   bind:open
-  title={Object.keys(data).length ? "Ajouter un genre " : "Ajouter un genre"}
+  title={Object.keys(data).length ? "Ajouter une icone " : "Ajouter une icone"}
   size={sizeModal}
   class="m-4 modale_general"
   on:close={handleModalClose}
@@ -68,14 +71,27 @@
   <!-- Modal body -->
   <div class="space-y-6 p-0">
     <form action="#" use:init>
-      <div class="grid grid-cols-1">
-        <InputSimple
-          fieldName="libelle"
-          label="Libelle"
-          bind:field={genre.libelle}
-          placeholder="entrez le libelle"
+      <div class="grid grid-cols-2">
+        <div class="space-y-6 p-3">
+            <InputSimple
+          fieldName="Nombre"
+          label="Nombre"
+          bind:field={icons.codNombree}
+          placeholder="entrez le Nombre"
           class="w-full"
         ></InputSimple>
+        </div>
+      
+<div class="space-y-6 p-2 mt-4">
+   <select name="spetialite" id="">
+          <option value="1">spetialite 1</option>
+          <option value="2">spetialite 2</option>
+          <option value="3">spetialite 3</option>
+       </select>
+</div>
+
+      
+       
       </div>
     </form>
   </div>

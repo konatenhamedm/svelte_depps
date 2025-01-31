@@ -24,7 +24,7 @@ let user: User;
                  <span class="dark-logo"><img src="../../../images/logo-white-letter.png" alt="logo"></span>
              </div>
              <div class="logo-lg">
-                 <span class="light-logo"><img src="../../../images/logo-light-text.png" alt="logo"></span>
+                 <span class="light-logo text-white " style="font-size: 18px;">DEPPS</span>
                  <span class="dark-logo"><img src="../../../images/logo-text.png" alt="logo"></span>
              </div>
         </a>    
