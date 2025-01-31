@@ -34,6 +34,8 @@
 		"axios": "^1.7.9",
 		"flowbite-svelte": "^0.47.4",
 		"flowbite-svelte-icons": "^2.0.2",
+		"highcharts": "^11.4.8",
+		"highcharts-3d": "^0.1.7",
 		"svelte-icons": "^2.1.0"
 	}
 }

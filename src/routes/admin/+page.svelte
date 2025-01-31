@@ -4,53 +4,54 @@
   import { getAuthCookie } from "$lib/auth";
   import Check from "$components/inputs/Check.svelte";
   import InputImage from "$components/inputs/InputImage.svelte";
+  import Donut from "$components/statistiques/Donut.svelte";
 
   let isChecked = true;
 
-let user: User;
-let infoImg = {
-        signedUrl: "",
-        key: "",
-    };
-
+  let user: User;
+  let infoImg = {
+    signedUrl: "",
+    key: ""
+  };
 
   onMount(async () => {
     user = getAuthCookie();
   });
 
   async function onFileSelected(file: any) {
-        if (file) {
-            const uploadResult = await handleImageUpload(file);
+    if (file) {
+      const uploadResult = await handleImageUpload(file);
 
-            if (uploadResult) {
-                infoImg.signedUrl = uploadResult.signedUrl;
-                infoImg.key = uploadResult.key;
-            } else {
-                console.error("Image upload failed.");
-            }
-        }
+      if (uploadResult) {
+        infoImg.signedUrl = uploadResult.signedUrl;
+        infoImg.key = uploadResult.key;
+      } else {
+        console.error("Image upload failed.");
+      }
     }
-
+  }
 </script>
-
 
 <div class="">
   <section class="content">
-
     <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-x-4">
       <div>
         <div class="box pull-up">
           <div class="box-body">
             <div class="flex justify-between items-center">
               <div class="bs-5 ps-10 border-primary">
-                <p class="text-fade mb-10">Customers</p>	
-                <h2 class="my-0 fw-700 text-3xl">4,562</h2>					
+                <p class="text-fade mb-10">Customers</p>
+                <h2 class="my-0 fw-700 text-3xl">4,562</h2>
               </div>
               <div class="icon">
-                <i class="fa-solid fa-users bg-primary-light me-0 fs-24 rounded-3"></i>
+                <i
+                  class="fa-solid fa-users bg-primary-light me-0 fs-24 rounded-3"
+                ></i>
               </div>
             </div>
-            <p class="text-success mb-0 mt-10"><i class="fa-solid fa-arrow-up"></i> +8.5% since last week</p>
+            <p class="text-success mb-0 mt-10">
+              <i class="fa-solid fa-arrow-up"></i> +8.5% since last week
+            </p>
           </div>
         </div>
       </div>
@@ -59,14 +60,18 @@ let infoImg = {
           <div class="box-body">
             <div class="flex justify-between items-center">
               <div class="bs-5 ps-10 border-info">
-                <p class="text-fade mb-10">Revenue</p>	
-                <h2 class="my-0 fw-700 text-3xl">$5,125</h2>					
+                <p class="text-fade mb-10">Revenue</p>
+                <h2 class="my-0 fw-700 text-3xl">$5,125</h2>
               </div>
               <div class="icon">
-                <i class="fa-solid fa-hand-holding-dollar bg-info-light me-0 fs-24 rounded-3"></i>
+                <i
+                  class="fa-solid fa-hand-holding-dollar bg-info-light me-0 fs-24 rounded-3"
+                ></i>
               </div>
             </div>
-            <p class="text-danger mb-0 mt-10"><i class="fa-solid fa-arrow-down"></i> -0.10% since last week</p>
+            <p class="text-danger mb-0 mt-10">
+              <i class="fa-solid fa-arrow-down"></i> -0.10% since last week
+            </p>
           </div>
         </div>
       </div>
@@ -75,14 +80,18 @@ let infoImg = {
           <div class="box-body">
             <div class="flex justify-between items-center">
               <div class="bs-5 ps-10 border-warning">
-                <p class="text-fade mb-10">Invoices</p>	
-                <h2 class="my-0 fw-700 text-3xl">2,145</h2>					
+                <p class="text-fade mb-10">Invoices</p>
+                <h2 class="my-0 fw-700 text-3xl">2,145</h2>
               </div>
               <div class="icon">
-                <i class="fa-solid fa-file-invoice bg-warning-light me-0 fs-24 rounded-3"></i>
+                <i
+                  class="fa-solid fa-file-invoice bg-warning-light me-0 fs-24 rounded-3"
+                ></i>
               </div>
             </div>
-            <p class="text-success mb-0 mt-10"><i class="fa-solid fa-arrow-up"></i> +10.5% since last week</p>
+            <p class="text-success mb-0 mt-10">
+              <i class="fa-solid fa-arrow-up"></i> +10.5% since last week
+            </p>
           </div>
         </div>
       </div>
@@ -91,29 +100,32 @@ let infoImg = {
           <div class="box-body">
             <div class="flex justify-between items-center">
               <div class="bs-5 ps-10 border-danger">
-                <p class="text-fade mb-10">Profit</p>	
-                <h2 class="my-0 fw-700 text-3xl">70%</h2>					
+                <p class="text-fade mb-10">Profit</p>
+                <h2 class="my-0 fw-700 text-3xl">70%</h2>
               </div>
               <div class="icon">
-                <i class="fa-solid fa-sack-dollar bg-danger-light me-0 fs-24 rounded-3"></i>
+                <i
+                  class="fa-solid fa-sack-dollar bg-danger-light me-0 fs-24 rounded-3"
+                ></i>
               </div>
             </div>
-            <p class="text-danger mb-0 mt-10"><i class="fa-solid fa-arrow-down"></i> -0.5% since last week</p>
+            <p class="text-danger mb-0 mt-10">
+              <i class="fa-solid fa-arrow-down"></i> -0.5% since last week
+            </p>
           </div>
         </div>
       </div>
     </div>
 
-
-    { JSON.stringify(user)} 
+    {JSON.stringify(user)}
 
     <Check label="Accepter les conditions" bind:checked={isChecked} />
-   
-    <InputImage
+
+    <!--  <InputImage
     imageUrl={""}
     on:file-selected={(event) => onFileSelected(event.detail)}
-/>
-    
+/> -->
+
+    <Donut />
   </section>
 </div>
-
