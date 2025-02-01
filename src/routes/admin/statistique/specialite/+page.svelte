@@ -19,7 +19,7 @@
   import Pagination from "../../../../components/_includes/Pagination.svelte";
   // Importer le store pageSize
   import { get } from "svelte/store";
-  import type { Permission, sMenu, User } from "../../../../types";
+  import type { Permission, sMenu, Stats, User } from "../../../../types";
   import { apiFetch } from "$lib/api";
   import { pageSize } from "../../../../store"; // Importer le store pageSize
   import { onMount } from "svelte";
@@ -29,7 +29,8 @@
 
   let user: User;
 
-  let main_data: sMenu[] = [];
+  let main_data: Stats[] = [];
+  let stats : any = [];
   let searchQuery = ""; // Pour la recherche par texte
   let selectedService: any = ""; // Pour filtrer par service
   let selectedStatus: any = ""; // Pour filtrer par status
@@ -43,13 +44,16 @@
   let openShow: boolean = false;
   let current_data: any = {};
 
+  let genreField = "tout";
+
   async function fetchData() {
     loading = true; // Active le spinner de chargement
     try {
-      const res = await apiFetch(true, "/genre/");
+      const res = await apiFetch(true, "/statistique/specialite/"+genreField);
       console.log(res);
       if (res) {
-        main_data = res.data as sMenu[];
+        main_data = res.data.nombre as Stats[];
+        stats = res.data.pieChart ;
       } else {
         console.error(
           "Erreur lors de la récupération des données:",
@@ -69,7 +73,7 @@
   });
 
   $: filteredData = main_data.filter((item) => {
-    return item.libelle.toLowerCase().includes(searchQuery.toLowerCase());
+    return item.civilite.toLowerCase().includes(searchQuery.toLowerCase());
   });
 
   // $: totalPages = Math.ceil(filteredData.length / get(pageSize)) pageSize se trouve store.ts;
@@ -141,15 +145,15 @@
                     />
                   </div>
                   <div class="ml-2">
-                    <select
+                    <select   bind:value={genreField} on:change={refreshDataIfNeeded}
                       id="role"
                       class="form-input font-normal rounded block w-full border-gray-200 text-sm focus:border-gray-300 focus:ring-0 bg-white mb-4"
                     >
                       <option value="" disabled selected>Choisir un genre</option
                       >
-                      <option value="admin">Tout</option>
-                      <option value="user">Masculin</option>
-                      <option value="moderateur">Féminin</option>
+                      <option value="tout">Tout</option>
+                      <option value="Masculin">Masculin</option>
+                      <option value="Féminin">Féminin</option>
                       
                     </select>
                   </div>
@@ -158,7 +162,7 @@
                   <TableHead
                     class="border-y border-gray-200 bg-gray-100 dark:border-gray-700"
                   >
-                    {#each ["Localisation", "Nombre"] as title}
+                    {#each ["Spécialité", "Nombre"] as title}
                       <TableHeadCell
                         class="ps-4 font-normal border border-gray-300"
                         >{title}</TableHeadCell
@@ -210,13 +214,15 @@
                       {#each paginatedProducts as item}
                         <TableBodyRow class="text-base border border-gray-300">
                           <TableBodyCell class="p-4 border border-gray-300"
-                            >{item.libelle}</TableBodyCell
+                            >{item.civilite}</TableBodyCell
                           >
 
                           <!--  <TableBodyCell class="p-4 border border-gray-300">{item.sous_menu.libelle}</TableBodyCell>
                                         -->
                           <TableBodyCell class="p-4 border border-gray-300"
-                          ></TableBodyCell>
+                          >
+                        {item.nombre}
+                        </TableBodyCell>
                         </TableBodyRow>
                       {/each}
                     {/if}
@@ -260,7 +266,7 @@
               <div class="table-responsive">
                 <div class="w-full grid grid-cols-4"></div>
 
-                <Pie />
+                <Pie  data={stats}/>
               </div>
             </div>
             <!-- /.box-body -->

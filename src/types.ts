@@ -53,6 +53,10 @@ export interface sMenu {
   id: number;
   libelle: string;
 }
+export interface Stats {
+  civilite: string;
+  nombre: number;
+}
 
 export interface AdminUser {
   id: string;

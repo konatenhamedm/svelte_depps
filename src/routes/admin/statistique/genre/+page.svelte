@@ -19,7 +19,7 @@
   import Pagination from "../../../../components/_includes/Pagination.svelte";
  // Importer le store pageSize
   import { get } from "svelte/store";
-  import type { Permission, sMenu, User } from "../../../../types";
+  import type { Permission, sMenu, Stats, User } from "../../../../types";
   import { apiFetch } from "$lib/api";
   import { pageSize } from "../../../../store"; // Importer le store pageSize
   import { onMount } from "svelte";
@@ -32,7 +32,8 @@
 
 
 
-  let main_data: sMenu[] = [];
+  let main_data: Stats[] = [];
+  let stats: any= [];
     let searchQuery = ''; // Pour la recherche par texte
     let selectedService : any = ""; // Pour filtrer par service
     let selectedStatus : any = ""; // Pour filtrer par status
@@ -50,10 +51,12 @@
     async function fetchData() {
 		loading = true; // Active le spinner de chargement
     try {
-        const res = await apiFetch(true,"/genre/")
-        console.log(res);
+        const res = await apiFetch(true,"/statistique/civilite/")
+     
         if (res) {
-            main_data = res.data as sMenu[];
+            main_data = res.data.nombre as Stats[];
+            stats = res.data.pieChart ;
+            console.log(stats);
         } else {
             console.error("Erreur lors de la récupération des données:", res.statusText);
         }
@@ -72,14 +75,14 @@
 
     $: filteredData = main_data.filter(item => {
         return (
-            item.libelle.toLowerCase().includes(searchQuery.toLowerCase())
+            item.civilite.toLowerCase().includes(searchQuery.toLowerCase())
         );
        ;
     });
 
 
 
-
+$: tt = stats;
    // $: totalPages = Math.ceil(filteredData.length / get(pageSize)) pageSize se trouve store.ts;
    $: totalPages = Math.max(1, Math.ceil(filteredData.length / get(pageSize)));
 
@@ -207,7 +210,7 @@ async function refreshDataIfNeeded() {
                           <TableBodyRow class="text-base border border-gray-300">
                             
                             <TableBodyCell class="p-4 border border-gray-300"
-                              >{item.libelle}</TableBodyCell
+                              >{item.civilite}</TableBodyCell
                             >
                             
                             <!--  <TableBodyCell class="p-4 border border-gray-300">{item.sous_menu.libelle}</TableBodyCell>
@@ -216,7 +219,7 @@ async function refreshDataIfNeeded() {
                               class="p-4 border border-gray-300"
                             >
                           
-                            
+                            {item.nombre}
                             </TableBodyCell>
                           </TableBodyRow>
                         {/each}
@@ -265,7 +268,7 @@ async function refreshDataIfNeeded() {
                 
             </div>
               
-               <Pie />
+               <Pie data={tt}/>
               
             </div>
           </div>

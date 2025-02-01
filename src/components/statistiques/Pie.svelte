@@ -1,12 +1,14 @@
 <script lang="ts">
-    import { onMount } from 'svelte';
-    import Highcharts from 'highcharts';
-    import Highcharts3D from 'highcharts/highcharts-3d';
+  import { onMount } from 'svelte';
+  import Highcharts from 'highcharts';
+  import Highcharts3D from 'highcharts/highcharts-3d';
 
-    let pie3;
-  
-    onMount(() => {
-      pie3 = Highcharts.chart('container3', {
+  export let data: any = [];
+
+  let pie3;
+
+  onMount(() => {
+    pie3 = Highcharts.chart('container3', {
       chart: {
         plotBackgroundColor: null,
         plotBorderWidth: null,
@@ -14,7 +16,7 @@
         type: 'pie'
       },
       title: {
-        text: 'Répartition  transactions par opérateur'
+        text: 'Répartition civilités'
       },
       tooltip: {
         pointFormat: '{series.name}: <b>{point.percentage:.1f}%</b>'
@@ -38,26 +40,15 @@
       series: [{
         name: 'Parts',
         colorByPoint: true,
-        data: [{
-          name: 'MTN',
-          y: 61.41,
-          sliced: true,
-          selected: true
-        }, {
-          name: 'ORANGE',
-          y: 11.84
-        }, {
-          name: 'MOOV',
-          y: 10.85
-        },{
-          name: 'WAVE',
-          y: 10.85
-        }]
+        data: data
       }]
     });
-  
-    });
-  </script>
-  
-  <div id="container3" style="width:100%; height:400px;"></div>
-  
+  });
+
+  // Mettre à jour les données lorsque `data` change
+  $: if (pie3 && data.length > 0) {
+    pie3.series[0].setData(data);
+  }
+</script>
+
+<div id="container3" style="width:100%; height:400px;"></div>
