@@ -17,7 +17,7 @@ let user: User;
 <header class="main-header">
     <div class="flex items-center logo-box justify-start">  
         <!-- Logo -->
-        <a href="index.html" class="logo">
+        <a href="/admin" class="logo">
             <!-- logo-->
              <div class="logo-mini w-40">
                  <span class="light-logo"><img src="https://mydepps.ci/_files/logo-depps.png" alt="logo"></span>

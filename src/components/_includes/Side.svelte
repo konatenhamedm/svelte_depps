@@ -12,7 +12,7 @@
 			<ul class="sidebar-menu" data-widget="tree">
 			<li class="header fs-10 m-0 text-uppercase">Dashboard</li>
 
-			<li class="treeview">
+			<li class="path1">
 				<a href="/admin">
 					<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-home"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>
 				<span>Dashboard</span>
@@ -41,10 +41,11 @@
 				<li><a href="/admin/civilite"><i class="icon-Commit"><span class="path1"></span><span class="path2"></span></i>Civilités</a></li>  
 				 <li><a href="/admin/pays"><i class="icon-Commit"><span class="path1"></span><span class="path2"></span></i>Pays </a></li> 
 				 <li><a href="/admin/genre"><i class="icon-Commit"><span class="path1"></span><span class="path2"></span></i>Genre</a></li>         
+				 <li><a href="/admin/specialite"><i class="icon-Commit"><span class="path1"></span><span class="path2"></span></i>Spécialités</a></li>         
 				</ul>
 			</li>
 
-			<li class="treeview">
+			<li class="path1">
 				<a href="/admin/type_personne">
 					<svg fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-home" height="24" width="24" version="1.1" id="Capa_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 54 54" xml:space="preserve">
 						<g>
@@ -59,7 +60,7 @@
 				</a>                  
 				
 			</li>
-			<li class="treeview">
+			<li class="path1">
 				<a href="/admin/administrateur">
 					<svg fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-home" height="24" width="24" version="1.1" id="Capa_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 54 54" xml:space="preserve">
 						<g>
@@ -74,7 +75,7 @@
 				</a>                  
 				
 			</li>
-			<li class="treeview">
+			<li class="path1">
 				<a href="/admin/destinataire">
 					<svg fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-home" height="24" width="24" version="1.1" id="Capa_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 54 54" xml:space="preserve">
 						<g>
@@ -114,7 +115,7 @@
 				</ul>
 			</li>
 
-			<li class="treeview">
+			<li class="path1">
 				<a href="/admin/historique_paiement">
 					<svg fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-home" height="24" width="24" version="1.1" id="Capa_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 54 54" xml:space="preserve">
 						<g>
@@ -129,7 +130,7 @@
 				</a>                  
 				
 			</li>
-			<li class="treeview">
+			<li class="path1">
 				<a href="/admin/administrateur">
 					<svg fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-home" height="24" width="24" version="1.1" id="Capa_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 54 54" xml:space="preserve">
 						<g>
@@ -144,6 +145,39 @@
 				</a>                  
 				
 			</li>
+
+			<li class="header fs-10 m-0 text-uppercase">Gestion des statistiques</li>
+			<li class="path1">
+				<a href="/admin/statistique/genre">
+					<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-home"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>
+				<span>Genre</span>
+				<span class="pull-right-container">
+				
+				</span>
+				</a>                  
+				
+			</li>
+			<li class="path1">
+				<a href="/admin/statistique/geolocalisation">
+					<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-home"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>
+				<span>Géolocalisation</span>
+				<span class="pull-right-container">
+				
+				</span>
+				</a>                  
+				
+			</li>
+			<li class="path1">
+				<a href="/admin/statistique/specialite">
+					<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-home"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>
+				<span>Spécialité</span>
+				<span class="pull-right-container">
+				
+				</span>
+				</a>                  
+				
+			</li>
+
 			</ul>
 			
 			

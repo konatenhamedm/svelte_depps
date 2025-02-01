@@ -14,14 +14,14 @@
     EyeOutline,
     TrashBinSolid,
   } from "flowbite-svelte-icons";
-  import Entete from "../../../components/_includes/Entete.svelte";
-  import MessageError from "../../../components/MessageError.svelte";
-  import Pagination from "../../../components/_includes/Pagination.svelte";
+  import Entete from "../../../../components/_includes/Entete.svelte";
+  import MessageError from "../../../../components/MessageError.svelte";
+  import Pagination from "../../../../components/_includes/Pagination.svelte";
  // Importer le store pageSize
   import { get } from "svelte/store";
-  import type { Permission, sMenu, User } from "../../../types";
+  import type { Permission, sMenu, User } from "../../../../types";
   import { apiFetch } from "$lib/api";
-  import { pageSize } from "../../../store"; // Importer le store pageSize
+  import { pageSize } from "../../../../store"; // Importer le store pageSize
   import { onMount } from "svelte";
   import { getAuthCookie } from "$lib/auth";
   import Donut from "$components/statistiques/Donut.svelte";
