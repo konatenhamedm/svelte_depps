@@ -62,7 +62,7 @@ export function logout() {
     // Supprimer le token d'authentification en vidant le cookie
     document.cookie = cookie.serialize('auth', '', {
         expires: new Date(0),
-        path: '/'
+        path: '/login'
     });
 }
 
@@ -72,15 +72,9 @@ export function getAuthCookie():User {
     // Parse les cookies du document
     const cookies = cookie.parse(document.cookie);
 
-    // Récupère le cookie "auth"
- /*    if (cookies.auth) {  */
         const auth = JSON.parse(cookies.auth);
         const user = { id: auth.id,email:auth.email, role: auth.role,token:auth.token,username:auth.username,type:auth.type,status:auth.status,payement:auth.payement };
         
         return user;
-   /*  }  */
-
-    
-    //Si aucun cookie d'authentification n'est trouvé
-    //return null;
+   
 }

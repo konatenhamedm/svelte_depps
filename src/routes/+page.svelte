@@ -1,171 +1,176 @@
-<script lang="ts">
-  import Notification from "$components/_includes/Notification.svelte";
-  import Spinner from "$components/_skeletons/Spinner.svelte";
-  import { login } from "$lib/auth";
+<script>
+  import Footer from "$components/Footer.svelte";
+  import Header from "$components/Header.svelte";
+  import Slide from "$components/Slide.svelte";
 
-  let showNotification = false;
-  let notificationMessage = "";
-  let notificationType = "info";
-
-  let username = "";
-  let password = "";
-  let authenticating = false;
-  let showPassword = false; // To toggle password visibility
-  let message = "";
-  let error = "";
-
-  let passwordWarning = "";
-  let isPasswordValid = false;
-
-
-
-  async function handleSubmit(event: any) {
-    authenticating = true;
-    event.preventDefault();
-    try {
-      const success = await login(username, password);
-	
-      if (success.token != null) {
-        window.location.href = "/admin";
-      } else {
-        message = "Veuillez vérifier vos identifiants";
-        authenticating = false;
-      }
-	  authenticating = false;
-    } catch (error) {
-      authenticating = false;
-      message = "Une erreur est survenue";
-    }
-  }
-</script>
-
-<div class="px-4 md:px-0">
-  <div class="grid grid-cols-1 m-0">
-    <div class="col-12 p-0">
-      <div class="login-card login-dark">
-        <div>
-          <div class="login-main">
-            <form class="theme-formo" on:submit|preventDefault={handleSubmit}>
-              <h3 class="font-semibold text-2xl">Bienvenue</h3>
-              <p>Veuillez vous connecter.</p>
-              <div class="relative w-full mt-4">
-                <label
-                  for="input-label"
-                  class="block text-sm font-medium mb-2 dark:text-white"
-                  >Pseudo</label
-                >
-                <input
-                  type="text"
-                  id="input-label"
-                  bind:value={username}
-                  class="border-1 py-3 px-4 block w-full border-gray-200 rounded-lg text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark:bg-slate-900 dark:border-gray-700 dark:text-gray-400 dark:focus:ring-gray-600"
-                  placeholder="Entrez votre pseudo"
-                />
-              </div>
-              <label
-                class="font-medium block mb-1 mt-4 text-gray-700"
-                for="password"
-              >
-                Mot de passe
-              </label>
-              <div class="relative w-full">
-                <!-- 	<div class="absolute inset-y-0 right-0 flex items-center px-2">
-									<input class="hidden js-password-toggle" id="toggle" type="checkbox" />
-									<div class="show-hide bg-slate-200 hover:bg-slate-50 rounded px-2 py-1 mb-0 !text-xs text-blue-600 font-mono cursor-pointer js-password-label" for="toggle"><span class="show"></span></div>
-								</div> -->
-                <div class="relative">
-                  {#if showPassword}
-                    <input
-                      id="Password"
-                      bind:value={password}
-                      class="border-1 rounded w-full py-3 px-3 leading-tight border-gray-300 bg-gray-100 focus:outline-none focus:border-indigo-700 focus:bg-white text-gray-700 pr-16 font-mono js-password"
-                      type="text"
-                      placeholder="Entrez votre mot de passe"
-                    />
-                  {:else}
-                    <input
-                      id="Password"
-                      bind:value={password}
-                      class="border-1 rounded w-full py-3 px-3 leading-tight border-gray-300 bg-gray-100 focus:outline-none focus:border-indigo-700 focus:bg-white text-gray-700 pr-16 font-mono js-password"
-                      type="password"
-                      placeholder="Entrez votre mot de passe"
-                    />
-                  {/if}
-                  <button
-                    type="button"
-                    class="absolute inset-y-0 right-0 flex items-center px-3 text-gray-600"
-                    on:click={() => (showPassword = !showPassword)}
-                  >
-                    {#if showPassword}
-                      👁️‍🗨️
-                    {:else}
-                      👁️
-                    {/if}
-                  </button>
-                  <!-- <input class=" border-1 rounded w-full py-3 px-3 leading-tight border-gray-300 bg-gray-100 focus:outline-none focus:border-indigo-700 focus:bg-white text-gray-700 pr-16 font-mono js-password" id="password" type="password" name="login[password]" autocomplete="off" placeholder="*********" value="1234@abc" required="" /> -->
-                </div>
-                <div class="form-group mt-7">
-                  <!-- <div class="checkbox p-0">
-									<input id="checkbox1" type="checkbox">
-									<label class="text-muted" for="checkbox1">Remember password</label>
-								</div> -->
-                  <!-- 				<div class="checkbox p-0">
-
-								<a class="link text-blue-500" href="forget-password.html">Forgot password?</a>
-							</div> -->
-                  <div class="text-end mt-6">
-                    <button
-                      class="btn btn-primary btn-block rounded-md text-white w-full"
-                      type="submit"
-                    >
-                      {#if authenticating}
-                        <div class="w-full grid grid-cols-3">
-                          <div>
-                            <Spinner />
-                          </div>
-                          <div
-                            class="flex flex-col col-span-1 justify-items-start"
-                          >
-                            Se connecter
-                          </div>
-                        </div>
-                      {:else}
-                        Se connecter
-                      {/if}
-                    </button>
+    
+  
+  </script>
+  
+     
+     
+     <div id="pointer-ring" style="border-color: rgb(82, 200, 233); padding: 25px; transform: translate(385px, 650px);">
+  
+     </div>
+     <div id="pointer-dot" style="border-color: rgb(113, 88, 190); transform: translate(410px, 675px);"></div>
+     <div id="">
+         <Header />
+         <Slide />
+   
+          <!-- Slider -->
+          <section class="slider">
+            <div class="swiper-container swiper-container-horizontal"> 
+              <div class="swiper-wrapper" style="transition-duration: 0ms; transform: translate3d(-6576px, 0px, 0px);"><div class="swiper-slide swiper-slide-duplicate" data-background="_files/slide-3.png" data-swiper-slide-index="0" style="background-image: url(&quot;_files/slide-3.png&quot;);">
+                  <div class="slide-inner">
+                      <h2>La Direction des Établissements Privés et des Professions Sanitaires en collaboration avec les acteurs du secteur</h2>
+                      <div class="link">
+                      </div>
                   </div>
-
-              
+                </div><div class="swiper-slide swiper-slide-duplicate swiper-slide-duplicate-prev" data-background="_files/slide-2.png" data-swiper-slide-index="1" style="background-image: url(&quot;_files/slide-2.png&quot;);">
+                  <div class="slide-inner">
+                      <h2>La Direction des Établissements Privés et des Professions Sanitaires promeut l'adaptation et l'innovation pour relever les défis</h2>
+                      <div class="link">
+                      </div>
+                  </div>
+                </div> 
+                <div class="swiper-slide swiper-slide-duplicate-active" data-background="_files/slide-3.png" data-swiper-slide-index="0" style="background-image: url(&quot;_files/slide-3.png&quot;);">
+                  <div class="slide-inner">
+                      <h2>La Direction des Établissements Privés et des Professions Sanitaires en collaboration avec les acteurs du secteur</h2>
+                      <div class="link">
+                      </div>
+                  </div>
                 </div>
-				{#if !authenticating && message !== ""}
-				<div
-				  class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative"
-				  role="alert"
-				>
-				  <strong class="font-bold">Oups erreur!</strong>
-				  <span class="block sm:inline">{message}</span>
-				</div>
-			  {/if}
-              </div>
-            </form>
-          </div>
-        </div>
-      </div>
-    </div>
+                <div class="swiper-slide swiper-slide-prev swiper-slide-duplicate-next" data-background="_files/slide-2.png" data-swiper-slide-index="1" style="background-image: url(&quot;_files/slide-2.png&quot;);">
+                  <div class="slide-inner">
+                      <h2>La Direction des Établissements Privés et des Professions Sanitaires promeut l'adaptation et l'innovation pour relever les défis</h2>
+                      <div class="link">
+                      </div>
+                  </div>
+                </div>
+              <div class="swiper-slide swiper-slide-duplicate swiper-slide-active" data-background="_files/slide-3.png" data-swiper-slide-index="0" style="background-image: url(&quot;_files/slide-3.png&quot;);">
+                  <div class="slide-inner">
+                      <h2>La Direction des Établissements Privés et des Professions Sanitaires en collaboration avec les acteurs du secteur</h2>
+                      <div class="link">
+                      </div>
+                  </div>
+                </div><div class="swiper-slide swiper-slide-duplicate swiper-slide-next swiper-slide-duplicate-prev" data-background="_files/slide-2.png" data-swiper-slide-index="1" style="background-image: url(&quot;_files/slide-2.png&quot;);">
+                  <div class="slide-inner">
+                      <h2>La Direction des Établissements Privés et des Professions Sanitaires promeut l'adaptation et l'innovation pour relever les défis</h2>
+                      <div class="link">
+                      </div>
+                  </div>
+                </div></div>
+              <div class="swiper-pagination swiper-pagination-clickable swiper-pagination-bullets"><span class="swiper-pagination-bullet swiper-pagination-bullet-active"><svg><circle r="18" cx="20" cy="20"></circle></svg></span><span class="swiper-pagination-bullet"><svg><circle r="18" cx="20" cy="20"></circle></svg></span></div>
+              <div class="swiper-button-next"><span></span><b>SUIVANT</b></div>
+            </div>
+          </section>
+          <!--Quality 1-->
+          <section class="hm-services2">
+                <div class="bosluk3"></div>
+            <div class="tabloservices">
+                <div class="tablo--1-ve-3">
+                    <div class="services-kutu1 project-image reveal-effect masker wow" style="cursor: pointer; visibility: visible;">
+                        <img src="site/img/quality1.png" alt="La Garantie de la Qualité Médicale" class="services-kutu1--icon">
+                        <h3 class="baslik-s1 h-yazi-margin-kucuk">Qualité Médicale</h3>
+                        <p class="services-kutu1--yazi1">
+                          Rôle Central de la Direction des Établissements Privés et Sanitaires
+                        </p>
+                    </div>
+                </div>
+                <!--Quality 2-->
+                <div class="tablo--1-ve-3">
+                    <div class="services-kutu2 project-image reveal-effect masker wow" style="cursor: pointer; visibility: visible;">
+                        <img src="site/img/quality2.png" alt="Sécurité et Hygiène" class="services-kutu2--icon">
+                        <h3 class="baslik-sol h-yazi-margin-kucuk">Sécurité et Hygiène</h3>
+                        <p class="services-kutu1--yazi2">
+                          Engagement de la Direction dans les Établissements de Santé Privés
+                        </p>
+                    </div>
+                </div>
+                <!--Quality 3-->
+                <div class="tablo--1-ve-3">
+                    <div class="services-kutu3 project-image reveal-effect masker wow" style="cursor: pointer; visibility: visible;">
+                        <img src="site/img/quality3.png" alt="Mission Essentielle" class="services-kutu3--icon">
+                        <h3 class="baslik-s3 h-yazi-margin-kucuk">Mission Essentielle</h3>
+                        <p class="services-kutu1--yazi3">
+                          Professionnalisme sous l'Égide de la Direction Sanitaire
+                        </p>
+                    </div>
+                </div>
+            </div>
+          </section>        
+           <!--Hakkımızda Yazı Alanı-->
+           <div class="bosluk8"></div>
+           <section class="hakkimizda-bolumu-anasayfa1">
+           <div class="h-yazi-ozel h-yazi-margin-ozel">           
+           </div>
+           <div class="tablo">
+               <div class="tablo--1-ve-3 project-image reveal-effect masker wow" style="visibility: visible;">
+                <div class="galeri">
+                    <img src="_files/2150796734-removebg-preview.png" alt="Medicare About" class="galeri__gorsel galeri__gorsel--8">
+                </div>
+  
+               </div>           
+               <!--Galeri Görsel Alanı-->
+               <div class="tablo--1-ve-2 wow fadeInUp" style="visibility: visible; animation-name: fadeInUp;">
+                   <h2 class="h2-baslik-anasayfa-ozel"> My DEPPS</h2><br><br>
+                  <p class="paragraf">
+                    Fidèle à notre mission, nous assurons la qualité des soins avec rigueur. La Direction des Établissements Privés et Sanitaires veille à chaque étape pour votre bien-être et votre sécurité, garantissant ainsi des standards élevés dans tous nos établissements partenaires                  
+                   </p><p class="paragraf">
+                      Leaders en santé, nous nous engageons à maintenir des normes élevées. La Direction des Établissements Privés et Sanitaires met tout en œuvre pour offrir des soins d'excellence, en collaboration avec nos partenaires, assurant ainsi votre confiance et votre bien-être à chaque instant.<br> <br>
+                   <br>
+                   <a href="E-DEPPS" class="buton buton--kirmizi">Voir plus →</a>
+               </p></div>
+           </div>
+           </section>
+           <div class="bosluk4"></div>
+            <!--Count-->
+          <section class="our-awards">
+            <div class="container">
+                <div class="h-yazi-ortalama h-yazi-margin-orta-3">
+                    <h2 class="h2-baslik-hizmetler-beyaz"> Nos réalisations </h2>
+                </div>
+                <p class="h2-baslik-hizmetler-beyaz__paragraf">
+                  Nous sommes très heureux de vous servir. Nous sommes heureux de continuer notre route
+                </p>
+                <div class="bosluk333"></div>
+            <ul>
+                <li class="wow fadeInUp" data-wow-delay="0s" style="visibility: hidden; animation-delay: 0s; animation-name: none;">
+                 <figure><img src="site/img/awards1.png" alt="Image"></figure>
+                 <h5>Médecin</h5>
+                 <span class="odometer odometer-auto-theme" data-count="1452" data-status="yes"><div class="odometer-inside"><span class="odometer-digit"><span class="odometer-digit-spacer">8</span><span class="odometer-digit-inner"><span class="odometer-ribbon"><span class="odometer-ribbon-inner"><span class="odometer-value">0</span></span></span></span></span></div></span> </li>
+                 <li class="wow fadeInUp" data-wow-delay="0.05s" style="visibility: hidden; animation-delay: 0.05s; animation-name: none;">
+                 <figure><img src="site/img/awards2.png" alt="Image"></figure>
+                 <h5>Patient</h5>
+                 <span class="odometer odometer-auto-theme" data-count="5032" data-status="yes"><div class="odometer-inside"><span class="odometer-digit"><span class="odometer-digit-spacer">8</span><span class="odometer-digit-inner"><span class="odometer-ribbon"><span class="odometer-ribbon-inner"><span class="odometer-value">0</span></span></span></span></span></div></span> </li>
+                 <li class="wow fadeInUp" data-wow-delay="0.15s" style="visibility: hidden; animation-delay: 0.15s; animation-name: none;">
+                     <figure><img src="site/img/awards3.png" alt="Image"></figure>
+                     <h5>Chirurgie</h5>
+                     <span class="odometer odometer-auto-theme" data-count="9850" data-status="yes"><div class="odometer-inside"><span class="odometer-digit"><span class="odometer-digit-spacer">8</span><span class="odometer-digit-inner"><span class="odometer-ribbon"><span class="odometer-ribbon-inner"><span class="odometer-value">0</span></span></span></span></span></div></span> </li>
+                 <li class="wow fadeInUp" data-wow-delay="0.10s" style="visibility: hidden; animation-delay: 0.1s; animation-name: none;">
+                 <figure><img src="site/img/awards4.png" alt="Image"></figure>
+                 <h5>Membres</h5>
+                 <span class="odometer odometer-auto-theme" data-count="1200" data-status="yes"><div class="odometer-inside"><span class="odometer-digit"><span class="odometer-digit-spacer">8</span><span class="odometer-digit-inner"><span class="odometer-ribbon"><span class="odometer-ribbon-inner"><span class="odometer-value">0</span></span></span></span></span></div></span> </li>
+                 <li class="wow fadeInUp" data-wow-delay="0.20s" style="visibility: hidden; animation-delay: 0.2s; animation-name: none;">
+                 <figure><img src="site/img/awards5.png" alt="Image"></figure>
+                 <h5>Récompenses</h5>
+                 <span class="odometer odometer-auto-theme" data-count="1935" data-status="yes"><div class="odometer-inside"><span class="odometer-digit"><span class="odometer-digit-spacer">8</span><span class="odometer-digit-inner"><span class="odometer-ribbon"><span class="odometer-ribbon-inner"><span class="odometer-value">0</span></span></span></span></span></div></span> </li>
+            </ul>
+            </div>
+          </section>           
+           <style>
+                .footerss p {
+                    display: flex;
+                    flex-wrap: wrap;
+                    justify-content: start !important;
+                    align-items: start !important;
+                }
+                h2.h2-baslik-footer.h-yazi-margin-kucuk,.footer__list,.footer__sosyal {
+                    display: flex;
+                    flex-wrap: wrap;
+                    justify-content: start !important;
+                    align-items: start !important;
+                }
+            </style>  
+           <Footer/>
   </div>
-</div>
-<style>
-	@keyframes spin {
-	  from {
-		transform: rotate(0deg);
-	  }
-	  to {
-		transform: rotate(360deg);
-	  }
-	}
-  </style>
-  
-  {#if showNotification}
-	<Notification message={notificationMessage} type={notificationType} duration={5000} />
-  {/if}
-  
