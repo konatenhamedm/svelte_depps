@@ -38,7 +38,7 @@
               Un professionnel de santé est une personne qualifiée et formée pour fournir des soins médicaux, préventifs, diagnostiques, thérapeutiques et de réadaptation aux individus et aux communautés. Ces professionnels travaillent dans divers domaines de la santé, tels que la médecine, la dentisterie, la pharmacie, l'ergothérapie, la physiothérapie, la psychologie, la diététique, l'orthophonie, et bien d'autres encore.             
           </p>
           <br>
-          <a href="professionnel-de-sante" style="color:white" class="buton buton--kirmizi">Cliquer →</a>
+          <a href="/site/professionnel" style="color:white" class="buton buton--kirmizi">Cliquer →</a>
       </div>
   </div>
   <div class="tablo">        

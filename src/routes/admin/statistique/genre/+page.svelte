@@ -268,7 +268,7 @@ async function refreshDataIfNeeded() {
                 
             </div>
               
-               <Pie data={tt}/>
+               <Pie data={stats}/>
               
             </div>
           </div>

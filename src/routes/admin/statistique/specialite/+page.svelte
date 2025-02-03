@@ -30,7 +30,7 @@
   let user: User;
 
   let main_data: Stats[] = [];
-  let stats : any = [];
+  let stats: any = [];
   let searchQuery = ""; // Pour la recherche par texte
   let selectedService: any = ""; // Pour filtrer par service
   let selectedStatus: any = ""; // Pour filtrer par status
@@ -49,11 +49,11 @@
   async function fetchData() {
     loading = true; // Active le spinner de chargement
     try {
-      const res = await apiFetch(true, "/statistique/specialite/"+genreField);
+      const res = await apiFetch(true, "/statistique/specialite/" + genreField);
       console.log(res);
       if (res) {
         main_data = res.data.nombre as Stats[];
-        stats = res.data.pieChart ;
+        stats = res.data.pieChart;
       } else {
         console.error(
           "Erreur lors de la récupération des données:",
@@ -114,11 +114,7 @@
   }
 </script>
 
-<Entete
-  libelle="Statistiques"
-  parent="Statistiques"
-  descr="Spécialisation"
-/>
+<Entete libelle="Statistiques" parent="Statistiques" descr="Spécialisation" />
 <section class="content">
   <div class="row">
     <div class="col-12">
@@ -145,16 +141,18 @@
                     />
                   </div>
                   <div class="ml-2">
-                    <select   bind:value={genreField} on:change={refreshDataIfNeeded}
+                    <select
+                      bind:value={genreField}
+                      on:change={refreshDataIfNeeded}
                       id="role"
                       class="form-input font-normal rounded block w-full border-gray-200 text-sm focus:border-gray-300 focus:ring-0 bg-white mb-4"
                     >
-                      <option value="" disabled selected>Choisir un genre</option
+                      <option value="" disabled selected
+                        >Choisir un genre</option
                       >
                       <option value="tout">Tout</option>
                       <option value="Masculin">Masculin</option>
                       <option value="Féminin">Féminin</option>
-                      
                     </select>
                   </div>
                 </div>
@@ -219,10 +217,9 @@
 
                           <!--  <TableBodyCell class="p-4 border border-gray-300">{item.sous_menu.libelle}</TableBodyCell>
                                         -->
-                          <TableBodyCell class="p-4 border border-gray-300"
-                          >
-                        {item.nombre}
-                        </TableBodyCell>
+                          <TableBodyCell class="p-4 border border-gray-300">
+                            {item.nombre}
+                          </TableBodyCell>
                         </TableBodyRow>
                       {/each}
                     {/if}
@@ -266,7 +263,7 @@
               <div class="table-responsive">
                 <div class="w-full grid grid-cols-4"></div>
 
-                <Pie  data={stats}/>
+                <Pie data={stats} />
               </div>
             </div>
             <!-- /.box-body -->

@@ -11,7 +11,7 @@
             <li><a href="a-propos">A propos</a></li>
             <li><a href="E-DEPPS">E-DEPPS</a></li>
             <li><a href="contactez-nous">Contactez-nous</a></li>
-            <li><a href="inscription">Inscription</a></li>
+            <li><a href="/site/inscription">Inscription</a></li>
             <li><a href="connexion">Connexion</a></li>
         </ul>
         </div>
