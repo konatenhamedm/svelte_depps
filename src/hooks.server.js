@@ -30,7 +30,7 @@ export async function handle({ event, resolve }) {
     return redirect(302, "/admin");
   }
   if (user && !user.role.includes("ROLE_ADMIN")) {
-    const response = new Response(null, {
+    /* const response = new Response(null, {
       status: 302,
       headers: {
         Location: "/",
@@ -39,7 +39,7 @@ export async function handle({ event, resolve }) {
       },
     });
   
-    return response;
+    return response; */
   }
   // Continuer la requête si tout va bien
   const response = await resolve(event);

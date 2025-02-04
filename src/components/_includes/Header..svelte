@@ -21,11 +21,11 @@ let user: User;
             <!-- logo-->
              <div class="logo-mini w-40">
                  <span class="light-logo"><img src="https://mydepps.ci/_files/logo-depps.png" alt="logo"></span>
-                 <span class="dark-logo"><img src="../../../images/logo-white-letter.png" alt="logo"></span>
+                 <span class="dark-logo"><img src="/site/images/logo-white-letter.png" alt="logo"></span>
              </div>
              <div class="logo-lg">
                  <span class="light-logo text-black " style="font-size: 18px;">DEPPS</span>
-                 <span class="dark-logo"><img src="../../../images/logo-text.png" alt="logo"></span>
+                 <span class="dark-logo"><img src="/site/images/logo-text.png" alt="logo"></span>
              </div>
         </a>    
    </div>

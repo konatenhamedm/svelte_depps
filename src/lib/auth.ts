@@ -43,6 +43,39 @@ export async function login(username_fiel: string, password: string) {
     }
 }
 
+export async function loginUserFront(username_fiel: string, password: string) {
+    try {
+       
+        const response = await fetch(`${BASE_URL_API}/login_check`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({ username: username_fiel, password })
+        });
+        
+        const jsonData = await response.json();
+        const { token, data: { id, username, role, type, status,payement } } = jsonData;
+
+
+        
+        // Stocker l'objet utilisateur (id, role) dans un cookie
+        document.cookie = cookie.serialize('auth', JSON.stringify({ id:id,username:username, role: role , token: token,type: type,status:status,payement:payement }), {
+            path: '/',
+            httpOnly: false, // Permet de rendre le cookie accessible au client
+            secure: false, // Utilisez `true` si votre site est en HTTPS
+            maxAge: 60 * 60 * 24 // Durée de vie du cookie (1 jour ici)
+        });
+
+        return jsonData;
+    } catch (error) {
+       
+        return {
+          token:null
+        };
+    }
+}
+
 export async function motPasseOublie(email:string,newPassword:string){
   try {
     const response = await axios.put(`${BASE_URL_API}/update-password`, JSON.stringify({email, newPassword }));
