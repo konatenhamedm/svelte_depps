@@ -35,7 +35,7 @@
         body: JSON.stringify({
           Nombre: icons.Nombre,
           spetialite: icons.spetialite,
-          userUpdateId: userUpdateId,
+          userUpdate: userUpdateId,
         }),
       });
 

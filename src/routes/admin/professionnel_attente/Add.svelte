@@ -34,7 +34,7 @@
         body: JSON.stringify({
           code: icons.code,
           libelle: icons.libelle,
-          userUpdateId: userUpdateId,
+          userUpdate: userUpdateId,
         }),
       });
 

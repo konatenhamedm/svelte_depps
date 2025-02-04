@@ -1,7 +1,6 @@
 <script lang="ts">
   import { onMount } from 'svelte';
   import Highcharts from 'highcharts';
-  import Highcharts3D from 'highcharts/highcharts-3d';
 
   export let data: any = [];
 
@@ -16,7 +15,7 @@
         type: 'pie'
       },
       title: {
-        text: 'Répartition civilités'
+        text: ''
       },
       tooltip: {
         pointFormat: '{series.name}: <b>{point.percentage:.1f}%</b>'

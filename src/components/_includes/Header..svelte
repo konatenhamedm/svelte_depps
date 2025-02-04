@@ -15,7 +15,7 @@ let user: User;
 </script>
 
 <header class="main-header">
-    <div class="flex items-center logo-box justify-start">  
+    <div class="flex items-center logo-box justify-start" style="background-color: white;">  
         <!-- Logo -->
         <a href="/admin" class="logo">
             <!-- logo-->
@@ -24,7 +24,7 @@ let user: User;
                  <span class="dark-logo"><img src="../../../images/logo-white-letter.png" alt="logo"></span>
              </div>
              <div class="logo-lg">
-                 <span class="light-logo text-white " style="font-size: 18px;">DEPPS</span>
+                 <span class="light-logo text-black " style="font-size: 18px;">DEPPS</span>
                  <span class="dark-logo"><img src="../../../images/logo-text.png" alt="logo"></span>
              </div>
         </a>    

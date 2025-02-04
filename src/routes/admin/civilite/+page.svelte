@@ -52,8 +52,8 @@
     async function fetchData() {
 		loading = true; // Active le spinner de chargement
     try {
-        const res = await apiFetch(false,"/civilite/")
-        console.log("LOLLLLLLLL",res);
+        const res = await apiFetch(true,"/civilite/")
+        
         if (res) {
             main_data = res.data as Permission[];
         } else {

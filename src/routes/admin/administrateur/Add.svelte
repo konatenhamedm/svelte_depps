@@ -44,7 +44,7 @@
       if (res.ok) {
         isLoad = false;
         open = false;
-        notificationMessage = "icone créé avec succès!";
+        notificationMessage = "admin créé avec succès!";
         notificationType = "success";
         showNotification = true;
       }
@@ -70,7 +70,7 @@
 
 <Modal
   bind:open
-  title={Object.keys(data).length ? "Ajouter une icone " : "Ajouter une icone"}
+  title={Object.keys(data).length ? "Ajouter une admin " : "Ajouter une admin"}
   size={sizeModal}
   class="m-4 modale_general"
   on:close={handleModalClose}

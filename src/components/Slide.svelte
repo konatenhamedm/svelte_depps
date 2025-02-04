@@ -5,7 +5,7 @@
       <div class="phone"> <a href="tel:123456789"><span class="numberp"> (225) 27 20 32 46 32</span></a> </div>
       <div class="main-menu">
         <ul>
-                              <li><a href="accueil">Accueil</a></li>
+                            <li><a href="accueil">Accueil</a></li>
             <li><a href="a-propos">A propos</a></li>
             <li><a href="E-DEPPS">E-DEPPS</a></li>
             <li><a href="contactez-nous">Contactez-nous</a></li>
