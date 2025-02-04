@@ -23,14 +23,25 @@
       display:none;
   }
 </style>
+
+<section class="text-center pb-20" style="padding-top:150px">
+    <h2 class="h2-baslik-anasayfa-ozel pb-10">INSCRIPTION</h2>
+    <p class="text-center paragraf">
+      Veuillez choisir votre type afin de procéder à l'inscription
+    </p>
+</section>
+
 <section class="hakkimizda-bolumu-anasayfa1" style="padding-top:150px">
-  <div class="tablo">
+    
+    <div class="tablo">
       <div class="tablo--1-ve-3 project-image reveal-effect masker wow" style="visibility: visible;">
           <div class="galeri">
               <img src="/_files/undraw_medicine_b1ol.png" alt="Medicare About" class="galeri__gorsel galeri__gorsel--8">
           </div>
 
       </div>           
+
+      
       <!--Galeri Görsel Alanı-->
       <div class="tablo--1-ve-2 wow fadeInUp" style="visibility: visible; animation-name: fadeInUp;">
           <h2 class="h2-baslik-anasayfa-ozel">Professionnel de Santé</h2><br><br>
