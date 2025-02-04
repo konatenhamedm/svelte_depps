@@ -60,7 +60,7 @@
     contact: "",
     lieuDiplome: "",
     nationalite: "Côte d'Ivoire",
-    situationMatrimoniale: "",
+    situationMatrimoniale: "Célibataire",
     datePremierEmploi: "",
     poleSanitaire: "",
     diplome: "",
@@ -339,7 +339,7 @@
                     <div class="form__grup">
                       <label class="form_label">Nationalité</label>
                       <select class="form__input" name="" id="" bind:value={formData.nationalite}>
-                        <option value="Côte d'ivoire" selected={formData.nationalite === "Côte d'ivoire"}>Côte d'Ivoire</option>
+                        <option value="Côte d'Ivoire" selected={formData.nationalite === "Côte d'Ivoire"}>Côte d'Ivoire</option>
                         <!-- <option value="Mme" selected={formData.nationalite === "Mme"}>Mme.</option>
                         <option value="Mlle" selected={formData.nationalite === "Mlle"}>Mlle.</option> -->
                       </select>
