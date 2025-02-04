@@ -9,8 +9,8 @@
             <li><a href="a-propos">A propos</a></li>
             <li><a href="E-DEPPS">E-DEPPS</a></li>
             <li><a href="contactez-nous">Contactez-nous</a></li>
-                                <li style="border: 4px solid #ff9c09;padding: 5px 17px;border-radius: 32px;"><a href="inscription">Inscription</a></li>
-              <li style="border: 4px solid #4a9d2d;padding: 5px 17px;border-radius: 32px;"><a href="connexion">Connexion</a></li>
+                                <li style="border: 4px solid #ff9c09;padding: 5px 17px;border-radius: 32px;"><a href="/site/inscription">Inscription</a></li>
+              <li style="border: 4px solid #4a9d2d;padding: 5px 17px;border-radius: 32px;"><a href="/site/connexion">Connexion</a></li>
                           </ul>
       </div>
       <div class="hamburger-menu" id="hamburger-menu">

@@ -6,7 +6,6 @@
 
 </script>
 
-<body class="color-undefined page-loaded">
     <div id="pointer-ring" style="border-color: rgb(82, 200, 233); padding: 25px; transform: translate(426px, 612px);"></div><div id="pointer-dot" style="border-color: rgb(113, 88, 190); transform: translate(451px, 637px);"></div><div id="">
         <Header />
         <Slide />
@@ -84,4 +83,4 @@
           <Footer/>
   
 
-</div></body>
+</div>

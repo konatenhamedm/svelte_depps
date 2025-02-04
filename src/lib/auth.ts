@@ -60,10 +60,20 @@ export async function motPasseOublie(email:string,newPassword:string){
 
 export function logout() {
     // Supprimer le token d'authentification en vidant le cookie
-    document.cookie = cookie.serialize('auth', '', {
+   /*  document.cookie = cookie.serialize('auth', '', {
         expires: new Date(0),
         path: '/login'
+    }); */
+    const response = new Response(null, {
+      status: 302,
+      headers: {
+        Location: "/",
+        "Set-Cookie":
+          "auth=; Path=/; HttpOnly; Secure; SameSite=Strict; Expires=Thu, 01 Jan 1970 00:00:00 GMT",
+      },
     });
+
+    return response;
 }
 
 
