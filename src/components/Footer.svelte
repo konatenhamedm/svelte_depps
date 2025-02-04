@@ -14,20 +14,20 @@
                 <h2 class="h2-baslik-footer h-yazi-margin-kucuk"> LIENS </h2> 
                 <div class="footer__menu">
                     <ul style="padding-left: 0px;" class="footer__list"> 
-                        <li class="footer__item"><a href="accueil" class="footer__link">Accueil</a></li>
-                        <li class="footer__item"><a href="E-DEPPS" class="footer__link">E-DEPPS</a></li>
-                        <li class="footer__item"><a href="a-propos" class="footer__link">A propos</a></li>
-                        <li class="footer__item"><a href="contactez-nous" class="footer__link">Contactez-nous</a></li>
+                        <li class="footer__item"><a href="/" class="footer__link">Accueil</a></li>
+                        <li class="footer__item"><a href="javascript:void(0);" class="footer__link">E-DEPPS</a></li>
+                        <li class="footer__item"><a href="javascript:void(0);" class="footer__link">A propos</a></li>
+                        <li class="footer__item"><a href="javascript:void(0);" class="footer__link">Contactez-nous</a></li>
                     </ul>      
                 </div>                   
             </div>
         <div class="tablo--1-ve-3">
             <h2 class="h2-baslik-footer h-yazi-margin-kucuk"> RÉSEAUX SOCIAUX </h2> 
             <p class="footer__sosyal">
-                    <a href="#" class="footer__sosyallink">.facebook</a>&nbsp;
-                    <a href="#" class="footer__sosyallink">.instagram</a> &nbsp;
-                    <a href="#" class="footer__sosyallink">.twitter</a>&nbsp;
-                    <a href="#" class="footer__sosyallink">.linkedin</a>
+                    <a href="javascript:void(0);" class="footer__sosyallink">.facebook</a>&nbsp;
+                    <a href="javascript:void(0);" class="footer__sosyallink">.instagram</a> &nbsp;
+                    <a href="javascript:void(0);" class="footer__sosyallink">.twitter</a>&nbsp;
+                    <a href="javascript:void(0);" class="footer__sosyallink">.linkedin</a>
         </p></div></div>
     </div>
     <div class="ozel-copyright">

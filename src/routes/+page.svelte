@@ -119,7 +119,7 @@
                    </p><p class="paragraf">
                       Leaders en santé, nous nous engageons à maintenir des normes élevées. La Direction des Établissements Privés et Sanitaires met tout en œuvre pour offrir des soins d'excellence, en collaboration avec nos partenaires, assurant ainsi votre confiance et votre bien-être à chaque instant.<br> <br>
                    <br>
-                   <a href="E-DEPPS" class="buton buton--kirmizi">Voir plus →</a>
+                   <a href="javascript:void(0);" class="buton buton--kirmizi">Voir plus →</a>
                </p></div>
            </div>
            </section>

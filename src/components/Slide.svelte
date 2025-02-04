@@ -1,17 +1,17 @@
 <header class="header">
     <nav class="navbar hide">
         <div class="inner">
-      <div class="logo sticky"> <a href="accueil"><img src="/_files/logo-depps.png" alt="Image"></a> </div>
+      <div class="logo sticky"> <a href="/"><img src="/_files/logo-depps.png" alt="Image"></a> </div>
       <div class="phone"> <a href="tel:123456789"><span class="numberp"> (225) 27 20 32 46 32</span></a> </div>
       <div class="main-menu">
         <ul>
-                              <li><a href="accueil">Accueil</a></li>
-            <li><a href="a-propos">A propos</a></li>
-            <li><a href="E-DEPPS">E-DEPPS</a></li>
-            <li><a href="contactez-nous">Contactez-nous</a></li>
-                                <li style="border: 4px solid #ff9c09;padding: 5px 17px;border-radius: 32px;"><a href="inscription">Inscription</a></li>
-              <li style="border: 4px solid #4a9d2d;padding: 5px 17px;border-radius: 32px;"><a href="connexion">Connexion</a></li>
-                          </ul>
+            <li><a href="/">Accueil</a></li>
+            <li><a href="javascript:void(0);">A propos</a></li>
+            <li><a href="javascript:void(0);">E-DEPPS</a></li>
+            <li><a href="javascript:void(0);">Contactez-nous</a></li>
+            <li style="border: 4px solid #ff9c09;padding: 5px 17px;border-radius: 32px;"><a href="/site/inscription">Inscription</a></li>
+            <li style="border: 4px solid #4a9d2d;padding: 5px 17px;border-radius: 32px;"><a href="/site/connexion">Connexion</a></li>
+          </ul>
       </div>
       <div class="hamburger-menu" id="hamburger-menu">
         <div class="burger">

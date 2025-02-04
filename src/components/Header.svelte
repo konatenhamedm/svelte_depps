@@ -7,12 +7,12 @@
     <div class="inner">
         <div class="side-menu">
         <ul>
-            <li><a href="accueil">Accueil</a></li>
-            <li><a href="a-propos">A propos</a></li>
-            <li><a href="E-DEPPS">E-DEPPS</a></li>
-            <li><a href="contactez-nous">Contactez-nous</a></li>
+            <li><a href="/">Accueil</a></li>
+            <li><a href="javascript:void(0);">A propos</a></li>
+            <li><a href="javascript:void(0);">E-DEPPS</a></li>
+            <li><a href="javascript:void(0);">Contactez-nous</a></li>
             <li><a href="/site/inscription">Inscription</a></li>
-            <li><a href="connexion">Connexion</a></li>
+            <li><a href="/connexion">Connexion</a></li>
         </ul>
         </div>
     </div>

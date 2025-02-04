@@ -48,7 +48,7 @@
               Un établissement de santé est une structure organisée et équipée pour fournir des services de santé, notamment des soins médicaux, chirurgicaux, de diagnostic, de réadaptation et de prévention des maladies. Ces établissements peuvent varier en taille et en complexité, allant des petits cabinets médicaux aux grands hôpitaux universitaires.              
           </p>
           <br>
-          <a href="etablissement-de-sante" style="color:white" class="buton buton--kirmizi">Cliquer →</a>
+          <a href="javascript:void(0);" style="color:white" class="buton buton--kirmizi">Cliquer →</a>
       </div>
       <div class="tablo--1-ve-3 project-image reveal-effect masker wow" style="visibility: visible;">
           <div class="galeri">
