@@ -50,7 +50,7 @@
   async function fetchData() {
     loading = true; // Active le spinner de chargement
     try {
-      const res = await apiFetch(true, "/professionnel/ACTIVE");
+      const res = await apiFetch(true, "/professionnel/valide");
       console.log(res);
       if (res) {
         main_data = res.data as professionnel[];
@@ -119,9 +119,9 @@
 </script>
 
 <Entete
-  libelle="Liste des dossiers activés"
+  libelle="Liste des dossiers validés"
   parent="Parametres"
-  descr="Liste des dossiers activés"
+  descr="Liste des dossiers validés"
 />
 <section class="content">
   <div class="row">
@@ -129,7 +129,7 @@
       <div class="box">
         <div class="box-header with-border flex justify-between items-center">
           <h4 class="box-title text-xl font-medium">
-            Liste des dossiers activés
+            Liste des dossiers validés  
           </h4>
         </div>
         <!-- /.box-header -->
@@ -177,7 +177,7 @@
                       </div>
                     </TableBodyCell>
                   </TableBodyRow>
-                {:else if paginatedProducts.length === 0}
+                {:else if paginatedProducts.length === 0 }
                   <TableBodyRow class="border border-gray-300">
                     <TableBodyCell
                       colspan={6}

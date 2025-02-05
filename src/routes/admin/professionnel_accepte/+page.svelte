@@ -50,7 +50,7 @@
   async function fetchData() {
     loading = true; // Active le spinner de chargement
     try {
-      const res = await apiFetch(true, "/professionnel/ACCEPT");
+      const res = await apiFetch(true, "/professionnel/accepte");
       console.log(res);
       if (res) {
         main_data = res.data as professionnel[];

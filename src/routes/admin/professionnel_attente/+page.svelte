@@ -49,7 +49,7 @@
   async function fetchData() {
     loading = true; // Active le spinner de chargement
     try {
-      const res = await apiFetch(true, "/professionnel/ENABLE");
+      const res = await apiFetch(true, "/professionnel/attente");
       console.log(res);
       if (res) {
         main_data = res.data as professionnel[];
@@ -120,7 +120,7 @@
 <Entete
   libelle="Liste des dossiers en attente"
   parent="Parametres"
-  descr="Liste des dossiers en attentes"
+  descr="Liste des dossiers en attente"
 />
 <section class="content">
   <div class="row">

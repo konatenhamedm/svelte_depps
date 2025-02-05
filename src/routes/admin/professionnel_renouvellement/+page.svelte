@@ -19,7 +19,7 @@
   import Pagination from "../../../components/_includes/Pagination.svelte";
   // Importer le store pageSize
   import { get } from "svelte/store";
-  import type { Permission, User } from "../../../types";
+  import type { professionnel, User } from "../../../types";
   import { apiFetch } from "$lib/api";
   import { pageSize } from "../../../store"; // Importer le store pageSize
   import { onMount } from "svelte";
@@ -29,11 +29,10 @@
   import Edit from "./Edit.svelte";
   import Show from "./Show.svelte";
   import Delete from "./Delete.svelte";
-
+  
   export let data; // Les données retournées par `load()`
   let user = data.user;
-
-  let main_data: Permission[] = [];
+  let main_data: professionnel[] = [];
   let searchQuery = ""; // Pour la recherche par texte
   let selectedService: any = ""; // Pour filtrer par service
   let selectedStatus: any = ""; // Pour filtrer par status
@@ -50,10 +49,10 @@
   async function fetchData() {
     loading = true; // Active le spinner de chargement
     try {
-      const res = await apiFetch(true, "/civilite/");
+      const res = await apiFetch(true, "/professionnel/renouvellement");
       console.log(res);
       if (res) {
-        main_data = res.data as Permission[];
+        main_data = res.data as professionnel[];
       } else {
         console.error(
           "Erreur lors de la récupération des données:",
@@ -73,8 +72,10 @@
 
   $: filteredData = main_data.filter((item) => {
     return (
-      item.code.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      item.libelle.toLowerCase().includes(searchQuery.toLowerCase())
+      item.nom.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      item.prenoms.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      item.phone.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      item.email.toLowerCase().includes(searchQuery.toLowerCase())
     );
   });
 
@@ -117,25 +118,18 @@
 </script>
 
 <Entete
-  libelle="Gestion des civilités"
+  libelle="Liste des dossiers renouvellés"
   parent="Parametres"
-  descr="Liste des civilités"
+  descr="Liste des dossiers  renouvellés"
 />
 <section class="content">
   <div class="row">
     <div class="col-12">
       <div class="box">
         <div class="box-header with-border flex justify-between items-center">
-          <h4 class="box-title text-xl font-medium">Liste des civilités</h4>
-
-          <div>
-            <a
-              class="py-[5px] px-3 waves-effect waves-light btn btn-info mb-5"
-              on:click={() => ((current_data = {}), (openAdd = true))}
-            >
-              + Nouvelle icône
-            </a>
-          </div>
+          <h4 class="box-title text-xl font-medium">
+            Liste des dossiers renouvellés
+          </h4>
         </div>
         <!-- /.box-header -->
         <div class="box-body">
@@ -152,9 +146,9 @@
             </div>
             <Table class="border border-gray-300">
               <TableHead
-                class="border-y border-gray-200 bg-gray-100 dark:border-gray-700"
+                class="border-y border-gray-200 bg-gray-100 dark:border-gray-700 text-white"
               >
-                {#each ["nom", "prénoms", "Téléphone", "email", "Action"] as title}
+                {#each ["nom", "prénoms", "Téléphone", "email", "type", "Action"] as title}
                   <TableHeadCell class="ps-4 font-normal border border-gray-300"
                     >{title}</TableHeadCell
                   >
@@ -203,18 +197,20 @@
                   {#each paginatedProducts as item}
                     <TableBodyRow class="text-base border border-gray-300">
                       <TableBodyCell class="p-4 border border-gray-300"
-                        >{item.code}</TableBodyCell
+                        >{item.nom}</TableBodyCell
                       >
                       <TableBodyCell class="p-4 border border-gray-300"
-                        >{item.libelle}</TableBodyCell
+                        >{item.prenoms}</TableBodyCell
                       >
                       <TableBodyCell class="p-4 border border-gray-300"
-                        >{item.libelle}</TableBodyCell
+                        >{item.user.phone}</TableBodyCell
                       >
                       <TableBodyCell class="p-4 border border-gray-300"
-                        >{item.libelle}</TableBodyCell
+                        >{item.user.email}</TableBodyCell
                       >
-
+                      <TableBodyCell class="p-4 border border-gray-300"
+                        >{item.user.typeUser}</TableBodyCell
+                      >
                       <!--  <TableBodyCell class="p-4 border border-gray-300">{item.sous_menu.libelle}</TableBodyCell>
                                    -->
                       <TableBodyCell
@@ -230,30 +226,6 @@
                           )}
                         >
                           <EyeOutline size="sm" />
-                        </Button>
-
-                        <Button
-                          color="blue"
-                          size="sm"
-                          style="background-color: blue"
-                          class="gap-2 px-3 bg-blue-600"
-                          on:click={() => (
-                            (current_data = item), (openEdit = true)
-                          )}
-                        >
-                          <EditOutline size="sm" />
-                        </Button>
-
-                        <Button
-                          color="red"
-                          size="sm"
-                          style="background-color: red"
-                          class="gap-2 px-3 bg-red-600"
-                          on:click={() => (
-                            (current_data = item), (openDelete = true)
-                          )}
-                        >
-                          <TrashBinSolid size="sm" />
                         </Button>
                       </TableBodyCell>
                     </TableBodyRow>
