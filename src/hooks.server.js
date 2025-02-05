@@ -29,6 +29,9 @@ export async function handle({ event, resolve }) {
     // Redirection si l'utilisateur n'est pas authentifié
     return redirect(302, "/admin");
   }
+  if (event.url.pathname.startsWith("/site/dashboard") && !user) {
+    return redirect(302, "/");
+  }
 /*   if (user && !user.role.includes("ROLE_ADMIN")) {
     const response = new Response(null, {
       status: 302,

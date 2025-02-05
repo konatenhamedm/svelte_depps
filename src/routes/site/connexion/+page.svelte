@@ -4,8 +4,8 @@
   import Footer from "$components/Footer.svelte";
   import Header from "$components/Header.svelte";
   import Slide from "$components/Slide.svelte";
-  import { login, loginUserFront } from "$lib/auth";
-
+  import { loginloginUserFront } from "$lib/auth";
+ 
   let showNotification = false;
   let notificationMessage = "";
   let notificationType = "info";
@@ -17,6 +17,8 @@
   let message = "";
   let error = "";
 
+  let user : any;
+
   let passwordWarning = "";
   let isPasswordValid = false;
 
@@ -24,7 +26,7 @@
     authenticating = true;
     event.preventDefault();
     try {
-      const success = await loginUserFront(username, password);
+      const success = await loginloginUserFront(username, password);
 console.log(success);
       if (success.token != null) {
         
@@ -51,8 +53,8 @@ console.log(success);
   style="border-color: rgb(113, 88, 190); transform: translate(333px, 673px);"
 ></div>
 <div id="">
-  <Header />
-  <Slide />
+  <Header data={user}/>
+  <Slide data={user}/>
   <main style="padding-top:200px">
     <!--İletişim Form Alanı-->
     <section class="iletisim-form-alani">

@@ -1,17 +1,17 @@
 <script lang="ts">
-  import { getAuthCookie, logout } from "$lib/auth";
   import { onMount } from "svelte";
   import type { User } from "../types";
+  import { goto } from "$app/navigation";
+  import { json } from "@sveltejs/kit";
 
-  let user: User | null; 
-  function handleLogout() {
-    logout();
-    window.location.href = "/";
-  }
+  export let data; // Récupérer les données du layout
+  let user = data;
 
-  onMount(async () => {
-    user = getAuthCookie();
-  })
+async function logout() {
+    await fetch('/auth/logout', { method: 'POST' });
+    goto('/'); // Redirection après déconnexion
+}
+  
 </script>
 <header class="header">
   <nav class="navbar hide">
@@ -21,12 +21,12 @@
       </div>
       <div class="phone">
         <a href="tel:123456789"
-          ><span class="numberp"> (225) 27 20 32 46 32</span></a
+          ><span class="numberp"> (225) 27 20 32 46 32  </span></a
         >
       </div>
 
       <div class="main-menu">
-       
+      
         <ul>
           {#if user != null}
             <li><a href="/site/dashboard">Dashboard</a></li>
@@ -39,7 +39,7 @@
 
           {#if user != null }
             
-          <li style="border: 4px solid red;padding: 5px 17px;border-radius: 32px;"><a href="javascript:void(0)" on:click={handleLogout} >Déconnexion</a></li>
+          <li style="border: 4px solid red;padding: 5px 17px;border-radius: 32px;"><a href="javascript:void(0)" on:click={logout} >Déconnexion</a></li>
           {:else}
             <li
               style="border: 4px solid #ff9c09;padding: 5px 17px;border-radius: 32px;"

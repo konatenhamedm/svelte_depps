@@ -6,9 +6,8 @@
   import Footer from "../components/_includes/Footer.svelte";
  
 
-  let { children } = $props();
+  let { children,data } = $props();
   let currentYear = new Date().getFullYear();
-  
 
 </script>
 

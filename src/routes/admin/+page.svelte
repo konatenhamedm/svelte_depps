@@ -8,6 +8,9 @@
   import CardInfo from "$components/CardInfo.svelte";
 
   let isChecked = true;
+  export let data; // Les données retournées par `load()`
+
+let user = data.user;
 
  
   let infoImg = {
@@ -16,7 +19,7 @@
   };
 
 
-    let user = getAuthCookie();
+ 
   
 
   async function onFileSelected(file: any) {

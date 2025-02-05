@@ -1,17 +1,17 @@
 <script lang="ts">
-  import { getAuthCookie, logoutKIte } from "$lib/auth";
   import { onMount } from "svelte";
   import type { User } from "../types";
+  import { goto } from "$app/navigation";
+ 
 
-  let user: User | null;
-  function handleLogout() {
-    logoutKIte();
-    /* window.location.href = "/"; */
-  }
+  export let data; // Récupérer les données du layout
+  let user = data;
 
-  onMount( async() => {
-    user = getAuthCookie();
-  });
+async function logout() {
+    await fetch('/auth/logout', { method: 'POST' });
+    goto('/'); // Redirection après déconnexion
+}
+  
 </script>
 
 <div class="navigation-menu">
@@ -25,7 +25,7 @@
        
         {#if user != null }
             
-        <li style="border: 4px solid red;padding: 5px 17px;border-radius: 32px;"><a href="javascript:void(0)" on:click={handleLogout} >Déconnexion</a></li>
+        <li style="border: 4px solid red;padding: 5px 17px;border-radius: 32px;"><a href="javascript:void(0)" on:click={logout} >Déconnexion</a></li>
         {:else}
         <li><a href="/site/inscription">Inscription</a></li>
         <li><a href="/site/connexion">Connexion</a></li>

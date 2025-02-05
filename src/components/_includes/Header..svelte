@@ -1,16 +1,14 @@
 <script lang="ts">
   import { onMount } from "svelte";
-import { getAuthCookie, logout } from "$lib/auth";
 import type { User } from "../../types";
 
 
-  function handleLogout() {
-    logout();
-    window.location.href = "/";
-  }
+import { goto } from '$app/navigation';
 
-
-    let user = getAuthCookie();
+async function logout() {
+    await fetch('/auth/logout', { method: 'POST' });
+    goto('/login'); // Redirection après déconnexion
+}
   
 </script>
 
@@ -23,11 +21,11 @@ import type { User } from "../../types";
             <!-- logo-->
              <div class="logo-mini w-40">
                  <span class="light-logo"><img src="https://mydepps.ci/_files/logo-depps.png" alt="logo"></span>
-                 <span class="dark-logo"><img src="/site/images/logo-white-letter.png" alt="logo"></span>
+                 <span class="dark-logo"><img src="" alt="logo"></span>
              </div>
              <div class="logo-lg">
                  <span class="light-logo text-black " style="font-size: 18px;">DEPPS</span>
-                 <span class="dark-logo"><img src="/site/images/logo-text.png" alt="logo"></span>
+                 <span class="dark-logo"><img src="" alt="logo"></span>
              </div>
         </a>    
    </div>
@@ -118,8 +116,8 @@ import type { User } from "../../types";
                      <!-- Dropdown menu -->
                      <div id="dropdownDivider-2" class="z-10 hidden bg-white divide-y divide-gray-100 rounded-lg shadow w-44 dark:bg-gray-700 dark:divide-gray-600">
                              <ul class="py-2 text-sm text-gray-700 dark:text-gray-200 drop-shadow-lg" aria-labelledby="dropdownDividerButton">
-                                 <li>
-                                     <a on:click={handleLogout} href="#" class="items-center m-0 text-base flex px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"><i class="fa fa-user-circle-o me-3 text-xl" aria-hidden="true" > </i>Se déconnecter</a>
+                                 <li on:click={logout}>
+                                     <a on:click={logout} href="javascript:void(0)" class="items-center m-0 text-base flex px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"><i class="fa fa-user-circle-o me-3 text-xl" aria-hidden="true" > </i>Se déconnecter</a>
                                  </li>
                            
                              </ul>

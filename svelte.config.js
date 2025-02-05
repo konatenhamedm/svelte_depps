@@ -18,6 +18,10 @@ const config = {
 			$components: path.resolve('./src/components'),
 			// Ajoutez d'autres alias si nécessaire
 		  },
+		  prerender: {
+			crawl: true, // Active ou désactive le crawl des liens internes
+			entries: ['*'] // Prérend toutes les routes
+		  }
 	},
 
 };
