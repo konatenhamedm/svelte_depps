@@ -9,16 +9,10 @@
 
   let step = 1;
   let formData = {
-    // new OA\Property(property: "username", type: "string"), // username
-    // new OA\Property(property: "password", type: "string"), // username
-    // new OA\Property(property: "confirmPassword", type: "string"), // username
-    // new OA\Property(property: "email", type: "string"),
-
     // Login informations
-    username: "",
+    email: "",
     password: "",
     confirmPassword: "",
-    email: "",
 
     // Personal Informations
     category: "",
@@ -46,7 +40,6 @@
 
   let errors = {
     // Login Errors
-    username: "",
     email: "",
     password: "",
     confirmPassword: "",
@@ -78,7 +71,6 @@
     let valid = true;
 
     if (step === 1) {
-      errors.username = formData.username ? "" : "Le nom d’utilisateur est requis";
       errors.email = formData.email ? "" : "L'e-mail est requis";
       errors.password = formData.password ? "" : "Le mot de passe est requis";
       errors.confirmPassword =
@@ -86,7 +78,7 @@
       ? ""
       : "Les mots de passe ne correspondent pas";
       
-      valid = !errors.username && !errors.password && !errors.confirmPassword && !errors.email;
+      valid = !errors.password && !errors.confirmPassword && !errors.email;
     }
     
     if (step === 2) {
@@ -169,20 +161,8 @@
               </h2>
               <div class="tablo">
                 <div class="tablo--1h-ve-2">
-                  <div class="row">
-                    <div class="form__grup">
-                      <label class="form_label">Username *</label>
-                      <input
-                        type="text"
-                        class="form__input"
-                        bind:value={formData.username}
-                        placeholder="Username"
-                      />
-                      {#if errors.username}<p class="error">
-                          {errors.username}
-                        </p>{/if}
-                    </div>
-
+                  <div class="grid grid-cols-3">
+                    
                     <div class="form__grup">
                       <label class="form_label">E-mail *</label>
                       <input
@@ -195,10 +175,7 @@
                           {errors.email}
                         </p>{/if}
                     </div>
-                  </div>
                   
-                  <div class="row">
-                    
                     <div class="form__grup">
                       <label class="form_label">Mot de passe *</label>
                       <input

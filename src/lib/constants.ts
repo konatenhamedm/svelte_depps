@@ -104,8 +104,32 @@ const categories: Array<CategorieGRP> = [
     title: "Technicien Supérieur de la Santé",
     categories: [
       {
-        id: "rd_biologie_medicale",
+        id: "rd_technicien_biologie_medicale",
         title: "Biologie Médicale",
+      },
+      {
+        id: "rd_technicien_hygiene_assainissement",
+        title: "Hygiène et Assainissement",
+      },
+      {
+        id: "rd_technicien_imagerie_medicale",
+        title: "Imagerie Médicale",
+      },
+      {
+        id: "rd_technien_bio_medicale",
+        title: "Biomédicale",
+      },
+      {
+        id: "rd_kinesithérapie",
+        title: "Kinésitherapie",
+      },
+      {
+        id: "rd_prothese_dentaire",
+        title: "Prothèse Dentatire",
+      },
+      {
+        id: "rd_preparation_gestion_pharmacie",
+        title: "Préparation et Gestion en Pharmacie",
       },
     ],
   },
@@ -116,6 +140,26 @@ const categories: Array<CategorieGRP> = [
         id: "rd_soins_obstetricaux",
         title: "Soins obstétricaux",
       },
+      {
+        id: "rd_soins_infirmiers",
+        title: "Soins Infirmiers",
+      },
+      {
+        id: "rd_pharmacie",
+        title: "Pharmacie",
+      },
+      {
+        id: "rd_laboratoire",
+        title: "Laboratoire",
+      },
+      {
+        id: "rd_auxiliaire_hygiene_assainissement",
+        title: "Hygiène et Assainissement",
+      },
+      {
+        id: "rd_auxiliaire_imagerie_medicale",
+        title: "Imagerie Médicale",
+      },
     ],
   },
   {
@@ -124,6 +168,26 @@ const categories: Array<CategorieGRP> = [
       {
         id: "rd_techniques_preparation_et_gestion_en_pharmacie",
         title: "Préparation et Gestion en Pharmacie",
+      },
+      {
+        id: "rd_ingenieur_biologie_medicale",
+        title: "Biologie Médicale",
+      },
+      {
+        id: "rd_ingenieur_hygiene_assainissement",
+        title: "Hygiène et Assainissement",
+      },
+      {
+        id: "rd_ingenieur_imagerie_medicale",
+        title: "Imagerie Médicale",
+      },
+      {
+        id: "rd_ingenieur_bio_medicale",
+        title: "Biomédicale",
+      },
+      {
+        id: "rd_ingenieur_sante_publique",
+        title: "Santé Publique",
       },
     ],
   },
