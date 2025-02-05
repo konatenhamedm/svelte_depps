@@ -2,63 +2,51 @@ import cookie from "cookie";
 
 export const BASE_URL_API = "https://depps.leadagro.net/api"; // Remplacez par l'URL de votre API
 export const BASE_URL_API_V2 = "http://127.0.0.1:8000/api"; // Remplacez par l'URL de votre API
+export const BASE_URL_API_UPLOAD = "https://depps.leadagro.net/uploads/"; // Remplacez par l'URL de votre API
 
 export async function apiFetch(
-  provenance : boolean ,
+  provenance: boolean,
   url: string,
   method: string = "GET",
   data: any = null,
   options: RequestInit = {}
 ): Promise<any> {
-  let token = null;
+  // Définition des headers par défaut
+  const headers: HeadersInit = {
+    ...options.headers,
+    ...(method !== "GET" ? { "Content-Type": "application/json" } : {}),
+  };
 
-  // Ensure this code runs only on the client (browser)
-  if (typeof document !== "undefined") {
-    const parsedCookies = cookie.parse(document.cookie);
-    if (parsedCookies.auth) {
-      token = JSON.parse(parsedCookies.auth).token;
+  // Configuration de la requête
+  const requestOptions: RequestInit = {
+    ...options,
+    method,
+    headers,
+    ...(data ? { body: JSON.stringify(data) } : {}),
+  };
+
+  try {
+    // Effectuer la requête
+    const response = await fetch(
+      provenance ? BASE_URL_API + url : BASE_URL_API_V2 + url,
+      requestOptions
+    );
+
+    // Vérifier si la requête a échoué
+    if (!response.ok) {
+      throw new Error(`Error ${response.status}: ${response.statusText}`);
     }
-  }
 
-  // Add Authorization header if a token is present
-  if (token) {
-    options.headers = {
-      ...options.headers,
-      Authorization: `Bearer ${token}`,
-    };
-  }
-
-  // Add default headers for requests with a payload
-  if (["POST", "PUT", "PATCH", "DELETE"].includes(method)) {
-    options.headers = {
-      ...options.headers,
-      "Content-Type": "application/json",
-    };
-  }
-
-  // Set the request method
-  options.method = method;
-
-  // Add the request body if data is present
-  if (data) {
-    options.body = JSON.stringify(data);
-  }
-
-  // Perform the fetch request
-  const response = await fetch(
-    provenance ? BASE_URL_API + url : BASE_URL_API_V2 + url,
-    options
-  );
-
-  // Check for errors
-  if (!response.ok) {
-    if (response.status === 401) {
-      localStorage.removeItem("token");
-      throw new Error("Unauthorized");
+    // Vérifier si la réponse est en JSON
+    const contentType = response.headers.get("content-type");
+    if (contentType && contentType.includes("application/json")) {
+      return response.json();
     }
-    throw new Error(`Error: ${response.statusText}`);
+    
+    // Retourner la réponse brute si ce n'est pas du JSON
+    return response.text();
+  } catch (error) {
+    console.error("API Fetch Error:", error);
+    throw error;
   }
-
-  // Return the response as JSON
-  return response.json();
 }

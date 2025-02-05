@@ -7,17 +7,17 @@
     TableBodyCell,
     TableBodyRow,
     TableHead,
-    TableHeadCell,
+    TableHeadCell
   } from "flowbite-svelte";
   import {
     EditOutline,
     EyeOutline,
-    TrashBinSolid,
+    TrashBinSolid
   } from "flowbite-svelte-icons";
   import Entete from "../../../components/_includes/Entete.svelte";
   import MessageError from "../../../components/MessageError.svelte";
   import Pagination from "../../../components/_includes/Pagination.svelte";
- // Importer le store pageSize
+  // Importer le store pageSize
   import { get } from "svelte/store";
   import type { Permission, User } from "../../../types";
   import { apiFetch } from "$lib/api";
@@ -29,96 +29,87 @@
 
   let user: User;
 
-
-
-
   let main_data: Permission[] = [];
-    let searchQuery = ''; // Pour la recherche par texte
-    let selectedService : any = ""; // Pour filtrer par service
-    let selectedStatus : any = ""; // Pour filtrer par status
-    let startDate : any | null = null; ; // Date de début
-    let endDate :any | null = null; ; // Date de fin
-    let currentPage = 1;
-    let loading = false;
-    let openDelete: boolean = false;
-	let openEdit: boolean = false;
-	let openAdd: boolean = false;
-	let openShow: boolean = false;
-	let current_data: any = {};
+  let searchQuery = ""; // Pour la recherche par texte
+  let selectedService: any = ""; // Pour filtrer par service
+  let selectedStatus: any = ""; // Pour filtrer par status
+  let startDate: any | null = null; // Date de début
+  let endDate: any | null = null; // Date de fin
+  let currentPage = 1;
+  let loading = false;
+  let openDelete: boolean = false;
+  let openEdit: boolean = false;
+  let openAdd: boolean = false;
+  let openShow: boolean = false;
+  let current_data: any = {};
 
-
-    async function fetchData() {
-		loading = true; // Active le spinner de chargement
+  async function fetchData() {
+    loading = true; // Active le spinner de chargement
     try {
-        const res = await apiFetch(true,"/civilite/")
-        console.log(res);
-        if (res) {
-            main_data = res.data as Permission[];
-        } else {
-            console.error("Erreur lors de la récupération des données:", res.statusText);
-        }
-    } catch (error) {
-        console.error("Erreur lors de la récupération des données:", error);
-    } finally {
-        loading = false; // Désactive le spinner de chargement
-    }
-    }
-
-    onMount(async () => {
-        fetchData();
-        user = getAuthCookie();
-      
-    });
-
-    $: filteredData = main_data.filter(item => {
-        return (
-            item.code.toLowerCase().includes(searchQuery.toLowerCase()) ||
-            item.libelle.toLowerCase().includes(searchQuery.toLowerCase())
+      const res = await apiFetch(true, "/civilite/");
+      console.log(res);
+      if (res) {
+        main_data = res.data as Permission[];
+      } else {
+        console.error(
+          "Erreur lors de la récupération des données:",
+          res.statusText
         );
-       ;
-    });
-
-
-
-
-   // $: totalPages = Math.ceil(filteredData.length / get(pageSize)) pageSize se trouve store.ts;
-   $: totalPages = Math.max(1, Math.ceil(filteredData.length / get(pageSize)));
-
-    //$: paginatedProducts = filteredData.slice((currentPage - 1) * get(pageSize), currentPage * get(pageSize));
-	$: paginatedProducts = filteredData.length > 0
-    ? filteredData.slice((currentPage - 1) * get(pageSize), currentPage * get(pageSize))
-    : [];
-
-
-	$: startRange = currentPage;
-  	$: endRange = Math.min(currentPage + get(pageSize), totalPages);
-
-    function handlePageChange(event: CustomEvent) {
-        currentPage = event.detail;
+      }
+    } catch (error) {
+      console.error("Erreur lors de la récupération des données:", error);
+    } finally {
+      loading = false; // Désactive le spinner de chargement
     }
+  }
 
-	$: if (currentPage > totalPages) {
+  onMount(async () => {
+    await fetchData();
+  });
+
+  $: filteredData = main_data.filter((item) => {
+    return (
+      item.code.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      item.libelle.toLowerCase().includes(searchQuery.toLowerCase())
+    );
+  });
+
+  // $: totalPages = Math.ceil(filteredData.length / get(pageSize)) pageSize se trouve store.ts;
+  $: totalPages = Math.max(1, Math.ceil(filteredData.length / get(pageSize)));
+
+  //$: paginatedProducts = filteredData.slice((currentPage - 1) * get(pageSize), currentPage * get(pageSize));
+  $: paginatedProducts =
+    filteredData.length > 0
+      ? filteredData.slice(
+          (currentPage - 1) * get(pageSize),
+          currentPage * get(pageSize)
+        )
+      : [];
+
+  $: startRange = currentPage;
+  $: endRange = Math.min(currentPage + get(pageSize), totalPages);
+
+  function handlePageChange(event: CustomEvent) {
+    currentPage = event.detail;
+  }
+
+  $: if (currentPage > totalPages) {
     currentPage = totalPages;
-	}
+  }
 
-	$: if (filteredData.length === 0) {
+  $: if (filteredData.length === 0) {
     currentPage = 1;
-	}
+  }
 
-// Fonction pour rafraîchir les données après certaines actions
-async function refreshDataIfNeeded() {
-    fetchData();
-    }
+  // Fonction pour rafraîchir les données après certaines actions
+  async function refreshDataIfNeeded() {
+    await fetchData();
+  }
 
-    // Rafraîchir les données après fermeture des modales
-    $: if (!openAdd || !openEdit || !openDelete) {
-
-		refreshDataIfNeeded();
-	
-    }
-
-
-
+  // Rafraîchir les données après fermeture des modales
+  $: if (!openAdd || !openEdit || !openDelete) {
+    refreshDataIfNeeded();
+  }
 </script>
 
 <Entete
@@ -131,37 +122,30 @@ async function refreshDataIfNeeded() {
     <div class="col-12">
       <div class="box">
         <div class="box-header with-border flex justify-between items-center">
-          <h4 class="box-title text-xl font-medium">
-          Liste des codes générés
-          </h4>
+          <h4 class="box-title text-xl font-medium">Liste des codes générés</h4>
 
           <div>
-          
-                <a
-                    class="py-[5px] px-3 waves-effect waves-light btn btn-info mb-5"
-                    on:click={() => (
-                        (current_data = {}),
-                        (openAdd = true)
-                    )}
-                >
-                    + Nouvelle  codes générés
-                </a>
-        
-        </div>
+            <a
+              class="py-[5px] px-3 waves-effect waves-light btn btn-info mb-5"
+              on:click={() => ((current_data = {}), (openAdd = true))}
+            >
+              + Nouvelle codes générés
+            </a>
+          </div>
         </div>
         <!-- /.box-header -->
         <div class="box-body">
           <div class="table-responsive">
             <div class="w-full grid grid-cols-4">
               <div>
-                  <Input
-                      placeholder="Rechercher..."
-                      type="text"
-                      bind:value={searchQuery}
-                      class="form-input font-normal rounded block w-full border-gray-200 text-sm focus:border-gray-300 focus:ring-0 bg-white mb-4"
-                  />
+                <Input
+                  placeholder="Rechercher..."
+                  type="text"
+                  bind:value={searchQuery}
+                  class="form-input font-normal rounded block w-full border-gray-200 text-sm focus:border-gray-300 focus:ring-0 bg-white mb-4"
+                />
               </div>
-          </div>
+            </div>
             <Table class="border border-gray-300">
               <TableHead
                 class="border-y border-gray-200 bg-gray-100 dark:border-gray-700"
@@ -220,10 +204,9 @@ async function refreshDataIfNeeded() {
                       <TableBodyCell class="p-4 border border-gray-300"
                         >{item.libelle}</TableBodyCell
                       >
-                    
+
                       <!--  <TableBodyCell class="p-4 border border-gray-300">{item.sous_menu.libelle}</TableBodyCell>
                                    -->
-                    
                     </TableBodyRow>
                   {/each}
                 {/if}
@@ -265,5 +248,9 @@ async function refreshDataIfNeeded() {
 </section>
 
 <!-- Modales -->
-<Add bind:open={openAdd} data={current_data} sizeModal="xl" userUpdateId={user?.id} />
-
+<Add
+  bind:open={openAdd}
+  data={current_data}
+  sizeModal="xl"
+  userUpdateId={user?.id}
+/>

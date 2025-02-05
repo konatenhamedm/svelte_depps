@@ -27,7 +27,8 @@
   import Donut from "$components/statistiques/Donut.svelte";
   import Pie from "$components/statistiques/Pie.svelte";
 
-  let user: User;
+  export let data; // Les données retournées par `load()`
+  let user = data.user;
 
   let main_data: Stats[] = [];
   let stats: any = [];
@@ -68,8 +69,7 @@
   }
 
   onMount(async () => {
-    fetchData();
-    user = getAuthCookie();
+    await fetchData();
   });
 
   $: filteredData = main_data.filter((item) => {
@@ -105,7 +105,7 @@
 
   // Fonction pour rafraîchir les données après certaines actions
   async function refreshDataIfNeeded() {
-    fetchData();
+    await fetchData();
   }
 
   // Rafraîchir les données après fermeture des modales

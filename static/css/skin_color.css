@@ -33,7 +33,7 @@ File: scss
   color: #3a3a90; }
 .light-skin .main-sidebar {
   border-right: 1px solid rgba(95, 99, 121, 0.16);
-  background-color: #0E0E23;
+  background-color: #343437;
   -webkit-box-shadow: 0 0 35px 0 rgba(154, 161, 171, 0);
   box-shadow: 0 0 35px 0 rgba(154, 161, 171, 0); }
 .light-skin .user-panel > .info {

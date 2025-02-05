@@ -6,6 +6,7 @@
   import type { User } from "../../../types";
   import { page } from "$app/stores";
   import { goto } from "$app/navigation";
+  import { BASE_URL_API_UPLOAD } from "$lib/api";
 
   function handleLogout() {
     logout();
@@ -160,24 +161,32 @@
             style="box-shadow: 8px 8px 6px #bababa;padding: 8px;border: 1px solid #bababa6b;border-radius: 10px;"
           >
             <div class="col-md-8">
-              <h1
+              <h4
                 class="h2-baslik-anasayfa-ozel h-yazi-margin-kucuk"
                 style="margin: 0px !important;margin-top:10px !important"
               >
                 {user?.username}
-              </h1>
+              </h4>
               <p style="font-size:20px">
                 {#if user?.type == "PROFESSIONNEL"}
-                  PROFESSIONNEL DE SANTE
+                  PROFESSIONNEL DE SANTE 
                 {:else}
-                  ETABLISSEMENT DE SANTE
+                  ETABLISSEMENT DE SANTE 
                 {/if}
               </p>
             </div>
             <div class="col-4">
-              <div
+                {#if user?.avatar != null}
+                <div
+                style="width: 100px;height: 100px;border-radius:50%;background-image:url({BASE_URL_API_UPLOAD+user?.avatar});background-size:cover"
+              ></div>
+                {:else}
+                <div
                 style="width: 100px;height: 100px;border-radius:50%;background-image:url('https://static.vecteezy.com/system/resources/thumbnails/009/292/244/small/default-avatar-icon-of-social-media-user-vector.jpg');background-size:cover"
               ></div>
+
+                {/if}
+            
             </div>
           </div>
         </div>
