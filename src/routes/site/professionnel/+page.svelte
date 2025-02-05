@@ -3,7 +3,11 @@
   import Footer from "$components/Footer.svelte";
   import Header from "$components/Header.svelte";
   import Slide from "$components/Slide.svelte";
+
   import { onMount } from "svelte";
+
+  import { onDestroy } from 'svelte';
+
 
   let step = 1;
   let formData = {
@@ -39,16 +43,17 @@
   dateEmploi: "",
    emailPro: "",
   contactPro: "",
-  certificat: "",
   appartenirOrganisation: false,
   situationPro: "",
   organisationNom: "",
 // file 
- casier: "",
-  diplomeFile: "",
-  photo: "",
-  cv: "",
-  cni: "",
+
+ cv: null,
+    photo: null,
+    casier: null,
+    cni: null,
+    certificat: null,
+    diplomeFile: null,
 
 
   confirmPassword : "",
@@ -119,34 +124,33 @@
       errors.confirmPassword = formData.confirmPassword ? "" : "confirm Password est requis";
      errors.password = formData.password ? "" : "password est requis";
       errors.email = formData.email ? "" : "email est requise";
+      // @ts-ignore
       errors.passwordDif = formData.confirmPassword  ? formData.confirmPassword !== formData.password : "password different du confirm Password";
       
       valid = !errors.email && !errors.confirmPassword  && !errors.password && !errors.passwordDif;
     }
 
     if (step === 2) {
-      errors.nom = formData.nom ? "" : "Le nom est requis";
-      errors.prenoms = formData.prenoms ? "" : "Le prénom est requis";
-       errors.viile =  formData.viile ? "" : "La viile est requis";
-      errors.dateNaissance = formData.dateNaissance ? "" : "La date de naissance est requise";
-      valid = !errors.nom && !errors.prenoms  && !errors.dateNaissance;
-    }
 
-    if (step === 3) {
       errors.address = formData.address ? "" : "L'adresse est requise";
     errors.numero = formData.numero ? "" : "Le numéro est requis";
        errors.civilite = formData.civilite ? "" : "La civilité est requise";
       errors.nationate = formData.nationate ? "" : "La nationalité est requise";
 
-      valid = !errors.address && !errors.civilite && !errors.nationate && !errors.numero;
+      errors.nom = formData.nom ? "" : "Le nom est requis";
+      errors.prenoms = formData.prenoms ? "" : "Le prénom est requis";
+       errors.viile =  formData.viile ? "" : "La viile est requis";
+      errors.dateNaissance = formData.dateNaissance ? "" : "La date de naissance est requise";
+      valid = !errors.nom && !errors.prenoms  && !errors.dateNaissance &&!errors.address && !errors.civilite && !errors.nationate && !errors.numero;
     }
 
-   
-    // Étape 3
-    if (step === 4) {
+    if (step === 3) {
 
-
-      errors.profession = formData.profession ? "" : "La profession est requise";
+        errors.dateEmploi = formData.dateEmploi ? "" : "La date d'emploi est requise";
+      errors.emailPro  = formData.emailPro ? "" : "L'adresse email est requise";
+      errors.contactPro = formData.contactPro ? "" : "Le contact professionnel est requis";
+     
+    errors.profession = formData.profession ? "" : "La profession est requise";
     
       errors.genre = formData.genre ? "" : "Le genre est requis";
       errors.diplome = formData.diplome ? "" : "Le diplôme est requis";
@@ -158,19 +162,23 @@
               !errors.specialite && !errors.dateDiplome 
             && !errors.professionnel
                && 
-              !errors.situationPro;
+              !errors.situationPro && !errors.profession && !errors.dateEmploi && !errors.emailPro && !errors.contactPro;
+  
     }
 
-    // Étape 4
-    if (step === 5) {
-      errors.dateEmploi = formData.dateEmploi ? "" : "La date d'emploi est requise";
-      errors.emailPro  = formData.emailPro ? "" : "L'adresse email est requise";
-      errors.contactPro = formData.contactPro ? "" : "Le contact professionnel est requis";
-      valid = !errors.profession && !errors.dateEmploi && !errors.emailPro && !errors.contactPro;
+   
+   if (step === 4) {
+      errors.photo = formData.photo ? "" : "La photo est requise";
+      errors.cv = formData.cv ? "" : "Le CV est requis";
+     errors.casier = formData.casier ? "" : "Le casier judiciaire est requis";
+      errors.cni = formData.cni ? "" : "La CNI est requise";
+       errors.certificat = formData.certificat ? "" : "Le certificat est requis";
+      errors.diplomeFile = formData.diplomeFile ? "" : "Le fichier de diplôme est requis";
+      valid = !errors.photo && !errors.cv && !errors.casier && !errors.cni && !errors.diplomeFile && !errors.certificat;
     }
 
     // Étape 6
-    if (step === 6) {
+    if (step === 5) {
       if (formData.appartenirOrganisation){
       
       errors.organisationAnnee = formData.organisationAnnee ? "" : "L'année d'organisation est requise";
@@ -180,19 +188,8 @@
       }
     } 
 
-     // Étape 6
-   
+  
 
-    // Étape 7
-  if (step === 7) {
-      errors.photo = formData.photo ? "" : "La photo est requise";
-      errors.cv = formData.cv ? "" : "Le CV est requis";
-     errors.casier = formData.casier ? "" : "Le casier judiciaire est requis";
-      errors.cni = formData.cni ? "" : "La CNI est requise";
-       errors.certificat = formData.certificat ? "" : "Le certificat est requis";
-      errors.diplomeFile = formData.diplomeFile ? "" : "Le fichier de diplôme est requis";
-      valid = !errors.photo && !errors.cv && !errors.casier && !errors.cni && !errors.diplomeFile && !errors.certificat;
-    }
      
 
 
@@ -283,6 +280,43 @@
 
 
 
+
+
+
+
+
+  let previews = {
+    cv: null,
+    photo: null,
+    casier: null,
+    cni: null,
+    certificat: null,
+    diplomeFile: null
+  };
+
+  let errorss = {};
+
+  function handleFileChange(event, fieldName) {
+    const file = event.target.files[0];
+    if (file) {
+      // Vérification de la taille du fichier (ex: max 5MB)
+      if (file.size > 5 * 1024 * 1024) {
+        errorss[fieldName] = "Le fichier est trop volumineux (max: 5MB)";
+        formData[fieldName] = null;
+        previews[fieldName] = null;
+      } else {
+        errorss[fieldName] = null;
+        formData[fieldName] = file;
+        previews[fieldName] = URL.createObjectURL(file);
+      }
+    }
+  }
+
+  
+
+
+
+
 </script>
 
 <div
@@ -326,7 +360,7 @@
     {#if step === 1}
   <h3>Informations de connexion</h3>
    <h2 class="h2-baslik-anasayfa-ozel h-yazi-margin-kucuk">
-                Informations de connexion(étape 1/7)
+                Informations de connexion(étape 1/5)
               </h2>
   <div class="tablo">
     <div class="tablo--1h-ve-2">
@@ -384,7 +418,7 @@
             {#if step === 2}
               
                <h2 class="h2-baslik-anasayfa-ozel h-yazi-margin-kucuk">
-             Informations personnelles(étape 2/7)
+             Informations personnelles(étape 2/5)
               </h2>
               <div class="tablo">
                 <div class="tablo--1h-ve-2">
@@ -413,6 +447,32 @@
                           {errors.prenoms}
                         </p>{/if}
                     </div>
+
+                     <div class="form__grup">
+          <label class="form_label">Adresse complète *</label>
+          <input
+            type="text"
+            class="form__input"
+            bind:value={formData.address}
+            placeholder="Pôle sanitaire, ville..."
+          />
+          {#if errors.address}<p class="error">{errors.address}</p>{/if}
+        </div>
+
+        <div class="form__group">
+          
+          <label for="civility" class="form_label">Civilité *</label>
+          <select 
+            name="civility" 
+            id="civility" 
+            class="form__input"
+            bind:value={formData.civilite}>
+            {#each civiliteOption as option }
+            <option value={option}>{option}</option>
+            {/each}
+          </select>
+          {#if errors.civilite}<p class="error">{errors.civilite}</p>{/if}
+        </div>
                   </div>
 
                   <div class="row">
@@ -438,52 +498,7 @@
                           {errors.viile}
                         </p>{/if}
                     </div>
-                  </div>
-                </div>
-              </div>
-            {/if}
-
-            <!-- Étape 2 -->
-
-
-{#if step === 3}
-   <h2 class="h2-baslik-anasayfa-ozel h-yazi-margin-kucuk">
-             Informations personnelles(étape 3/7)
-              </h2>
-  <div class="tablo">
-    <div class="tablo--1h-ve-2">
-      <div class="row">
-        <div class="form__grup">
-          <label class="form_label">Adresse complète *</label>
-          <input
-            type="text"
-            class="form__input"
-            bind:value={formData.address}
-            placeholder="Pôle sanitaire, ville..."
-          />
-          {#if errors.address}<p class="error">{errors.address}</p>{/if}
-        </div>
-
-        <div class="form__group">
-          
-          <label for="civility" class="form_label">Civilité *</label>
-          <select 
-            name="civility" 
-            id="civility" 
-            class="form__input"
-            bind:value={formData.civilite}>
-            {#each civiliteOption as option }
-            <option value={option}>{option}</option>
-            {/each}
-          </select>
-          {#if errors.civilite}<p class="error">{errors.civilite}</p>{/if}
-        </div>
-      </div>
-
-   
-    
-    <div class="row">
-      <div class="form__grup">
+                         <div class="form__grup">
         <label class="form_label">Numéro *</label>
         <input
           type="text"
@@ -503,17 +518,18 @@
         />
         {#if errors.nationate}<p class="error">{errors.nationate}</p>{/if}
       </div>
-    </div>
-    </div>
-  </div>
-{/if}
+                  </div>
+                </div>
+              </div>
+            {/if}
+
+            <!-- Étape 2 -->
 
 
-
-
-{#if step === 4}
+{#if step === 3}
+    
        <h2 class="h2-baslik-anasayfa-ozel h-yazi-margin-kucuk">
-             Informations professionnel(étape 4/7)
+             Informations professionnel(étape 3/5)
               </h2>
   <div class="tablo">
 
@@ -538,6 +554,17 @@
 
 
          <div class="row">
+
+<div class="form__grup">
+        <label class="form_label">Date d'emploi *</label>
+        <input
+          type="date"
+          class="form__input"
+          bind:value={formData.dateEmploi}
+        />
+        {#if errors.dateEmploi}<p class="error">{errors.dateEmploi}</p>{/if}
+      </div>
+
                   <div class="form__grup">
                     <label class="form_label">Lieu d’exercice *</label>
                     <input
@@ -604,35 +631,10 @@
         />
         {#if errors.dateDiplome}<p class="error">{errors.dateDiplome}</p>{/if}
       </div>
-            </div>
-    </div>
-  </div>
-{/if}
 
 
 
-
-{#if step === 5}
-
-         <h2 class="h2-baslik-anasayfa-ozel h-yazi-margin-kucuk">
-             Informations professionnel(étape 5/7)
-              </h2>
-  <div class="tablo">
-    <div class="tablo--1h-ve-2">
-      <div class="row">
-     
-      <div class="form__grup">
-        <label class="form_label">Date d'emploi *</label>
-        <input
-          type="date"
-          class="form__input"
-          bind:value={formData.dateEmploi}
-        />
-        {#if errors.dateEmploi}<p class="error">{errors.dateEmploi}</p>{/if}
-      </div>
-      </div>
-      <div class="row">
-      <div class="form__grup">
+          <div class="form__grup">
         <label class="form_label">Adresse email professionnel*</label>
         <input
           type="email"
@@ -652,18 +654,22 @@
         />
         {#if errors.contactPro}<p class="error">{errors.contactPro}</p>{/if}
       </div>
-      </div>
-
+            </div>
     </div>
   </div>
 {/if}
 
 
 
-{#if step === 6}
+
+
+
+
+
+{#if step === 5}
 
  <h2 class="h2-baslik-anasayfa-ozel h-yazi-margin-kucuk">
-             Informations organisation(étape 6/7)
+             Informations organisation(étape 5/5)
               </h2>
 
   <div class="tablo">
@@ -751,279 +757,66 @@
 
 
 
+{#if step === 4}
+  <h2 class="h2-baslik-anasayfa-ozel h-yazi-margin-kucuk">
+    Informations complémentaires (étape 4/5)
+  </h2>
 
-{#if step === 7}
-     <h2 class="h2-baslik-anasayfa-ozel h-yazi-margin-kucuk">
-             Informations complementaire(étape 7/7)
-              </h2>
-        <div class="tablo">
-          <div class="tablo--h-ve-2">
+  <div class="container mx-auto px-4 py-8">
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+      <!-- CV -->
+      <div class="flex flex-col space-y-2">
+        <label class="font-semibold">▸ CV</label>
+        <input type="file" class="dropify" name="cv" on:change={(e) => handleFileChange(e, 'cv')} accept=".jpg,.jpeg,.png,.pdf"/>
+        {#if errors.cv} <p class="text-red-500">{errors.cv}</p> {/if}
+        {#if previews.cv} <img src={previews.cv} alt="CV" class="h-40 w-50"/> {/if}
+      </div>
 
-      <section class="hakkimizda-bolumu-anasayfa1" >
-        <div class="container">
-            <div class="tablo--1h-ve-2 masqueur à effet de révélation d'image de projet wow animated" style="visibility: visible;">
-              
-                <h2 class=" text-center"> Documents à fournir</h2>
-              
-                    <div class="container mx-auto px-4 py-8">
-          <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-              <!-- Colonne 1 -->
-            
+      <!-- Photos d’identité -->
+      <div class="flex flex-col space-y-2">
+        <label class="font-semibold">▸ 02 photos d’identité</label>
+        <input type="file" class="dropify" name="photo" on:change={(e) => handleFileChange(e, 'photo')} accept=".jpg,.jpeg,.png,.pdf"/>
+        {#if errors.photo} <p class="text-red-500">{errors.photo}</p> {/if}
+        {#if previews.photo} <img src={previews.photo} alt="Photos d’identité" class="h-40 w-50"/> {/if}
+      </div>
 
-              <!-- Colonne 1 -->
-              <div class="flex items-center space-x-4">
-                  <!-- Titre -->
-                  <div class="flex-shrink-0 text-lg font-semibold">
-                      ▸ cv
-                  </div>
-                  <!-- Champ de téléchargement -->
-                  <div class="dropify-wrapper">
-                      <div class="dropify-message">
-                          <span class="file-icon"></span>
-                          <p>Importer cv (Jpg/PDF)</p>
-                          <p class="dropify-error">Désolé, le fichier trop volumineux</p>
-                          {#if errors.cv}<p class="error">
-                              {errors.cv}
-                            </p>{/if}
-                      </div>
-                      <div class="dropify-loader"></div>
-                      <div class="dropify-errors-container">
-                          <ul></ul>
-                      </div>
-                    
-                      <input type="file" class="dropify w-48" name="cv"   bind:value={formData.cv} data-default-file="">
-                      <button type="button" class="dropify-clear">Supprimer</button>
-                      <div class="dropify-preview">
-                          <span class="dropify-render"></span>
-                          <div class="dropify-infos">
-                              <div class="dropify-infos-inner">
-                                  <p class="dropify-filename">
-                                      <span class="file-icon"></span> 
-                                      <span class="dropify-filename-inner"></span>
-                                  </p>
-                                  <p class="dropify-infos-message">Importer cv (Jpg/PDF)</p>
-                              </div>
-                          </div>
-                      </div>
-                  </div>
-                  
-              </div>
-                <!-- Colonne 1 -->
-              <div class="flex items-center space-x-4">
-                  <!-- Titre -->
-                  <div class="flex-shrink-0 text-lg font-semibold">
-                      ▸ 02 photos d’identité de même tirage
-                  </div>
-                  <!-- Champ de téléchargement -->
-                  <div class="dropify-wrapper">
-                      <div class="dropify-message">
-                          <span class="file-icon"></span>
-                          <p>Importer photos (Jpg/PDF)</p>
-                          <p class="dropify-error">Désolé, le fichier trop volumineux</p>
-                          {#if errors.photo}<p class="error">
-                              {errors.photo}
-                            </p>{/if}
-                      </div>
-                      <div class="dropify-loader"></div>
-                      <div class="dropify-errors-container">
-                          <ul></ul>
-                      </div>
-                    
-                      <input type="file" class="dropify w-48" name="photo"   bind:value={formData.photo} data-default-file="">
-                      <button type="button" class="dropify-clear">Supprimer</button>
-                      <div class="dropify-preview">
-                          <span class="dropify-render"></span>
-                          <div class="dropify-infos">
-                              <div class="dropify-infos-inner">
-                                  <p class="dropify-filename">
-                                      <span class="file-icon"></span> 
-                                      <span class="dropify-filename-inner"></span>
-                                  </p>
-                                  <p class="dropify-infos-message">Importer un fichier (Jpg/PDF)</p>
-                              </div>
-                          </div>
-                      </div>
-                  </div>
-                  
-              </div>
-              
-        <div class="flex items-center space-x-4">
-                  <!-- Titre -->
-                  <div class="flex-shrink-0 text-lg font-semibold">
-                      ▸Extrait de casier judiciaire <br>
-                      (Datant de moins de 3 mois)
-                  </div>
-                  <!-- Champ de téléchargement -->
-                  <div class="dropify-wrapper">
-                      <div class="dropify-message">
-                          <span class="file-icon"></span>
-                          <p>Importer Extrait de casier judiciaire (Jpg/PDF)</p>
-                          <p class="dropify-error">Désolé, le fichier trop volumineux</p>
-                          {#if errors.casier}<p class="error">
-                              {errors.casier}
-                            </p>{/if}
-                      </div>
-                      <div class="dropify-loader"></div>
-                      <div class="dropify-errors-container">
-                          <ul></ul>
-                      </div>
-                    
-                      <input type="file" class="dropify w-48" name="casier"   bind:value={formData.casier} data-default-file="">
-                      
-                      <button type="button" class="dropify-clear">Supprimer</button>
-                      <div class="dropify-preview">
-                          <span class="dropify-render"></span>
-                          <div class="dropify-infos">
-                              <div class="dropify-infos-inner">
-                                  <p class="dropify-filename">
-                                      <span class="file-icon"></span> 
-                                      <span class="dropify-filename-inner"></span>
-                                  </p>
-                                  <p class="dropify-infos-message">Importer casier judiciaire (Jpg/PDF)</p>
-                              </div>
-                          </div>
-                      </div>
-                  </div>
-                  
-              </div>
+      <!-- Casier judiciaire -->
+      <div class="flex flex-col space-y-2">
+        <label class="font-semibold">▸ Extrait de casier judiciaire</label>
+        <input type="file" class="dropify" name="casier" on:change={(e) => handleFileChange(e, 'casier')} accept=".jpg,.jpeg,.png,.pdf"/>
+        {#if errors.casier} <p class="text-red-500">{errors.casier}</p> {/if}
+        {#if previews.casier} <img src={previews.casier} alt="Casier judiciaire" class="h-40 w-50"/> {/if}
+      </div>
+
+      <!-- CNI -->
+      <div class="flex flex-col space-y-2">
+        <label class="font-semibold">▸ CNI</label>
+        <input type="file" class="dropify" name="cni" on:change={(e) => handleFileChange(e, 'cni')} accept=".jpg,.jpeg,.png,.pdf"/>
+        {#if errors.cni} <p class="text-red-500">{errors.cni}</p> {/if}
+        {#if previews.cni} <img src={previews.cni} alt="CNI" class="h-40 w-50"/> {/if}
+      </div>
+
+      <!-- Certificat -->
+      <div class="flex flex-col space-y-2">
+        <label class="font-semibold">▸ Certificat</label>
+        <input type="file" class="dropify" name="certificat" on:change={(e) => handleFileChange(e, 'certificat')} accept=".jpg,.jpeg,.png,.pdf"/>
+        {#if errors.certificat} <p class="text-red-500">{errors.certificat}</p> {/if}
+        {#if previews.certificat} <img src={previews.certificat} alt="Certificat" class="h-40 w-50"/> {/if}
+      </div>
+
+      <!-- Diplôme -->
+      <div class="flex flex-col space-y-2">
+        <label class="font-semibold">▸ Diplôme</label>
+        <input type="file" class="dropify" name="diplomeFile" on:change={(e) => handleFileChange(e, 'diplomeFile')} accept=".jpg,.jpeg,.png,.pdf"/>
+        {#if errors.diplomeFile} <p class="text-red-500">{errors.diplomeFile}</p> {/if}
+        {#if previews.diplomeFile} <img src={previews.diplomeFile} alt="Diplôme" class="h-40 w-50"/> {/if}
+      </div>
+
+    </div>
+    
 
 
-        <div class="flex items-center space-x-4">
-                  <!-- Titre -->
-                  <div class="flex-shrink-0 text-lg font-semibold">
-                      ▸cni
-                  </div>
-                  <!-- Champ de téléchargement -->
-                  <div class="dropify-wrapper">
-                      <div class="dropify-message">
-                          <span class="file-icon"></span>
-                          <p>Importer cni (Jpg/PDF)</p>
-                          <p class="dropify-error">Désolé, le fichier trop volumineux</p>
-                          {#if errors.cni}<p class="error">
-                              {errors.cni}
-                            </p>{/if}
-                      </div>
-                      <div class="dropify-loader"></div>
-                      <div class="dropify-errors-container">
-                          <ul></ul>
-                      </div>
-                    
-                      <input type="file" class="dropify w-48" name="cni"   bind:value={formData.cni} data-default-file="">
-                      <button type="button" class="dropify-clear">Supprimer</button>
-                      <div class="dropify-preview">
-                          <span class="dropify-render"></span>
-                          <div class="dropify-infos">
-                              <div class="dropify-infos-inner">
-                                  <p class="dropify-filename">
-                                      <span class="file-icon"></span> 
-                                      <span class="dropify-filename-inner"></span>
-                                  </p>
-                                  <p class="dropify-infos-message">Importer cni (Jpg/PDF)</p>
-                              </div>
-                          </div>
-                      </div>
-                  </div>
-                  
-              </div>
-
-        <div class="flex items-center space-x-4">
-                  <!-- Titre -->
-                  <div class="flex-shrink-0 text-lg font-semibold">
-                      certificat
-                  </div>
-                  <!-- Champ de téléchargement -->
-                  <div class="dropify-wrapper">
-                      <div class="dropify-message">
-                          <span class="file-icon"></span>
-                          <p>Importer certificat (Jpg/PDF)</p>
-                          <p class="dropify-error">Désolé, le fichier trop volumineux</p>
-                          {#if errors.certificat}<p class="error">
-                              {errors.certificat}
-                            </p>{/if}
-                      </div>
-                      <div class="dropify-loader"></div>
-                      <div class="dropify-errors-container">
-                          <ul></ul>
-                      </div>
-                    
-                      <input type="file" class="dropify w-48" name="certificat"   bind:value={formData.certificat} data-default-file="">
-                      <button type="button" class="dropify-clear">Supprimer</button>
-                      <div class="dropify-preview">
-                          <span class="dropify-render"></span>
-                          <div class="dropify-infos">
-                              <div class="dropify-infos-inner">
-                                  <p class="dropify-filename">
-                                      <span class="file-icon"></span> 
-                                      <span class="dropify-filename-inner"></span>
-                                  </p>
-                                  <p class="dropify-infos-message">Importer certificat (Jpg/PDF)</p>
-                              </div>
-                          </div>
-                      </div>
-                  </div>
-                  
-              </div>
-
-
-
-      <div class="flex items-center space-x-4">
-                  <!-- Titre -->
-                  <div class="flex-shrink-0 text-lg font-semibold">
-                      diplome
-                  </div>
-                  <!-- Champ de téléchargement -->
-                  <div class="dropify-wrapper">
-                      <div class="dropify-message">
-                          <span class="file-icon"></span>
-                          <p>Importer diplome  (Jpg/PDF)</p>
-                          <p class="dropify-error">Désolé, le fichier trop volumineux</p>
-                          {#if errors.diplomeFile}<p class="error">
-                              {errors.diplomeFile}
-                            </p>{/if}
-                      </div>
-                      <div class="dropify-loader"></div>
-                      <div class="dropify-errors-container">
-                          <ul></ul>
-                      </div>
-                    
-                      <input type="file" class="dropify w-48" name="diplomeFile"   bind:value={formData.diplomeFile} data-default-file="">
-                      <button type="button" class="dropify-clear">Supprimer</button>
-                      <div class="dropify-preview">
-                          <span class="dropify-render"></span>
-                          <div class="dropify-infos">
-                              <div class="dropify-infos-inner">
-                                  <p class="dropify-filename">
-                                      <span class="file-icon"></span> 
-                                      <span class="dropify-filename-inner"></span>
-                                  </p>
-                                  <p class="dropify-infos-message">Importer diplomeFile (Jpg/PDF)</p>
-                              </div>
-                          </div>
-                      </div>
-                  </div>
-                  
-              </div>
-
-
-
-          </div>
-      </div> 
-                  
-          
-            </div>
-        </div>
-
-      
-
-
-      </section>
-
-          </div>
-        </div>
-
-
-
-
+  </div>
 {/if}
 
 
@@ -1052,7 +845,7 @@
                 >
               {/if}
 
-              {#if step < 7}
+              {#if step < 5}
                 <button
                   type="button"
                   class="buton buton--kirmizi"
@@ -1157,4 +950,8 @@
   </style>
   <Footer />
 </div>
+
+
+
+
 
