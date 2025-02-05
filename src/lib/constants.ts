@@ -1,17 +1,17 @@
-interface Categorie {
+interface Profession {
   id: string;
   title: string;
 }
 
-interface CategorieGRP {
+interface ProfessionGRP {
   title: string;
-  categories: Categorie[];
+  professions: Profession[];
 }
 
-const categories: Array<CategorieGRP> = [
+const professions: Array<ProfessionGRP> = [
   {
     title: "Médecins",
-    categories: [
+    professions: [
       {
         id: "rd_medecins",
         title: "Médecins",
@@ -32,7 +32,7 @@ const categories: Array<CategorieGRP> = [
   },
   {
     title: "Profession de pharmacie et de la physique médicale",
-    categories: [
+    professions: [
       {
         id: "rd_pharmaciens",
         title: "Pharmaciens",
@@ -65,7 +65,7 @@ const categories: Array<CategorieGRP> = [
   },
   {
     title: "Professions paramédicales",
-    categories: [
+    professions: [
       {
         id: "rd_dieteticien",
         title: "Diététicien",
@@ -102,7 +102,7 @@ const categories: Array<CategorieGRP> = [
   },
   {
     title: "Technicien Supérieur de la Santé",
-    categories: [
+    professions: [
       {
         id: "rd_technicien_biologie_medicale",
         title: "Biologie Médicale",
@@ -135,7 +135,7 @@ const categories: Array<CategorieGRP> = [
   },
   {
     title: "Auxiliaire des techniques sanitaires",
-    categories: [
+    professions: [
       {
         id: "rd_soins_obstetricaux",
         title: "Soins obstétricaux",
@@ -164,7 +164,7 @@ const categories: Array<CategorieGRP> = [
   },
   {
     title: "Ingénieur des Techniques Sanitaires",
-    categories: [
+    professions: [
       {
         id: "rd_techniques_preparation_et_gestion_en_pharmacie",
         title: "Préparation et Gestion en Pharmacie",
@@ -193,7 +193,7 @@ const categories: Array<CategorieGRP> = [
   },
   {
     title: "Ingénieur des Services de Santé",
-    categories: [
+    professions: [
       {
         id: "rd_services_preparation_et_gestion_en_pharmacie",
         title: "Préparation et Gestion en Pharmacie",
@@ -202,7 +202,7 @@ const categories: Array<CategorieGRP> = [
   },
   {
     title: "Profession de la médecine traditionnelle",
-    categories: [
+    professions: [
       {
         id: "rd_naturotherapeutes",
         title: "Naturothérapeutes",
@@ -211,7 +211,7 @@ const categories: Array<CategorieGRP> = [
   },
   {
     title: "Profession de la médecine alternative et complémentaire",
-    categories: [
+    professions: [
       {
         id: "rd_naturotherapie",
         title: "Naturothérapie",
@@ -220,6 +220,6 @@ const categories: Array<CategorieGRP> = [
   },
 ];
 
-export function getCategories(): Array<CategorieGRP> {
-  return categories;
+export function getProfessions(): Array<ProfessionGRP> {
+  return professions;
 }

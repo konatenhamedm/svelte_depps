@@ -42,6 +42,16 @@ export interface Civilite {
   libelle: string;
 }
 
+export interface Genre {
+  id: string;
+  libelle: string;
+}
+
+export interface Pays {
+  id: string;
+  libelle: string;
+}
+
 export interface Menu {
   id: number;
   libelle: string;
