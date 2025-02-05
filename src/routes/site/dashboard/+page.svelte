@@ -1,9 +1,22 @@
-<script>
+<script lang="ts">
   import Footer from "$components/Footer.svelte";
   import Header from "$components/Header.svelte";
   import Slide from "$components/Slide.svelte";
+  import { getAuthCookie, logout } from "$lib/auth";
+  import { onMount } from "svelte";
+  import type { User } from "../../../types";
+  import { page } from "$app/stores";
 
+  function handleLogout() {
+    logout();
+    window.location.href = "/";
+  }
 
+  
+
+ /*  function getAuthCookie_() {
+    return getAuthCookie();
+  } */
 </script>
 
 
@@ -112,13 +125,13 @@
               </div>
               <div class="col-md-4 row" style="box-shadow: 8px 8px 6px #bababa;padding: 8px;border: 1px solid #bababa6b;border-radius: 10px;">
                   <div class="col-md-8">
-                      <h1 class="h2-baslik-anasayfa-ozel h-yazi-margin-kucuk" style="margin: 0px !important;margin-top:10px !important">Konate Hame</h1>
+                      <h1 class="h2-baslik-anasayfa-ozel h-yazi-margin-kucuk" style="margin: 0px !important;margin-top:10px !important">{user?.username}</h1>
                       <p style="font-size:20px">
-                                                          Professionnel de Santé
+                                                          {#if user?.type == "PROFESSIONNEL"} PROFESSIONNEL DE SANTE {:else } ETABLISSEMENT DE SANTE {/if}
                                                   </p>
                   </div>
                   <div class="col-4">
-                      <div style="width: 100px;height: 100px;border-radius:50%;background-image:url('https://static.vecteezy.com/system/resources/thumbnails/009/292/244/small/default-avatar-icon-of-social-media-user-vector.jpg');background-size:cover" alt=""></div>
+                      <div style="width: 100px;height: 100px;border-radius:50%;background-image:url('https://static.vecteezy.com/system/resources/thumbnails/009/292/244/small/default-avatar-icon-of-social-media-user-vector.jpg');background-size:cover" ></div>
                   </div>
               </div>
           </div>
@@ -138,20 +151,20 @@
                           </div>
                                           </div>
                   <div class="col-md-4">
-                      <div class="container-div" style="background-image: url('_files/siren-red-alarm-light-3d-vector-21662729.png')">
+                      <div class="container-div" style="background-image: url('/_files/siren-red-alarm-light-3d-vector-21662729.png')">
                           <div class="overlay"></div>
                           <div class="text">Alertes <i class="fa fa-lock"></i> </div>
                       </div>
                   </div>
                   <div class="col-md-4">
-                      <div class="container-div" style="background-image: url('_files/uninstall-facebook-4a_935adec67b324b146ff212ec4c69054f.jpg')">
+                      <div class="container-div" style="background-image: url('/_files/uninstall-facebook-4a_935adec67b324b146ff212ec4c69054f.jpg')">
                           <div class="overlay"></div>
                           <div class="text">MyDEPPS chat <i class="fa fa-lock"></i> </div>
                       </div>
                   </div>
                   <div class="col-md-4">
                       <a href="profil">
-                          <div class="container-div" style="background-image: url('_files/médecin_généraliste.jpg')">
+                          <div class="container-div" style="background-image: url('/_files/médecin_généraliste.jpg')">
                               <div class="overlay"></div>
                               <div class="text">Profil</div>
                           </div>
@@ -159,14 +172,14 @@
                   </div>
                   <div class="col-md-4">
                       <a href="_files/GUIDE-D'UTILISATION.pdf">
-                          <div class="container-div" style="background-image: url('_files/guide-utilisation-.webp')">
+                          <div class="container-div" style="background-image: url('/_files/guide-utilisation-.webp')">
                               <div class="overlay"></div>
                               <div class="text">Guide utilisateur </div>
                           </div>
                       </a>
                   </div>
                   <div class="col-md-4">
-                      <div class="container-div" style="background-image: url('_files/equipe-jeunes-africains-au-bureau-table-ordinateurs-portables_219728-4509.avif')">
+                      <div class="container-div" style="background-image: url('/_files/equipe-jeunes-africains-au-bureau-table-ordinateurs-portables_219728-4509.avif')">
                           <div class="overlay"></div>
                           <div class="text">Forum <i class="fa fa-lock"></i> </div>
                       </div>

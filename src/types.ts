@@ -34,6 +34,7 @@ export interface User {
   type: string;
   status: string;
   payement: string;
+  avatar: string;
 }
 
 export interface Civilite {

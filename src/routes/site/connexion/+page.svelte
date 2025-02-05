@@ -25,7 +25,7 @@
     event.preventDefault();
     try {
       const success = await loginUserFront(username, password);
-
+console.log(success);
       if (success.token != null) {
         
         window.location.href = "/site/dashboard";

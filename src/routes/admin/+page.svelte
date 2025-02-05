@@ -9,15 +9,15 @@
 
   let isChecked = true;
 
-  let user: User;
+ 
   let infoImg = {
     signedUrl: "",
     key: ""
   };
 
-  onMount(async () => {
-    user = getAuthCookie();
-  });
+
+    let user = getAuthCookie();
+  
 
   async function onFileSelected(file: any) {
     if (file) {

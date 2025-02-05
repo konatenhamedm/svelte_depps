@@ -3,20 +3,22 @@
 import { getAuthCookie, logout } from "$lib/auth";
 import type { User } from "../../types";
 
-let user: User;
+
   function handleLogout() {
     logout();
     window.location.href = "/";
   }
 
-  onMount(async () => {
-    user = getAuthCookie();
-  });
+
+    let user = getAuthCookie();
+  
 </script>
 
 <header class="main-header">
     <div class="flex items-center logo-box justify-start" style="background-color: white;">  
         <!-- Logo -->
+
+     
         <a href="/admin" class="logo">
             <!-- logo-->
              <div class="logo-mini w-40">
