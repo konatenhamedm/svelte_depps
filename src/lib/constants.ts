@@ -198,6 +198,30 @@ const professions: Array<ProfessionGRP> = [
         id: "rd_services_preparation_et_gestion_en_pharmacie",
         title: "Préparation et Gestion en Pharmacie",
       },
+      {
+        id: "rd_services_biologie_medicale",
+        title: "Biologie Médiale",
+      },
+      {
+        id: "rd_services_hygiene_et_assainissement",
+        title: "Hygiène et Assainissement",
+      },
+      {
+        id: "rd_services_imagerie_medicale",
+        title: "Imagerie Médicale",
+      },
+      {
+        id: "rd_services_bio_medicale",
+        title: "Biomédicale",
+      },
+      {
+        id: "rd_services_sante_publique",
+        title: "Santé Publique",
+      },
+      {
+        id: "rd_epidemiologie",
+        title: "Epidémiologie",
+      },
     ],
   },
   {
@@ -207,6 +231,26 @@ const professions: Array<ProfessionGRP> = [
         id: "rd_naturotherapeutes",
         title: "Naturothérapeutes",
       },
+      {
+        id: "rd_phytotherapeutes",
+        title: "Phytothérapeutes",
+      },
+      {
+        id: "rd_psychotherapeutes",
+        title: "Psychothérapeutes",
+      },
+      {
+        id: "rd_herboristes",
+        title: "Herboristes",
+      },
+      {
+        id: "rd_medico-droguistes",
+        title: "Médico-droguistes",
+      },
+      {
+        id: "rd_accoucheuses_traditionnelles",
+        title: "Accoucheuses traditionnelles",
+      },
     ],
   },
   {
@@ -215,6 +259,42 @@ const professions: Array<ProfessionGRP> = [
       {
         id: "rd_naturotherapie",
         title: "Naturothérapie",
+      },
+      {
+        id: "rd_praticiens_acupuncture",
+        title: "Praticiens d'acupuncture",
+      },
+      {
+        id: "rd_homeopathie",
+        title: "Homéopathie",
+      },
+      {
+        id: "rd_naturopathie",
+        title: "Naturopathie",
+      },
+      {
+        id: "rd_phytotherapie",
+        title: "Phytothérapie",
+      },
+      {
+        id: "rd_chiropractie",
+        title: "Chiropractie",
+      },
+      {
+        id: "rd_osteopathie",
+        title: "Ostéopathie",
+      },
+      {
+        id: "rd_psychotherapie",
+        title: "Psychothérapie",
+      },
+      {
+        id: "rd_hypnotherapie",
+        title: "Hypnothérapie",
+      },
+      {
+        id: "rd_massootherapie",
+        title: "Massoothérapie",
       },
     ],
   },

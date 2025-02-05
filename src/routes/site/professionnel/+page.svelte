@@ -4,7 +4,7 @@
   import Slide from "$components/Slide.svelte";
   import { onMount } from "svelte";
 
-  import type {Civilite, Genre, Pays } from "../../../types"
+  import type {Civilite, Genre, Pays, Specialite, Ville } from "../../../types"
 
   import {getProfessions} from "$lib/constants";
   import { apiFetch } from "$lib/api";
@@ -115,7 +115,7 @@
       ? ""
       : "Les mots de passe ne correspondent pas";
       
-      valid = !errors.password && !errors.confirmPassword && !errors.email;
+      // valid = !errors.password && !errors.confirmPassword && !errors.email;
     }
     
     if (step === 2) {
@@ -131,9 +131,9 @@
       errors.diplome = formData.diplome ? "" : "Le diplôme est requis";
       errors.dateDiplome = formData.dateDiplome ? "" : "Veuillez choisir une date de diplome";
       errors.lieuDiplome = formData.lieuDiplome ? "" : "Le lieu du diplôme est requis";
-      errors.situation = formData.situation ? "" : "Le situation est requis";
+      errors.situation = formData.situation ? "" : "La situation matrimoniale est requise";
       
-      valid = !errors.genre && !errors.civilite && !errors.nom && !errors.prenoms && !errors.nationate && !errors.dateNaissance && !errors.numero && !errors.address && !errors.lieuResidence && !errors.diplome && !errors.dateDiplome && !errors.lieuDiplome && !errors.situation
+      // valid = !errors.genre && !errors.civilite && !errors.nom && !errors.prenoms && !errors.nationate && !errors.dateNaissance && !errors.numero && !errors.address && !errors.lieuResidence && !errors.diplome && !errors.dateDiplome && !errors.lieuDiplome && !errors.situation
     }
 
     if (step === 3) {
@@ -146,7 +146,7 @@
       errors.ville = formData.ville ? "" : "La ville est requise";
       errors.dateEmploi = formData.dateEmploi ? "" : "Veuillez choisir une date de premier emploi";
 
-      valid = !errors.profession && !errors.situationPro && !errors.specialite && !errors.emailPro && !errors.contactPro && !errors.professionnel && !errors.ville && !errors.dateEmploi;
+      // valid = !errors.profession && !errors.situationPro && !errors.specialite && !errors.emailPro && !errors.contactPro && !errors.professionnel && !errors.ville && !errors.dateEmploi;
     }
 
     if (step === 4) {
@@ -157,7 +157,17 @@
       errors.certificat = formData.certificat ? "" : "Le certificat est requis";
       errors.cv = formData.cv ? "" : "Le CV est requis";
 
-      valid = !errors.photo && !errors.cni && !errors.casier && !errors.diplomeFile && !errors.certificat && !errors.cv;
+      // valid = !errors.photo && !errors.cni && !errors.casier && !errors.diplomeFile && !errors.certificat && !errors.cv;
+    }
+    
+    if (step === 5) {
+      if(formData.appartenirOrganisation) {
+        errors.organisationNom = formData.organisationNom ? "" : "Le nom de l'organisation est requis";
+        errors.organisationNumero = formData.organisationNumero ? "" : "Le numero de l'organisation est requis";
+        errors.organisationAnnee = formData.organisationAnnee ? "" : "L'année est requise";
+        
+        valid = !errors.organisationNom && !errors.organisationNumero && !errors.organisationAnnee;
+      }
     }
 
     return valid;
@@ -187,10 +197,13 @@
     { name : "civilite", url : "/civilite",},
     { name : "genre", url : "/genre",},
     { name : "nationate", url : "/pays",},
+    { name : "specialite", url : "/specialite",},
+    { name : "ville", url : "/ville",},
   ];
 
 
-  let values : { genre: Genre[], civilite: Civilite[], nationate: Pays[] } = {genre : [], civilite: [], nationate: []};
+  let values : { genre: Genre[], civilite: Civilite[], nationate: Pays[], specialite: Specialite[], ville: Ville[] } = 
+    {genre : [], civilite: [], nationate: [], specialite: [], ville: []};
 
   // /**
   //  * @type {any[]}
@@ -286,7 +299,7 @@
             <!-- Étape 1 -->
             {#if step === 1}
               <h2 class="h2-baslik-anasayfa-ozel h-yazi-margin-kucuk">
-                Informations de connexion (étape 1/4)
+                Informations de connexion (étape 1/5)
               </h2>
               <div class="tablo">
                 <div class="tablo--1h-ve-2">
@@ -339,7 +352,7 @@
             <!-- Étape 2 -->
             {#if step === 2}
               <h2 class="h2-baslik-anasayfa-ozel h-yazi-margin-kucuk">
-                Informations personnelles (étape 2/4)
+                Informations personnelles (étape 2/5)
               </h2>
               <div class="tablo">
                 <div class="tablo--1h-ve-2">
@@ -524,7 +537,7 @@
             <!-- Étape 3 -->
             {#if step === 3}
               <h2 class="h2-baslik-anasayfa-ozel h-yazi-margin-kucuk">
-                Informations professionnelles (étape 3/4)
+                Informations professionnelles (étape 3/5)
               </h2>
               <div class="tablo">
                 <div class="tablo--1h-ve-2">
@@ -557,105 +570,95 @@
   
                   <div class="grid grid-cols-3">
                     <div class="form__grup">
-                      <label class="form_label">Adresse Email</label>
-                      <input
-                        type="text"
-                        class="form__input"
-                        value={formData.email}
-                        readonly
-                      />
-                    </div>
-
-                    
-                    
-                    
-                    
-                    <div class="form__grup">
-                      <label class="form_label">Numero</label>
-                      <input
-                        type="text"
-                        class="form__input"
-                        bind:value={formData.numero}
-                        placeholder="Contact"
-                      />
-                      {#if errors.numero}<p class="error">
-                          {errors.numero}
-                        </p>{/if}
-                    </div>
-                    
-                    <div class="form__grup">
-                      <label class="form_label">Lieu d'obtention du diplôme</label>
-                      <input
-                        type="text"
-                        class="form__input"
-                        bind:value={formData.lieuDiplome}
-                        placeholder="Lieu d'obtention du diplôme"
-                      />
-                      {#if errors.lieuDiplome}<p class="error">
-                          {errors.lieuDiplome}
-                        </p>{/if}
-                    </div>
-
-                    <!-- <div class="form__grup">
-                      <label class="form_label">Nationalité</label>
-                      <select class="form__input" name="" id="" bind:value={formData.nationalite}>
-                        <option value="Côte d'Ivoire" selected={formData.nationalite === "Côte d'Ivoire"}>Côte d'Ivoire</option>
-                      </select>
-                    </div>
-                    
-                    
-                    <div class="form__grup">
-                      <label class="form_label">Date d'obtention de premier emploi</label>
-                      <input
-                        type="date"
-                        class="form__input"
-                        bind:value={formData.datePremierEmploi}
-                        placeholder="Date d'obtention de premier emploi"
-                      />
-                      {#if errors.datePremierEmploi}<p class="error">
-                          {errors.datePremierEmploi}
-                        </p>{/if}
-                    </div>
-
-                    <div class="form__grup">
-                      <label class="form_label">Pôle sanitaire, District, Ville, Commune, Quartier, Lot, Ilot</label>
-                      <input
-                        type="text"
-                        class="form__input"
-                        bind:value={formData.poleSanitaire}
-                        placeholder="Pôle sanitaire, District, Ville, Commune, Quartier, Lot, Ilot"
-                      />
-                      {#if errors.poleSanitaire}<p class="error">
-                          {errors.poleSanitaire}
-                        </p>{/if}
-                    </div>
-                    
-                    <div class="form__grup">
-                      <label class="form_label">Dénomination du diplôme</label>
-                      <input
-                        type="text"
-                        class="form__input"
-                        bind:value={formData.diplome}
-                        placeholder="Dénomination du diplôme"
-                      />
-                      {#if errors.diplome}<p class="error">
-                          {errors.diplome}
-                        </p>{/if}
-                    </div>
-                    
-                    <div class="form__grup">
                       <label class="form_label">Situation professionnelle</label>
                       <input
                         type="text"
                         class="form__input"
-                        bind:value={formData.situationProfessionnelle}
-                        placeholder="Situation professionnelle"
+                        bind:value={formData.situationPro}
+                        placeholder="Situation Professionnelle"
                       />
-                      {#if errors.situationProfessionnelle}<p class="error">
-                          {errors.situationProfessionnelle}
+                      {#if errors.situationPro}<p class="error">
+                          {errors.situationPro}
                         </p>{/if}
-                    </div> -->
+                    </div>
+                    
+                    <div class="form__grup">
+                      <label class="form_label">Spécialité</label>
+                      <select class="form__input" name="" id="" bind:value={formData.specialite}>
+                        <option value="" selected={!formData.specialite}>Veuillez sélectionner une option</option>
+                        {#each values.specialite as specialite}
+                          <option value={specialite.id} selected={formData.specialite === specialite.id}>{specialite.libelle}</option>
+                        {/each}
+                      </select>
+                      {#if errors.specialite}<p class="error">
+                        {errors.specialite}
+                      </p>{/if}
+                    </div>
 
+                    <div class="form__grup">
+                      <label class="form_label">Email professionnel</label>
+                      <input
+                        type="email"
+                        class="form__input"
+                        bind:value={formData.emailPro}
+                        placeholder="Email professionnel"
+                      />
+                      {#if errors.emailPro}<p class="error">
+                          {errors.emailPro}
+                        </p>{/if}
+                    </div>
+                    
+                    <div class="form__grup">
+                      <label class="form_label">Contact professionnel</label>
+                      <input
+                        type="text"
+                        class="form__input"
+                        bind:value={formData.contactPro}
+                        placeholder="Contact professionnel"
+                      />
+                      {#if errors.contactPro}<p class="error">
+                          {errors.contactPro}
+                        </p>{/if}
+                    </div>
+                    
+                    <div class="form__grup">
+                      <label class="form_label">Structure d'exercice professionnel</label>
+                      <input
+                        type="text"
+                        class="form__input"
+                        bind:value={formData.professionnel}
+                        placeholder="Structure d'exercice professionnel"
+                      />
+                      {#if errors.professionnel}<p class="error">
+                          {errors.professionnel}
+                        </p>{/if}
+                    </div>
+
+                    <div class="form__grup">
+                      <label class="form_label">Ville</label>
+                      <select class="form__input" name="" id="" bind:value={formData.ville}>
+                        <option value="" selected={!formData.ville}>Veuillez sélectionner une option</option>
+                        {#each values.ville as ville}
+                          <option value={ville.code} selected={formData.ville === ville.code}>{ville.libelle}</option>
+                        {/each}
+                      </select>
+                      {#if errors.ville}<p class="error">
+                        {errors.ville}
+                      </p>{/if}
+                    </div>
+
+                    <div class="form__grup">
+                      <label class="form_label">Date de premier emploi</label>
+                      <input
+                        type="date"
+                        class="form__input"
+                        bind:value={formData.dateEmploi}
+                        placeholder="Date de premier emploi"
+                      />
+                      {#if errors.dateEmploi}<p class="error">
+                          {errors.dateEmploi}
+                        </p>{/if}
+                    </div>
                   </div>
 
                 </div>
@@ -664,44 +667,163 @@
 
             <!-- Étape 4 -->
             {#if step === 4}
+              <h2 class="h2-baslik-anasayfa-ozel h-yazi-margin-kucuk">
+                Informations médiatiques (étape 4/5)
+              </h2>
               <div class="tablo">
-                <div class="tablo--1-ve-2">
-                  <div class="form__grup">
-                    <label class="form_label">Adresse complète *</label>
-                    <input
-                      type="text"
-                      class="form__input"
-                      bind:value={formData.address}
-                      placeholder="Pôle sanitaire, ville..."
-                    />
-                    {#if errors.address}<p class="error">
-                        {errors.address}
-                      </p>{/if}
+                <div class="tablo--1h-ve-2">
+                  <div class="grid grid-cols-3">
+
+                    <div class="form__grup">
+                      <label class="form_label">Photo</label>
+                      <input
+                        type="file"
+                        class="form__input"
+                        bind:value={formData.photo}
+                        placeholder="Veuillez charger votre Photo"
+                      />
+                      {#if errors.photo}<p class="error">
+                          {errors.photo}
+                        </p>{/if}
+                    </div>
+
+                    <div class="form__grup">
+                      <label class="form_label">CNI</label>
+                      <input
+                        type="file"
+                        class="form__input"
+                        bind:value={formData.cni}
+                        placeholder="Veuillez charger votre CNI"
+                      />
+                      {#if errors.cni}<p class="error">
+                          {errors.cni}
+                        </p>{/if}
+                    </div>
+
+                    <div class="form__grup">
+                      <label class="form_label">Casier judiciaire</label>
+                      <input
+                        type="file"
+                        class="form__input"
+                        bind:value={formData.casier}
+                        placeholder="Veuillez charger votre Casier judiciaire"
+                      />
+                      {#if errors.casier}<p class="error">
+                          {errors.casier}
+                        </p>{/if}
+                    </div>
+                    
+                    <div class="form__grup">
+                      <label class="form_label">Diplôme</label>
+                      <input
+                        type="file"
+                        class="form__input"
+                        bind:value={formData.diplomeFile}
+                        placeholder="Veuillez charger votre Diplôme"
+                      />
+                      {#if errors.diplomeFile}<p class="error">
+                          {errors.diplomeFile}
+                        </p>{/if}
+                    </div>
+                    
+                    <div class="form__grup">
+                      <label class="form_label">Certificat</label>
+                      <input
+                        type="file"
+                        class="form__input"
+                        bind:value={formData.certificat}
+                        placeholder="Veuillez charger votre Certificat"
+                      />
+                      {#if errors.certificat}<p class="error">
+                          {errors.certificat}
+                        </p>{/if}
+                    </div>
+
+                    <div class="form__grup">
+                      <label class="form_label">CV</label>
+                      <input
+                        type="file"
+                        class="form__input"
+                        bind:value={formData.cv}
+                        placeholder="Veuillez charger votre CV"
+                      />
+                      {#if errors.cv}<p class="error">
+                          {errors.cv}
+                        </p>{/if}
+                    </div>
+
+
                   </div>
-                  <div class="form__grup">
-                    <label class="form_label">Structure d’exercice *</label>
-                    <input
-                      type="text"
-                      class="form__input"
-                      bind:value={formData.professionnel}
-                      placeholder="Structure"
-                    />
-                    {#if errors.professionnel}<p class="error">
-                        {errors.professionnel}
+
+                </div>
+              </div>
+            {/if}
+
+            <!-- Étape 5 -->
+            {#if step === 5}
+              <h2 class="h2-baslik-anasayfa-ozel h-yazi-margin-kucuk">
+                Informations organisationnelles (étape 5/5)
+              </h2>
+              <div class="tablo">
+                <div class="tablo--1h-ve-2">
+                  
+                  <div class="grid grid-cols-3">
+
+                    <div class="form__grup">
+                      <label class="form_label">Appartenez vous à une organisation ?</label>
+                      <select class="form__input" name="" id="" bind:value={formData.appartenirOrganisation}>
+                        <option value={false} selected={!formData.appartenirOrganisation}>Non</option>
+                        <option value={true} selected={formData.appartenirOrganisation}>Oui</option>
+                        
+                      </select>
+                      {#if errors.appartenirOrganisation}<p class="error">
+                        {errors.appartenirOrganisation}
                       </p>{/if}
+                    </div>
+
+                    {#if formData.appartenirOrganisation}
+                    <div class="form__grup">
+                      <label class="form_label">Nom de l'organisation</label>
+                      <input
+                        type="email"
+                        class="form__input"
+                        bind:value={formData.organisationNom}
+                        placeholder="Nom de l'organisation"
+                      />
+                      {#if errors.organisationNom}<p class="error">
+                          {errors.organisationNom}
+                        </p>{/if}
+                    </div>
+                    
+                    <div class="form__grup">
+                      <label class="form_label">Numero de l'organisation</label>
+                      <input
+                        type="email"
+                        class="form__input"
+                        bind:value={formData.organisationNumero}
+                        placeholder="Numero de l'organisation"
+                      />
+                      {#if errors.organisationNumero}<p class="error">
+                          {errors.organisationNumero}
+                        </p>{/if}
+                    </div>
+                    
+                    <div class="form__grup">
+                      <label class="form_label">Année</label>
+                      <input
+                        type="email"
+                        class="form__input"
+                        bind:value={formData.organisationAnnee}
+                        placeholder="Année"
+                      />
+                      {#if errors.organisationAnnee}<p class="error">
+                          {errors.organisationAnnee}
+                        </p>{/if}
+                    </div>
+                    {/if}
+
                   </div>
-                  <div class="form__grup">
-                    <label class="form_label">Lieu d’exercice *</label>
-                    <input
-                      type="text"
-                      class="form__input"
-                      bind:value={formData.address}
-                      placeholder="Lieu"
-                    />
-                    {#if errors.address}<p class="error">
-                        {errors.address}
-                      </p>{/if}
-                  </div>
+
                 </div>
               </div>
             {/if}
@@ -716,7 +838,7 @@
                 >
               {/if}
 
-              {#if step < 3}
+              {#if step < 5}
                 <button
                   type="button"
                   class="buton buton--kirmizi"

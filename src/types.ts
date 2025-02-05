@@ -13,6 +13,7 @@ export interface CategorieIcon {
 }
 export interface Ville {
   id: number;
+  code: string;
   libelle: string;
 }
 
@@ -48,6 +49,11 @@ export interface Genre {
 }
 
 export interface Pays {
+  id: string;
+  libelle: string;
+}
+
+export interface Specialite {
   id: string;
   libelle: string;
 }
