@@ -187,11 +187,36 @@
   }
 
   function submitForm() {
-    if (validateStep()) {
-      console.log("Données envoyées :", formData);
-      alert("Formulaire soumis !");
+        if (validateStep()) {
+            let data = new FormData();
+
+            // Ajouter chaque champ au FormData
+            Object.keys(formData).forEach(key => {
+                if (formData[key] instanceof File) {
+                    data.append(key, formData[key]); // Ajouter fichier
+                } else {
+                    data.append(key, formData[key]); // Ajouter texte
+                }
+            });
+
+            console.log(data);
+
+            // Envoyer les données via fetch
+            fetch("http://depps.leadagro.net/api/professionnel/create", {
+                method: "POST",
+                body: data
+            })
+            .then(response => response.json())
+            .then(result => {
+                console.log("Réponse du serveur :", result);
+                alert("Formulaire soumis avec succès !");
+            })
+            .catch(error => {
+                console.error("Erreur lors de la soumission :", error);
+                alert("Une erreur s'est produite !");
+            });
+        }
     }
-  }
 
   /**
    * @type {any[]}
@@ -682,7 +707,7 @@
                       <input
                         type="file"
                         class="form__input"
-                        bind:value={formData.photo}
+                        bind:value={formData.photo} on:change={(e) => formData.photo = e.target.files[0]}
                         placeholder="Veuillez charger votre Photo"
                       />
                       {#if errors.photo}<p class="error">
@@ -695,7 +720,7 @@
                       <input
                         type="file"
                         class="form__input"
-                        bind:value={formData.cni}
+                        bind:value={formData.cni} on:change={(e) => formData.cni = e.target.files[0]}
                         placeholder="Veuillez charger votre CNI"
                       />
                       {#if errors.cni}<p class="error">
@@ -848,7 +873,7 @@
                   on:click={nextStep}>SUIVANT →</button
                 >
               {:else}
-                <button type="submit" class="buton buton--kirmizi"
+                <button type="submit" on:click={submitForm} class="buton buton--kirmizi"
                   >VALIDER</button
                 >
               {/if}

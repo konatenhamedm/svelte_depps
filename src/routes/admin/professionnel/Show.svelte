@@ -95,70 +95,77 @@
   <div class="space-y-6 p-4">
     <form action="#" use:init>
       <!-- Première section : Informations personnelles -->
-      <div class="grid grid-cols-2 gap-6">
-        <div class="space-y-6">
+      <div class="grid grid-cols-3 gap-6">
+        <div> 
           <InputSimple
-            fieldName="nom"
-            label="Nom"
-            field={nom}
-            disabled={true}
-          />
+          fieldName="nom"
+          label="Nom"
+          field={nom}
+          disabled={true}
+        />
+      </div>
+        <div>
           <InputSimple
-            fieldName="prenoms"
-            label="Prénom(s)"
-            field={prenoms}
-            disabled={true}
-          />
+          fieldName="prenoms"
+          label="Prénom(s)"
+          field={prenoms}
+          disabled={true}
+        />
+      </div>
+        <div> 
           <InputSimple
-            fieldName="dateNaissance"
-            label="Date de naissance"
-            field={dateNaissance}
-            disabled={true}
-          />
-          <InputSimple
-            fieldName="civilite"
-            label="Civilité"
-            field={civilite}
-            disabled={true}
-          />
-          <InputSimple
-            fieldName="lieuResidence"
-            label="Lieu de résidence"
-            field={address}
-            disabled={true}
-          />
+          fieldName="dateNaissance"
+          label="Date de naissance"
+          field={dateNaissance}
+          disabled={true}
+        />
+      
         </div>
-        <div class="space-y-6">
-          <InputSimple
-            fieldName="userEmail"
-            label="Email utilisateur"
-            field={userEmail}
-            disabled={true}
-          />
-          <InputSimple
-            fieldName="userPhone"
-            label="Téléphone utilisateur"
-            field={userPhone}
-            disabled={true}
-          />
-          <InputSimple
-            fieldName="typeUser"
-            label="Type utilisateur"
-            field={typeUser}
-            disabled={true}
-          />
-          <InputSimple
-            fieldName="casier"
-            label="Casier"
-            field={casier}
-            disabled={true}
-          />
-          <InputSimple
-            fieldName="situation"
-            label="Situation"
-            field={situation}
-            disabled={true}
-          />
+      </div>
+
+
+      <div class="grid grid-cols-3 gap-6">
+        <div> <InputSimple
+          fieldName="civilite"
+          label="Civilité"
+          field={civilite}
+          disabled={true}
+        /></div>
+        <div> <InputSimple
+          fieldName="lieuResidence"
+          label="Lieu de résidence"
+          field={address}
+          disabled={true}
+        /></div>
+        <div> <InputSimple
+          fieldName="userEmail"
+          label="Email utilisateur"
+          field={userEmail}
+          disabled={true}
+        />
+      
+        </div>
+      </div>
+      <div class="grid grid-cols-3 gap-6">
+        <div>  <InputSimple
+          fieldName="userPhone"
+          label="Téléphone utilisateur"
+          field={userPhone}
+          disabled={true}
+        /></div>
+        <div> <InputSimple
+          fieldName="typeUser"
+          label="Type utilisateur"
+          field={typeUser}
+          disabled={true}
+        /></div>
+        <div>  <InputSimple
+          fieldName="casier"
+          label="Casier"
+          field={casier}
+          disabled={true}
+        />
+      
         </div>
       </div>
 
@@ -166,55 +173,86 @@
       <div class="grid grid-cols-3 gap-6 mt-6">
         <div class="space-y-6">
           <InputSimple
-            fieldName="profession"
-            label="Profession"
-            field={profession}
-            disabled={true}
-          />
-          <InputSimple
-            fieldName="professionnel"
-            label="Structure d’exercice professionnel"
-            field={professionnel}
-            disabled={true}
-          />
-          <InputSimple
-            fieldName="contactPro"
-            label="Contact professionnel"
-            field={contactPro}
-            disabled={true}
-          />
-          <InputSimple
-            fieldName="addressPro"
-            label="Adresse professionnelle"
-            field={addressPro}
-            disabled={true}
-          />
+          fieldName="profession"
+          label="Profession"
+          field={profession}
+          disabled={true}
+        />
         </div>
         <div class="space-y-6">
           <InputSimple
-            fieldName="situationPro"
-            label="Situation professionnelle"
-            field={situationPro}
-            disabled={true}
-          />
+          fieldName="professionnel"
+          label="Structure d’exercice professionnel"
+          field={professionnel}
+          disabled={true}
+        />
+        
+        </div>
+        <div class="space-y-6">
+          <InputSimple
+          fieldName="contactPro"
+          label="Contact professionnel"
+          field={contactPro}
+          disabled={true}
+        />
+        </div>
+      </div>
+
+
+      <div class="grid grid-cols-3 gap-6 mt-6">
+        <div class="space-y-6">
+          <InputSimple
+          fieldName="addressPro"
+          label="Adresse professionnelle"
+          field={addressPro}
+          disabled={true}
+        />
+        </div>
+        <div class="space-y-6">
+          <InputSimple
+          fieldName="situationPro"
+          label="Situation professionnelle"
+          field={situationPro}
+          disabled={true}
+        />
+        
+        </div>
+        <div class="space-y-6">
           <InputSimple
             fieldName="diplome"
             label="Diplôme"
             field={diplome}
             disabled={true}
           />
+        </div>
+      </div>
+      <div class="grid grid-cols-3 gap-6 mt-6">
+        
+        <div class="space-y-6">
           <InputSimple
-            fieldName="dateDiplome"
-            label="Date du diplôme"
-            field={dateDiplome}
-            disabled={true}
-          />
+          fieldName="situation"
+          label="Situation"
+          field={situation}
+          disabled={true}
+        />  
+          
+        </div>
+        <div class="space-y-6">
           <InputSimple
-            fieldName="dateEmploi"
-            label="Date d'emploi"
-            field={dateEmploi}
-            disabled={true}
+          fieldName="dateDiplome"
+          label="Date du diplôme"
+          field={dateDiplome}
+          disabled={true}
           />
+          
+        </div>
+        <div class="space-y-6">
+          <InputSimple
+          fieldName="dateEmploi"
+          label="Date d'emploi"
+          field={dateEmploi}
+          disabled={true}
+        />
         </div>
       </div>
 
