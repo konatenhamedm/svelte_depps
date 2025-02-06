@@ -13,6 +13,7 @@ export interface CategorieIcon {
 }
 export interface Ville {
   id: number;
+  code: string;
   libelle: string;
 }
 
@@ -34,12 +35,26 @@ export interface User {
   type: string;
   status: string;
   payement: string;
-  avatar: string;
 }
 
 export interface Civilite {
   id: number;
   code: string;
+  libelle: string;
+}
+
+export interface Genre {
+  id: string;
+  libelle: string;
+}
+
+export interface Pays {
+  id: string;
+  libelle: string;
+}
+
+export interface Specialite {
+  id: string;
   libelle: string;
 }
 
@@ -333,6 +348,7 @@ export interface professionnel {
   phone: string;
   email: string;
   type: string;
+  status: string;
 
   user: {
     username: string;

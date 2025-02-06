@@ -1,17 +1,17 @@
-interface Categorie {
+interface Profession {
   id: string;
   title: string;
 }
 
-interface CategorieGRP {
+interface ProfessionGRP {
   title: string;
-  categories: Categorie[];
+  professions: Profession[];
 }
 
-const categories: Array<CategorieGRP> = [
+const professions: Array<ProfessionGRP> = [
   {
     title: "Médecins",
-    categories: [
+    professions: [
       {
         id: "rd_medecins",
         title: "Médecins",
@@ -32,7 +32,7 @@ const categories: Array<CategorieGRP> = [
   },
   {
     title: "Profession de pharmacie et de la physique médicale",
-    categories: [
+    professions: [
       {
         id: "rd_pharmaciens",
         title: "Pharmaciens",
@@ -65,7 +65,7 @@ const categories: Array<CategorieGRP> = [
   },
   {
     title: "Professions paramédicales",
-    categories: [
+    professions: [
       {
         id: "rd_dieteticien",
         title: "Diététicien",
@@ -102,60 +102,204 @@ const categories: Array<CategorieGRP> = [
   },
   {
     title: "Technicien Supérieur de la Santé",
-    categories: [
+    professions: [
       {
-        id: "rd_biologie_medicale",
+        id: "rd_technicien_biologie_medicale",
         title: "Biologie Médicale",
+      },
+      {
+        id: "rd_technicien_hygiene_assainissement",
+        title: "Hygiène et Assainissement",
+      },
+      {
+        id: "rd_technicien_imagerie_medicale",
+        title: "Imagerie Médicale",
+      },
+      {
+        id: "rd_technien_bio_medicale",
+        title: "Biomédicale",
+      },
+      {
+        id: "rd_kinesithérapie",
+        title: "Kinésitherapie",
+      },
+      {
+        id: "rd_prothese_dentaire",
+        title: "Prothèse Dentatire",
+      },
+      {
+        id: "rd_preparation_gestion_pharmacie",
+        title: "Préparation et Gestion en Pharmacie",
       },
     ],
   },
   {
     title: "Auxiliaire des techniques sanitaires",
-    categories: [
+    professions: [
       {
         id: "rd_soins_obstetricaux",
         title: "Soins obstétricaux",
+      },
+      {
+        id: "rd_soins_infirmiers",
+        title: "Soins Infirmiers",
+      },
+      {
+        id: "rd_pharmacie",
+        title: "Pharmacie",
+      },
+      {
+        id: "rd_laboratoire",
+        title: "Laboratoire",
+      },
+      {
+        id: "rd_auxiliaire_hygiene_assainissement",
+        title: "Hygiène et Assainissement",
+      },
+      {
+        id: "rd_auxiliaire_imagerie_medicale",
+        title: "Imagerie Médicale",
       },
     ],
   },
   {
     title: "Ingénieur des Techniques Sanitaires",
-    categories: [
+    professions: [
       {
         id: "rd_techniques_preparation_et_gestion_en_pharmacie",
         title: "Préparation et Gestion en Pharmacie",
+      },
+      {
+        id: "rd_ingenieur_biologie_medicale",
+        title: "Biologie Médicale",
+      },
+      {
+        id: "rd_ingenieur_hygiene_assainissement",
+        title: "Hygiène et Assainissement",
+      },
+      {
+        id: "rd_ingenieur_imagerie_medicale",
+        title: "Imagerie Médicale",
+      },
+      {
+        id: "rd_ingenieur_bio_medicale",
+        title: "Biomédicale",
+      },
+      {
+        id: "rd_ingenieur_sante_publique",
+        title: "Santé Publique",
       },
     ],
   },
   {
     title: "Ingénieur des Services de Santé",
-    categories: [
+    professions: [
       {
         id: "rd_services_preparation_et_gestion_en_pharmacie",
         title: "Préparation et Gestion en Pharmacie",
+      },
+      {
+        id: "rd_services_biologie_medicale",
+        title: "Biologie Médiale",
+      },
+      {
+        id: "rd_services_hygiene_et_assainissement",
+        title: "Hygiène et Assainissement",
+      },
+      {
+        id: "rd_services_imagerie_medicale",
+        title: "Imagerie Médicale",
+      },
+      {
+        id: "rd_services_bio_medicale",
+        title: "Biomédicale",
+      },
+      {
+        id: "rd_services_sante_publique",
+        title: "Santé Publique",
+      },
+      {
+        id: "rd_epidemiologie",
+        title: "Epidémiologie",
       },
     ],
   },
   {
     title: "Profession de la médecine traditionnelle",
-    categories: [
+    professions: [
       {
         id: "rd_naturotherapeutes",
         title: "Naturothérapeutes",
+      },
+      {
+        id: "rd_phytotherapeutes",
+        title: "Phytothérapeutes",
+      },
+      {
+        id: "rd_psychotherapeutes",
+        title: "Psychothérapeutes",
+      },
+      {
+        id: "rd_herboristes",
+        title: "Herboristes",
+      },
+      {
+        id: "rd_medico-droguistes",
+        title: "Médico-droguistes",
+      },
+      {
+        id: "rd_accoucheuses_traditionnelles",
+        title: "Accoucheuses traditionnelles",
       },
     ],
   },
   {
     title: "Profession de la médecine alternative et complémentaire",
-    categories: [
+    professions: [
       {
         id: "rd_naturotherapie",
         title: "Naturothérapie",
+      },
+      {
+        id: "rd_praticiens_acupuncture",
+        title: "Praticiens d'acupuncture",
+      },
+      {
+        id: "rd_homeopathie",
+        title: "Homéopathie",
+      },
+      {
+        id: "rd_naturopathie",
+        title: "Naturopathie",
+      },
+      {
+        id: "rd_phytotherapie",
+        title: "Phytothérapie",
+      },
+      {
+        id: "rd_chiropractie",
+        title: "Chiropractie",
+      },
+      {
+        id: "rd_osteopathie",
+        title: "Ostéopathie",
+      },
+      {
+        id: "rd_psychotherapie",
+        title: "Psychothérapie",
+      },
+      {
+        id: "rd_hypnotherapie",
+        title: "Hypnothérapie",
+      },
+      {
+        id: "rd_massootherapie",
+        title: "Massoothérapie",
       },
     ],
   },
 ];
 
-export function getCategories(): Array<CategorieGRP> {
-  return categories;
+export function getProfessions(): Array<ProfessionGRP> {
+  return professions;
 }
