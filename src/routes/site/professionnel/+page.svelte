@@ -190,6 +190,8 @@
         valid = isPaiementDone
       })
     }
+
+    return valid
   }
 
   function nextStep() {
