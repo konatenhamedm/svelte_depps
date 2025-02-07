@@ -12,6 +12,7 @@
 
   export let data; // Récupérer les données du layout
   let user = data?.user;
+  const montant = 15000;
 
   let step = 1;
   let formData = {
@@ -58,6 +59,9 @@
     organisationNom: "",
     organisationNumero: "",
     organisationAnnee: "",
+
+    // Paiement informations
+    transactionID: "",
   };
 
 
@@ -105,6 +109,9 @@
     organisationNom: "",
     organisationNumero: "",
     organisationAnnee: "",
+
+    // Paiement informations
+    transactionID: "",
   };
 
   function validateStep() {
@@ -118,7 +125,7 @@
       ? ""
       : "Les mots de passe ne correspondent pas";
       
-      // valid = !errors.password && !errors.confirmPassword && !errors.email;
+      valid = !errors.password && !errors.confirmPassword && !errors.email;
     }
     
     if (step === 2) {
@@ -136,7 +143,7 @@
       errors.lieuDiplome = formData.lieuDiplome ? "" : "Le lieu du diplôme est requis";
       errors.situation = formData.situation ? "" : "La situation matrimoniale est requise";
       
-      // valid = !errors.genre && !errors.civilite && !errors.nom && !errors.prenoms && !errors.nationate && !errors.dateNaissance && !errors.numero && !errors.address && !errors.lieuResidence && !errors.diplome && !errors.dateDiplome && !errors.lieuDiplome && !errors.situation
+      valid = !errors.genre && !errors.civilite && !errors.nom && !errors.prenoms && !errors.nationate && !errors.dateNaissance && !errors.numero && !errors.address && !errors.lieuResidence && !errors.diplome && !errors.dateDiplome && !errors.lieuDiplome && !errors.situation
     }
 
     if (step === 3) {
@@ -149,7 +156,7 @@
       errors.ville = formData.ville ? "" : "La ville est requise";
       errors.dateEmploi = formData.dateEmploi ? "" : "Veuillez choisir une date de premier emploi";
 
-      // valid = !errors.profession && !errors.situationPro && !errors.specialite && !errors.emailPro && !errors.contactPro && !errors.professionnel && !errors.ville && !errors.dateEmploi;
+      valid = !errors.profession && !errors.situationPro && !errors.specialite && !errors.emailPro && !errors.contactPro && !errors.professionnel && !errors.ville && !errors.dateEmploi;
     }
 
     if (step === 4) {
@@ -160,7 +167,7 @@
       errors.certificat = formData.certificat ? "" : "Le certificat est requis";
       errors.cv = formData.cv ? "" : "Le CV est requis";
 
-      // valid = !errors.photo && !errors.cni && !errors.casier && !errors.diplomeFile && !errors.certificat && !errors.cv;
+      valid = !errors.photo && !errors.cni && !errors.casier && !errors.diplomeFile && !errors.certificat && !errors.cv;
     }
     
     if (step === 5) {
@@ -173,7 +180,16 @@
       }
     }
 
-    return valid;
+    if (step === 6) {
+      checkTransactionID(formData.transactionID).then(resultat => {
+        if (resultat === false) {
+          errors.transactionID = formData.transactionID ? "Cet identifiant de transaction n'est pas valide" : "L'identifiant de la transaction est requis";
+        } else {
+          isPaiementDone = true;
+        }
+        valid = isPaiementDone
+      })
+    }
   }
 
   function nextStep() {
@@ -218,6 +234,56 @@
         }
     }
 
+    let isPaiementProcessing = false;
+    let isPaiementDone = false;
+
+    function clickPaiement() {
+      isPaiementProcessing = true;
+
+      initPaiement();
+    }
+
+    function initPaiement() {
+      let data = new FormData();
+
+      data.append("nom", formData.nom);
+      data.append("prenoms", formData.prenoms);
+      data.append("email", formData.email);
+      data.append("numero", formData.numero);
+
+      fetch("https://depps.leadagro.net/api/paiement/paiement", {
+          method: "POST",
+          body: data
+      })
+      .then(response => response.json())
+      .then(result => {
+          console.log("Réponse du serveur :", result);
+          if(result.url) {
+            const link = document.querySelector('#reloadPaiementLink');
+            if (link) {
+              link.setAttribute('href', result.url);
+            }
+
+            setTimeout(function() {
+              const pLink = document.querySelector('#p-reloadPaiementLink');
+              pLink?.classList.remove('d-none');
+                window.open(result.url, '_blank');
+            }, 3000);
+          }
+      })
+      .catch(error => {
+          console.error("Erreur lors de la soumission :", error);
+          alert("Une erreur s'est produite !");
+      });
+    }
+
+    async function checkTransactionID(idtransaction: string | undefined) {
+      if(!idtransaction) return false;
+
+      const res = await apiFetch(true, "/paiement/get/transaction/" + idtransaction)
+      return res.data as boolean;
+    }
+
   /**
    * @type {any[]}
    */
@@ -232,21 +298,6 @@
 
   let values : { genre: Genre[], civilite: Civilite[], nationate: Pays[], specialite: Specialite[], ville: Ville[] } = 
     {genre : [], civilite: [], nationate: [], specialite: [], ville: []};
-
-  // /**
-  //  * @type {any[]}
-  //  */
-  // let civilites = [];
-  
-  // /**
-  //  * @type {any[]}
-  //  */
-  // let genres = [];
-  
-  // /**
-  //  * @type {any[]}
-  //  */
-  // let nationates = [];
   
   async function fetchData() {
     try {
@@ -263,29 +314,6 @@
             console.error("Erreur lors de la récupération des données:", res.statusText);
         }
       });
-
-        // const resCivilites = await apiFetch(true,"/civilite")
-        // if (resCivilites) {
-        //     civilites = resCivilites.data;
-        // } else {
-        //     console.error("Erreur lors de la récupération des données:", resCivilites.statusText);
-        // }
-        
-        // const resGenres = await apiFetch(true,"/genre")
-        // if (resGenres) {
-        //     genres = resGenres.data;
-        // } else {
-        //     console.error("Erreur lors de la récupération des données:", resGenres.statusText);
-        // }
-        
-        // const resNationates = await apiFetch(true,"/pays")
-        // if (resNationates) {
-        //     nationates = resNationates.data;
-        // } else {
-        //     console.error("Erreur lors de la récupération des données:", resNationates.statusText);
-        // }
-
-
     } catch (error) {
         console.error("Erreur lors de la récupération des données:", error);
     }
@@ -294,6 +322,7 @@
     onMount(async () => {
         fetchData();
     });
+    
 </script>
 
 <div
@@ -855,6 +884,65 @@
                 </div>
               </div>
             {/if}
+            
+            <!-- Étape 6 : Paiement -->
+            {#if step === 6}
+              <h2 class="h2-baslik-anasayfa-ozel h-yazi-margin-kucuk">
+                VEUILLEZ PROCéDER AU PAIEMENT
+              </h2>
+              <div class="tablo">
+                <div class="tablo--1h-ve-2">
+
+                  {#if isPaiementProcessing}
+                  
+                  <div class="grid grid-cols-2 gap-20">
+                      <div class="">
+                        <p>Vous serez redirigés vers le lien de paiement. Merci de patienter quelques instants</p>
+                        <p id="p-reloadPaiementLink" class="d-none">Si ce n'est pas le cas : <a target="_blank" href="javascript:void(0);" id="reloadPaiementLink" class="text-blue-500">Veuillez cliquer ici pour procéder au paiement</a></p>
+                        
+                        <br><p>Une fois le paiement effectué, veuillez renseigner l'identifiant de la transaction pour valider votre inscription.</p>
+                      </div>
+                      <div class="form__grup">
+                        <label class="form_label">Transaction ID</label>
+                        <input
+                          type="text"
+                          class="form__input"
+                          bind:value={formData.transactionID}
+                          placeholder="Transaction ID"
+                        />
+                        {#if errors.transactionID}<p class="error">
+                            {errors.transactionID}
+                          </p>{/if}
+                      </div>
+                    </div>
+
+                  {:else}
+
+                  <h1>MONTANT : {montant} XOF</h1><br>
+                  <div class="grid grid-cols-6 gap-20">
+                      <div class="border rounded-xl p-0">
+                        <img class="rounded-xl bouncingImage" on:click={clickPaiement} src="https://dashboard.paiementpro.net/_files/om.png" style="width:100%" alt="">
+                      </div>
+                      <div class="border rounded-xl p-0">
+                        <img class="rounded-xl bouncingImage" on:click={clickPaiement} src="https://dashboard.paiementpro.net/_files/momo.png" style="width:100%" alt="">
+                      </div>
+                      <div class="border rounded-xl p-0">
+                        <img class="rounded-xl bouncingImage" on:click={clickPaiement} src="https://dashboard.paiementpro.net/_files/flooz.png" style="width:100%" alt="">
+                      </div>
+                      <div class="border rounded-xl p-0">
+                        <img class="rounded-xl bouncingImage" on:click={clickPaiement} src="https://dashboard.paiementpro.net/_files/waveci-1.png" style="width:100%" alt="">
+                      </div>
+                      <div class="border rounded-xl p-0">
+                        <img class="rounded-xl bouncingImage" on:click={clickPaiement} src="https://dashboard.paiementpro.net/_files/visa.png" style="width:100%" alt="">
+                      </div>
+                      <div class="border rounded-xl p-0">
+                        <img class="rounded-xl bouncingImage" on:click={clickPaiement} src="https://myonmci.ci/assets/images/tresor.png" style="width:100%" alt="">
+                      </div>
+                  </div>
+                  {/if}
+                </div>
+              </div>
+            {/if}
 
             <!-- Boutons de navigation -->
             <div class="form__grup">
@@ -872,10 +960,18 @@
                   class="buton buton--kirmizi"
                   on:click={nextStep}>SUIVANT →</button
                 >
-              {:else}
-                <button type="submit" on:click={submitForm} class="buton buton--kirmizi"
-                  >VALIDER</button
+              {:else if step === 5}
+                <button
+                  type="button"
+                  class="buton buton--kirmizi"
+                  on:click={nextStep}>PASSER AU PAIEMENT →</button
                 >
+              {:else}
+                {#if isPaiementProcessing}
+                  <button type="submit" on:click={submitForm} class="buton buton--kirmizi"
+                    >VALIDER</button
+                  >
+                {/if}                
               {/if}
             </div>
           </form>
@@ -927,6 +1023,16 @@
     color: red;
     font-size: 14px;
     margin-top: 5px;
+  }
+
+  .bouncingImage {
+    cursor: pointer;
+    
+  }
+
+  .bouncingImage:hover {
+    scale: 1.1;
+    duration: 2;
   }
   </style>
   <Footer />
