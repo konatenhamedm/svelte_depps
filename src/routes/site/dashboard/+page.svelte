@@ -191,11 +191,11 @@
           </div>
         </div>
         <br />
-        <div class="alert alert-danger" style="font-size:18px">
+        <!-- <div class="alert alert-danger" style="font-size:18px">
           Bienvenue! Veuillez payer votre adhésion pour activer votre compte! <b
             ><u><a href="paiement" style="color:#58151c">Cliquez ici</a></u></b
           >
-        </div>
+        </div> -->
         <!-- <div class="alert alert-info" style="font-size:18px">
                   <i>Vous avez obtenu un avis favorable d'inscription au registre de la profession Pharmacie.<br>Veuillez vous rendre à la DEPPS pour le retrait de votre autorisation d'exercice</i>
               </div> -->

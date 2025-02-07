@@ -127,7 +127,7 @@
               class="box-header with-border flex justify-between items-center"
             >
               <h4 class="box-title text-xl font-medium">
-                Liste dRépartition par Localisation
+                Liste répartition par Localisation
               </h4>
             </div>
             <!-- /.box-header -->
