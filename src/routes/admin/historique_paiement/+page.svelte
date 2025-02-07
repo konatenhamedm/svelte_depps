@@ -19,7 +19,7 @@
   import Pagination from "../../../components/_includes/Pagination.svelte";
   // Importer le store pageSize
   import { get } from "svelte/store";
-  import type { professionnel, User } from "../../../types";
+  import type { professionnel, Transaction, User } from "../../../types";
   import { apiFetch } from "$lib/api";
   import { pageSize } from "../../../store"; // Importer le store pageSize
   import { onMount } from "svelte";
@@ -31,7 +31,7 @@
   export let data; // Les données retournées par `load()`
   let user = data.user;
 
-  let main_data: professionnel[] = [];
+  let main_data: Transaction[] = [];
   let searchQuery = ""; // Pour la recherche par texte
   let selectedService: any = ""; // Pour filtrer par service
   let selectedStatus: any = ""; // Pour filtrer par status
@@ -48,10 +48,10 @@
   async function fetchData() {
     loading = true; // Active le spinner de chargement
     try {
-      const res = await apiFetch(true, "/professionnel/ACTIVE");
-      console.log(res);
+      const res = await apiFetch(true, "/paiement/historique");
+    console.log(res);
       if (res) {
-        main_data = res.data as professionnel[];
+        main_data = res.data as Transaction[];
       } else {
         console.error(
           "Erreur lors de la récupération des données:",
@@ -71,10 +71,9 @@
 
   $: filteredData = main_data.filter((item) => {
     return (
-      item.nom.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      item.prenoms.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      item.phone.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      item.email.toLowerCase().includes(searchQuery.toLowerCase())
+      item.reference.toLowerCase().includes(searchQuery.toLowerCase()) 
+      
+     
     );
   });
 
@@ -147,7 +146,7 @@
               <TableHead
                 class="border-y border-gray-200 bg-gray-100 dark:border-gray-700"
               >
-                {#each ["Type", "nom", "prénoms", "Téléphone", "email", "Montant", "Date"] as title}
+                {#each ["Reference", "type", "email", "Montant", "Date","Action"] as title}
                   <TableHeadCell class="ps-4 font-normal border border-gray-300"
                     >{title}</TableHeadCell
                   >
@@ -196,19 +195,25 @@
                   {#each paginatedProducts as item}
                     <TableBodyRow class="text-base border border-gray-300">
                       <TableBodyCell class="p-4 border border-gray-300"
-                        >{item.nom}</TableBodyCell
+                        >{item.reference}</TableBodyCell
                       >
                       <TableBodyCell class="p-4 border border-gray-300"
-                        >{item.prenoms}</TableBodyCell
+                        >{item.user.typeUser}</TableBodyCell
                       >
-                      <TableBodyCell class="p-4 border border-gray-300"
-                        >{item.user.phone}</TableBodyCell
-                      >
+                      <!-- <TableBodyCell class="p-4 border border-gray-300"
+                        >{item.user.username}</TableBodyCell
+                      > -->
+                     <!--  <TableBodyCell class="p-4 border border-gray-300"
+                        >{item.numero}</TableBodyCell
+                      > -->
                       <TableBodyCell class="p-4 border border-gray-300"
                         >{item.user.email}</TableBodyCell
                       >
                       <TableBodyCell class="p-4 border border-gray-300"
-                        >{item.user.typeUser}</TableBodyCell
+                        >{item.montant}</TableBodyCell
+                      >
+                      <TableBodyCell class="p-4 border border-gray-300"
+                        >{item.CreatedAt}</TableBodyCell
                       >
                       <!--  <TableBodyCell class="p-4 border border-gray-300">{item.sous_menu.libelle}</TableBodyCell>
                                    -->

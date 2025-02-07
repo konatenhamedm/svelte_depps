@@ -16,6 +16,25 @@ export interface Ville {
   code: string;
   libelle: string;
 }
+export interface Transaction {
+  id: number;
+  montant: string;
+  reference: string;
+  channel: string;
+  state: string;
+  user : {
+    id: string;
+    username: string;
+    typeUser: string;
+    email: string;
+    payement: string;
+  },
+  emailPro: string;
+  nom: string;
+  prenoms: string;
+  numero: string;
+  CreatedAt: string;
+}
 
 export interface Appartement {
   id: number;

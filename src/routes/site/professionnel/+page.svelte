@@ -7,7 +7,7 @@
   import type {Civilite, Genre, Pays, Specialite, Ville } from "../../../types"
 
   import {getProfessions} from "$lib/constants";
-  import { apiFetch } from "$lib/api";
+  import { apiFetch, BASE_URL_API_V2 } from "$lib/api";
   const professions = getProfessions();
 
   export let data; // Récupérer les données du layout
@@ -202,7 +202,7 @@
             console.log(data);
 
             // Envoyer les données via fetch
-            fetch("http://depps.leadagro.net/api/professionnel/create", {
+            fetch(BASE_URL_API_V2+"/professionnel/create", {
                 method: "POST",
                 body: data
             })
@@ -732,7 +732,7 @@
                       <label class="form_label">Casier judiciaire</label>
                       <input
                         type="file"
-                        class="form__input"
+                        class="form__input" on:change={(e) => formData.casier = e.target.files[0]}
                         bind:value={formData.casier}
                         placeholder="Veuillez charger votre Casier judiciaire"
                       />
@@ -745,7 +745,7 @@
                       <label class="form_label">Diplôme</label>
                       <input
                         type="file"
-                        class="form__input"
+                        class="form__input" on:change={(e) => formData.diplomeFile = e.target.files[0]}
                         bind:value={formData.diplomeFile}
                         placeholder="Veuillez charger votre Diplôme"
                       />
@@ -758,7 +758,7 @@
                       <label class="form_label">Certificat</label>
                       <input
                         type="file"
-                        class="form__input"
+                        class="form__input" on:change={(e) => formData.certificat = e.target.files[0]}
                         bind:value={formData.certificat}
                         placeholder="Veuillez charger votre Certificat"
                       />
@@ -771,7 +771,7 @@
                       <label class="form_label">CV</label>
                       <input
                         type="file"
-                        class="form__input"
+                        class="form__input" on:change={(e) => formData.cv = e.target.files[0]}
                         bind:value={formData.cv}
                         placeholder="Veuillez charger votre CV"
                       />
