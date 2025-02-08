@@ -191,7 +191,7 @@
           </div>
         </div>
         <br />
-       <!--  <div class="alert alert-danger" style="font-size:18px">
+        <!-- <div class="alert alert-danger" style="font-size:18px">
           Bienvenue! Veuillez payer votre adhésion pour activer votre compte! <b
             ><u><a href="paiement" style="color:#58151c">Cliquez ici</a></u></b
           >

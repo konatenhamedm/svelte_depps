@@ -49,6 +49,7 @@
       const res = await apiFetch(true, "/statistique/civilite/");
 
       if (res) {
+        alert("ok");
         main_data = res.data.nombre as Stats[];
         stats = res.data.pieChart;
         console.log(stats);
@@ -73,7 +74,7 @@
     return item.civilite.toLowerCase().includes(searchQuery.toLowerCase());
   });
 
-  $: tt = stats;
+  
   // $: totalPages = Math.ceil(filteredData.length / get(pageSize)) pageSize se trouve store.ts;
   $: totalPages = Math.max(1, Math.ceil(filteredData.length / get(pageSize)));
 
@@ -127,7 +128,7 @@
               class="box-header with-border flex justify-between items-center"
             >
               <h4 class="box-title text-xl font-medium">
-                Liste dRépartition par Localisation
+                Liste répartition par Localisation
               </h4>
             </div>
             <!-- /.box-header -->

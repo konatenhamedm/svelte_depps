@@ -9,9 +9,9 @@
 
   let username = "";
   let password = "";
-  let authenticating = false;
+  $: authenticating = false;
   let showPassword = false; // To toggle password visibility
-  let message = "";
+  $: message = "";
   let error = "";
 
   let passwordWarning = "";

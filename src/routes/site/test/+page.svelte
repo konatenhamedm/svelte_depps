@@ -1,33 +1,29 @@
 <script lang="ts">
+  import { onMount } from "svelte";
   import Footer from "$components/Footer.svelte";
   import Header from "$components/Header.svelte";
   import Slide from "$components/Slide.svelte";
-  import { onMount } from "svelte";
 
+  import { apiFetch } from "$lib/api";
   import type {
     Civilite,
     Genre,
     Pays,
     Specialite,
     Ville
-  } from "../../../types";
-
+  } from "../../../types.js";
   import { getProfessions } from "$lib/constants";
-  import { apiFetch } from "$lib/api";
+
   const professions = getProfessions();
 
   export let data; // Récupérer les données du layout
   let user = data?.user;
-  const montant = 15000;
 
   let step = 1;
   let formData = {
-    // Login informations
     email: "",
     password: "",
     confirmPassword: "",
-
-    // Personal Informations
     genre: "",
     civilite: "",
     nom: "",
@@ -41,8 +37,6 @@
     dateDiplome: "",
     lieuDiplome: "",
     situation: "",
-
-    // Professional informations
     profession: "",
     situationPro: "",
     specialite: "",
@@ -51,23 +45,17 @@
     professionnel: "",
     ville: "",
     dateEmploi: "",
-
-    // Media informations
     photo: "",
     cni: "",
     casier: "",
     diplomeFile: "",
     certificat: "",
     cv: "",
-
-    // Organization informations
     appartenirOrganisation: false,
     organisationNom: "",
     organisationNumero: "",
     organisationAnnee: "",
 
-    // Paiement informations
-    transactionID: ""
   };
 
   let errors = {
@@ -116,7 +104,7 @@
     organisationAnnee: "",
 
     // Paiement informations
-    transactionID: ""
+   
   };
 
   function validateStep() {
@@ -212,7 +200,6 @@
         !errors.ville &&
         !errors.dateEmploi;
     }
-
     if (step === 4) {
       errors.photo = formData.photo ? "" : "La photo est requise";
       errors.cni = formData.cni
@@ -258,100 +245,141 @@
     return valid;
   }
 
+  let isPaiementProcessing = false;
+  let isPaiementDone = false;
+  let message: any = "";
+
+  // 🔹 Fonction pour sauvegarder l'état actuel du formulaire
+  function saveFormState() {
+    localStorage.setItem("formData", JSON.stringify(formData));
+    localStorage.setItem("step", step.toString());
+  }
+
+  let fileNames = {}; // Stocke uniquement les noms des fichiers pour éviter les problèmes avec `localStorage`
+
+  
+  function updateFormData(fieldName, file) {
+    formData = { ...formData, [fieldName]: file }; // Mise à jour réactive
+  }
+
+  function handleFileChange(event, fieldName) {
+    const file = event.target.files.length ? event.target.files[0] : null;
+    updateFormData(fieldName, file);
+  }
+
+  // 🔹 Fonction pour restaurer le formulaire après un retour
+  // Restaurer les données et l'étape depuis localStorage
+  function restoreFormState() {
+    const savedFormData = localStorage.getItem("formData");
+    const savedStep = localStorage.getItem("step");
+
+    if (savedFormData) {
+      formData = JSON.parse(savedFormData);
+    }
+
+    if (savedStep) {
+      step = parseInt(savedStep);
+    } else {
+      localStorage.setItem("step", step.toString());
+    }
+  }
+  // ✅ Vérifier si on revient après un paiement
+  onMount(() => {
+    const urlParams = new URLSearchParams(window.location.search);
+    if (urlParams.has("return")) {
+      restoreFormState();
+    }
+  });
+
+  // Lire la valeur de `step` depuis localStorage, sinon initialiser à 1
+
+  let messagefile = "";
+  // Fonction pour changer d'étape et sauvegarder dans localStorage
   function nextStep() {
     if (validateStep()) {
-      step++;
+      step += 1;
+      localStorage.setItem("step", step.toString());
+      return;
+    } else {
+      messagefile = "Veuillez remplir tous les champs obligatoires.";
     }
   }
 
   function prevStep() {
-    step--;
+    if (step > 1) {
+      step -= 1;
+      localStorage.setItem("step", step.toString());
+    }
   }
 
-  let message : any  = "";
-
+  // 🔹 Soumission du formulaire
   function submitForm() {
-    if (validateStep()) {
+    alert("Formulaire soumis!");
+    console.log(validateStep());
+    if (!validateStep()) {
       let data = new FormData();
-
-      // Ajouter chaque champ au FormData
+      data.append("reference", localStorage.getItem("reference").toString());
       Object.keys(formData).forEach((key) => {
-        if (formData[key] instanceof File) {
-          data.append(key, formData[key]); // Ajouter fichier
-        } else {
-          data.append(key, formData[key]); // Ajouter texte
-        }
+        data.append(key, formData[key]);
       });
 
-      console.log(data);
-
-      // Envoyer les données via fetch
       fetch("http://depps.leadagro.net/api/professionnel/create", {
         method: "POST",
         body: data
       })
         .then((response) => response.json())
         .then((result) => {
-          
-            if(Object.keys(result.errors).length > 0){              
-              message = result.errors;
-            
-            }else{
-              window.location.href = "/site/connexion";
-            }
-        
+          if (Object.keys(result.errors).length > 0) {
+            message = result.errors;
+          } else {
+            window.location.href = "/site/connexion";
+          }
         })
         .catch((error) => {
-          message = errors;
-          
+          message = error;
         });
+
+        console.log(data);
     }
   }
 
-  let isPaiementProcessing = false;
-  let isPaiementDone = false;
-
+  // 🔹 Gestion du paiement
   function clickPaiement() {
     isPaiementProcessing = true;
+    saveFormState(); // 🔥 Sauvegarder avant de partir
 
     initPaiement();
   }
 
-  function initPaiement() {
-    let data = new FormData();
+  
 
+   function initPaiement() {
+    let data = new FormData();
     data.append("nom", formData.nom);
     data.append("prenoms", formData.prenoms);
     data.append("email", formData.email);
     data.append("numero", formData.numero);
 
-    fetch("https://depps.leadagro.net/api/paiement/paiement", {
+   /*  fetch("https://depps.leadagro.net/api/paiement/paiement", {
       method: "POST",
       body: data
     })
       .then((response) => response.json())
       .then((result) => {
-        console.log("Réponse du serveur :", result);
         if (result.url) {
-          const link = document.querySelector("#reloadPaiementLink");
-          if (link) {
-            link.setAttribute("href", result.url);
-          }
-
-          setTimeout(function () {
-            const pLink = document.querySelector("#p-reloadPaiementLink");
-            pLink?.classList.remove("d-none");
-            window.open(result.url, "_blank");
+            localStorage.setItem("reference", result.reference);
+          setTimeout(() => {
+            window.location.href = result.url + "?return=1"; // 🔥 Ajout du paramètre `return`
           }, 3000);
         }
       })
       .catch((error) => {
-        console.error("Erreur lors de la soumission :", error);
-        alert("Une erreur s'est produite !");
+        console.error("Erreur paiement :", error);
+        isPaiementProcessing = false;
       });
-  }
+  } 
 
-  async function checkTransactionID(idtransaction:any) {
+  async function checkTransactionID(idtransaction: any) {
     if (!idtransaction) return false;
 
     try {
@@ -366,11 +394,11 @@
         error
       );
       return false;
-    }
+    } */
   }
 
   // Déclenche la vérification de façon réactive dès que transactionID change
-  $: if (formData.transactionID) {
+ /*  $: if (formData.transactionID) {
     checkTransactionID(formData.transactionID).then((resultat) => {
       if (!resultat) {
         errors.transactionID =
@@ -381,7 +409,7 @@
         isPaiementDone = true;
       }
     });
-  }
+  } */
 
   /**
    * @type {any[]}
@@ -428,6 +456,35 @@
   onMount(async () => {
     fetchData();
   });
+  onMount(() => {
+    const savedStep = localStorage.getItem("step");
+    if (savedStep) {
+      step = parseInt(savedStep);
+    }
+
+    const savedData = localStorage.getItem("formData");
+
+    if (savedStep) step = parseInt(savedStep);
+    if (savedData) formData = JSON.parse(savedData);
+
+    if (savedData) {
+      formData = { ...formData, ...JSON.parse(savedData) };
+    }
+
+    const savedFiles = localStorage.getItem("fileNames");
+    if (savedFiles) {
+      fileNames = JSON.parse(savedFiles);
+    }
+
+    console.log("fileNames:", localStorage.getItem("reference"));
+   
+  });
+
+  // Sauvegarder les données du formulaire dans localStorage à chaque modification
+  function updateField(field, value) {
+    formData[field] = value;
+    localStorage.setItem("formData", JSON.stringify(formData));
+  }
 </script>
 
 <div
@@ -471,6 +528,9 @@
                     <div class="form__grup">
                       <label class="form_label">E-mail *</label>
                       <input
+                        on:input={saveFormState}
+                        on:input={(e: any) =>
+                          updateField("email", e.target.value)}
                         type="email"
                         class="form__input"
                         bind:value={formData.email}
@@ -484,6 +544,9 @@
                     <div class="form__grup">
                       <label class="form_label">Mot de passe *</label>
                       <input
+                        on:input={saveFormState}
+                        on:input={(e: any) =>
+                          updateField("password", e.target.value)}
                         type="password"
                         class="form__input"
                         bind:value={formData.password}
@@ -499,6 +562,9 @@
                         >Confirmer le mot de passe *</label
                       >
                       <input
+                        on:input={saveFormState}
+                        on:input={(e: any) =>
+                          updateField("confirmPassword", e.target.value)}
                         type="password"
                         class="form__input"
                         bind:value={formData.confirmPassword}
@@ -524,6 +590,9 @@
                     <div class="form__grup">
                       <label class="form_label">Genre</label>
                       <select
+                        on:change={saveFormState}
+                        on:change={(e: any) =>
+                          updateField("genre", e.target.value)}
                         class="form__input"
                         name=""
                         id=""
@@ -548,6 +617,9 @@
                     <div class="form__grup">
                       <label class="form_label">Civilité</label>
                       <select
+                        on:change={saveFormState}
+                        on:change={(e: any) =>
+                          updateField("civilite", e.target.value)}
                         class="form__input"
                         name=""
                         id=""
@@ -572,6 +644,9 @@
                     <div class="form__grup">
                       <label class="form_label">Nom</label>
                       <input
+                        on:input={saveFormState}
+                        on:input={(e: any) =>
+                          updateField("nom", e.target.value)}
                         type="text"
                         class="form__input"
                         bind:value={formData.nom}
@@ -585,6 +660,9 @@
                     <div class="form__grup">
                       <label class="form_label">Prénoms</label>
                       <input
+                        on:input={saveFormState}
+                        on:input={(e: any) =>
+                          updateField("prenoms", e.target.value)}
                         type="text"
                         class="form__input"
                         bind:value={formData.prenoms}
@@ -598,6 +676,9 @@
                     <div class="form__grup">
                       <label class="form_label">Nationalité</label>
                       <select
+                        on:change={saveFormState}
+                        on:change={(e: any) =>
+                          updateField("nationate", e.target.value)}
                         class="form__input"
                         name=""
                         id=""
@@ -622,6 +703,9 @@
                     <div class="form__grup">
                       <label class="form_label">Date de naissance</label>
                       <input
+                        on:input={saveFormState}
+                        on:input={(e: any) =>
+                          updateField("dateNaissance", e.target.value)}
                         type="date"
                         class="form__input"
                         bind:value={formData.dateNaissance}
@@ -635,6 +719,9 @@
                     <div class="form__grup">
                       <label class="form_label">Numero</label>
                       <input
+                        on:input={saveFormState}
+                        on:input={(e: any) =>
+                          updateField("numero", e.target.value)}
                         type="text"
                         class="form__input"
                         bind:value={formData.numero}
@@ -648,6 +735,9 @@
                     <div class="form__grup">
                       <label class="form_label">Adresse</label>
                       <input
+                        on:input={saveFormState}
+                        on:input={(e: any) =>
+                          updateField("address", e.target.value)}
                         type="text"
                         class="form__input"
                         bind:value={formData.address}
@@ -661,6 +751,9 @@
                     <div class="form__grup">
                       <label class="form_label">Lieu de résidence</label>
                       <input
+                        on:input={saveFormState}
+                        on:input={(e: any) =>
+                          updateField("lieuResidence", e.target.value)}
                         type="text"
                         class="form__input"
                         bind:value={formData.lieuResidence}
@@ -674,6 +767,9 @@
                     <div class="form__grup">
                       <label class="form_label">Diplôme</label>
                       <input
+                        on:input={saveFormState}
+                        on:input={(e: any) =>
+                          updateField("diplome", e.target.value)}
                         type="text"
                         class="form__input"
                         bind:value={formData.diplome}
@@ -689,6 +785,9 @@
                         >Date d'obtention du diplôme</label
                       >
                       <input
+                        on:input={saveFormState}
+                        on:input={(e: any) =>
+                          updateField("dateDiplome", e.target.value)}
                         type="date"
                         class="form__input"
                         bind:value={formData.dateDiplome}
@@ -704,6 +803,9 @@
                         >Lieu d'obtention du diplôme</label
                       >
                       <input
+                        on:input={saveFormState}
+                        on:input={(e: any) =>
+                          updateField("lieuDiplome", e.target.value)}
                         type="text"
                         class="form__input"
                         bind:value={formData.lieuDiplome}
@@ -717,6 +819,9 @@
                     <div class="form__grup">
                       <label class="form_label">Situation matrimoniale</label>
                       <select
+                        on:change={saveFormState}
+                        on:change={(e: any) =>
+                          updateField("situation", e.target.value)}
                         class="form__input"
                         name=""
                         id=""
@@ -776,6 +881,9 @@
                         {#each professionGP.professions as profession}
                           <div class="">
                             <input
+                              on:input={saveFormState}
+                              on:input={(e: any) =>
+                                updateField("profession", e.target.value)}
                               type="radio"
                               class="me-2"
                               id={profession.id}
@@ -799,6 +907,9 @@
                       <label class="form_label">Situation professionnelle</label
                       >
                       <input
+                        on:input={saveFormState}
+                        on:input={(e: any) =>
+                          updateField("situationPro", e.target.value)}
                         type="text"
                         class="form__input"
                         bind:value={formData.situationPro}
@@ -812,6 +923,9 @@
                     <div class="form__grup">
                       <label class="form_label">Spécialité</label>
                       <select
+                        on:change={saveFormState}
+                        on:change={(e: any) =>
+                          updateField("specialite", e.target.value)}
                         class="form__input"
                         name=""
                         id=""
@@ -836,6 +950,9 @@
                     <div class="form__grup">
                       <label class="form_label">Email professionnel</label>
                       <input
+                        on:input={saveFormState}
+                        on:input={(e: any) =>
+                          updateField("emailPro", e.target.value)}
                         type="email"
                         class="form__input"
                         bind:value={formData.emailPro}
@@ -849,6 +966,9 @@
                     <div class="form__grup">
                       <label class="form_label">Contact professionnel</label>
                       <input
+                        on:input={saveFormState}
+                        on:input={(e: any) =>
+                          updateField("contactPro", e.target.value)}
                         type="text"
                         class="form__input"
                         bind:value={formData.contactPro}
@@ -864,6 +984,9 @@
                         >Structure d'exercice professionnel</label
                       >
                       <input
+                        on:input={saveFormState}
+                        on:input={(e: any) =>
+                          updateField("professionnel", e.target.value)}
                         type="text"
                         class="form__input"
                         bind:value={formData.professionnel}
@@ -877,6 +1000,9 @@
                     <div class="form__grup">
                       <label class="form_label">Ville</label>
                       <select
+                        on:change={saveFormState}
+                        on:change={(e: any) =>
+                          updateField("ville", e.target.value)}
                         class="form__input"
                         name=""
                         id=""
@@ -901,6 +1027,9 @@
                     <div class="form__grup">
                       <label class="form_label">Date de premier emploi</label>
                       <input
+                        on:input={saveFormState}
+                        on:input={(e: any) =>
+                          updateField("dateEmploi", e.target.value)}
                         type="date"
                         class="form__input"
                         bind:value={formData.dateEmploi}
@@ -914,85 +1043,123 @@
                 </div>
               </div>
             {/if}
-            <div class="form__grup">
-              <label class="form_label">Photo</label>
-              <input
-                type="file"
-                class="form__input"
-                bind:value={formData.photo}
-               
-                placeholder="Veuillez charger votre Photo"
-              />
-              {#if errors.photo}<p class="error">
-                  {errors.photo}
-                </p>{/if}
-            </div>
 
-            <div class="form__grup">
-              <label class="form_label">CNI</label>
-              <input
-                type="file"
-                class="form__input"
-                bind:value={formData.cni}
-                
-                placeholder="Veuillez charger votre CNI"
-              />
-              {#if errors.cni}<p class="error">
-                  {errors.cni}
-                </p>{/if}
-            </div>
+            <!-- Étape 4 -->
+            {#if step === 4}
+              <h2 class="h2-baslik-anasayfa-ozel h-yazi-margin-kucuk">
+                Informations médiatiques (étape 4/5)
+              </h2>
+              {#if messagefile !== ""}
+                <div
+                  class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative"
+                  role="alert"
+                >
+                  <strong class="font-bold">Oups erreur!</strong>
+                  <span class="block sm:inline">{messagefile}</span>
+                </div>
+              {/if}
+              <div class="tablo">
+                <div class="tablo--1h-ve-2">
+                  <div class="grid grid-cols-3">
+                    <div class="form__grup">
+                      <label class="form_label">Photo</label>
+                      <input
+                        type="file"
+                        class="form__input"
+                        on:change={(e) => handleFileChange(e, "photo")}
+                        placeholder="Veuillez charger votre Photo"
+                      />
+                      {#if fileNames["photo"]}
+                        <p>{fileNames["photo"]}</p>
+                      {/if}
+                      {#if errors.photo}<p class="error">
+                          {errors.photo}
+                        </p>{/if}
+                    </div>
 
-            <div class="form__grup">
-              <label class="form_label">Casier judiciaire</label>
-              <input
-                type="file"
-                class="form__input" 
-                bind:value={formData.casier}
-                placeholder="Veuillez charger votre Casier judiciaire"
-              />
-              {#if errors.casier}<p class="error">
-                  {errors.casier}
-                </p>{/if}
-            </div>
+                    <div class="form__grup">
+                      <label class="form_label">CNI</label>
+                      <input
+                        type="file"
+                        class="form__input"
+                        on:change={(e) => handleFileChange(e, "cni")}
+                        placeholder="Veuillez charger votre CNI"
+                      />
+                      {#if fileNames["cni"]}
+                        <p>{fileNames["cni"]}</p>
+                      {/if}
+                      {#if errors.cni}<p class="error">
+                          {errors.cni}
+                        </p>{/if}
+                    </div>
 
-            <div class="form__grup">
-              <label class="form_label">Diplôme</label>
-              <input
-                type="file"
-                class="form__input" 
-                bind:value={formData.diplomeFile}
-                placeholder="Veuillez charger votre Diplôme"
-              />
-              {#if errors.diplomeFile}<p class="error">
-                  {errors.diplomeFile}
-                </p>{/if}
-            </div>
+                    <div class="form__grup">
+                      <label class="form_label">Casier judiciaire</label>
+                      <input
+                        type="file"
+                        class="form__input"
+                        on:change={(e) => handleFileChange(e, "casier")}
+                        placeholder="Veuillez charger votre Casier judiciaire"
+                      />
+                      {#if fileNames["casier"]}
+                        <p>{fileNames["casier"]}</p>
+                      {/if}
+                      {#if errors.casier}<p class="error">
+                          {errors.casier}
+                        </p>{/if}
+                    </div>
 
-            <div class="form__grup">
-              <label class="form_label">Certificat</label>
-              <input
-                type="file"
-                class="form__input" 
-                bind:value={formData.certificat}
-                placeholder="Veuillez charger votre Certificat"
-              />
-              {#if errors.certificat}<p class="error">
-                  {errors.certificat}
-                </p>{/if}
-            </div>
+                    <div class="form__grup">
+                      <label class="form_label">Diplôme</label>
+                      <input
+                        type="file"
+                        class="form__input"
+                        on:change={(e) => handleFileChange(e, "diplomeFile")}
+                        placeholder="Veuillez charger votre Diplôme"
+                      />
+                      {#if fileNames["diplomeFile"]}
+                        <p>{fileNames["diplomeFile"]}</p>
+                      {/if}
+                      {#if errors.diplomeFile}<p class="error">
+                          {errors.diplomeFile}
+                        </p>{/if}
+                    </div>
 
-            <div class="form__grup">
-              <label class="form_label">CV</label>
-              <input
-                type="file"
-                class="form__input" 
-                bind:value={formData.cv}
-                placeholder="Veuillez charger votre CV"
-              />
-              {#if errors.cv}<p class="error">
-                  {errors.cv}
-                </p>{/if}
-            </div>
+                    <div class="form__grup">
+                      <label class="form_label">Certificat</label>
+                      <input
+                        type="file"
+                        class="form__input"
+                        on:change={(e) => handleFileChange(e, "certificat")}
+                        placeholder="Veuillez charger votre Certificat"
+                      />
+                      {#if fileNames["certificat"]}
+                        <p>{fileNames["certificat"]}</p>
+                      {/if}
+                      {#if errors.certificat}<p class="error">
+                          {errors.certificat}
+                        </p>{/if}
+                    </div>
+
+                    <div class="form__grup">
+                      <label class="form_label">CV</label>
+                      <input   on:change={saveFormState}
+                        type="file"
+                        class="form__input"
+                        on:change={(e) => handleFileChange(e, "cv")}
+                        placeholder="Veuillez charger votre CV"
+                      />
+                      {#if fileNames["cv"]}
+                        <p>{fileNames["cv"]}</p>
+                      {/if}
+                      {#if errors.cv}<p class="error">
+                          {errors.cv}
+                        </p>{/if}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            {/if}
 
             <!-- Étape 5 -->
             {#if step === 5}
@@ -1007,6 +1174,9 @@
                         >Appartenez vous à une organisation ?</label
                       >
                       <select
+                        on:change={saveFormState}
+                        on:change={(e: any) =>
+                          updateField("appartenirOrganisation", e.target.value)}
                         class="form__input"
                         name=""
                         id=""
@@ -1031,7 +1201,10 @@
                       <div class="form__grup">
                         <label class="form_label">Nom de l'organisation</label>
                         <input
-                          type="email"
+                          on:input={saveFormState}
+                          on:input={(e: any) =>
+                            updateField("organisationNom", e.target.value)}
+                          type="text"
                           class="form__input"
                           bind:value={formData.organisationNom}
                           placeholder="Nom de l'organisation"
@@ -1046,7 +1219,10 @@
                           >Numero de l'organisation</label
                         >
                         <input
-                          type="email"
+                          on:input={saveFormState}
+                          on:input={(e: any) =>
+                            updateField("organisationNumero", e.target.value)}
+                          type="text"
                           class="form__input"
                           bind:value={formData.organisationNumero}
                           placeholder="Numero de l'organisation"
@@ -1059,7 +1235,10 @@
                       <div class="form__grup">
                         <label class="form_label">Année</label>
                         <input
-                          type="email"
+                          on:input={saveFormState}
+                          on:input={(e: any) =>
+                            updateField("organisationAnnee", e.target.value)}
+                          type="text"
                           class="form__input"
                           bind:value={formData.organisationAnnee}
                           placeholder="Année"
@@ -1081,7 +1260,7 @@
               </h2>
               <div class="tablo">
                 <div class="tablo--1h-ve-2">
-                  {#if isPaiementProcessing}
+                 
                     <div class="grid grid-cols-2 gap-20">
                       <div class="">
                         <p>
@@ -1105,7 +1284,7 @@
                           inscription.
                         </p>
                       </div>
-                      <div class="form__grup">
+                     <!--  <div class="form__grup">
                         <label class="form_label">Transaction ID</label>
                         <input
                           type="text"
@@ -1116,68 +1295,9 @@
                         {#if errors.transactionID}<p class="error">
                             {errors.transactionID}
                           </p>{/if}
-                      </div>
+                      </div> -->
                     </div>
-                  {:else}
-                    <h1>MONTANT : {montant} XOF</h1>
-                    <br />
-                    <div class="grid grid-cols-6 gap-20">
-                      <div class="border rounded-xl p-0">
-                        <img
-                          class="rounded-xl bouncingImage"
-                          on:click={clickPaiement}
-                          src="https://dashboard.paiementpro.net/_files/om.png"
-                          style="width:100%"
-                          alt=""
-                        />
-                      </div>
-                      <div class="border rounded-xl p-0">
-                        <img
-                          class="rounded-xl bouncingImage"
-                          on:click={clickPaiement}
-                          src="https://dashboard.paiementpro.net/_files/momo.png"
-                          style="width:100%"
-                          alt=""
-                        />
-                      </div>
-                      <div class="border rounded-xl p-0">
-                        <img
-                          class="rounded-xl bouncingImage"
-                          on:click={clickPaiement}
-                          src="https://dashboard.paiementpro.net/_files/flooz.png"
-                          style="width:100%"
-                          alt=""
-                        />
-                      </div>
-                      <div class="border rounded-xl p-0">
-                        <img
-                          class="rounded-xl bouncingImage"
-                          on:click={clickPaiement}
-                          src="https://dashboard.paiementpro.net/_files/waveci-1.png"
-                          style="width:100%"
-                          alt=""
-                        />
-                      </div>
-                      <div class="border rounded-xl p-0">
-                        <img
-                          class="rounded-xl bouncingImage"
-                          on:click={clickPaiement}
-                          src="https://dashboard.paiementpro.net/_files/visa.png"
-                          style="width:100%"
-                          alt=""
-                        />
-                      </div>
-                      <div class="border rounded-xl p-0">
-                        <img
-                          class="rounded-xl bouncingImage"
-                          on:click={clickPaiement}
-                          src="https://myonmci.ci/assets/images/tresor.png"
-                          style="width:100%"
-                          alt=""
-                        />
-                      </div>
-                    </div>
-                  {/if}
+                  
                 </div>
               </div>
             {/if}
@@ -1199,33 +1319,34 @@
                   on:click={nextStep}>SUIVANT →</button
                 >
               {:else if step === 5}
-                <button
+                <button on:click={clickPaiement}
                   type="button"
                   class="buton buton--kirmizi"
                   on:click={nextStep}>PASSER AU PAIEMENT →</button
                 >
               {:else}
+              <!-- disabled={!isPaiementDone} -->
                 <button
                   type="submit"
                   on:click={submitForm}
                   class="buton buton--kirmizi"
-                  disabled={!isPaiementDone}
+                  
                 >
                   VALIDER
                 </button>
               {/if}
 
-              <br>
-              <br>
-              {#if  message !== ""}
-				<div
-				  class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative"
-				  role="alert"
-				>
-				  <strong class="font-bold">Oups erreur!</strong>
-				  <span class="block sm:inline">{message}</span>
-				</div>
-			  {/if}
+              <br />
+              <br />
+              {#if message !== ""}
+                <div
+                  class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative"
+                  role="alert"
+                >
+                  <strong class="font-bold">Oups erreur!</strong>
+                  <span class="block sm:inline">{message}</span>
+                </div>
+              {/if}
             </div>
           </form>
         </div>
@@ -1235,9 +1356,9 @@
 
   <style>
     button:disabled {
-  opacity: 0.5;
-  cursor: not-allowed;
-}
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
     .footerss p {
       display: flex;
       flex-wrap: wrap;
