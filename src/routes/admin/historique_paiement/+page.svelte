@@ -219,6 +219,7 @@
                       >
                       <!--  <TableBodyCell class="p-4 border border-gray-300">{item.sous_menu.libelle}</TableBodyCell>
                                    -->
+<<<<<<< HEAD
                       <TableBodyCell
                         class="space-x-1 p-2 w-8 border border-gray-300"
                       >
@@ -247,6 +248,58 @@
                           <TrashBinSolid size="sm" />
                         </Button>
                       </TableBodyCell>
+=======
+                    
+
+
+
+
+
+
+
+
+<TableBodyCell class="p-2 w-8 border border-gray-300">
+  <!-- Utilisation de <details> pour gérer l'ouverture/fermeture au clic -->
+  <details class="relative">
+    <!-- <summary> est cliquable et n'affiche pas le marqueur par défaut grâce à "list-none" -->
+    <summary class="p-1 hover:bg-gray-100 rounded-full transition-colors list-none cursor-pointer">
+      <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 5v.01M12 12v.01M12 19v.01M12 6a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2z" />
+      </svg>
+    </summary>
+
+    <!-- Contenu du menu dropdown, affiché lorsque <details> est ouvert -->
+    <div class="absolute right-0 mt-1 w-32 bg-black border border-gray-200 rounded-md shadow-lg">
+      <div class="py-1">
+        <!-- Bouton Voir -->
+        <button 
+          class="w-full flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-green-800 hover:text-green-800"
+
+           on:click={() => (current_data = item, openShow = true)}
+        >
+          <!-- Vous pouvez remplacer cette icône par celle de votre choix -->
+          <EyeOutline size="sm" class="mr-2" />
+          Voir
+        </button>
+        <!-- Bouton Supprimer -->
+        <button 
+          class="w-full flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-red-800 hover:text-red-800"
+             on:click={() => (current_data = item, openDelete = true)}
+        >
+          <TrashBinSolid size="sm" class="mr-2" />
+          Supprimer
+        </button>
+      </div>
+    </div>
+  </details>
+</TableBodyCell>
+
+
+
+
+
+
+>>>>>>> ba8369f (Refactor table action buttons to use dropdown menus for improved UI/UX)
                     </TableBodyRow>
                   {/each}
                 {/if}
@@ -290,3 +343,19 @@
 <!-- Modales -->
 <Show bind:open={openShow} data={current_data} sizeModal="xl" />
 <Delete bind:open={openDelete} data={current_data} />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
