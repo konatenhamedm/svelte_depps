@@ -28,8 +28,7 @@
   import Show from "./Show.svelte";
   import Delete from "./Delete.svelte";
   import { getAuthCookie } from "$lib/auth";
-
- 
+  import DropdownMenu from "$components/DropdownMenu.svelte";
 
   let main_data: UserAdmin[] = [];
   let searchQuery = ""; // Pour la recherche par texte
@@ -47,7 +46,7 @@
 
   export let data; // Les données retournées par `load()`
   let user = data.user;
-  
+
   async function fetchData() {
     loading = true; // Active le spinner de chargement
     try {
@@ -74,9 +73,7 @@
   });
 
   $: filteredData = main_data.filter((item) => {
-    return (
-      item.username.toLowerCase().includes(searchQuery.toLowerCase()) 
-    );
+    return item.username.toLowerCase().includes(searchQuery.toLowerCase());
   });
 
   // $: totalPages = Math.ceil(filteredData.length / get(pageSize)) pageSize se trouve store.ts;
@@ -115,6 +112,19 @@
   $: if (!openAdd || !openEdit || !openDelete) {
     refreshDataIfNeeded();
   }
+
+
+  // Fonction de callback pour gérer les actions
+  const handleAction = (action:any, item:any) => {
+    current_data = item;
+    if (action === 'view') {
+      openShow = true;
+    } else if (action === 'edit') {
+      openEdit = true;
+    } else if (action === 'delete') {
+      openDelete = true;
+    }
+  };
 </script>
 
 <Entete
@@ -214,7 +224,7 @@
                       <TableBodyCell class="p-4 border border-gray-300"
                         >{item.typeUser}</TableBodyCell
                       >
-                    <!--   <TableBodyCell class="p-4 border border-gray-300"
+                      <!--   <TableBodyCell class="p-4 border border-gray-300"
                         >{item.phone}</TableBodyCell
                       >
                       <TableBodyCell class="p-4 border border-gray-300"
@@ -226,45 +236,10 @@
 
                       <!--  <TableBodyCell class="p-4 border border-gray-300">{item.sous_menu.libelle}</TableBodyCell>
                                    -->
-                      <TableBodyCell
-                        class="space-x-1 p-2 w-8 border border-gray-300"
-                      >
-                        <Button
-                          color="green"
-                          style="background-color: green"
-                          size="sm"
-                          class="gap-2 px-3 bg-green-800"
-                          on:click={() => (
-                            (current_data = item), (openShow = true)
-                          )}
-                        >
-                          <EyeOutline size="sm" />
-                        </Button>
-
-                        <Button
-                          color="blue"
-                          size="sm"
-                          style="background-color: blue"
-                          class="gap-2 px-3 bg-blue-600"
-                          on:click={() => (
-                            (current_data = item), (openEdit = true)
-                          )}
-                        >
-                          <EditOutline size="sm" />
-                        </Button>
-
-                        <Button
-                          color="red"
-                          size="sm"
-                          style="background-color: red"
-                          class="gap-2 px-3 bg-red-600"
-                          on:click={() => (
-                            (current_data = item), (openDelete = true)
-                          )}
-                        >
-                          <TrashBinSolid size="sm" />
-                        </Button>
-                      </TableBodyCell>
+                                   <TableBodyCell class="p-2 w-8 border border-gray-300">
+                                    <DropdownMenu item={item} onAction={handleAction} />
+                                  </TableBodyCell>
+                                  
                     </TableBodyRow>
                   {/each}
                 {/if}
