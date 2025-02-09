@@ -27,6 +27,8 @@
   import { getAuthCookie } from "$lib/auth";
   import Show from "./Show.svelte";
   import Delete from "./Delete.svelte";
+  import { formatDate } from "$lib/dateUtils";
+  import { formatAmount } from "$lib/formatAmount";
 
   export let data; // Les données retournées par `load()`
   let user = data.user;
@@ -209,11 +211,11 @@
                       <TableBodyCell class="p-4 border border-gray-300"
                         >{item.user.email}</TableBodyCell
                       >
-                      <TableBodyCell class="p-4 border border-gray-300"
-                        >{item.montant}</TableBodyCell
+                      <TableBodyCell class="p-4 border border-gray-300 justify-end text-right"
+                        >{formatAmount(parseInt(item.montant, 10))}</TableBodyCell
                       >
                       <TableBodyCell class="p-4 border border-gray-300"
-                        >{item.createdAt}</TableBodyCell
+                        >{formatDate(item.createdAt)}</TableBodyCell
                       >
                       <!--  <TableBodyCell class="p-4 border border-gray-300">{item.sous_menu.libelle}</TableBodyCell>
                                    -->

@@ -206,7 +206,7 @@
 
                           <!--  <TableBodyCell class="p-4 border border-gray-300">{item.sous_menu.libelle}</TableBodyCell>
                                         -->
-                          <TableBodyCell class="p-4 border border-gray-300">
+                          <TableBodyCell class="p-4 border border-gray-300 justify-end text-right">
                             {item.nombre}
                           </TableBodyCell>
                         </TableBodyRow>
