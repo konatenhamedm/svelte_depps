@@ -20,7 +20,7 @@ async function logout() {
         <a href="/admin" class="logo">
             <!-- logo-->
              <div class="logo-mini w-40">
-                 <span class="light-logo"><img src="https://mydepps.ci/_files/logo-depps.png" alt="logo"></span>
+                 <span class="light-logo"><img src="/_files/logo-depps.png" alt="logo"></span>
                  <span class="dark-logo"><img src="" alt="logo"></span>
              </div>
              <div class="logo-lg">
