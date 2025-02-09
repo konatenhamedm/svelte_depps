@@ -196,7 +196,7 @@
                 <TableHead
                   class="border-y border-gray-200 bg-gray-100 dark:border-gray-700"
                 >
-                  {#each ["nom", "prénoms", "Téléphone", "email", "type", "Action"] as title}
+                  {#each ["nom", "prénoms", "Téléphone", "email", "type",'statut' ,"Action"] as title}
                     <TableHeadCell class="ps-4 font-normal border border-gray-300"
                       >{title}</TableHeadCell
                     >
@@ -259,10 +259,10 @@
                         <TableBodyCell class="p-4 border border-gray-300"
                           >{item.user.typeUser}</TableBodyCell
                         >
-                        <!--  <TableBodyCell class="p-4 border border-gray-300">{item.sous_menu.libelle}</TableBodyCell>
-                                     -->
+                         <TableBodyCell class="p-4 border border-gray-300">{item.status}</TableBodyCell>
+                                    
                         <TableBodyCell
-                          class="space-x-1 p-2 w-8 border border-gray-300"
+                          class="space-x-1 p-2 w-8 justify-center items-center border border-gray-300"
                         >
                           <Button
                             color="green"
@@ -276,7 +276,7 @@
                             <EyeOutline size="sm" />
                           </Button>
   
-                          <Button
+                          <!-- <Button
                             color="green"
                             style="background-color: green"
                             size="sm"
@@ -286,7 +286,7 @@
                             )}
                           >
                             <EyeOutline size="sm" />
-                          </Button>
+                          </Button> -->
                         </TableBodyCell>
                       </TableBodyRow>
                     {/each}

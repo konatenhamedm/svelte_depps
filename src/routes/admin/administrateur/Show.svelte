@@ -12,10 +12,9 @@
   let email: string = "";
 
 	function init(form: HTMLFormElement) {
-		nom = data?.nom;
-    prenoms = data?.prenoms;
+	
     username = data?.username;
-    phone = data?.phone;
+
     email = data?.email;
 	}
 </script>
@@ -47,34 +46,7 @@
 			  ></InputSimple>
 			</div>
 	  
-			<div class="grid grid-cols-6 gap-6">
-			  <InputSimple
-				fieldName="nom"
-				label="Nom"
-				bind:field={nom}
-				placeholder="entrez le nom"
-				class="w-full"
-			  ></InputSimple>
-	  
-			  <InputSimple
-				fieldName="prenoms"
-				label="Prénoms"
-				bind:field={prenoms}
-				placeholder="entrez le(s) prénoms"
-				class="w-full"
-			  ></InputSimple>
-			</div>
-	  
-			<div class="grid grid-cols-1 gap-6">
-			  <InputSimple
-				fieldName="phone"
-				label="Telephone"
-				bind:field={phone}
-				placeholder="entrez le number de telephone"
-				class="w-full"
-			  ></InputSimple>
-			 
-			</div>
+			
 		  </form>
 	</div>
 

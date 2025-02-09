@@ -9,13 +9,8 @@
     TableHead,
     TableHeadCell
   } from "flowbite-svelte";
-  import {
-    EditOutline,
-    EyeOutline,
-    TrashBinSolid
-  } from "flowbite-svelte-icons";
+  
   import Entete from "../../../../components/_includes/Entete.svelte";
-  import MessageError from "../../../../components/MessageError.svelte";
   import Pagination from "../../../../components/_includes/Pagination.svelte";
   // Importer le store pageSize
   import { get } from "svelte/store";
@@ -26,15 +21,11 @@
   import { getAuthCookie } from "$lib/auth";
   import Donut from "$components/statistiques/Donut.svelte";
   import Pie from "$components/statistiques/Pie.svelte";
-  export let data; // Les données retournées par `load()`
-  let user = data.user;
+
   let main_data: Stats[] = [];
   let stats: any = [];
   let searchQuery = ""; // Pour la recherche par texte
-  let selectedService: any = ""; // Pour filtrer par service
-  let selectedStatus: any = ""; // Pour filtrer par status
-  let startDate: any | null = null; // Date de début
-  let endDate: any | null = null; // Date de fin
+
   let currentPage = 1;
   let loading = false;
   let openDelete: boolean = false;
@@ -46,13 +37,13 @@
   async function fetchData() {
     loading = true; // Active le spinner de chargement
     try {
-      const res = await apiFetch(true, "/statistique/civilite/");
+      const res = await apiFetch(true, "/statistique/civilite");
 
       if (res) {
-        alert("ok");
+       
         main_data = res.data.nombre as Stats[];
         stats = res.data.pieChart;
-        console.log(stats);
+        console.log(main_data);
       } else {
         console.error(
           "Erreur lors de la récupération des données:",
@@ -114,9 +105,9 @@
 </script>
 
 <Entete
-  libelle="Répartition par Localisation"
+  libelle="Répartition par civilités"
   parent="Statistiques"
-  descr="Localisation"
+  descr="Civilite"
 />
 <section class="content">
   <div class="row">
@@ -128,7 +119,7 @@
               class="box-header with-border flex justify-between items-center"
             >
               <h4 class="box-title text-xl font-medium">
-                Liste répartition par Localisation
+                Liste répartition par civilités
               </h4>
             </div>
             <!-- /.box-header -->
@@ -148,7 +139,7 @@
                   <TableHead
                     class="border-y border-gray-200 bg-gray-100 dark:border-gray-700"
                   >
-                    {#each ["Localisation", "Nombre"] as title}
+                    {#each ["Civilite", "Nombre"] as title}
                       <TableHeadCell
                         class="ps-4 font-normal border border-gray-300"
                         >{title}</TableHeadCell
@@ -251,7 +242,7 @@
               <div class="table-responsive">
                 <div class="w-full grid grid-cols-4"></div>
 
-                <Pie data={stats} />
+                 <Pie data={stats} /> 
               </div>
             </div>
             <!-- /.box-body -->

@@ -31,10 +31,9 @@
 
   // Initialize form data with the provided record
   function init(form: HTMLFormElement) {
-    nom = data?.nom;
-    prenoms = data?.prenoms;
+   
     username = data?.username;
-    phone = data?.phone;
+
     email = data?.email;
     userUpdate = data?.userUpdate;
     password = "";
@@ -47,9 +46,7 @@
       const formData = new FormData();
       formData.append("username", username);
       formData.append("password", password);
-      formData.append("nom", nom);
-      formData.append("prenoms", prenoms);
-      formData.append("phone", phone);
+
       formData.append("email", email);
       formData.append("userUpdate", userUpdateId);
       formData.append("Avatar", "null"); // Si Avatar est un fichier, il faut fournir un `File` ou `Blob`
@@ -107,32 +104,9 @@
         ></InputSimple>
       </div>
 
-      <div class="grid grid-cols-6 gap-6">
-        <InputSimple
-          fieldName="nom"
-          label="Nom"
-          bind:field={nom}
-          placeholder="entrez le nom"
-          class="w-full"
-        ></InputSimple>
-
-        <InputSimple
-          fieldName="prenoms"
-          label="Prénoms"
-          bind:field={prenoms}
-          placeholder="entrez le(s) prénoms"
-          class="w-full"
-        ></InputSimple>
-      </div>
-
-      <div class="grid grid-cols-6 gap-6">
-        <InputSimple
-          fieldName="phone"
-          label="Telephone"
-          bind:field={phone}
-          placeholder="entrez le number de telephone"
-          class="w-full"
-        ></InputSimple>
+     
+      <div class="grid grid-cols-1 gap-6">
+      
         <InputSimplePassword
           fieldName="password"
           label="Mot de passe"

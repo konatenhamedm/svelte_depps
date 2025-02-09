@@ -22,6 +22,7 @@ export interface Transaction {
   reference: string;
   channel: string;
   state: string;
+  type: string;
   user : {
     id: string;
     username: string;
@@ -29,11 +30,7 @@ export interface Transaction {
     email: string;
     payement: string;
   },
-  emailPro: string;
-  nom: string;
-  prenoms: string;
-  numero: string;
-  CreatedAt: string;
+  createdAt: string;
 }
 
 export interface Appartement {
@@ -148,10 +145,11 @@ export interface UserAdmin {
   username: string;
   email: string;
   roles: string[];
-  nom: string;
-  prenoms: string;
-  phone: string;
-  status: string;
+/*   nom: string; */
+  /* prenoms: string;
+  phone: string; */
+ /*  status: string; */
+ avatar: [];
   typeUser: string;
 }
 export interface Features {

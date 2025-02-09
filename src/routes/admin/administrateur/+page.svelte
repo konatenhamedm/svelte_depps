@@ -52,9 +52,10 @@
     loading = true; // Active le spinner de chargement
     try {
       const res = await apiFetch(true, "/user/get/admin");
-      console.log("rrrerere", res);
+
       if (res) {
         main_data = res.data as UserAdmin[];
+        console.log(main_data);
       } else {
         console.error(
           "Erreur lors de la récupération des données:",
@@ -74,8 +75,7 @@
 
   $: filteredData = main_data.filter((item) => {
     return (
-      item.nom.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      item.prenoms.toLowerCase().includes(searchQuery.toLowerCase())
+      item.username.toLowerCase().includes(searchQuery.toLowerCase()) 
     );
   });
 
@@ -157,7 +157,7 @@
               <TableHead
                 class="border-y border-gray-200 bg-gray-100 dark:border-gray-700"
               >
-                {#each ["nom", "prénoms", "Type de compte", "Téléphone", "Login", "email", "Action"] as title}
+                {#each ["username", "email", "Type de compte", "Action"] as title}
                   <TableHeadCell class="ps-4 font-normal border border-gray-300"
                     >{title}</TableHeadCell
                   >
@@ -206,15 +206,15 @@
                   {#each paginatedProducts as item}
                     <TableBodyRow class="text-base border border-gray-300">
                       <TableBodyCell class="p-4 border border-gray-300"
-                        >{item.nom}</TableBodyCell
+                        >{item.username}</TableBodyCell
                       >
                       <TableBodyCell class="p-4 border border-gray-300"
-                        >{item.prenoms}</TableBodyCell
+                        >{item.email}</TableBodyCell
                       >
                       <TableBodyCell class="p-4 border border-gray-300"
                         >{item.typeUser}</TableBodyCell
                       >
-                      <TableBodyCell class="p-4 border border-gray-300"
+                    <!--   <TableBodyCell class="p-4 border border-gray-300"
                         >{item.phone}</TableBodyCell
                       >
                       <TableBodyCell class="p-4 border border-gray-300"
@@ -222,7 +222,7 @@
                       >
                       <TableBodyCell class="p-4 border border-gray-300"
                         >{item.email}</TableBodyCell
-                      >
+                      > -->
 
                       <!--  <TableBodyCell class="p-4 border border-gray-300">{item.sous_menu.libelle}</TableBodyCell>
                                    -->

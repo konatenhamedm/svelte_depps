@@ -54,8 +54,7 @@
     appartenirOrganisation: false,
     organisationNom: "",
     organisationNumero: "",
-    organisationAnnee: "",
-
+    organisationAnnee: ""
   };
 
   let errors = {
@@ -101,10 +100,9 @@
     appartenirOrganisation: false,
     organisationNom: "",
     organisationNumero: "",
-    organisationAnnee: "",
+    organisationAnnee: ""
 
     // Paiement informations
-   
   };
 
   function validateStep() {
@@ -210,13 +208,13 @@
       errors.certificat = formData.certificat ? "" : "Le certificat est requis";
       errors.cv = formData.cv ? "" : "Le CV est requis";
 
-      valid =
-        !errors.photo &&
+      valid = true;
+       /*  !errors.photo &&
         !errors.cni &&
         !errors.casier &&
         !errors.diplomeFile &&
         !errors.certificat &&
-        !errors.cv;
+        !errors.cv; */
     }
 
     if (step === 5) {
@@ -246,43 +244,63 @@
   }
 
   let isPaiementProcessing = false;
-  let isPaiementDone = false;
+  $: isPaiementDone = false;
   let message: any = "";
 
   // 🔹 Fonction pour sauvegarder l'état actuel du formulaire
   function saveFormState() {
-    localStorage.setItem("formData", JSON.stringify(formData));
-    localStorage.setItem("step", step.toString());
+    if (typeof window !== "undefined" && typeof localStorage !== "undefined") {
+      localStorage.setItem("formData", JSON.stringify(formData));
+      localStorage.setItem("step", step.toString());
+    }
   }
-
   let fileNames = {}; // Stocke uniquement les noms des fichiers pour éviter les problèmes avec `localStorage`
+  let selectedFiles = {};
 
-  
   function updateFormData(fieldName, file) {
-    formData = { ...formData, [fieldName]: file }; // Mise à jour réactive
+    if (file) {
+      // Lire le fichier en Base64 pour le stocker dans localStorage
+      const reader = new FileReader();
+      reader.readAsDataURL(file);
+      reader.onload = () => {
+        selectedFiles = {
+          ...selectedFiles,
+          [fieldName]: { name: file.name, data: reader.result }
+        };
+
+        // Stocker dans le localStorage
+        localStorage.setItem("selectedFiles", JSON.stringify(selectedFiles));
+
+        // Mettre à jour les noms de fichiers affichés
+        fileNames = { ...fileNames, [fieldName]: file.name };
+      };
+    }
   }
 
   function handleFileChange(event, fieldName) {
-    const file = event.target.files.length ? event.target.files[0] : null;
+    const file = event.target.files[0] || null;
     updateFormData(fieldName, file);
   }
 
   // 🔹 Fonction pour restaurer le formulaire après un retour
   // Restaurer les données et l'étape depuis localStorage
   function restoreFormState() {
-    const savedFormData = localStorage.getItem("formData");
-    const savedStep = localStorage.getItem("step");
+    if (typeof window !== "undefined" && typeof localStorage !== "undefined") {
+      const savedFormData = localStorage.getItem("formData");
+      const savedStep = localStorage.getItem("step");
 
-    if (savedFormData) {
-      formData = JSON.parse(savedFormData);
-    }
+      if (savedFormData) {
+        formData = JSON.parse(savedFormData);
+      }
 
-    if (savedStep) {
-      step = parseInt(savedStep);
-    } else {
-      localStorage.setItem("step", step.toString());
+      if (savedStep) {
+        step = parseInt(savedStep);
+      } else {
+        localStorage.setItem("step", step.toString());
+      }
     }
   }
+
   // ✅ Vérifier si on revient après un paiement
   onMount(() => {
     const urlParams = new URLSearchParams(window.location.search);
@@ -314,34 +332,66 @@
 
   // 🔹 Soumission du formulaire
   function submitForm() {
-    alert("Formulaire soumis!");
-    console.log(validateStep());
-    if (!validateStep()) {
-      let data = new FormData();
-      data.append("reference", localStorage.getItem("reference").toString());
-      Object.keys(formData).forEach((key) => {
+  if (validateStep()) {
+    let data = new FormData();
+    
+
+    
+    // Ajout de la référence stockée en local
+    const reference = localStorage.getItem("reference");
+    if (reference) {
+      data.append("reference", reference);
+    }
+
+    // Ajouter les fichiers au FormData
+
+    Object.keys(formData).forEach((key) => {
+    
+       
         data.append(key, formData[key]);
+    
       });
 
-      fetch("http://depps.leadagro.net/api/professionnel/create", {
-        method: "POST",
-        body: data
-      })
-        .then((response) => response.json())
-        .then((result) => {
-          if (Object.keys(result.errors).length > 0) {
-            message = result.errors;
-          } else {
-            window.location.href = "/site/connexion";
-          }
-        })
-        .catch((error) => {
-          message = error;
-        });
+ /*      Object.keys(selectedFiles).forEach((key) => {
+      const fileData = selectedFiles[key];
+      if (fileData.data) {
+        // Convertir le Base64 en Blob pour l'envoi
+        const byteCharacters = atob(fileData.data.split(",")[1]);
+        const byteNumbers = new Array(byteCharacters.length);
+        for (let i = 0; i < byteCharacters.length; i++) {
+          byteNumbers[i] = byteCharacters.charCodeAt(i);
+        }
+        const byteArray = new Uint8Array(byteNumbers);
+        const blob = new Blob([byteArray], { type: "application/octet-stream" });
 
-        console.log(data);
-    }
+        data.append(key, blob, fileData.name);
+      }
+    }); */
+
+      console.log(data);
+
+
+    
+
+    fetch("http://depps.leadagro.net/api/professionnel/create", {
+      method: "POST",
+      body: data
+    })
+      .then((response) => response.json())
+      .then((result) => {
+        if (result.errors && Object.keys(result.errors).length > 0) {
+          console.log(result.errors);
+        } else {
+          window.location.href = "/site/connexion";
+          localStorage.clear();
+        }
+      })
+      .catch((error) => {
+        console.log("Erreur lors de la soumission du formulaire:", error);
+      });
   }
+}
+
 
   // 🔹 Gestion du paiement
   function clickPaiement() {
@@ -351,33 +401,31 @@
     initPaiement();
   }
 
-  
-
-   function initPaiement() {
+  function initPaiement() {
     let data = new FormData();
     data.append("nom", formData.nom);
     data.append("prenoms", formData.prenoms);
     data.append("email", formData.email);
     data.append("numero", formData.numero);
 
-   /*  fetch("https://depps.leadagro.net/api/paiement/paiement", {
+    fetch("https://depps.leadagro.net/api/paiement/paiement", {
       method: "POST",
       body: data
     })
       .then((response) => response.json())
       .then((result) => {
         if (result.url) {
-            localStorage.setItem("reference", result.reference);
-          setTimeout(() => {
+          localStorage.setItem("reference", result.reference);
+         
             window.location.href = result.url + "?return=1"; // 🔥 Ajout du paramètre `return`
-          }, 3000);
+        
         }
       })
       .catch((error) => {
         console.error("Erreur paiement :", error);
         isPaiementProcessing = false;
       });
-  } 
+  }
 
   async function checkTransactionID(idtransaction: any) {
     if (!idtransaction) return false;
@@ -394,22 +442,25 @@
         error
       );
       return false;
-    } */
+    }
   }
 
   // Déclenche la vérification de façon réactive dès que transactionID change
- /*  $: if (formData.transactionID) {
-    checkTransactionID(formData.transactionID).then((resultat) => {
-      if (!resultat) {
-        errors.transactionID =
-          "Cet identifiant de transaction n'est pas valide";
-        isPaiementDone = false;
-      } else {
-        errors.transactionID = "";
-        isPaiementDone = true;
-      }
-    });
-  } */
+  $: if (typeof window !== "undefined" && localStorage.getItem("reference")) {
+    const reference = localStorage.getItem("reference").toString();
+    if (reference) {
+      checkTransactionID(reference).then((resultat) => {
+        console.log(resultat);
+        if (!resultat) {
+          message = "Cet identifiant de transaction n'est pas valide";
+          isPaiementDone = false;
+        } else {
+          message = "";
+          isPaiementDone = true;
+        }
+      });
+    }
+  }
 
   /**
    * @type {any[]}
@@ -477,7 +528,6 @@
     }
 
     console.log("fileNames:", localStorage.getItem("reference"));
-   
   });
 
   // Sauvegarder les données du formulaire dans localStorage à chaque modification
@@ -520,7 +570,7 @@
             <!-- Étape 1 -->
             {#if step === 1}
               <h2 class="h2-baslik-anasayfa-ozel h-yazi-margin-kucuk">
-                Informations de connexion (étape 1/5)
+                Informations de connexion (étape 1/6)
               </h2>
               <div class="tablo">
                 <div class="tablo--1h-ve-2">
@@ -582,7 +632,7 @@
             <!-- Étape 2 -->
             {#if step === 2}
               <h2 class="h2-baslik-anasayfa-ozel h-yazi-margin-kucuk">
-                Informations personnelles (étape 2/5)
+                Informations personnelles (étape 2/6)
               </h2>
               <div class="tablo">
                 <div class="tablo--1h-ve-2">
@@ -864,7 +914,7 @@
             <!-- Étape 3 -->
             {#if step === 3}
               <h2 class="h2-baslik-anasayfa-ozel h-yazi-margin-kucuk">
-                Informations professionnelles (étape 3/5)
+                Informations professionnelles (étape 3/6)
               </h2>
               <div class="tablo">
                 <div class="tablo--1h-ve-2">
@@ -1047,115 +1097,36 @@
             <!-- Étape 4 -->
             {#if step === 4}
               <h2 class="h2-baslik-anasayfa-ozel h-yazi-margin-kucuk">
-                Informations médiatiques (étape 4/5)
+                Informations médiatiques (étape 4/6)
               </h2>
-              {#if messagefile !== ""}
-                <div
-                  class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative"
-                  role="alert"
-                >
-                  <strong class="font-bold">Oups erreur!</strong>
-                  <span class="block sm:inline">{messagefile}</span>
-                </div>
-              {/if}
-              <div class="tablo">
+              <!-- {#if messagefile !== ""}
+               <div
+                 class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative"
+                 role="alert"
+               >
+                 <strong class="font-bold">Oups erreur!</strong>
+                 <span class="block sm:inline">{messagefile}</span>
+               </div>
+             {/if} -->
+             <div class="tablo">
                 <div class="tablo--1h-ve-2">
                   <div class="grid grid-cols-3">
-                    <div class="form__grup">
-                      <label class="form_label">Photo</label>
-                      <input
-                        type="file"
-                        class="form__input"
-                        on:change={(e) => handleFileChange(e, "photo")}
-                        placeholder="Veuillez charger votre Photo"
-                      />
-                      {#if fileNames["photo"]}
-                        <p>{fileNames["photo"]}</p>
-                      {/if}
-                      {#if errors.photo}<p class="error">
-                          {errors.photo}
-                        </p>{/if}
-                    </div>
-
-                    <div class="form__grup">
-                      <label class="form_label">CNI</label>
-                      <input
-                        type="file"
-                        class="form__input"
-                        on:change={(e) => handleFileChange(e, "cni")}
-                        placeholder="Veuillez charger votre CNI"
-                      />
-                      {#if fileNames["cni"]}
-                        <p>{fileNames["cni"]}</p>
-                      {/if}
-                      {#if errors.cni}<p class="error">
-                          {errors.cni}
-                        </p>{/if}
-                    </div>
-
-                    <div class="form__grup">
-                      <label class="form_label">Casier judiciaire</label>
-                      <input
-                        type="file"
-                        class="form__input"
-                        on:change={(e) => handleFileChange(e, "casier")}
-                        placeholder="Veuillez charger votre Casier judiciaire"
-                      />
-                      {#if fileNames["casier"]}
-                        <p>{fileNames["casier"]}</p>
-                      {/if}
-                      {#if errors.casier}<p class="error">
-                          {errors.casier}
-                        </p>{/if}
-                    </div>
-
-                    <div class="form__grup">
-                      <label class="form_label">Diplôme</label>
-                      <input
-                        type="file"
-                        class="form__input"
-                        on:change={(e) => handleFileChange(e, "diplomeFile")}
-                        placeholder="Veuillez charger votre Diplôme"
-                      />
-                      {#if fileNames["diplomeFile"]}
-                        <p>{fileNames["diplomeFile"]}</p>
-                      {/if}
-                      {#if errors.diplomeFile}<p class="error">
-                          {errors.diplomeFile}
-                        </p>{/if}
-                    </div>
-
-                    <div class="form__grup">
-                      <label class="form_label">Certificat</label>
-                      <input
-                        type="file"
-                        class="form__input"
-                        on:change={(e) => handleFileChange(e, "certificat")}
-                        placeholder="Veuillez charger votre Certificat"
-                      />
-                      {#if fileNames["certificat"]}
-                        <p>{fileNames["certificat"]}</p>
-                      {/if}
-                      {#if errors.certificat}<p class="error">
-                          {errors.certificat}
-                        </p>{/if}
-                    </div>
-
-                    <div class="form__grup">
-                      <label class="form_label">CV</label>
-                      <input   on:change={saveFormState}
-                        type="file"
-                        class="form__input"
-                        on:change={(e) => handleFileChange(e, "cv")}
-                        placeholder="Veuillez charger votre CV"
-                      />
-                      {#if fileNames["cv"]}
-                        <p>{fileNames["cv"]}</p>
-                      {/if}
-                      {#if errors.cv}<p class="error">
-                          {errors.cv}
-                        </p>{/if}
-                    </div>
+                    {#each ["photo", "cni", "casier", "diplomeFile", "certificat", "cv"] as fieldName}
+                      <div class="form__grup">
+                        <label class="form_label">{fieldName.toUpperCase()}</label>
+                        <input
+                          type="file"
+                          class="form__input"
+                          on:change={(e) => handleFileChange(e, fieldName)}
+                        />
+                        {#if fileNames[fieldName]}
+                          <p>{fileNames[fieldName]}</p>
+                        {/if}
+                        {#if errors[fieldName]}
+                          <p class="error">{errors[fieldName]}</p>
+                        {/if}
+                      </div>
+                    {/each}
                   </div>
                 </div>
               </div>
@@ -1164,7 +1135,7 @@
             <!-- Étape 5 -->
             {#if step === 5}
               <h2 class="h2-baslik-anasayfa-ozel h-yazi-margin-kucuk">
-                Informations organisationnelles (étape 5/5)
+                Informations organisationnelles (étape 5/6)
               </h2>
               <div class="tablo">
                 <div class="tablo--1h-ve-2">
@@ -1260,44 +1231,49 @@
               </h2>
               <div class="tablo">
                 <div class="tablo--1h-ve-2">
-                 
-                    <div class="grid grid-cols-2 gap-20">
-                      <div class="">
+                  <!--   on:click={clickPaiement} -->
+                  <div class="grid grid-cols-1 gap-20 flex justify-center">
+                    <div class="">
+                      {#if !isPaiementDone}
                         <p>
-                          Vous serez redirigés vers le lien de paiement. Merci
-                          de patienter quelques instants
+                          Veillez vous rendre sur le site de votre banque et
+                          effectuer le paiement.
                         </p>
-                        <p id="p-reloadPaiementLink" class="d-none">
-                          Si ce n'est pas le cas : <a
-                            target="_blank"
-                            href="javascript:void(0);"
-                            id="reloadPaiementLink"
-                            class="text-blue-500"
-                            >Veuillez cliquer ici pour procéder au paiement</a
-                          >
-                        </p>
-
                         <br />
+
+                        <button
+                          id="reloadPaiementLsssink"
+                          class="px-6 py-3 bg-green-500 text-white font-medium rounded-lg shadow-lg hover:bg-green-500 transition duration-300"
+                          on:click={clickPaiement}
+                        >
+                          Effectuer le paiement
+                        </button>
+                      {/if}
+                      {#if isPaiementDone}
                         <p>
-                          Une fois le paiement effectué, veuillez renseigner
-                          l'identifiant de la transaction pour valider votre
-                          inscription.
+                          Veillez finaliser votre inscription en cliquant sur le
+                          bouton ci-dessous.
                         </p>
-                      </div>
-                     <!--  <div class="form__grup">
-                        <label class="form_label">Transaction ID</label>
-                        <input
-                          type="text"
-                          class="form__input"
-                          bind:value={formData.transactionID}
-                          placeholder="Transaction ID"
-                        />
-                        {#if errors.transactionID}<p class="error">
-                            {errors.transactionID}
-                          </p>{/if}
-                      </div> -->
+                        <br />
+                        <button
+                          type="button"
+                          id="r"
+                          class="px-6 py-3 bg-green-500 text-white font-medium rounded-lg shadow-lg hover:bg-green-500 transition duration-300"
+                          on:click={submitForm}
+                          disabled={!isPaiementDone}
+                        >
+                          Finaliser l'inscription
+                        </button>
+                      {/if}
+
+                      <br />
+                      <!--  <p>
+                            Une fois le paiement effectué, veuillez renseigner
+                            l'identifiant de la transaction pour valider votre
+                            inscription.
+                          </p> -->
                     </div>
-                  
+                  </div>
                 </div>
               </div>
             {/if}
@@ -1319,21 +1295,21 @@
                   on:click={nextStep}>SUIVANT →</button
                 >
               {:else if step === 5}
-                <button on:click={clickPaiement}
+                <button
                   type="button"
                   class="buton buton--kirmizi"
-                  on:click={nextStep}>PASSER AU PAIEMENT →</button
+                  on:click={nextStep}>SUIVANT →</button
                 >
               {:else}
-              <!-- disabled={!isPaiementDone} -->
-                <button
-                  type="submit"
-                  on:click={submitForm}
-                  class="buton buton--kirmizi"
-                  
-                >
-                  VALIDER
-                </button>
+                <!-- disabled={!isPaiementDone} -->
+                <!--   <button
+                    type="submit"
+                    on:click={submitForm}
+                    class="buton buton--kirmizi"
+                    disabled={!isPaiementDone}
+                  >
+                    VALIDER
+                  </button> -->
               {/if}
 
               <br />

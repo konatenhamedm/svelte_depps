@@ -16,9 +16,6 @@
 
   let admin: any = {
     username: "",
-    prenoms: "",
-    nom: "",
-    phone: "",
     confirmPassword: "",
     password: "",
     email: "",
@@ -38,7 +35,7 @@
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ username : admin.username, password : admin.password, nom : admin.nom, prenoms : admin.prenoms, phone : admin.phone, confirmPassword : admin.confirmPassword, email : admin.email, userUpdate : userUpdateId }),
+        body: JSON.stringify({ username : admin.username, password : admin.password, confirmPassword : admin.confirmPassword, email : admin.email, userUpdate : userUpdateId }),
       });
 
       if (res.ok) {
@@ -96,33 +93,8 @@
             ></InputSimple>
           </div>
 
-      <div class="grid grid-cols-6 gap-6">
-        <InputSimple
-          fieldName="nom"
-          label="Nom"
-          bind:field={admin.nom}
-          placeholder="entrez le nom"
-          class="w-full"
-        ></InputSimple>
-
-        <InputSimple
-          fieldName="prenoms"
-          label="Prénoms"
-          bind:field={admin.prenoms}
-          placeholder="entrez le(s) prénoms"
-          class="w-full"
-        ></InputSimple>
-      </div>
-      <div class="grid grid-cols-1 mb-5">
-          <InputSimple
-          fieldName="phone"
-          label="Telephone"
-          bind:field={admin.phone}
-          placeholder="entrez le number de telephone"
-          class="w-full"
-          ></InputSimple>
-          
-        </div>
+   
+  
         
               <div class="grid grid-cols-6 gap-6">
                 <InputSimplePassword

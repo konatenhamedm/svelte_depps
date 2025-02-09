@@ -169,24 +169,23 @@
               </h4>
               <p style="font-size:20px">
                 {#if user?.type == "PROFESSIONNEL"}
-                  PROFESSIONNEL DE SANTE 
+                  PROFESSIONNEL DE SANTE
                 {:else}
-                  ETABLISSEMENT DE SANTE 
+                  ETABLISSEMENT DE SANTE
                 {/if}
               </p>
             </div>
             <div class="col-4">
-                {#if user?.avatar != null}
+              {#if user?.avatar != null}
                 <div
-                style="width: 100px;height: 100px;border-radius:50%;background-image:url({BASE_URL_API_UPLOAD+user?.avatar});background-size:cover"
-              ></div>
-                {:else}
+                  style="width: 100px;height: 100px;border-radius:50%;background-image:url({BASE_URL_API_UPLOAD +
+                    user?.avatar});background-size:cover"
+                ></div>
+              {:else}
                 <div
-                style="width: 100px;height: 100px;border-radius:50%;background-image:url('https://static.vecteezy.com/system/resources/thumbnails/009/292/244/small/default-avatar-icon-of-social-media-user-vector.jpg');background-size:cover"
-              ></div>
-
-                {/if}
-            
+                  style="width: 100px;height: 100px;border-radius:50%;background-image:url('https://static.vecteezy.com/system/resources/thumbnails/009/292/244/small/default-avatar-icon-of-social-media-user-vector.jpg');background-size:cover"
+                ></div>
+              {/if}
             </div>
           </div>
         </div>
@@ -200,136 +199,67 @@
                   <i>Vous avez obtenu un avis favorable d'inscription au registre de la profession Pharmacie.<br>Veuillez vous rendre à la DEPPS pour le retrait de votre autorisation d'exercice</i>
               </div> -->
         <br />
-        <div class="row">
-          <div class="col-md-4">
-
-            {#if user?.status == "valide" }
-
-            <a href="profil">
-                <div class="container-div" style="background-image: url('https://participantsmtl.altasciences.com/sites/default/files/gettyimages-929123076.jpg')">
-                    <div class="overlay"></div>
-                    <div class="text">Mise à jour du dossier</div>
-                </div>
-            </a>
-            {:else }
-
-            <div
-            class="container-div"
-            style="background-image: url('https://participantsmtl.altasciences.com/sites/default/files/gettyimages-929123076.jpg')"
-          >
-            <div class="overlay"></div>
-            <div class="text">
-              Mise à jour du dossier {#if user?.status != "valide"}
-                <i class="fa fa-lock"></i>{/if}
-            </div>
+        <div class="row g-4">
+          <!-- Card 1 -->
+          <div class="col-md-4 col-sm-6">
+              <a href="profil" class="text-decoration-none">
+                  <div class="card card-custom">
+                      <i class="fas fa-folder-open"></i>
+                      <div class="card-text">Mise à jour du dossier</div>
+                  </div>
+              </a>
           </div>
-            {/if} 
-
-            
+          
+          <!-- Card 2 -->
+          <div class="col-md-4 col-sm-6">
+              <a href="profil" class="text-decoration-none">
+                  <div class="card card-custom">
+                      <i class="fas fa-bell"></i>
+                      <div class="card-text">Alertes</div>
+                  </div>
+              </a>
           </div>
-          <div class="col-md-4">
-            
-            {#if user?.status == "valide" }
-
-            <a href="profil">
-                <div class="container-div" style="background-image: url('/_files/siren-red-alarm-light-3d-vector-21662729.png')">
-                    <div class="overlay"></div>
-                    <div class="text">Mise à jour du dossier</div>
-                </div>
-            </a>
-            {:else }
-
-            <div
-              class="container-div"
-              style="background-image: url('/_files/siren-red-alarm-light-3d-vector-21662729.png')"
-            >
-              <div class="overlay"></div>
-              <div class="text">
-                Alertes {#if user?.status != "valide"}
-                  <i class="fa fa-lock"></i>{/if}
-              </div>
-            </div>
-            {/if} 
-
-            
-            
-            
+  
+          <!-- Card 3 -->
+          <div class="col-md-4 col-sm-6">
+              <a href="Alertes" class="text-decoration-none">
+                  <div class="card card-custom">
+                      <i class="fas fa-comments"></i>
+                      <div class="card-text">MyDEPPS chat</div>
+                  </div>
+              </a>
           </div>
-          <div class="col-md-4">
-            
-
-            {#if user?.status == "valide" }
-
-            <a href="Alertes">
-                <div class="container-div" style="background-image: url('/_files/uninstall-facebook-4a_935adec67b324b146ff212ec4c69054f.jpg')">
-                    <div class="overlay"></div>
-                    <div class="text">MyDEPPS chat</div>
-                </div>
-            </a>
-            {:else }
-
-            <div
-              class="container-div"
-              style="background-image: url('/_files/uninstall-facebook-4a_935adec67b324b146ff212ec4c69054f.jpg')"
-            >
-              <div class="overlay"></div>
-              <div class="text">
-                MyDEPPS chat {#if user?.status != "valide"}
-                  <i class="fa fa-lock"></i>{/if}
-              </div>
-            </div>
-            {/if} 
-            
+  
+          <!-- Card 4 -->
+          <div class="col-md-4 col-sm-6">
+              <a href="Guide utilisateur" class="text-decoration-none">
+                  <div class="card card-custom">
+                      <i class="fas fa-book"></i>
+                      <div class="card-text">Guide utilisateur</div>
+                  </div>
+              </a>
           </div>
-          <div class="col-md-4">
-            <a href="Guide utilisateur">
-              <div
-                class="container-div"
-                style="background-image: url('/_files/médecin_généraliste.jpg')"
-              >
-                <div class="overlay"></div>
-                <div class="text">Guide utilisateur</div>
-              </div>
-            </a>
+  
+          <!-- Card 5 -->
+          <div class="col-md-4 col-sm-6">
+              <a href="_files/GUIDE-D'UTILISATION.pdf" class="text-decoration-none">
+                  <div class="card card-custom">
+                      <i class="fas fa-file-pdf"></i>
+                      <div class="card-text">Guide utilisateur (PDF)</div>
+                  </div>
+              </a>
           </div>
-          <div class="col-md-4">
-            <a href="_files/GUIDE-D'UTILISATION.pdf">
-              <div
-                class="container-div"
-                style="background-image: url('/_files/guide-utilisation-.webp')"
-              >
-                <div class="overlay"></div>
-                <div class="text">Guide utilisateur</div>
-              </div>
-            </a>
+  
+          <!-- Card 6 -->
+          <div class="col-md-4 col-sm-6">
+              <a href="Forum" class="text-decoration-none">
+                  <div class="card card-custom">
+                      <i class="fas fa-users"></i>
+                      <div class="card-text">Forum</div>
+                  </div>
+              </a>
           </div>
-          <div class="col-md-4">
-            {#if user?.status == "valide" }
-
-            <a href="Forum">
-                <div class="container-div" style="background-image: url('/_files/equipe-jeunes-africains-au-bureau-table-ordinateurs-portables_219728-4509.avif')">
-                    <div class="overlay"></div>
-                    <div class="text">Forum</div>
-                </div>
-            </a>
-            {:else }
-
-            <div
-              class="container-div"
-              style="background-image: url('/_files/equipe-jeunes-africains-au-bureau-table-ordinateurs-portables_219728-4509.avif')"
-            >
-              <div class="overlay"></div>
-              <div class="text">
-                Forum {#if user?.status != "valide"}
-                  <i class="fa fa-lock"></i>{/if}
-              </div>
-            </div>
-            {/if} 
-
-
-            
-          </div>
-        </div>
+      </div>
       </div>
     </div>
   </section>
@@ -349,6 +279,38 @@
       justify-content: start !important;
       align-items: start !important;
     }
+    
+
+    .card-custom {
+            text-align: center;
+            padding: 20px;
+            height: 140px; /* Hauteur augmentée */
+            transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+            border: none;
+            box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.2); /* Ombre plus marquée */
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            border-radius: 10px; /* Coins arrondis */
+            background: white; /* Fond blanc */
+        }
+
+        .card-custom:hover {
+            transform: translateY(-5px);
+            box-shadow: 0px 8px 20px rgba(0, 0, 0, 0.3); /* Ombre plus forte au hover */
+        }
+
+        .card-custom i {
+            font-size: 50px;
+            color: #007bff;
+        }
+
+        .card-custom .card-text {
+            font-weight: bold;
+            margin-top: 10px;
+            font-size: 22px;
+        }
   </style>
   <Footer />
 </div>
