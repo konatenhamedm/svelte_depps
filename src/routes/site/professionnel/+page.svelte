@@ -303,7 +303,7 @@
 
   // ✅ Vérifier si on revient après un paiement
   onMount(() => {
-    localStorage.clear();
+   /*  localStorage.clear(); */
 
     const urlParams = new URLSearchParams(window.location.search);
     if (urlParams.has("return")) {
