@@ -493,7 +493,7 @@ function validateStep() {
             <!-- Étape 1 -->
           {#if step === 1}
   <h2 class="h2-baslik-anasayfa-ozel h-yazi-margin-kucuk">
-    Informations de connexion (étape 1/4)
+    Etablissement de Sante (étape 1/4)
   </h2>
   <div class="tablo">
     <div class="tablo--1h-ve-2">

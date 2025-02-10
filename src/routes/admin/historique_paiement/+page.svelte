@@ -219,43 +219,7 @@
                       >
                       <!--  <TableBodyCell class="p-4 border border-gray-300">{item.sous_menu.libelle}</TableBodyCell>
                                    -->
-<<<<<<< HEAD
-                      <TableBodyCell
-                        class="space-x-1 p-2 w-8 border border-gray-300"
-                      >
-
                       
-                        <Button
-                          color="green"
-                          style="background-color: green"
-                          size="sm"
-                          class="gap-2 px-3 bg-green-800"
-                          on:click={() => (
-                            (current_data = item), (openShow = true)
-                          )}
-                        >
-                          <EyeOutline size="sm" />
-                        </Button>
-                        <Button
-                          color="red"
-                          style="background-color: red"
-                          size="sm"
-                          class="gap-2 px-3 bg-red-800"
-                          on:click={() => (
-                            (current_data = item), (openDelete = true)
-                          )}
-                        >
-                          <TrashBinSolid size="sm" />
-                        </Button>
-                      </TableBodyCell>
-=======
-                    
-
-
-
-
-
-
 
 
 <TableBodyCell class="p-2 w-8 border border-gray-300">
@@ -282,24 +246,11 @@
           Voir
         </button>
         <!-- Bouton Supprimer -->
-        <button 
-          class="w-full flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-red-800 hover:text-red-800"
-             on:click={() => (current_data = item, openDelete = true)}
-        >
-          <TrashBinSolid size="sm" class="mr-2" />
-          Supprimer
-        </button>
+       
       </div>
     </div>
   </details>
 </TableBodyCell>
-
-
-
-
-
-
->>>>>>> ba8369f (Refactor table action buttons to use dropdown menus for improved UI/UX)
                     </TableBodyRow>
                   {/each}
                 {/if}
