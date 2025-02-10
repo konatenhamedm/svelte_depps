@@ -17,154 +17,231 @@
   const professions = getProfessions();
 
   export let data; // Récupérer les données du layout
-let user = data?.user;
+  let user = data?.user;
 
-let step = 1;
+  let step = 1;
+  let formData = {
+    email: "",
+    password: "",
+    confirmPassword: "",
+    genre: "",
+    civilite: "",
+    nom: "",
+    prenoms: "",
+    nationate: "",
+    dateNaissance: "",
+    numero: "",
+    address: "",
+    lieuResidence: "",
+    diplome: "",
+    dateDiplome: "",
+    lieuDiplome: "",
+    situation: "",
+    profession: "",
+    situationPro: "",
+    specialite: "",
+    emailPro: "",
+    contactPro: "",
+    professionnel: "",
+    ville: "",
+    dateEmploi: "",
+    photo: "",
+    cni: "",
+    casier: "",
+    diplomeFile: "",
+    certificat: "",
+    cv: "",
+    appartenirOrganisation: false,
+    organisationNom: "",
+    organisationNumero: "",
+    organisationAnnee: ""
+  };
 
-let formData = {
-  // Informations générales
-  id: null,
-  typePersonneId: null,
-  nature: "",
-  type: "",
-  gps: "",
-  niveau: "",
-  contact: "",
-  entrepriseName: "",
-  emailEntreprise: "",
-  space: "",
+  let errors = {
+    // Login informations
+    email: "",
+    password: "",
+    confirmPassword: "",
 
-  // Promoteur
-  genreId: null,
-  nomComplet: "",
-  emailPro: "",
-  profession: "",
-  contacts: "",
-  lieuResidence: "",
-  numeroCni: "",
+    // Personal Informations
+    genre: "",
+    civilite: "",
+    nom: "",
+    prenoms: "",
+    nationate: "",
+    dateNaissance: "",
+    numero: "",
+    address: "",
+    lieuResidence: "",
+    diplome: "",
+    dateDiplome: "",
+    lieuDiplome: "",
+    situation: "",
 
-  // Technicien
-  nomCompletTechnique: "",
-  emailProTechnique: "",
-  professionTechnique: "",
-  contactProTechnique: "",
-  lieuResidenceTechnique: "",
-  numeroOrdreTechnique: "",
+    // Professional informations
+    profession: "",
+    situationPro: "",
+    specialite: "",
+    emailPro: "",
+    contactPro: "",
+    professionnel: "",
+    ville: "",
+    dateEmploi: "",
 
-  // Documents
-  photoRespo: "",
-  photoPhysiqueId: null,
-  cniPhysiqueId: null,
-  diplomeFilePhysiqueId: null,
-  cvPhysiqueId: null,
-  dfePhysiqueId: null,
+    // Media informations
+    photo: "",
+    cni: "",
+    casier: "",
+    diplomeFile: "",
+    certificat: "",
+    cv: "",
 
-  // Autres informations
-  inscriptionProfessionId: null,
-};
+    // Organization informations
+    appartenirOrganisation: false,
+    organisationNom: "",
+    organisationNumero: "",
+    organisationAnnee: ""
 
-// Définition des erreurs
-let errors = {
-  // Informations générales
-  nature: "",
-  type: "",
-  gps: "",
-  niveau: "",
-  contact: "",
-  entrepriseName: "",
-  emailEntreprise: "",
-  space: "",
+    // Paiement informations
+  };
 
-  // Promoteur
-  genreId: "",
-  nomComplet: "",
-  emailPro: "",
-  profession: "",
-  contacts: "",
-  lieuResidence: "",
-  numeroCni: "",
+  function validateStep() {
+    let valid = true;
 
-  // Technicien
-  nomCompletTechnique: "",
-  emailProTechnique: "",
-  professionTechnique: "",
-  contactProTechnique: "",
-  lieuResidenceTechnique: "",
-  numeroOrdreTechnique: "",
+    if (step === 1) {
+      errors.email = formData.email ? "" : "L'e-mail est requis";
+      errors.password = formData.password ? "" : "Le mot de passe est requis";
+      errors.confirmPassword =
+        formData.confirmPassword === formData.password
+          ? ""
+          : "Les mots de passe ne correspondent pas";
 
-  // Documents
-  photoRespo: "",
-  photoPhysiqueId: "",
-  cniPhysiqueId: "",
-  diplomeFilePhysiqueId: "",
-  cvPhysiqueId: "",
-  dfePhysiqueId: "",
+      valid = !errors.password && !errors.confirmPassword && !errors.email;
+    }
 
-  // Autres informations
-  inscriptionProfessionId: "",
-};
+    if (step === 2) {
+      errors.genre = formData.genre ? "" : "Veuillez choisir un genre";
+      errors.civilite = formData.civilite
+        ? ""
+        : "Veuillez choisir une civilité";
+      errors.nom = formData.nom ? "" : "Le nom est requis";
+      errors.prenoms = formData.prenoms ? "" : "Le prenoms est requis";
+      errors.nationate = formData.nationate
+        ? ""
+        : "Veuillez choisir une nationalité";
+      errors.dateNaissance = formData.dateNaissance
+        ? ""
+        : "Veuillez choisir une date de naissance";
+      errors.numero = formData.numero ? "" : "Le numero est requis";
+      errors.address = formData.address ? "" : "Le adresse est requise";
+      errors.lieuResidence = formData.lieuResidence
+        ? ""
+        : "Le lieu de résidence est requis";
+      errors.diplome = formData.diplome ? "" : "Le diplôme est requis";
+      errors.dateDiplome = formData.dateDiplome
+        ? ""
+        : "Veuillez choisir une date de diplome";
+      errors.lieuDiplome = formData.lieuDiplome
+        ? ""
+        : "Le lieu du diplôme est requis";
+      errors.situation = formData.situation
+        ? ""
+        : "La situation matrimoniale est requise";
 
-// Fonction de validation des étapes
-function validateStep() {
-  let valid = true;
+      valid =
+        !errors.genre &&
+        !errors.civilite &&
+        !errors.nom &&
+        !errors.prenoms &&
+        !errors.nationate &&
+        !errors.dateNaissance &&
+        !errors.numero &&
+        !errors.address &&
+        !errors.lieuResidence &&
+        !errors.diplome &&
+        !errors.dateDiplome &&
+        !errors.lieuDiplome &&
+        !errors.situation;
+    }
 
-  if (step === 1) {
-    errors.nature = formData.nature ? "" : "La nature est requise";
-    errors.type = formData.type ? "" : "Le type est requis";
-    errors.gps = formData.gps ? "" : "Les coordonnées GPS sont requises";
-    errors.niveau = formData.niveau ? "" : "Le niveau est requis";
-    errors.contact = formData.contact ? "" : "Le contact est requis";
-    errors.entrepriseName = formData.entrepriseName ? "" : "Le nom de l'entreprise est requis";
-    errors.emailEntreprise = formData.emailEntreprise ? "" : "L'email de l'entreprise est requis";
-    
-    valid = Object.values(errors).every((e) => e === "");
+    if (step === 3) {
+      errors.profession = formData.profession
+        ? ""
+        : "La profession est requise";
+      errors.situationPro = formData.situationPro
+        ? ""
+        : "La situation professionnelle est requise";
+      errors.specialite = formData.specialite
+        ? ""
+        : "La specialité est requise";
+      errors.emailPro = formData.emailPro
+        ? ""
+        : "L'email professionnelle est requise";
+      errors.contactPro = formData.contactPro
+        ? ""
+        : "Le contact professionnel est requis";
+      errors.professionnel = formData.professionnel
+        ? ""
+        : "La structure est requise";
+      errors.ville = formData.ville ? "" : "La ville est requise";
+      errors.dateEmploi = formData.dateEmploi
+        ? ""
+        : "Veuillez choisir une date de premier emploi";
+
+      valid =
+        !errors.profession &&
+        !errors.situationPro &&
+        !errors.specialite &&
+        !errors.emailPro &&
+        !errors.contactPro &&
+        !errors.professionnel &&
+        !errors.ville &&
+        !errors.dateEmploi;
+    }
+    if (step === 4) {
+      errors.photo = formData.photo ? "" : "La photo est requise";
+      errors.cni = formData.cni
+        ? ""
+        : "La carte nationale d'identité est requise";
+      errors.casier = formData.casier ? "" : "Le casier judiciaire est requis";
+      errors.diplomeFile = formData.diplomeFile ? "" : "Le diplôme est requis";
+      errors.certificat = formData.certificat ? "" : "Le certificat est requis";
+      errors.cv = formData.cv ? "" : "Le CV est requis";
+
+      valid = true;
+       /*  !errors.photo &&
+        !errors.cni &&
+        !errors.casier &&
+        !errors.diplomeFile &&
+        !errors.certificat &&
+        !errors.cv; */
+    }
+
+    if (step === 5) {
+      if (formData.appartenirOrganisation) {
+        errors.organisationNom = formData.organisationNom
+          ? ""
+          : "Le nom de l'organisation est requis";
+        errors.organisationNumero = formData.organisationNumero
+          ? ""
+          : "Le numero de l'organisation est requis";
+        errors.organisationAnnee = formData.organisationAnnee
+          ? ""
+          : "L'année est requise";
+
+        valid =
+          !errors.organisationNom &&
+          !errors.organisationNumero &&
+          !errors.organisationAnnee;
+      }
+    }
+
+    if (step === 6) {
+      valid = isPaiementDone;
+    }
+
+    return valid;
   }
-
-  if (step === 2) {
-    errors.genreId = formData.genreId ? "" : "Le genre est requis";
-    errors.nomComplet = formData.nomComplet ? "" : "Le nom complet est requis";
-    errors.emailPro = formData.emailPro ? "" : "L'email professionnel est requis";
-    errors.profession = formData.profession ? "" : "La profession est requise";
-    errors.contacts = formData.contacts ? "" : "Les contacts sont requis";
-    errors.lieuResidence = formData.lieuResidence ? "" : "Le lieu de résidence est requis";
-    errors.numeroCni = formData.numeroCni ? "" : "Le numéro de CNI est requis";
-
-    valid = Object.values(errors).every((e) => e === "");
-  }
-
-  if (step === 3) {
-    errors.nomCompletTechnique = formData.nomCompletTechnique ? "" : "Le nom du technicien est requis";
-    errors.emailProTechnique = formData.emailProTechnique ? "" : "L'email professionnel du technicien est requis";
-    errors.professionTechnique = formData.professionTechnique ? "" : "La profession du technicien est requise";
-    errors.contactProTechnique = formData.contactProTechnique ? "" : "Le contact professionnel du technicien est requis";
-    errors.lieuResidenceTechnique = formData.lieuResidenceTechnique ? "" : "Le lieu de résidence du technicien est requis";
-    errors.numeroOrdreTechnique = formData.numeroOrdreTechnique ? "" : "Le numéro d'ordre du technicien est requis";
-
-    valid = Object.values(errors).every((e) => e === "");
-  }
-
-  if (step === 4) {
-    errors.photoRespo = formData.photoRespo ? "" : "La photo du responsable est requise";
-    errors.photoPhysiqueId = formData.photoPhysiqueId ? "" : "La photo physique est requise";
-    errors.cniPhysiqueId = formData.cniPhysiqueId ? "" : "La CNI physique est requise";
-    errors.diplomeFilePhysiqueId = formData.diplomeFilePhysiqueId ? "" : "Le fichier du diplôme est requis";
-    errors.cvPhysiqueId = formData.cvPhysiqueId ? "" : "Le CV est requis";
-    errors.dfePhysiqueId = formData.dfePhysiqueId ? "" : "Le DFE est requis";
-
-    valid = Object.values(errors).every((e) => e === "");
-  }
-
-  if (step === 5) {
-    errors.inscriptionProfessionId = formData.inscriptionProfessionId ? "" : "L'inscription à la profession est requise";
-
-    valid = Object.values(errors).every((e) => e === "");
-  }
-
-  return valid;
-}
-
-
-
 
   let isPaiementProcessing = false;
   $: isPaiementDone = false;
@@ -177,7 +254,7 @@ function validateStep() {
       localStorage.setItem("step", step.toString());
     }
   }
-  let fileNames = {}; // Stocke uniquement les noms des fichiers pour éviter les problèmes avec `localStorage`
+  let fileNames = {}; // Stocke uniquement les noms des fichiers pour éviter les problèmes avec localStorage
   let selectedFiles = {};
 
   function updateFormData(fieldName, file) {
@@ -232,7 +309,7 @@ function validateStep() {
     }
   });
 
-  // Lire la valeur de `step` depuis localStorage, sinon initialiser à 1
+  // Lire la valeur de step depuis localStorage, sinon initialiser à 1
 
   let messagefile = "";
   // Fonction pour changer d'étape et sauvegarder dans localStorage
@@ -340,7 +417,7 @@ function validateStep() {
         if (result.url) {
           localStorage.setItem("reference", result.reference);
          
-            window.location.href = result.url + "?return=1"; // 🔥 Ajout du paramètre `return`
+            window.location.href = result.url + "?return=1"; // 🔥 Ajout du paramètre return
         
         }
       })
@@ -355,10 +432,10 @@ function validateStep() {
 
     try {
       const res = await fetch(
-        `https://depps.leadagro.net/api/paiement/get/transaction/${idtransaction}`
+        https://depps.leadagro.net/api/paiement/get/transaction/${idtransaction}
       );
       const data = await res.json();
-      return data.data; // Assurez-vous que l'API renvoie un objet avec une clé `valid`
+      return data.data; // Assurez-vous que l'API renvoie un objet avec une clé valid
     } catch (error) {
       console.error(
         "Erreur lors de la vérification de la transaction :",
@@ -413,7 +490,7 @@ function validateStep() {
           if (Object.keys(values).includes(element.name)) {
             values[element.name as keyof typeof values] = res.data;
           } else {
-            console.error(`Invalid key: ${element.name}`);
+            console.error(Invalid key: ${element.name});
           }
         } else {
           console.error(
@@ -491,347 +568,536 @@ function validateStep() {
             on:submit|preventDefault={submitForm}
           >
             <!-- Étape 1 -->
-          {#if step === 1}
-  <h2 class="h2-baslik-anasayfa-ozel h-yazi-margin-kucuk">
-    Etablissement de Sante (étape 1/4)
-  </h2>
-  <div class="tablo">
-    <div class="tablo--1h-ve-2">
-      <div class="grid grid-cols-3">
-        
-        <!-- Champ Nature -->
-        <div class="form__grup">
-          <label class="form_label">Nature</label>
-          <input
-            on:input={saveFormState}
-            on:input={(e: any) => updateField("nature", e.target.value)}
-            type="text"
-            class="form__input"
-            bind:value={formData.nature}
-            placeholder="Nature"
-          />
-          {#if errors.nature}<p class="error">{errors.nature}</p>{/if}
-        </div>
+            {#if step === 1}
+              <h2 class="h2-baslik-anasayfa-ozel h-yazi-margin-kucuk">
+                Informations de connexion (étape 1/6)
+              </h2>
+              <div class="tablo">
+                <div class="tablo--1h-ve-2">
+                  <div class="grid grid-cols-3">
+                    <div class="form__grup">
+                      <label class="form_label">E-mail *</label>
+                      <input
+                        on:input={saveFormState}
+                        on:input={(e: any) =>
+                          updateField("email", e.target.value)}
+                        type="email"
+                        class="form__input"
+                        bind:value={formData.email}
+                        placeholder="E-mail"
+                      />
+                      {#if errors.email}<p class="error">
+                          {errors.email}
+                        </p>{/if}
+                    </div>
 
-        <!-- Champ Type -->
-        <div class="form__grup">
-          <label class="form_label">Type</label>
-          <input
-            on:input={saveFormState}
-            on:input={(e: any) => updateField("type", e.target.value)}
-            type="text"
-            class="form__input"
-            bind:value={formData.type}
-            placeholder="Type"
-          />
-          {#if errors.type}<p class="error">{errors.type}</p>{/if}
-        </div>
+                    <div class="form__grup">
+                      <label class="form_label">Mot de passe *</label>
+                      <input
+                        on:input={saveFormState}
+                        on:input={(e: any) =>
+                          updateField("password", e.target.value)}
+                        type="password"
+                        class="form__input"
+                        bind:value={formData.password}
+                        placeholder="Mot de passe"
+                      />
+                      {#if errors.password}<p class="error">
+                          {errors.password}
+                        </p>{/if}
+                    </div>
 
-        <!-- Champ GPS -->
-        <div class="form__grup">
-          <label class="form_label">GPS</label>
-          <input
-            on:input={saveFormState}
-            on:input={(e: any) => updateField("gps", e.target.value)}
-            type="text"
-            class="form__input"
-            bind:value={formData.gps}
-            placeholder="GPS"
-          />
-          {#if errors.gps}<p class="error">{errors.gps}</p>{/if}
-        </div>
-
-        <!-- Champ Niveau -->
-        <div class="form__grup">
-          <label class="form_label">Niveau</label>
-          <input
-            on:input={saveFormState}
-            on:input={(e: any) => updateField("niveau", e.target.value)}
-            type="text"
-            class="form__input"
-            bind:value={formData.niveau}
-            placeholder="Niveau"
-          />
-          {#if errors.niveau}<p class="error">{errors.niveau}</p>{/if}
-        </div>
-
-        <!-- Champ Contact -->
-        <div class="form__grup">
-          <label class="form_label">Contact</label>
-          <input
-            on:input={saveFormState}
-            on:input={(e: any) => updateField("contact", e.target.value)}
-            type="text"
-            class="form__input"
-            bind:value={formData.contact}
-            placeholder="Contact"
-          />
-          {#if errors.contact}<p class="error">{errors.contact}</p>{/if}
-        </div>
-
-        <!-- Champ Nom de l'entreprise -->
-        <div class="form__grup">
-          <label class="form_label">Nom de l'entreprise</label>
-          <input
-            on:input={saveFormState}
-            on:input={(e: any) => updateField("entrepriseName", e.target.value)}
-            type="text"
-            class="form__input"
-            bind:value={formData.entrepriseName}
-            placeholder="Nom de l'entreprise"
-          />
-          {#if errors.entrepriseName}<p class="error">{errors.entrepriseName}</p>{/if}
-        </div>
-
-        <!-- Champ Email de l'entreprise -->
-        <div class="form__grup">
-          <label class="form_label">E-mail de l'entreprise</label>
-          <input
-            on:input={saveFormState}
-            on:input={(e: any) => updateField("emailEntreprise", e.target.value)}
-            type="email"
-            class="form__input"
-            bind:value={formData.emailEntreprise}
-            placeholder="E-mail de l'entreprise"
-          />
-          {#if errors.emailEntreprise}<p class="error">{errors.emailEntreprise}</p>{/if}
-        </div>
-
-        <!-- Champ Espace -->
-        <div class="form__grup">
-          <label class="form_label">Espace</label>
-          <input
-            on:input={saveFormState}
-            on:input={(e: any) => updateField("space", e.target.value)}
-            type="text"
-            class="form__input"
-            bind:value={formData.space}
-            placeholder="Espace"
-          />
-          {#if errors.space}<p class="error">{errors.space}</p>{/if}
-        </div>
-
-      </div>
-    </div>
-  </div>
-{/if}
+                    <div class="form__grup">
+                      <label class="form_label"
+                        >Confirmer le mot de passe *</label
+                      >
+                      <input
+                        on:input={saveFormState}
+                        on:input={(e: any) =>
+                          updateField("confirmPassword", e.target.value)}
+                        type="password"
+                        class="form__input"
+                        bind:value={formData.confirmPassword}
+                        placeholder="Confirmer le mot de passe"
+                      />
+                      {#if errors.confirmPassword}<p class="error">
+                          {errors.confirmPassword}
+                        </p>{/if}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            {/if}
 
             <!-- Étape 2 -->
-           {#if step === 2}
-  <h2 class="h2-baslik-anasayfa-ozel h-yazi-margin-kucuk">
-    Informations du promoteur (étape 1/4)
-  </h2>
-  <div class="tablo">
-    <div class="tablo--1h-ve-2">
-      <div class="grid grid-cols-3">
-        
-        <!-- Champ Genre ID -->
-        <div class="form__grup">
-          <label class="form_label">Genre ID</label>
-          <input
-            on:input={saveFormState}
-            on:input={(e: any) => updateField("genreId", e.target.value)}
-            type="text"
-            class="form__input"
-            bind:value={formData.genreId}
-            placeholder="Genre ID"
-          />
-          {#if errors.genreId}<p class="error">{errors.genreId}</p>{/if}
-        </div>
+            {#if step === 2}
+              <h2 class="h2-baslik-anasayfa-ozel h-yazi-margin-kucuk">
+                Informations personnelles (étape 2/6)
+              </h2>
+              <div class="tablo">
+                <div class="tablo--1h-ve-2">
+                  <div class="grid grid-cols-3">
+                    <div class="form__grup">
+                      <label class="form_label">Genre</label>
+                      <select
+                        on:change={saveFormState}
+                        on:change={(e: any) =>
+                          updateField("genre", e.target.value)}
+                        class="form__input"
+                        name=""
+                        id=""
+                        bind:value={formData.genre}
+                      >
+                        <option value="" selected={!formData.genre}
+                          >Veuillez sélectionner une option</option
+                        >
+                        {#each values.genre as genre}
+                          <option
+                            value={genre.id}
+                            selected={formData.genre === genre.id}
+                            >{genre.libelle}</option
+                          >
+                        {/each}
+                      </select>
+                      {#if errors.genre}<p class="error">
+                          {errors.genre}
+                        </p>{/if}
+                    </div>
 
-        <!-- Champ Nom Complet -->
-        <div class="form__grup">
-          <label class="form_label">Nom complet</label>
-          <input
-            on:input={saveFormState}
-            on:input={(e: any) => updateField("nomComplet", e.target.value)}
-            type="text"
-            class="form__input"
-            bind:value={formData.nomComplet}
-            placeholder="Nom complet"
-          />
-          {#if errors.nomComplet}<p class="error">{errors.nomComplet}</p>{/if}
-        </div>
+                    <div class="form__grup">
+                      <label class="form_label">Civilité</label>
+                      <select
+                        on:change={saveFormState}
+                        on:change={(e: any) =>
+                          updateField("civilite", e.target.value)}
+                        class="form__input"
+                        name=""
+                        id=""
+                        bind:value={formData.civilite}
+                      >
+                        <option value="" selected={!formData.civilite}
+                          >Veuillez sélectionner une option</option
+                        >
+                        {#each values.civilite as civilite}
+                          <option
+                            value={civilite.code}
+                            selected={formData.civilite === civilite.code}
+                            >{civilite.libelle}</option
+                          >
+                        {/each}
+                      </select>
+                      {#if errors.civilite}<p class="error">
+                          {errors.civilite}
+                        </p>{/if}
+                    </div>
 
-        <!-- Champ Email Pro -->
-        <div class="form__grup">
-          <label class="form_label">E-mail professionnel</label>
-          <input
-            on:input={saveFormState}
-            on:input={(e: any) => updateField("emailPro", e.target.value)}
-            type="email"
-            class="form__input"
-            bind:value={formData.emailPro}
-            placeholder="E-mail professionnel"
-          />
-          {#if errors.emailPro}<p class="error">{errors.emailPro}</p>{/if}
-        </div>
+                    <div class="form__grup">
+                      <label class="form_label">Nom</label>
+                      <input
+                        on:input={saveFormState}
+                        on:input={(e: any) =>
+                          updateField("nom", e.target.value)}
+                        type="text"
+                        class="form__input"
+                        bind:value={formData.nom}
+                        placeholder="Nom"
+                      />
+                      {#if errors.nom}<p class="error">
+                          {errors.nom}
+                        </p>{/if}
+                    </div>
 
-        <!-- Champ Profession -->
-        <div class="form__grup">
-          <label class="form_label">Profession</label>
-          <input
-            on:input={saveFormState}
-            on:input={(e: any) => updateField("profession", e.target.value)}
-            type="text"
-            class="form__input"
-            bind:value={formData.profession}
-            placeholder="Profession"
-          />
-          {#if errors.profession}<p class="error">{errors.profession}</p>{/if}
-        </div>
+                    <div class="form__grup">
+                      <label class="form_label">Prénoms</label>
+                      <input
+                        on:input={saveFormState}
+                        on:input={(e: any) =>
+                          updateField("prenoms", e.target.value)}
+                        type="text"
+                        class="form__input"
+                        bind:value={formData.prenoms}
+                        placeholder="Prénoms"
+                      />
+                      {#if errors.prenoms}<p class="error">
+                          {errors.prenoms}
+                        </p>{/if}
+                    </div>
 
-        <!-- Champ Contacts -->
-        <div class="form__grup">
-          <label class="form_label">Contacts</label>
-          <input
-            on:input={saveFormState}
-            on:input={(e: any) => updateField("contacts", e.target.value)}
-            type="text"
-            class="form__input"
-            bind:value={formData.contacts}
-            placeholder="Contacts"
-          />
-          {#if errors.contacts}<p class="error">{errors.contacts}</p>{/if}
-        </div>
+                    <div class="form__grup">
+                      <label class="form_label">Nationalité</label>
+                      <select
+                        on:change={saveFormState}
+                        on:change={(e: any) =>
+                          updateField("nationate", e.target.value)}
+                        class="form__input"
+                        name=""
+                        id=""
+                        bind:value={formData.nationate}
+                      >
+                        <option value="" selected={!formData.nationate}
+                          >Veuillez sélectionner une option</option
+                        >
+                        {#each values.nationate as nationate}
+                          <option
+                            value={nationate.id}
+                            selected={formData.nationate === nationate.id}
+                            >{nationate.libelle}</option
+                          >
+                        {/each}
+                      </select>
+                      {#if errors.nationate}<p class="error">
+                          {errors.nationate}
+                        </p>{/if}
+                    </div>
 
-        <!-- Champ Lieu de Résidence -->
-        <div class="form__grup">
-          <label class="form_label">Lieu de résidence</label>
-          <input
-            on:input={saveFormState}
-            on:input={(e: any) => updateField("lieuResidence", e.target.value)}
-            type="text"
-            class="form__input"
-            bind:value={formData.lieuResidence}
-            placeholder="Lieu de résidence"
-          />
-          {#if errors.lieuResidence}<p class="error">{errors.lieuResidence}</p>{/if}
-        </div>
+                    <div class="form__grup">
+                      <label class="form_label">Date de naissance</label>
+                      <input
+                        on:input={saveFormState}
+                        on:input={(e: any) =>
+                          updateField("dateNaissance", e.target.value)}
+                        type="date"
+                        class="form__input"
+                        bind:value={formData.dateNaissance}
+                        placeholder="Date de naissance"
+                      />
+                      {#if errors.dateNaissance}<p class="error">
+                          {errors.dateNaissance}
+                        </p>{/if}
+                    </div>
 
-        <!-- Champ Numéro de CNI -->
-        <div class="form__grup">
-          <label class="form_label">Numéro de CNI</label>
-          <input
-            on:input={saveFormState}
-            on:input={(e: any) => updateField("numeroCni", e.target.value)}
-            type="text"
-            class="form__input"
-            bind:value={formData.numeroCni}
-            placeholder="Numéro de CNI"
-          />
-          {#if errors.numeroCni}<p class="error">{errors.numeroCni}</p>{/if}
-        </div>
+                    <div class="form__grup">
+                      <label class="form_label">Numero</label>
+                      <input
+                        on:input={saveFormState}
+                        on:input={(e: any) =>
+                          updateField("numero", e.target.value)}
+                        type="text"
+                        class="form__input"
+                        bind:value={formData.numero}
+                        placeholder="Numero"
+                      />
+                      {#if errors.numero}<p class="error">
+                          {errors.numero}
+                        </p>{/if}
+                    </div>
 
-      </div>
-    </div>
-  </div>
-{/if}
+                    <div class="form__grup">
+                      <label class="form_label">Adresse</label>
+                      <input
+                        on:input={saveFormState}
+                        on:input={(e: any) =>
+                          updateField("address", e.target.value)}
+                        type="text"
+                        class="form__input"
+                        bind:value={formData.address}
+                        placeholder="Adresse"
+                      />
+                      {#if errors.address}<p class="error">
+                          {errors.address}
+                        </p>{/if}
+                    </div>
 
+                    <div class="form__grup">
+                      <label class="form_label">Lieu de résidence</label>
+                      <input
+                        on:input={saveFormState}
+                        on:input={(e: any) =>
+                          updateField("lieuResidence", e.target.value)}
+                        type="text"
+                        class="form__input"
+                        bind:value={formData.lieuResidence}
+                        placeholder="Lieu de résidence"
+                      />
+                      {#if errors.lieuResidence}<p class="error">
+                          {errors.lieuResidence}
+                        </p>{/if}
+                    </div>
+
+                    <div class="form__grup">
+                      <label class="form_label">Diplôme</label>
+                      <input
+                        on:input={saveFormState}
+                        on:input={(e: any) =>
+                          updateField("diplome", e.target.value)}
+                        type="text"
+                        class="form__input"
+                        bind:value={formData.diplome}
+                        placeholder="Diplôme"
+                      />
+                      {#if errors.diplome}<p class="error">
+                          {errors.diplome}
+                        </p>{/if}
+                    </div>
+
+                    <div class="form__grup">
+                      <label class="form_label"
+                        >Date d'obtention du diplôme</label
+                      >
+                      <input
+                        on:input={saveFormState}
+                        on:input={(e: any) =>
+                          updateField("dateDiplome", e.target.value)}
+                        type="date"
+                        class="form__input"
+                        bind:value={formData.dateDiplome}
+                        placeholder="Date d'obtention du diplôme"
+                      />
+                      {#if errors.dateDiplome}<p class="error">
+                          {errors.dateDiplome}
+                        </p>{/if}
+                    </div>
+
+                    <div class="form__grup">
+                      <label class="form_label"
+                        >Lieu d'obtention du diplôme</label
+                      >
+                      <input
+                        on:input={saveFormState}
+                        on:input={(e: any) =>
+                          updateField("lieuDiplome", e.target.value)}
+                        type="text"
+                        class="form__input"
+                        bind:value={formData.lieuDiplome}
+                        placeholder="Lieu d'obtention du diplôme"
+                      />
+                      {#if errors.lieuDiplome}<p class="error">
+                          {errors.lieuDiplome}
+                        </p>{/if}
+                    </div>
+
+                    <div class="form__grup">
+                      <label class="form_label">Situation matrimoniale</label>
+                      <select
+                        on:change={saveFormState}
+                        on:change={(e: any) =>
+                          updateField("situation", e.target.value)}
+                        class="form__input"
+                        name=""
+                        id=""
+                        bind:value={formData.situation}
+                      >
+                        <option value="" selected={!formData.situation}
+                          >Veuillez sélectionner une option</option
+                        >
+
+                        <option
+                          value="Célibataire"
+                          selected={formData.situation === "Célibataire"}
+                          >Célibataire</option
+                        >
+                        <option
+                          value="Marié(e)"
+                          selected={formData.situation === "Marié(e)"}
+                          >Marié(e)</option
+                        >
+                        <option
+                          value="Divorcé(e)"
+                          selected={formData.situation === "Divorcé(e)"}
+                          >Divorcé(e)</option
+                        >
+                        <option
+                          value="Veuf (Veuve)"
+                          selected={formData.situation === "Veuf (Veuve)"}
+                          >Veuf (Veuve)</option
+                        >
+                      </select>
+                      {#if errors.situation}<p class="error">
+                          {errors.situation}
+                        </p>{/if}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            {/if}
 
             <!-- Étape 3 -->
-           {#if step === 3}
-  <h2 class="h2-baslik-anasayfa-ozel h-yazi-margin-kucuk">
-    Informations du technicien (étape 3/4)
-  </h2>
-  <div class="tablo">
-    <div class="tablo--1h-ve-2">
-      <div class="grid grid-cols-3">
-        
-        <!-- Champ Nom Complet Technique -->
-        <div class="form__grup">
-          <label class="form_label">Nom complet</label>
-          <input
-            on:input={saveFormState}
-            on:input={(e: any) => updateField("nomCompletTechnique", e.target.value)}
-            type="text"
-            class="form__input"
-            bind:value={formData.nomCompletTechnique}
-            placeholder="Nom complet"
-          />
-          {#if errors.nomCompletTechnique}<p class="error">{errors.nomCompletTechnique}</p>{/if}
-        </div>
+            {#if step === 3}
+              <h2 class="h2-baslik-anasayfa-ozel h-yazi-margin-kucuk">
+                Informations professionnelles (étape 3/6)
+              </h2>
+              <div class="tablo">
+                <div class="tablo--1h-ve-2">
+                  {#if errors.profession}<p class="error">
+                      {errors.profession}
+                    </p>{/if}
+                  <div class="grid grid-cols-3">
+                    {#each professions as professionGP}
+                      <div class="form__grup mb-10">
+                        <label class="form_label font-bold"
+                          ><big>{professionGP.title}</big></label
+                        >
 
-        <!-- Champ Email Pro Technique -->
-        <div class="form__grup">
-          <label class="form_label">E-mail professionnel</label>
-          <input
-            on:input={saveFormState}
-            on:input={(e: any) => updateField("emailProTechnique", e.target.value)}
-            type="email"
-            class="form__input"
-            bind:value={formData.emailProTechnique}
-            placeholder="E-mail professionnel"
-          />
-          {#if errors.emailProTechnique}<p class="error">{errors.emailProTechnique}</p>{/if}
-        </div>
+                        {#each professionGP.professions as profession}
+                          <div class="">
+                            <input
+                              on:input={saveFormState}
+                              on:input={(e: any) =>
+                                updateField("profession", e.target.value)}
+                              type="radio"
+                              class="me-2"
+                              id={profession.id}
+                              name="rd_profession"
+                              style="cursor: pointer;"
+                              checked={profession.title == formData.profession}
+                              on:change={() =>
+                                (formData.profession = profession.title)}
+                            />
+                            <label for={profession.id} style="cursor: pointer;"
+                              >{profession.title}</label
+                            >
+                          </div>
+                        {/each}
+                      </div>
+                    {/each}
+                  </div>
 
-        <!-- Champ Profession Technique -->
-        <div class="form__grup">
-          <label class="form_label">Profession</label>
-          <input
-            on:input={saveFormState}
-            on:input={(e: any) => updateField("professionTechnique", e.target.value)}
-            type="text"
-            class="form__input"
-            bind:value={formData.professionTechnique}
-            placeholder="Profession"
-          />
-          {#if errors.professionTechnique}<p class="error">{errors.professionTechnique}</p>{/if}
-        </div>
+                  <div class="grid grid-cols-3">
+                    <div class="form__grup">
+                      <label class="form_label">Situation professionnelle</label
+                      >
+                      <input
+                        on:input={saveFormState}
+                        on:input={(e: any) =>
+                          updateField("situationPro", e.target.value)}
+                        type="text"
+                        class="form__input"
+                        bind:value={formData.situationPro}
+                        placeholder="Situation Professionnelle"
+                      />
+                      {#if errors.situationPro}<p class="error">
+                          {errors.situationPro}
+                        </p>{/if}
+                    </div>
 
-        <!-- Champ Contact Pro Technique -->
-        <div class="form__grup">
-          <label class="form_label">Contact professionnel</label>
-          <input
-            on:input={saveFormState}
-            on:input={(e: any) => updateField("contactProTechnique", e.target.value)}
-            type="text"
-            class="form__input"
-            bind:value={formData.contactProTechnique}
-            placeholder="Contact professionnel"
-          />
-          {#if errors.contactProTechnique}<p class="error">{errors.contactProTechnique}</p>{/if}
-        </div>
+                    <div class="form__grup">
+                      <label class="form_label">Spécialité</label>
+                      <select
+                        on:change={saveFormState}
+                        on:change={(e: any) =>
+                          updateField("specialite", e.target.value)}
+                        class="form__input"
+                        name=""
+                        id=""
+                        bind:value={formData.specialite}
+                      >
+                        <option value="" selected={!formData.specialite}
+                          >Veuillez sélectionner une option</option
+                        >
+                        {#each values.specialite as specialite}
+                          <option
+                            value={specialite.id}
+                            selected={formData.specialite === specialite.id}
+                            >{specialite.libelle}</option
+                          >
+                        {/each}
+                      </select>
+                      {#if errors.specialite}<p class="error">
+                          {errors.specialite}
+                        </p>{/if}
+                    </div>
 
-        <!-- Champ Lieu de Résidence Technique -->
-        <div class="form__grup">
-          <label class="form_label">Lieu de résidence</label>
-          <input
-            on:input={saveFormState}
-            on:input={(e: any) => updateField("lieuResidenceTechnique", e.target.value)}
-            type="text"
-            class="form__input"
-            bind:value={formData.lieuResidenceTechnique}
-            placeholder="Lieu de résidence"
-          />
-          {#if errors.lieuResidenceTechnique}<p class="error">{errors.lieuResidenceTechnique}</p>{/if}
-        </div>
+                    <div class="form__grup">
+                      <label class="form_label">Email professionnel</label>
+                      <input
+                        on:input={saveFormState}
+                        on:input={(e: any) =>
+                          updateField("emailPro", e.target.value)}
+                        type="email"
+                        class="form__input"
+                        bind:value={formData.emailPro}
+                        placeholder="Email professionnel"
+                      />
+                      {#if errors.emailPro}<p class="error">
+                          {errors.emailPro}
+                        </p>{/if}
+                    </div>
 
-        <!-- Champ Numéro d'Ordre Technique -->
-        <div class="form__grup">
-          <label class="form_label">Numéro d'ordre</label>
-          <input
-            on:input={saveFormState}
-            on:input={(e: any) => updateField("numeroOrdreTechnique", e.target.value)}
-            type="text"
-            class="form__input"
-            bind:value={formData.numeroOrdreTechnique}
-            placeholder="Numéro d'ordre"
-          />
-          {#if errors.numeroOrdreTechnique}<p class="error">{errors.numeroOrdreTechnique}</p>{/if}
-        </div>
+                    <div class="form__grup">
+                      <label class="form_label">Contact professionnel</label>
+                      <input
+                        on:input={saveFormState}
+                        on:input={(e: any) =>
+                          updateField("contactPro", e.target.value)}
+                        type="text"
+                        class="form__input"
+                        bind:value={formData.contactPro}
+                        placeholder="Contact professionnel"
+                      />
+                      {#if errors.contactPro}<p class="error">
+                          {errors.contactPro}
+                        </p>{/if}
+                    </div>
 
-      </div>
-    </div>
-  </div>
-{/if}
+                    <div class="form__grup">
+                      <label class="form_label"
+                        >Structure d'exercice professionnel</label
+                      >
+                      <input
+                        on:input={saveFormState}
+                        on:input={(e: any) =>
+                          updateField("professionnel", e.target.value)}
+                        type="text"
+                        class="form__input"
+                        bind:value={formData.professionnel}
+                        placeholder="Structure d'exercice professionnel"
+                      />
+                      {#if errors.professionnel}<p class="error">
+                          {errors.professionnel}
+                        </p>{/if}
+                    </div>
 
+                    <div class="form__grup">
+                      <label class="form_label">Ville</label>
+                      <select
+                        on:change={saveFormState}
+                        on:change={(e: any) =>
+                          updateField("ville", e.target.value)}
+                        class="form__input"
+                        name=""
+                        id=""
+                        bind:value={formData.ville}
+                      >
+                        <option value="" selected={!formData.ville}
+                          >Veuillez sélectionner une option</option
+                        >
+                        {#each values.ville as ville}
+                          <option
+                            value={ville.code}
+                            selected={formData.ville === ville.code}
+                            >{ville.libelle}</option
+                          >
+                        {/each}
+                      </select>
+                      {#if errors.ville}<p class="error">
+                          {errors.ville}
+                        </p>{/if}
+                    </div>
+
+                    <div class="form__grup">
+                      <label class="form_label">Date de premier emploi</label>
+                      <input
+                        on:input={saveFormState}
+                        on:input={(e: any) =>
+                          updateField("dateEmploi", e.target.value)}
+                        type="date"
+                        class="form__input"
+                        bind:value={formData.dateEmploi}
+                        placeholder="Date de premier emploi"
+                      />
+                      {#if errors.dateEmploi}<p class="error">
+                          {errors.dateEmploi}
+                        </p>{/if}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            {/if}
 
             <!-- Étape 4 -->
             {#if step === 4}
               <h2 class="h2-baslik-anasayfa-ozel h-yazi-margin-kucuk">
-                Informations médiatiques (étape 4/4)
+                Informations médiatiques (étape 4/6)
               </h2>
               <!-- {#if messagefile !== ""}
                <div
@@ -845,7 +1111,7 @@ function validateStep() {
              <div class="tablo">
                 <div class="tablo--1h-ve-2">
                   <div class="grid grid-cols-3">
-                    {#each ["photo", "cni", "attestationInscription", "diplomeFile", "dfe", "cv"] as fieldName}
+                    {#each ["photo", "cni", "casier", "diplomeFile", "certificat", "cv"] as fieldName}
                       <div class="form__grup">
                         <label class="form_label">{fieldName.toUpperCase()}</label>
                         <input
@@ -866,7 +1132,151 @@ function validateStep() {
               </div>
             {/if}
 
-          
+            <!-- Étape 5 -->
+            {#if step === 5}
+              <h2 class="h2-baslik-anasayfa-ozel h-yazi-margin-kucuk">
+                Informations organisationnelles (étape 5/6)
+              </h2>
+              <div class="tablo">
+                <div class="tablo--1h-ve-2">
+                  <div class="grid grid-cols-3">
+                    <div class="form__grup">
+                      <label class="form_label"
+                        >Appartenez vous à une organisation ?</label
+                      >
+                      <select
+                        on:change={saveFormState}
+                        on:change={(e: any) =>
+                          updateField("appartenirOrganisation", e.target.value)}
+                        class="form__input"
+                        name=""
+                        id=""
+                        bind:value={formData.appartenirOrganisation}
+                      >
+                        <option
+                          value={false}
+                          selected={!formData.appartenirOrganisation}
+                          >Non</option
+                        >
+                        <option
+                          value={true}
+                          selected={formData.appartenirOrganisation}>Oui</option
+                        >
+                      </select>
+                      {#if errors.appartenirOrganisation}<p class="error">
+                          {errors.appartenirOrganisation}
+                        </p>{/if}
+                    </div>
+
+                    {#if formData.appartenirOrganisation}
+                      <div class="form__grup">
+                        <label class="form_label">Nom de l'organisation</label>
+                        <input
+                          on:input={saveFormState}
+                          on:input={(e: any) =>
+                            updateField("organisationNom", e.target.value)}
+                          type="text"
+                          class="form__input"
+                          bind:value={formData.organisationNom}
+                          placeholder="Nom de l'organisation"
+                        />
+                        {#if errors.organisationNom}<p class="error">
+                            {errors.organisationNom}
+                          </p>{/if}
+                      </div>
+
+                      <div class="form__grup">
+                        <label class="form_label"
+                          >Numero de l'organisation</label
+                        >
+                        <input
+                          on:input={saveFormState}
+                          on:input={(e: any) =>
+                            updateField("organisationNumero", e.target.value)}
+                          type="text"
+                          class="form__input"
+                          bind:value={formData.organisationNumero}
+                          placeholder="Numero de l'organisation"
+                        />
+                        {#if errors.organisationNumero}<p class="error">
+                            {errors.organisationNumero}
+                          </p>{/if}
+                      </div>
+
+                      <div class="form__grup">
+                        <label class="form_label">Année</label>
+                        <input
+                          on:input={saveFormState}
+                          on:input={(e: any) =>
+                            updateField("organisationAnnee", e.target.value)}
+                          type="text"
+                          class="form__input"
+                          bind:value={formData.organisationAnnee}
+                          placeholder="Année"
+                        />
+                        {#if errors.organisationAnnee}<p class="error">
+                            {errors.organisationAnnee}
+                          </p>{/if}
+                      </div>
+                    {/if}
+                  </div>
+                </div>
+              </div>
+            {/if}
+
+            <!-- Étape 6 : Paiement -->
+            {#if step === 6}
+              <h2 class="h2-baslik-anasayfa-ozel h-yazi-margin-kucuk">
+                VEUILLEZ PROCéDER AU PAIEMENT
+              </h2>
+              <div class="tablo">
+                <div class="tablo--1h-ve-2">
+                  <!--   on:click={clickPaiement} -->
+                  <div class="grid grid-cols-1 gap-20 flex justify-center">
+                    <div class="">
+                      {#if !isPaiementDone}
+                        <p>
+                          Veillez vous rendre sur le site de votre banque et
+                          effectuer le paiement.
+                        </p>
+                        <br />
+
+                        <button
+                          id="reloadPaiementLsssink"
+                          class="px-6 py-3 bg-green-500 text-white font-medium rounded-lg shadow-lg hover:bg-green-500 transition duration-300"
+                          on:click={clickPaiement}
+                        >
+                          Effectuer le paiement
+                        </button>
+                      {/if}
+                      {#if isPaiementDone}
+                        <p>
+                          Veillez finaliser votre inscription en cliquant sur le
+                          bouton ci-dessous.
+                        </p>
+                        <br />
+                        <button
+                          type="button"
+                          id="r"
+                          class="px-6 py-3 bg-green-500 text-white font-medium rounded-lg shadow-lg hover:bg-green-500 transition duration-300"
+                          on:click={submitForm}
+                          disabled={!isPaiementDone}
+                        >
+                          Finaliser l'inscription
+                        </button>
+                      {/if}
+
+                      <br />
+                      <!--  <p>
+                            Une fois le paiement effectué, veuillez renseigner
+                            l'identifiant de la transaction pour valider votre
+                            inscription.
+                          </p> -->
+                    </div>
+                  </div>
+                </div>
+              </div>
+            {/if}
 
             <!-- Boutons de navigation -->
             <div class="form__grup">
@@ -878,13 +1288,13 @@ function validateStep() {
                 >
               {/if}
 
-              {#if step < 4}
+              {#if step < 5}
                 <button
                   type="button"
                   class="buton buton--kirmizi"
                   on:click={nextStep}>SUIVANT →</button
                 >
-              {:else if step === 3}
+              {:else if step === 5}
                 <button
                   type="button"
                   class="buton buton--kirmizi"
@@ -892,14 +1302,14 @@ function validateStep() {
                 >
               {:else}
                 <!-- disabled={!isPaiementDone} -->
-                 <button
+                <!--   <button
                     type="submit"
                     on:click={submitForm}
                     class="buton buton--kirmizi"
                     disabled={!isPaiementDone}
                   >
                     VALIDER
-                  </button> 
+                  </button> -->
               {/if}
 
               <br />

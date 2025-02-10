@@ -22,6 +22,14 @@ let user = data?.user;
 let step = 1;
 
 let formData = {
+
+  
+    // Login informations
+    username: "",
+    password: "",
+    confirmPassword: "",
+    email: "",
+
   // Informations générales
   id: null,
   typePersonneId: null,
@@ -109,6 +117,18 @@ function validateStep() {
   let valid = true;
 
   if (step === 1) {
+      errors.username = formData.username ? "" : "Le nom d’utilisateur est requis";
+      errors.email = formData.email ? "" : "L'e-mail est requis";
+      errors.password = formData.password ? "" : "Le mot de passe est requis";
+      errors.confirmPassword =
+      formData.confirmPassword === formData.password
+      ? ""
+      : "Les mots de passe ne correspondent pas";
+      
+      valid = !errors.username && !errors.password && !errors.confirmPassword && !errors.email;
+    }
+
+  if (step === 2) {
     errors.nature = formData.nature ? "" : "La nature est requise";
     errors.type = formData.type ? "" : "Le type est requis";
     errors.gps = formData.gps ? "" : "Les coordonnées GPS sont requises";
@@ -120,7 +140,7 @@ function validateStep() {
     valid = Object.values(errors).every((e) => e === "");
   }
 
-  if (step === 2) {
+  if (step === 3) {
     errors.genreId = formData.genreId ? "" : "Le genre est requis";
     errors.nomComplet = formData.nomComplet ? "" : "Le nom complet est requis";
     errors.emailPro = formData.emailPro ? "" : "L'email professionnel est requis";
@@ -132,7 +152,7 @@ function validateStep() {
     valid = Object.values(errors).every((e) => e === "");
   }
 
-  if (step === 3) {
+  if (step === 4) {
     errors.nomCompletTechnique = formData.nomCompletTechnique ? "" : "Le nom du technicien est requis";
     errors.emailProTechnique = formData.emailProTechnique ? "" : "L'email professionnel du technicien est requis";
     errors.professionTechnique = formData.professionTechnique ? "" : "La profession du technicien est requise";
@@ -143,7 +163,7 @@ function validateStep() {
     valid = Object.values(errors).every((e) => e === "");
   }
 
-  if (step === 4) {
+  if (step === 5) {
     errors.photoRespo = formData.photoRespo ? "" : "La photo du responsable est requise";
     errors.photoPhysiqueId = formData.photoPhysiqueId ? "" : "La photo physique est requise";
     errors.cniPhysiqueId = formData.cniPhysiqueId ? "" : "La CNI physique est requise";
@@ -154,7 +174,7 @@ function validateStep() {
     valid = Object.values(errors).every((e) => e === "");
   }
 
-  if (step === 5) {
+  if (step === 6) {
     errors.inscriptionProfessionId = formData.inscriptionProfessionId ? "" : "L'inscription à la profession est requise";
 
     valid = Object.values(errors).every((e) => e === "");
