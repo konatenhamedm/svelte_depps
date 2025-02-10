@@ -65,7 +65,7 @@
             </div>
           </section>
           <!--Quality 1-->
-          <section class="hm-services2">
+          <section class="hm-services2" id="service">
                 <div class="bosluk3"></div>
             <div class="tabloservices">
                 <div class="tablo--1-ve-3">
@@ -101,7 +101,7 @@
           </section>        
            <!--Hakkımızda Yazı Alanı-->
            <div class="bosluk8"></div>
-           <section class="hakkimizda-bolumu-anasayfa1">
+           <section class="hakkimizda-bolumu-anasayfa1" id="propos">
            <div class="h-yazi-ozel h-yazi-margin-ozel">           
            </div>
            <div class="tablo">

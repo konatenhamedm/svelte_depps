@@ -18,10 +18,10 @@ async function logout() {
   <div class="inner">
     <div class="side-menu">
       <ul>
-        <li><a href="accueil">Accueil</a></li>
-        <li><a href="a-propos">A propos</a></li>
-        <li><a href="E-DEPPS">E-DEPPS</a></li>
-        <li><a href="contactez-nous">Contactez-nous</a></li>
+        <li><a href="/">Accueil</a></li>
+        <li><a href="#">A propos</a></li>
+        <li><a href="#">E-DEPPS</a></li>
+        <li><a href="#">Contactez-nous</a></li>
        
         {#if user != null }
             
