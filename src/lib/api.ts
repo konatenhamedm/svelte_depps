@@ -14,7 +14,7 @@ export async function apiFetch(
   // Définition des headers par défaut
   const headers: HeadersInit = {
     ...options.headers,
-    ...(method !== "GET" ? { "Content-Type": "application/json" ,'Access-Control-Allow-Origin':'https://depps.leadagro.net'} : {}),
+    ...(method !== "GET" ? { "Content-Type": "application/json" /* ,'Access-Control-Allow-Origin':'https://depps.leadagro.net' */} : {}),
   };
 
   // Configuration de la requête

@@ -123,7 +123,7 @@ body {
   font-size: 1rem;
   font-style: normal;
   font-weight: 400;
-  font-family: "Poppins", sans-serif;
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
   line-height: 1.5;
   background-color: #EAEDF7; }
 
@@ -136,7 +136,7 @@ a:hover, a:active, a:focus {
   text-decoration: none; }
 
 h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .h4, .h5, .h6 {
-  font-family: "Poppins", sans-serif;
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
   font-weight: 400;
   line-height: 1.2; }
 
@@ -190,10 +190,10 @@ img {
   vertical-align: sub; }
 
 .base-font {
-  font-family: "Poppins", sans-serif !important; }
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif !important; }
 
 .heading-font {
-  font-family: "Poppins", sans-serif !important; }
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif !important; }
 
 .fs-0 {
   font-size: 0rem!important; }
@@ -20615,7 +20615,8 @@ Height property
   height: 115px;
   width: 115px;
   line-height: 115px;
-  font-family: "Poppins", sans-serif !important; }
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif !important;
+   }
 
 .icon i {
   width: 60px;
@@ -25956,7 +25957,7 @@ th.fc-day-header {
 .grid-stack-item-content {
   background: #ffffff;
   color: #0E0E23;
-  font-family: "Poppins", sans-serif;
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
   text-align: center;
   font-size: 1.429rem; }
   .grid-stack-item-content .fa {
@@ -33484,7 +33485,7 @@ button.btn.dropdown-toggle:after {
   flex-grow: 1; }
 
 .apex-charts text {
-  font-family: "Poppins", sans-serif;
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
   fill: #7f839a;
   font-weight: 500; }
 
@@ -33563,14 +33564,14 @@ button.btn.dropdown-toggle:after {
 
 /* Morris chart */
 .morris-chart text {
-  font-family: "Poppins", sans-serif !important; }
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif !important; }
 
 .morris-hover.morris-default-style {
   border-radius: 5px;
   padding: 10px 12px;
   background: #ffffff;
   border: none;
-  font-family: "Poppins", sans-serif;
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
   box-shadow: 0 5px 25px 5px rgba(14, 14, 35, 0.14); }
   .morris-hover.morris-default-style .morris-hover-point {
     line-height: 28px; }
@@ -33584,7 +33585,7 @@ button.btn.dropdown-toggle:after {
 .c-progress-steps {
   margin: 0;
   list-style-type: none;
-  font-family: "Poppins", sans-serif; }
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif; }
   .c-progress-steps li {
     position: relative;
     font-size: 13px;

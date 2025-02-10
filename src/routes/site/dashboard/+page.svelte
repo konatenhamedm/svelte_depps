@@ -281,36 +281,40 @@
     }
     
 
-    .card-custom {
-            text-align: center;
-            padding: 20px;
-            height: 140px; /* Hauteur augmentée */
-            transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
-            border: none;
-            box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.2); /* Ombre plus marquée */
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            border-radius: 10px; /* Coins arrondis */
-            background: white; /* Fond blanc */
-        }
-
+    
         .card-custom:hover {
             transform: translateY(-5px);
             box-shadow: 0px 8px 20px rgba(0, 0, 0, 0.3); /* Ombre plus forte au hover */
         }
 
-        .card-custom i {
-            font-size: 50px;
-            color: #007bff;
-        }
+        .card-custom {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 20px;
+  border-radius: 10px;
+  border: 1px solid blue;
+  box-shadow: 3px 3px 10px rgba(0, 0, 0, 0.2);
+  overflow: hidden; /* Empêche le contenu de dépasser */
+  height: 200px; /* Ajuste la hauteur pour un meilleur rendu */
+}
 
-        .card-custom .card-text {
-            font-weight: bold;
-            margin-top: 10px;
-            font-size: 22px;
-        }
+.card-custom i {
+  font-size: 7rem; /* Agrandit les icônes */
+  margin-bottom: 10px;
+}
+
+.card-custom .card-text {
+  font-size: 1.2rem;
+  font-weight: bold;
+  white-space: nowrap; /* Empêche le texte de se casser */
+  overflow: hidden; /* Empêche le texte de déborder */
+  text-overflow: ellipsis; /* Ajoute des "..." si le texte est trop long */
+  max-width: 100%;
+}
+
   </style>
   <Footer />
 </div>

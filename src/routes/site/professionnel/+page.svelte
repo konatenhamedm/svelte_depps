@@ -1243,13 +1243,13 @@
                         </p>
                         <br />
 
-                        <button
+                       <!--  <button
                           id="reloadPaiementLsssink"
                           class="px-6 py-3 bg-green-500 text-white font-medium rounded-lg shadow-lg hover:bg-green-500 transition duration-300"
                           on:click={clickPaiement}
                         >
                           Effectuer le paiement
-                        </button>
+                        </button> -->
                       {/if}
                       {#if isPaiementDone}
                         <p>
@@ -1257,7 +1257,7 @@
                           bouton ci-dessous.
                         </p>
                         <br />
-                        <button
+                       <!--  <button
                           type="button"
                           id="r"
                           class="px-6 py-3 bg-green-500 text-white font-medium rounded-lg shadow-lg hover:bg-green-500 transition duration-300"
@@ -1265,7 +1265,7 @@
                           disabled={!isPaiementDone}
                         >
                           Finaliser l'inscription
-                        </button>
+                        </button> -->
                       {/if}
 
                       <br />
@@ -1303,6 +1303,40 @@
                   on:click={nextStep}>SUIVANT →</button
                 >
               {:else}
+
+              {#if !isPaiementDone}
+                        
+                        <!-- <button
+                          id="reloadPaiementLsssink"
+                          class="px-6 py-3 bg-green-500 text-white font-medium rounded-lg shadow-lg hover:bg-green-500 transition duration-300"
+                          on:click={clickPaiement}
+                        >
+                          Effectuer le paiement
+                        </button> -->
+
+                        <button
+                        type="submit"
+                        on:click={clickPaiement}
+                        class="buton buton--kirmizi bg-green-500 "
+                       
+                      >
+                      Effectuer le paiement
+                      </button>
+                      {/if}
+                      {#if isPaiementDone}
+                       
+                      <button
+                        type="button"
+                        on:click={clickPaiement}
+                        class="buton buton--kirmizi bg-green-500 "
+                        disabled={!isPaiementDone}
+                      >
+                      Finaliser l'inscription
+                      </button>
+                      
+                      {/if}
+
+
                 <!-- disabled={!isPaiementDone} -->
                 <!--   <button
                     type="submit"

@@ -54,7 +54,7 @@ let formattedDate = currentDate.toLocaleDateString('fr-FR', {
       
     </div>
 
-    {JSON.stringify(user)}
+ 
 
    <!--  <Check label="Accepter les conditions" bind:checked={isChecked} />
 

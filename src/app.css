@@ -28,9 +28,11 @@
 .highcharts-credits{
   display: none !important;
 }
+/* src/global.css */
 
 body{
   background-color: #ecf2f9 !important;
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif !important;
 }
 
 .modale_general > div:first-child {
