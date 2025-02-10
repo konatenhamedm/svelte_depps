@@ -254,7 +254,7 @@
       localStorage.setItem("step", step.toString());
     }
   }
-  let fileNames = {}; // Stocke uniquement les noms des fichiers pour éviter les problèmes avec localStorage
+  let fileNames = {}; // Stocke uniquement les noms des fichiers pour éviter les problèmes avec `localStorage`
   let selectedFiles = {};
 
   function updateFormData(fieldName, file) {
@@ -303,13 +303,15 @@
 
   // ✅ Vérifier si on revient après un paiement
   onMount(() => {
+    localStorage.clear();
+
     const urlParams = new URLSearchParams(window.location.search);
     if (urlParams.has("return")) {
       restoreFormState();
     }
   });
 
-  // Lire la valeur de step depuis localStorage, sinon initialiser à 1
+  // Lire la valeur de `step` depuis localStorage, sinon initialiser à 1
 
   let messagefile = "";
   // Fonction pour changer d'étape et sauvegarder dans localStorage
@@ -417,7 +419,7 @@
         if (result.url) {
           localStorage.setItem("reference", result.reference);
          
-            window.location.href = result.url + "?return=1"; // 🔥 Ajout du paramètre return
+            window.location.href = result.url + "?return=1"; // 🔥 Ajout du paramètre `return`
         
         }
       })
@@ -432,10 +434,10 @@
 
     try {
       const res = await fetch(
-        https://depps.leadagro.net/api/paiement/get/transaction/${idtransaction}
+        `https://depps.leadagro.net/api/paiement/get/transaction/${idtransaction}`
       );
       const data = await res.json();
-      return data.data; // Assurez-vous que l'API renvoie un objet avec une clé valid
+      return data.data; // Assurez-vous que l'API renvoie un objet avec une clé `valid`
     } catch (error) {
       console.error(
         "Erreur lors de la vérification de la transaction :",
@@ -490,7 +492,7 @@
           if (Object.keys(values).includes(element.name)) {
             values[element.name as keyof typeof values] = res.data;
           } else {
-            console.error(Invalid key: ${element.name});
+            console.error(`Invalid key: ${element.name}`);
           }
         } else {
           console.error(

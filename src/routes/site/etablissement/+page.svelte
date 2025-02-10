@@ -73,6 +73,10 @@ let formData = {
 
 // Définition des erreurs
 let errors = {
+  email: "",
+    password: "",
+    confirmPassword: "",
+
   // Informations générales
   nature: "",
   type: "",
@@ -185,8 +189,7 @@ function validateStep() {
 
 
 
-
-  let isPaiementProcessing = false;
+let isPaiementProcessing = false;
   $: isPaiementDone = false;
   let message: any = "";
 
@@ -510,10 +513,70 @@ function validateStep() {
             method="post"
             on:submit|preventDefault={submitForm}
           >
-            <!-- Étape 1 -->
           {#if step === 1}
+          <h2 class="h2-baslik-anasayfa-ozel h-yazi-margin-kucuk">
+            Informations de connexion (étape 1/5)
+          </h2>
+          <div class="tablo">
+            <div class="tablo--1h-ve-2">
+              <div class="grid grid-cols-3">
+                <div class="form__grup">
+                  <label class="form_label">E-mail *</label>
+                  <input
+                    on:input={saveFormState}
+                    on:input={(e: any) =>
+                      updateField("email", e.target.value)}
+                    type="email"
+                    class="form__input"
+                    bind:value={formData.email}
+                    placeholder="E-mail"
+                  />
+                  {#if errors.email}<p class="error">
+                      {errors.email}
+                    </p>{/if}
+                </div>
+
+                <div class="form__grup">
+                  <label class="form_label">Mot de passe *</label>
+                  <input
+                    on:input={saveFormState}
+                    on:input={(e: any) =>
+                      updateField("password", e.target.value)}
+                    type="password"
+                    class="form__input"
+                    bind:value={formData.password}
+                    placeholder="Mot de passe"
+                  />
+                  {#if errors.password}<p class="error">
+                      {errors.password}
+                    </p>{/if}
+                </div>
+
+                <div class="form__grup">
+                  <label class="form_label"
+                    >Confirmer le mot de passe *</label
+                  >
+                  <input
+                    on:input={saveFormState}
+                    on:input={(e: any) =>
+                      updateField("confirmPassword", e.target.value)}
+                    type="password"
+                    class="form__input"
+                    bind:value={formData.confirmPassword}
+                    placeholder="Confirmer le mot de passe"
+                  />
+                  {#if errors.confirmPassword}<p class="error">
+                      {errors.confirmPassword}
+                    </p>{/if}
+                </div>
+              </div>
+            </div>
+          </div>
+        {/if}
+            <!-- Étape 1 -->
+          {#if step === 2}
   <h2 class="h2-baslik-anasayfa-ozel h-yazi-margin-kucuk">
-    Etablissement de Sante (étape 1/4)
+    Etablissement de Sante (étape 2/5)
   </h2>
   <div class="tablo">
     <div class="tablo--1h-ve-2">
@@ -637,9 +700,9 @@ function validateStep() {
 {/if}
 
             <!-- Étape 2 -->
-           {#if step === 2}
+           {#if step === 3}
   <h2 class="h2-baslik-anasayfa-ozel h-yazi-margin-kucuk">
-    Informations du promoteur (étape 1/4)
+    Informations du promoteur (étape 3/5)
   </h2>
   <div class="tablo">
     <div class="tablo--1h-ve-2">
@@ -750,9 +813,9 @@ function validateStep() {
 
 
             <!-- Étape 3 -->
-           {#if step === 3}
+           {#if step === 4}
   <h2 class="h2-baslik-anasayfa-ozel h-yazi-margin-kucuk">
-    Informations du technicien (étape 3/4)
+    Informations du technicien (étape 4/5)
   </h2>
   <div class="tablo">
     <div class="tablo--1h-ve-2">
@@ -849,9 +912,9 @@ function validateStep() {
 
 
             <!-- Étape 4 -->
-            {#if step === 4}
+            {#if step === 5}
               <h2 class="h2-baslik-anasayfa-ozel h-yazi-margin-kucuk">
-                Informations médiatiques (étape 4/4)
+                Informations médiatiques (étape 5/5)
               </h2>
               <!-- {#if messagefile !== ""}
                <div
@@ -898,13 +961,13 @@ function validateStep() {
                 >
               {/if}
 
-              {#if step < 4}
+              {#if step < 5}
                 <button
                   type="button"
                   class="buton buton--kirmizi"
                   on:click={nextStep}>SUIVANT →</button
                 >
-              {:else if step === 3}
+              {:else if step === 4}
                 <button
                   type="button"
                   class="buton buton--kirmizi"
