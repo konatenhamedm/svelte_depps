@@ -9,7 +9,8 @@ export async function login(username_field: string, password: string) {
       const response = await fetch(`${BASE_URL_API}/auth/login_check`, {
           method: 'POST',
           headers: {
-              'Content-Type': 'application/json'
+              'Content-Type': 'application/json',
+              'Access-Control-Allow-Origin':'https://depps.leadagro.net'
           },
           body: JSON.stringify({ username: username_field, password })
       });
