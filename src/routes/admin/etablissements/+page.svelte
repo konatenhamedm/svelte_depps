@@ -19,7 +19,7 @@
   import Pagination from "../../../components/_includes/Pagination.svelte";
   // Importer le store pageSize
   import { get } from "svelte/store";
-  import type { Permission, User, UserAdmin } from "../../../types";
+  import type { Permission, User, MembreEtablissement } from "../../../types";
   import { apiFetch } from "$lib/api";
   import { pageSize } from "../../../store"; // Importer le store pageSize
   import { onMount } from "svelte";
@@ -27,7 +27,7 @@
 
   let user: User;
 
-  let main_data: UserAdmin[] = [];
+  let main_data: MembreEtablissement[] = [];
   let searchQuery = ""; // Pour la recherche par texte
   let selectedService: any = ""; // Pour filtrer par service
   let selectedStatus: any = ""; // Pour filtrer par status
@@ -47,7 +47,7 @@
       const res = await apiFetch(true, "/user/get/admin");
       console.log("rrrerere", res);
       if (res) {
-        main_data = res.data as UserAdmin[];
+        main_data = res.data as MembreEtablissement[];
       } else {
         console.error(
           "Erreur lors de la récupération des données:",
@@ -67,8 +67,9 @@
 
   $: filteredData = main_data.filter((item) => {
     return (
-      item.nom.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      item.prenoms.toLowerCase().includes(searchQuery.toLowerCase())
+      item.entrepriseName.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      item.nomComplet.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      item.nomCompletTechnique.toLowerCase().includes(searchQuery.toLowerCase())
     );
   });
 
@@ -139,7 +140,9 @@
               <TableHead
                 class="border-y border-gray-200 bg-gray-100 dark:border-gray-700"
               >
-                {#each ["nom", "prénoms", "Type de compte", "Téléphone", "email", "type"] as title}
+                {#each ["entrepriseName", "emailEntreprise", "nomComplet", "nomCompletTechnique", "emailProTechnique"] as title}
+
+                
                   <TableHeadCell class="ps-4 font-normal border border-gray-300"
                     >{title}</TableHeadCell
                   >
@@ -188,23 +191,21 @@
                   {#each paginatedProducts as item}
                     <TableBodyRow class="text-base border border-gray-300">
                       <TableBodyCell class="p-4 border border-gray-300"
-                        >{item.nom}</TableBodyCell
+                        >{item.entrepriseName}</TableBodyCell
                       >
                       <TableBodyCell class="p-4 border border-gray-300"
-                        >{item.prenoms}</TableBodyCell
+                        >{item.emailEntreprise}</TableBodyCell
                       >
                       <TableBodyCell class="p-4 border border-gray-300"
-                        >{item.typeUser}</TableBodyCell
+                        >{item.nomComplet}</TableBodyCell
                       >
                       <TableBodyCell class="p-4 border border-gray-300"
-                        >{item.phone}</TableBodyCell
+                        >{item.nomCompletTechnique}</TableBodyCell
                       >
                       <TableBodyCell class="p-4 border border-gray-300"
-                        >{item.email}</TableBodyCell
+                        >{item.emailProTechnique}</TableBodyCell
                       >
-                      <TableBodyCell class="p-4 border border-gray-300"
-                        >{item.username}</TableBodyCell
-                      >
+                    
 
                       <!--  <TableBodyCell class="p-4 border border-gray-300">{item.sous_menu.libelle}</TableBodyCell>
                                    -->
@@ -249,3 +250,7 @@
 </section>
 
 <!-- Modales -->
+
+
+
+

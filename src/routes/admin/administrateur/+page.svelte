@@ -7,12 +7,12 @@
     TableBodyCell,
     TableBodyRow,
     TableHead,
-    TableHeadCell
+    TableHeadCell,
   } from "flowbite-svelte";
   import {
     EditOutline,
     EyeOutline,
-    TrashBinSolid
+    TrashBinSolid,
   } from "flowbite-svelte-icons";
   import Entete from "../../../components/_includes/Entete.svelte";
   import MessageError from "../../../components/MessageError.svelte";

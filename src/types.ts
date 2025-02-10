@@ -399,3 +399,52 @@ export interface EndUser {
   card_id_edition_date: string; // Date d'édition de la carte d'identité (peut être null)
   document_status: string; // Statut du document de l'utilisateur (peut être null)
 }
+
+
+
+export interface MembreEtablissement {
+  id: number;
+
+  typePersonneId: number;
+
+  nature: string;
+  type: string;
+  gps: string;
+  niveau: string;
+  contact: string;
+  entrepriseName: string;
+
+  emailEntreprise: string;
+
+  space: string;
+  //promoteur
+  genreId: number;
+
+  nomComplet: string;
+
+  emailPro: string;
+
+  profession: string;
+  contacts: string;
+
+  lieuResidence: string;
+  numeroCni: string;
+  // technicien
+
+  nomCompletTechnique: string;
+  emailProTechnique: string;
+  professionTechnique: string;
+  contactProTechnique: string;
+  lieuResidenceTechnique: string;
+  numeroOrdreTechnique: string;
+  // document
+  photoRespo: string;
+
+  photoPhysiqueId: number;
+  cniPhysiqueId: number;
+  diplomeFilePhysiqueId: number;
+  cvPhysiqueId: number;
+  dfePhysiqueId: number;
+
+  inscriptionProfessionId: number;
+}
