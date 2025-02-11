@@ -20,13 +20,13 @@
   <div class="inner">
     <div class="side-menu">
       <ul>
-        {user}
+        
         <li><a href="/">Accueiliooo</a></li>
         <li><a href="#">A propos</a></li>
         <li><a href="#">E-DEPPS</a></li>
         <li><a href="#">Contactez-nous</a></li>
        
-        {#if user != null }
+        {#if user }
             
         <li style="border: 4px solid red;padding: 5px 17px;border-radius: 32px;" on:click={logout}><a href="javascript:void(0)" on:click={logout} >Déconnexion</a></li>
         {:else}
