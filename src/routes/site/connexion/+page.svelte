@@ -16,8 +16,9 @@
   let showPassword = false; // To toggle password visibility
   let message = "";
   let error = "";
+  export let data; // Récupérer les données du layout
+  let user = data?.user;
 
-  let user : any;
 
   let passwordWarning = "";
   let isPasswordValid = false;
@@ -27,7 +28,7 @@
     event.preventDefault();
     try {
       const success = await loginloginUserFront(username, password);
-console.log(success);
+
       if (success.token != null) {
         
         window.location.href = "/site/dashboard";

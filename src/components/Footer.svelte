@@ -62,12 +62,12 @@
     </script>
                     <!--Cursor Script-->                    
     <script>
-        init_pointer({
+      /*   init_pointer({
             
-        })
+        }) */
     </script>
     <script>
-        $(document).ready(function(){
+       /*  $(document).ready(function(){
         $(".tabs-content").eq(0).show();
         $("#tabs li").eq(0).addClass("button-renk");
         $("#tabs li").click(function(){
@@ -76,7 +76,7 @@
         $(".tabs-content").hide().eq(number).fadeIn("slow");
         $("#tabs li").eq(number).addClass("button-renk");
         });
-        });
+        }); */
     </script>
     <script>
         $(function() {
@@ -84,20 +84,20 @@
                 $("html,body").stop().animate({ scrollTop: "0" }, 100);
             });
         });
-        $(window).scroll(function() {
+       /*  $(window).scroll(function() {
             var uzunluk = $(document).scrollTop();
             if (uzunluk > 300) $("#top").fadeIn(500);
             else { $("#top").fadeOut(500); }
-        });
+        }); */
     </script>
             
     <script>
-        $.fn.BeerSlider = function ( options ) {
+        /* $.fn.BeerSlider = function ( options ) {
             options = options || {};
             return this.each(function() {
             new BeerSlider(this, options);
             });
         };
-        $('.beer-slider').BeerSlider({start: 50});
+        $('.beer-slider').BeerSlider({start: 50}); */
     </script>
 </footer>

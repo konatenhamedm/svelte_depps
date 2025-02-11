@@ -30,7 +30,6 @@
     <link rel="stylesheet" href="/site/css/style.css">
     <link rel="stylesheet" href="/site/css/animate.min.css">
     <link rel="stylesheet" href="/site/css/fancybox.min.css">
-    <link rel="stylesheet" href="/site/css/odometer.min.css">
     <link rel="stylesheet" href="/site/css/BeerSlider.css">
     <link rel="stylesheet" href="/site/css/BeerSlider.unmin.css">
     <link rel="stylesheet" href="/site/css/accordion.css">

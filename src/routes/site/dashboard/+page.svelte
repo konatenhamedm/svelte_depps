@@ -20,6 +20,14 @@
     await fetch("/auth/logout", { method: "POST" });
     goto("/"); // Redirection après déconnexion
   }
+  let cards = [
+    { icon: 'fas fa-folder-open', text: 'Mise à jour du dossier', link: 'profil' },
+    { icon: 'fas fa-bell', text: 'Alertes', link: 'profil' },
+    { icon: 'fas fa-comments', text: 'MyDEPPS chat', link: 'Alertes' },
+    { icon: 'fas fa-book', text: 'Guide utilisateur', link: 'Guide utilisateur' },
+    { icon: 'fas fa-file-pdf', text: "Guide utilisateur (PDF)", link: "_files/GUIDE-D'UTILISATION.pdf" },
+    { icon: 'fas fa-users', text: 'Forum', link: 'Forum' }
+  ];
 </script>
 
 <div
@@ -200,66 +208,18 @@
               </div> -->
         <br />
         <div class="row g-4">
-          <!-- Card 1 -->
-          <div class="col-md-4 col-sm-6">
-              <a href="profil" class="text-decoration-none">
-                  <div class="card card-custom">
-                      <i class="fas fa-folder-open"></i>
-                      <div class="card-text">Mise à jour du dossier</div>
-                  </div>
+          {#each cards as { icon, text, link }}
+            <div class="col-md-4 col-sm-6 ">
+              <a href={link} class="text-decoration-none">
+                <div class="card card-custom hover:bg-blue-100 hover:text-white">
+                  <i class={icon}></i>
+                  <div class="card-text">{text}</div>
+                </div>
               </a>
-          </div>
-          
-          <!-- Card 2 -->
-          <div class="col-md-4 col-sm-6">
-              <a href="profil" class="text-decoration-none">
-                  <div class="card card-custom">
-                      <i class="fas fa-bell"></i>
-                      <div class="card-text">Alertes</div>
-                  </div>
-              </a>
-          </div>
-  
-          <!-- Card 3 -->
-          <div class="col-md-4 col-sm-6">
-              <a href="Alertes" class="text-decoration-none">
-                  <div class="card card-custom">
-                      <i class="fas fa-comments"></i>
-                      <div class="card-text">MyDEPPS chat</div>
-                  </div>
-              </a>
-          </div>
-  
-          <!-- Card 4 -->
-          <div class="col-md-4 col-sm-6">
-              <a href="Guide utilisateur" class="text-decoration-none">
-                  <div class="card card-custom">
-                      <i class="fas fa-book"></i>
-                      <div class="card-text">Guide utilisateur</div>
-                  </div>
-              </a>
-          </div>
-  
-          <!-- Card 5 -->
-          <div class="col-md-4 col-sm-6">
-              <a href="_files/GUIDE-D'UTILISATION.pdf" class="text-decoration-none">
-                  <div class="card card-custom">
-                      <i class="fas fa-file-pdf"></i>
-                      <div class="card-text">Guide utilisateur (PDF)</div>
-                  </div>
-              </a>
-          </div>
-  
-          <!-- Card 6 -->
-          <div class="col-md-4 col-sm-6">
-              <a href="Forum" class="text-decoration-none">
-                  <div class="card card-custom">
-                      <i class="fas fa-users"></i>
-                      <div class="card-text">Forum</div>
-                  </div>
-              </a>
-          </div>
-      </div>
+            </div>
+          {/each}
+        </div>
+        
       </div>
     </div>
   </section>
@@ -282,12 +242,15 @@
     
 
     
-        .card-custom:hover {
-            transform: translateY(-5px);
-            box-shadow: 0px 8px 20px rgba(0, 0, 0, 0.3); /* Ombre plus forte au hover */
-        }
+        
+
+  .card-custom:hover {
+    
+    transform: scale(1.05);  /* Effet de zoom léger */
+  }
 
         .card-custom {
+          transition: background-color 0.3s ease, transform 0.3s ease;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -302,7 +265,7 @@
 }
 
 .card-custom i {
-  font-size: 7rem; /* Agrandit les icônes */
+  font-size: 5rem; /* Agrandit les icônes */
   margin-bottom: 10px;
 }
 
