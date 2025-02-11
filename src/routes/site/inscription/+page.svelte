@@ -1,9 +1,10 @@
-<script>
+<script lang="ts">
   import Footer from "$components/Footer.svelte";
   import Header from "$components/Header.svelte";
   import Slide from "$components/Slide.svelte";
 
-
+  export let data; // Récupérer les données du layout
+  let user = data?.user;
 </script>
 
 
