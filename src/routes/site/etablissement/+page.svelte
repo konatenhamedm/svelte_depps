@@ -73,11 +73,13 @@ let formData = {
 
 // Définition des erreurs
 let errors = {
+  username : "",
   email: "",
     password: "",
     confirmPassword: "",
 
   // Informations générales
+  typePersonneId : "",
   nature: "",
   type: "",
   gps: "",
@@ -140,8 +142,12 @@ function validateStep() {
     errors.contact = formData.contact ? "" : "Le contact est requis";
     errors.entrepriseName = formData.entrepriseName ? "" : "Le nom de l'entreprise est requis";
     errors.emailEntreprise = formData.emailEntreprise ? "" : "L'email de l'entreprise est requis";
+    errors.space = formData.space ? "" : "L'espace est requis";
+  //  errors.typePersonneId = formData.typePersonneId ? "" : "Le type de personne est requis";
     
-    valid = Object.values(errors).every((e) => e === "");
+    valid = !errors.nature && !errors.type && !errors.gps && !errors.niveau && !errors.contact && !errors.entrepriseName && !errors.emailEntreprise && !errors.space
+    // && !errors.typePersonneId
+     ;
   }
 
   if (step === 3) {
@@ -535,6 +541,21 @@ let isPaiementProcessing = false;
                       {errors.email}
                     </p>{/if}
                 </div>
+                  <div class="form__grup">
+                  <label class="form_label">username *</label>
+                  <input
+                    on:input={saveFormState}
+                    on:input={(e: any) =>
+                      updateField("username", e.target.value)}
+                    type="username"
+                    class="form__input"
+                    bind:value={formData.username}
+                    placeholder="Mot de passe"
+                  />
+                  {#if errors.username}<p class="error">
+                      {errors.username}
+                    </p>{/if}
+                </div>
 
                 <div class="form__grup">
                   <label class="form_label">Mot de passe *</label>
@@ -584,7 +605,7 @@ let isPaiementProcessing = false;
         
         <!-- Champ Nature -->
         <div class="form__grup">
-          <label class="form_label">Nature</label>
+          <label class="form_label">Nature *</label>
           <input
             on:input={saveFormState}
             on:input={(e: any) => updateField("nature", e.target.value)}
@@ -598,7 +619,7 @@ let isPaiementProcessing = false;
 
         <!-- Champ Type -->
         <div class="form__grup">
-          <label class="form_label">Type</label>
+          <label class="form_label">Type *</label>
           <input
             on:input={saveFormState}
             on:input={(e: any) => updateField("type", e.target.value)}
@@ -612,7 +633,7 @@ let isPaiementProcessing = false;
 
         <!-- Champ GPS -->
         <div class="form__grup">
-          <label class="form_label">GPS</label>
+          <label class="form_label">GPS *</label>
           <input
             on:input={saveFormState}
             on:input={(e: any) => updateField("gps", e.target.value)}
@@ -626,7 +647,7 @@ let isPaiementProcessing = false;
 
         <!-- Champ Niveau -->
         <div class="form__grup">
-          <label class="form_label">Niveau</label>
+          <label class="form_label">Niveau *</label>
           <input
             on:input={saveFormState}
             on:input={(e: any) => updateField("niveau", e.target.value)}
@@ -640,7 +661,7 @@ let isPaiementProcessing = false;
 
         <!-- Champ Contact -->
         <div class="form__grup">
-          <label class="form_label">Contact</label>
+          <label class="form_label">Contact *</label>
           <input
             on:input={saveFormState}
             on:input={(e: any) => updateField("contact", e.target.value)}
@@ -654,7 +675,7 @@ let isPaiementProcessing = false;
 
         <!-- Champ Nom de l'entreprise -->
         <div class="form__grup">
-          <label class="form_label">Nom de l'entreprise</label>
+          <label class="form_label">Nom de l'entreprise *</label>
           <input
             on:input={saveFormState}
             on:input={(e: any) => updateField("entrepriseName", e.target.value)}
@@ -666,9 +687,24 @@ let isPaiementProcessing = false;
           {#if errors.entrepriseName}<p class="error">{errors.entrepriseName}</p>{/if}
         </div>
 
+                    <div class="form__grup">
+                      <label class="form_label"> Personne physique *</label>
+                      <input
+            on:input={saveFormState}
+            on:input={(e: any) => updateField("emailEntreprise", e.target.value)}
+            type="email"
+            class="form__input"
+            bind:value={formData.emailEntreprise}
+            placeholder="E-mail de l'entreprise"
+          />
+                      {#if errors.typePersonneId}<p class="error">
+                          {errors.typePersonneId}
+                        </p>{/if}
+                    </div>
+
         <!-- Champ Email de l'entreprise -->
         <div class="form__grup">
-          <label class="form_label">E-mail de l'entreprise</label>
+          <label class="form_label">E-mail de l'entreprise *</label>
           <input
             on:input={saveFormState}
             on:input={(e: any) => updateField("emailEntreprise", e.target.value)}
@@ -682,7 +718,7 @@ let isPaiementProcessing = false;
 
         <!-- Champ Espace -->
         <div class="form__grup">
-          <label class="form_label">Espace</label>
+          <label class="form_label">Espace *</label>
           <input
             on:input={saveFormState}
             on:input={(e: any) => updateField("space", e.target.value)}
@@ -708,23 +744,36 @@ let isPaiementProcessing = false;
     <div class="tablo--1h-ve-2">
       <div class="grid grid-cols-3">
         
-        <!-- Champ Genre ID -->
-        <div class="form__grup">
-          <label class="form_label">Genre ID</label>
-          <input
-            on:input={saveFormState}
-            on:input={(e: any) => updateField("genreId", e.target.value)}
-            type="text"
-            class="form__input"
-            bind:value={formData.genreId}
-            placeholder="Genre ID"
-          />
-          {#if errors.genreId}<p class="error">{errors.genreId}</p>{/if}
-        </div>
+      <div class="form__grup">
+                      <label class="form_label">Genre *</label>
+                      <select
+                        on:change={saveFormState}
+                        on:change={(e: any) =>
+                          updateField("genre", e.target.value)}
+                        class="form__input"
+                        name=""
+                        id=""
+                        bind:value={formData.genre}
+                      >
+                        <option value="" selected={!formData.genre}
+                          >Veuillez sélectionner une option</option
+                        >
+                        {#each values.genre as genre}
+                          <option
+                            value={genre.id}
+                            selected={formData.genre === genre.id}
+                            >{genre.libelle}</option
+                          >
+                        {/each}
+                      </select>
+                      {#if errors.genre}<p class="error">
+                          {errors.genre}
+                        </p>{/if}
+                    </div>
 
         <!-- Champ Nom Complet -->
         <div class="form__grup">
-          <label class="form_label">Nom complet</label>
+          <label class="form_label">Nom complet *</label>
           <input
             on:input={saveFormState}
             on:input={(e: any) => updateField("nomComplet", e.target.value)}
@@ -738,7 +787,7 @@ let isPaiementProcessing = false;
 
         <!-- Champ Email Pro -->
         <div class="form__grup">
-          <label class="form_label">E-mail professionnel</label>
+          <label class="form_label">E-mail professionnel *</label>
           <input
             on:input={saveFormState}
             on:input={(e: any) => updateField("emailPro", e.target.value)}
@@ -752,7 +801,7 @@ let isPaiementProcessing = false;
 
         <!-- Champ Profession -->
         <div class="form__grup">
-          <label class="form_label">Profession</label>
+          <label class="form_label">Profession *</label>
           <input
             on:input={saveFormState}
             on:input={(e: any) => updateField("profession", e.target.value)}
@@ -766,7 +815,7 @@ let isPaiementProcessing = false;
 
         <!-- Champ Contacts -->
         <div class="form__grup">
-          <label class="form_label">Contacts</label>
+          <label class="form_label">Contacts *</label>
           <input
             on:input={saveFormState}
             on:input={(e: any) => updateField("contacts", e.target.value)}
@@ -780,7 +829,7 @@ let isPaiementProcessing = false;
 
         <!-- Champ Lieu de Résidence -->
         <div class="form__grup">
-          <label class="form_label">Lieu de résidence</label>
+          <label class="form_label">Lieu de résidence *</label>
           <input
             on:input={saveFormState}
             on:input={(e: any) => updateField("lieuResidence", e.target.value)}
@@ -794,7 +843,7 @@ let isPaiementProcessing = false;
 
         <!-- Champ Numéro de CNI -->
         <div class="form__grup">
-          <label class="form_label">Numéro de CNI</label>
+          <label class="form_label">Numéro de CNI *</label>
           <input
             on:input={saveFormState}
             on:input={(e: any) => updateField("numeroCni", e.target.value)}
@@ -823,7 +872,7 @@ let isPaiementProcessing = false;
         
         <!-- Champ Nom Complet Technique -->
         <div class="form__grup">
-          <label class="form_label">Nom complet</label>
+          <label class="form_label">Nom complet *</label>
           <input
             on:input={saveFormState}
             on:input={(e: any) => updateField("nomCompletTechnique", e.target.value)}
@@ -837,7 +886,7 @@ let isPaiementProcessing = false;
 
         <!-- Champ Email Pro Technique -->
         <div class="form__grup">
-          <label class="form_label">E-mail professionnel</label>
+          <label class="form_label">E-mail professionnel *</label>
           <input
             on:input={saveFormState}
             on:input={(e: any) => updateField("emailProTechnique", e.target.value)}
@@ -851,7 +900,7 @@ let isPaiementProcessing = false;
 
         <!-- Champ Profession Technique -->
         <div class="form__grup">
-          <label class="form_label">Profession</label>
+          <label class="form_label">Profession *</label>
           <input
             on:input={saveFormState}
             on:input={(e: any) => updateField("professionTechnique", e.target.value)}
@@ -865,7 +914,7 @@ let isPaiementProcessing = false;
 
         <!-- Champ Contact Pro Technique -->
         <div class="form__grup">
-          <label class="form_label">Contact professionnel</label>
+          <label class="form_label">Contact professionnel *</label>
           <input
             on:input={saveFormState}
             on:input={(e: any) => updateField("contactProTechnique", e.target.value)}
@@ -879,7 +928,7 @@ let isPaiementProcessing = false;
 
         <!-- Champ Lieu de Résidence Technique -->
         <div class="form__grup">
-          <label class="form_label">Lieu de résidence</label>
+          <label class="form_label">Lieu de résidence *</label>
           <input
             on:input={saveFormState}
             on:input={(e: any) => updateField("lieuResidenceTechnique", e.target.value)}
@@ -893,7 +942,7 @@ let isPaiementProcessing = false;
 
         <!-- Champ Numéro d'Ordre Technique -->
         <div class="form__grup">
-          <label class="form_label">Numéro d'ordre</label>
+          <label class="form_label">Numéro d'ordre *</label>
           <input
             on:input={saveFormState}
             on:input={(e: any) => updateField("numeroOrdreTechnique", e.target.value)}
@@ -928,7 +977,7 @@ let isPaiementProcessing = false;
              <div class="tablo">
                 <div class="tablo--1h-ve-2">
                   <div class="grid grid-cols-3">
-                    {#each ["photo", "cni", "attestationInscription", "diplomeFile", "dfe", "cv"] as fieldName}
+                    {#each ["photo *", "cni *", "attestationInscription *", "diplomeFile *", "dfe *", "cv *"] as fieldName}
                       <div class="form__grup">
                         <label class="form_label">{fieldName.toUpperCase()}</label>
                         <input
