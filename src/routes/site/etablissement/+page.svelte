@@ -622,7 +622,7 @@
                   <div class="grid grid-cols-3">
                     <!-- Champ Nature -->
                     <div class="form__grup">
-                      <label class="form_label">Nature *</label>
+                      <label class="form_label">Nature de l'entreprise privée sanitaire *</label>
                       <input
                         on:input={saveFormState}
                         on:input={(e: any) =>
@@ -639,7 +639,7 @@
 
                     <!-- Champ Type -->
                     <div class="form__grup">
-                      <label class="form_label">Type *</label>
+                      <label class="form_label">Type d'entreprise privée sanitaire *</label>
                       <input
                         on:input={saveFormState}
                         on:input={(e: any) =>
@@ -654,7 +654,7 @@
 
                     <!-- Champ GPS -->
                     <div class="form__grup">
-                      <label class="form_label">GPS *</label>
+                      <label class="form_label">coordonnées GPS *</label>
                       <input
                         on:input={saveFormState}
                         on:input={(e: any) =>
@@ -669,7 +669,7 @@
 
                     <!-- Champ Niveau -->
                     <div class="form__grup">
-                      <label class="form_label">Niveau *</label>
+                      <label class="form_label">Niveau d'intervention *</label>
                       <input
                         on:input={saveFormState}
                         on:input={(e: any) =>
@@ -686,7 +686,7 @@
 
                     <!-- Champ Contact -->
                     <div class="form__grup">
-                      <label class="form_label">Contact *</label>
+                      <label class="form_label">Contact de l'entreprise privée sanitaire  *</label>
                       <input
                         on:input={saveFormState}
                         on:input={(e: any) =>
@@ -703,7 +703,7 @@
 
                     <!-- Champ Nom de l'entreprise -->
                     <div class="form__grup">
-                      <label class="form_label">Nom de l'entreprise *</label>
+                      <label class="form_label">Nom de l'entreprise de l'entreprise privée sanitaire  *</label>
                       <input
                         on:input={saveFormState}
                         on:input={(e: any) =>
@@ -719,7 +719,7 @@
                     </div>
 
                     <div class="form__grup">
-                      <label class="form_label">Type personne *</label>
+                      <label class="form_label">Personne Physique *</label>
                       <select
                         on:change={saveFormState}
                         on:change={(e: any) =>
@@ -754,7 +754,7 @@
 
                     <!-- Champ Email de l'entreprise -->
                     <div class="form__grup">
-                      <label class="form_label">E-mail de l'entreprise *</label>
+                      <label class="form_label">E-mail de l'entreprise privée sanitaire  *</label>
                       <input
                         on:input={saveFormState}
                         on:input={(e: any) =>
@@ -771,7 +771,7 @@
 
                     <!-- Champ Espace -->
                     <div class="form__grup">
-                      <label class="form_label">Espace *</label>
+                      <label class="form_label">Distrite, ville , commune *</label>
                       <input
                         on:input={saveFormState}
                         on:input={(e: any) =>
@@ -800,8 +800,7 @@
                       <label class="form_label">Genre *</label>
                       <select
                         on:change={saveFormState}
-                        on:change={(e: any) =>
-                          updateField("genre", e.target.value)}
+                       
                         class="form__input"
                         name=""
                         id=""
@@ -842,7 +841,7 @@
 
                     <!-- Champ Email Pro -->
                     <div class="form__grup">
-                      <label class="form_label">E-mail professionnel *</label>
+                      <label class="form_label">Adresse E-mail *</label>
                       <input
                         on:input={saveFormState}
                         on:input={(e: any) =>
@@ -876,7 +875,7 @@
 
                     <!-- Champ Contacts -->
                     <div class="form__grup">
-                      <label class="form_label">Contacts *</label>
+                      <label class="form_label">Contact *</label>
                       <input
                         on:input={saveFormState}
                         on:input={(e: any) =>
@@ -910,7 +909,7 @@
 
                     <!-- Champ Numéro de CNI -->
                     <div class="form__grup">
-                      <label class="form_label">Numéro de CNI *</label>
+                      <label class="form_label">N° de CNI *</label>
                       <input
                         on:input={saveFormState}
                         on:input={(e: any) =>
@@ -956,7 +955,7 @@
 
                     <!-- Champ Email Pro Technique -->
                     <div class="form__grup">
-                      <label class="form_label">E-mail professionnel *</label>
+                      <label class="form_label">Adresse E-mail  *</label>
                       <input
                         on:input={saveFormState}
                         on:input={(e: any) =>
@@ -990,7 +989,7 @@
 
                     <!-- Champ Contact Pro Technique -->
                     <div class="form__grup">
-                      <label class="form_label">Contact professionnel *</label>
+                      <label class="form_label">Contact *</label>
                       <input
                         on:input={saveFormState}
                         on:input={(e: any) =>
@@ -1024,7 +1023,7 @@
 
                     <!-- Champ Numéro d'Ordre Technique -->
                     <div class="form__grup">
-                      <label class="form_label">Numéro d'ordre *</label>
+                      <label class="form_label">N° d'ordre *</label>
                       <input
                         on:input={saveFormState}
                         on:input={(e: any) =>
@@ -1060,7 +1059,7 @@
               <div class="tablo">
                 <div class="tablo--1h-ve-2">
                   <div class="grid grid-cols-3">
-                    {#each ["photo *", "cni *", "attestationInscription *", "diplomeFile *", "dfe *", "cv *"] as fieldName}
+                    {#each ["02 photos identité de même tirage *", "Copie de cni(carte nationale identité) *", "inscription à l’Ordre National de la profession concernée et de l’année en cours *", "Diplome legalise *", " Copie de la dfe *", "cv *"] as fieldName}
                       <div class="form__grup">
                         <label class="form_label"
                           >{fieldName.toUpperCase()}</label
