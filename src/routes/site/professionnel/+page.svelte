@@ -640,7 +640,7 @@
                 <div class="tablo--1h-ve-2">
                   <div class="grid grid-cols-3">
                     <div class="form__grup">
-                      <label class="form_label">Genre</label>
+                      <label class="form_label">Genre *</label>
                       <select
                         on:change={saveFormState}
                         on:change={(e: any) =>
@@ -667,7 +667,7 @@
                     </div>
 
                     <div class="form__grup">
-                      <label class="form_label">Civilité</label>
+                      <label class="form_label">Civilité *</label>
                       <select
                         on:change={saveFormState}
                         on:change={(e: any) =>
@@ -694,7 +694,7 @@
                     </div>
 
                     <div class="form__grup">
-                      <label class="form_label">Nom</label>
+                      <label class="form_label">Nom *</label>
                       <input
                         on:input={saveFormState}
                         on:input={(e: any) =>
@@ -710,7 +710,7 @@
                     </div>
 
                     <div class="form__grup">
-                      <label class="form_label">Prénoms</label>
+                      <label class="form_label">Prénoms *</label>
                       <input
                         on:input={saveFormState}
                         on:input={(e: any) =>
@@ -726,7 +726,7 @@
                     </div>
 
                     <div class="form__grup">
-                      <label class="form_label">Nationalité</label>
+                      <label class="form_label">Nationalité *</label>
                       <select
                         on:change={saveFormState}
                         on:change={(e: any) =>
@@ -753,7 +753,7 @@
                     </div>
 
                     <div class="form__grup">
-                      <label class="form_label">Date de naissance</label>
+                      <label class="form_label">Date de naissance *</label>
                       <input
                         on:input={saveFormState}
                         on:input={(e: any) =>
@@ -769,7 +769,7 @@
                     </div>
 
                     <div class="form__grup">
-                      <label class="form_label">Numero</label>
+                      <label class="form_label">Numero *</label>
                       <input
                         on:input={saveFormState}
                         on:input={(e: any) =>
@@ -785,7 +785,7 @@
                     </div>
 
                     <div class="form__grup">
-                      <label class="form_label">Adresse</label>
+                      <label class="form_label">Adresse *</label>
                       <input
                         on:input={saveFormState}
                         on:input={(e: any) =>
@@ -801,7 +801,7 @@
                     </div>
 
                     <div class="form__grup">
-                      <label class="form_label">Lieu de résidence</label>
+                      <label class="form_label">Lieu de résidence *</label>
                       <input
                         on:input={saveFormState}
                         on:input={(e: any) =>
@@ -817,7 +817,7 @@
                     </div>
 
                     <div class="form__grup">
-                      <label class="form_label">Diplôme</label>
+                      <label class="form_label">Diplôme *</label>
                       <input
                         on:input={saveFormState}
                         on:input={(e: any) =>
@@ -834,7 +834,7 @@
 
                     <div class="form__grup">
                       <label class="form_label"
-                        >Date d'obtention du diplôme</label
+                        >Date d'obtention du diplôme *</label
                       >
                       <input
                         on:input={saveFormState}
@@ -852,7 +852,7 @@
 
                     <div class="form__grup">
                       <label class="form_label"
-                        >Lieu d'obtention du diplôme</label
+                        >Lieu d'obtention du diplôme *</label
                       >
                       <input
                         on:input={saveFormState}
@@ -869,7 +869,7 @@
                     </div>
 
                     <div class="form__grup">
-                      <label class="form_label">Situation matrimoniale</label>
+                      <label class="form_label">Situation matrimoniale *</label>
                       <select
                         on:change={saveFormState}
                         on:change={(e: any) =>
@@ -956,7 +956,7 @@
 
                   <div class="grid grid-cols-3">
                     <div class="form__grup">
-                      <label class="form_label">Situation professionnelle</label
+                      <label class="form_label">Situation professionnelle *</label
                       >
                       <input
                         on:input={saveFormState}
@@ -973,7 +973,7 @@
                     </div>
 
                     <div class="form__grup">
-                      <label class="form_label">Spécialité</label>
+                      <label class="form_label">Spécialité *</label>
                       <select
                         on:change={saveFormState}
                         on:change={(e: any) =>
@@ -1000,7 +1000,7 @@
                     </div>
 
                     <div class="form__grup">
-                      <label class="form_label">Email professionnel</label>
+                      <label class="form_label">Email professionnel *</label>
                       <input
                         on:input={saveFormState}
                         on:input={(e: any) =>
@@ -1016,7 +1016,7 @@
                     </div>
 
                     <div class="form__grup">
-                      <label class="form_label">Contact professionnel</label>
+                      <label class="form_label">Contact professionnel *</label>
                       <input
                         on:input={saveFormState}
                         on:input={(e: any) =>
@@ -1033,7 +1033,7 @@
 
                     <div class="form__grup">
                       <label class="form_label"
-                        >Structure d'exercice professionnel</label
+                        >Structure d'exercice professionnel *</label
                       >
                       <input
                         on:input={saveFormState}
@@ -1050,7 +1050,7 @@
                     </div>
 
                     <div class="form__grup">
-                      <label class="form_label">Ville</label>
+                      <label class="form_label">Ville *</label>
                       <select
                         on:change={saveFormState}
                         on:change={(e: any) =>
@@ -1077,7 +1077,7 @@
                     </div>
 
                     <div class="form__grup">
-                      <label class="form_label">Date de premier emploi</label>
+                      <label class="form_label">Date de premier emploi *</label>
                       <input
                         on:input={saveFormState}
                         on:input={(e: any) =>
@@ -1172,7 +1172,7 @@
 
                     {#if formData.appartenirOrganisation}
                       <div class="form__grup">
-                        <label class="form_label">Nom de l'organisation</label>
+                        <label class="form_label">Nom de l'organisation *</label>
                         <input
                           on:input={saveFormState}
                           on:input={(e: any) =>
@@ -1189,7 +1189,7 @@
 
                       <div class="form__grup">
                         <label class="form_label"
-                          >Numero de l'organisation</label
+                          >Numero de l'organisation *</label
                         >
                         <input
                           on:input={saveFormState}
@@ -1206,7 +1206,7 @@
                       </div>
 
                       <div class="form__grup">
-                        <label class="form_label">Année</label>
+                        <label class="form_label">Année *</label>
                         <input
                           on:input={saveFormState}
                           on:input={(e: any) =>
