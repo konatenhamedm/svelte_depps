@@ -18,7 +18,7 @@
 
   async function logout() {
     await fetch("/auth/logout", { method: "POST" });
-    goto("/login"); // Redirection après déconnexion
+    goto("/"); // Redirection après déconnexion
   }
 </script>
 
@@ -31,8 +31,8 @@
   style="border-color: rgb(113, 88, 190); transform: translate(228px, 635px);"
 ></div>
 <div id="">
-  <Header data={user} />
-  <Slide data={user} />
+  <Header user={user} />
+  <Slide user={user} />
   <style>
     .tablo:not(:last-child) {
       margin-bottom: 35px;

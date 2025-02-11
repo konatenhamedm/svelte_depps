@@ -1,8 +1,9 @@
-<script>
+<script lang="ts">
   import Footer from "$components/Footer.svelte";
   import Header from "$components/Header.svelte";
   import Slide from "$components/Slide.svelte";
-
+  export let data; // Les données retournées par `load()`
+  let user = data.user;
     
   
   </script>
@@ -14,11 +15,13 @@
      </div>
      <div id="pointer-dot" style="border-color: rgb(113, 88, 190); transform: translate(410px, 675px);"></div>
      <div id="">
-         <Header />
-         <Slide />
+         <Header user={user}/>
+         <Slide user={user}/>
    
           <!-- Slider -->
           <section class="slider">
+             
+
             <div class="swiper-container swiper-container-horizontal"> 
               <div class="swiper-wrapper" style="transition-duration: 0ms; transform: translate3d(-6576px, 0px, 0px);"><div class="swiper-slide swiper-slide-duplicate" data-background="_files/slide-3.png" data-swiper-slide-index="0" style="background-image: url(&quot;_files/slide-3.png&quot;);">
                   <div class="slide-inner">

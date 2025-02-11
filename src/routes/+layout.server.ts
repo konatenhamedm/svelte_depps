@@ -2,7 +2,10 @@ import type { Cookies } from '@sveltejs/kit';
 
 export function load({ cookies }: { cookies: Cookies }) {
     const authCookie = cookies.get('auth');
-    const user = authCookie ? JSON.parse(authCookie) : null;
+    
+    if (authCookie) {
+        return { user: JSON.parse(authCookie) };
+    }
 
-    return { user };
+    return { user: null };
 }

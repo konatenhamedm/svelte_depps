@@ -53,8 +53,8 @@ console.log(success);
   style="border-color: rgb(113, 88, 190); transform: translate(333px, 673px);"
 ></div>
 <div id="">
-  <Header data={user}/>
-  <Slide data={user}/>
+  <Header user={user} />
+  <Slide user={user} />
   <main style="padding-top:200px">
     <!--İletişim Form Alanı-->
     <section class="iletisim-form-alani">

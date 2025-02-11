@@ -548,8 +548,8 @@
   style="border-color: rgb(113, 88, 190); transform: translate(333px, 673px);"
 ></div>
 <div id="">
-  <Header data={user} />
-  <Slide data={user} />
+  <Header user={user} />
+  <Slide user={user} />
   <section class="text-center pb-20" style="padding-top:150px">
     <h2 class="h2-baslik-anasayfa-ozel pb-10 text-uppercase">
       Inscription en tant que professionnel de santé

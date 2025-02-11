@@ -10,13 +10,12 @@ export async function handle({ event, resolve }) {
     try {
       const auth = JSON.parse(cookies.auth);
       user = { id: auth.id, role: auth.role, token: auth.token, username: auth.username, type: auth.type, status: auth.status, payement: auth.payement, avatar: auth.avatar };
-
-      console.log(user);
+  
+   
     } catch (e) {
       console.error("Erreur de parsing du cookie auth:", e);
     }
   }
-
   // Protéger la route /admin en vérifiant l'authentification
   if (event.url.pathname.startsWith("/admin") && !user) {
     return redirect(302, "/login");

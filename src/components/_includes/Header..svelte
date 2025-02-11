@@ -112,14 +112,12 @@ async function logout() {
                 <!-- User Account-->
                 <li class="btn-group d-xl-inline-flex d-none">
                      <a href="#" id="dropdownDividerButton" data-dropdown-toggle="dropdownDivider-2" class="justify-center btn-primary-light hover:text-white svg-bt-icon hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm !px-px !py-px text-center inline-flex items-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800" type="button"><img src="../../../images/avatar/avatar-6.png" class="avatar rounded-full !h-11 !w-11 mt-1" alt="" /></a>
-
                      <!-- Dropdown menu -->
                      <div id="dropdownDivider-2" class="z-10 hidden bg-white divide-y divide-gray-100 rounded-lg shadow w-44 dark:bg-gray-700 dark:divide-gray-600">
                              <ul class="py-2 text-sm text-gray-700 dark:text-gray-200 drop-shadow-lg" aria-labelledby="dropdownDividerButton">
                                  <li on:click={logout}>
                                      <a on:click={logout} href="javascript:void(0)" class="items-center m-0 text-base flex px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"><i class="fa fa-user-circle-o me-3 text-xl" aria-hidden="true" > </i>Se déconnecter</a>
                                  </li>
-                           
                              </ul>
                      </div>  
                 </li>

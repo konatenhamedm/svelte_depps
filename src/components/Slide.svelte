@@ -1,18 +1,21 @@
 <script lang="ts">
-  import { onMount } from "svelte";
-  import type { User } from "../types";
+  import { onMount, tick } from "svelte";
   import { goto } from "$app/navigation";
-  import { json } from "@sveltejs/kit";
+  import cookie from "cookie";
+  import type { User } from "../types";
+ 
 
-  export let data; // Récupérer les données du layout
-  let user = data;
+  export let user:User[] =  [];
 
-async function logout() {
+  async function logout() {
     await fetch('/auth/logout', { method: 'POST' });
     goto('/'); // Redirection après déconnexion
 }
   
+
+
 </script>
+
 <header class="header">
   <nav class="navbar hide">
     <div class="inner">
@@ -28,18 +31,20 @@ async function logout() {
       <div class="main-menu">
       
         <ul>
-          {#if user != null}
+          {#if user }
             <li><a href="/site/dashboard">Dashboard</a></li>
           {/if}
 
-          <li><a href="/">Accueil</a></li>
+          <li><a href="/">Accueil </a></li>
           <li><a href="#">A propos</a></li>
           <li><a href="#">E-DEPPS</a></li>
           <li><a href="#">Contactez-nous</a></li>
 
-          {#if user != null }
+          {#if user  }
+
+          {JSON.stringify(user)}
             
-          <li style="border: 4px solid red;padding: 5px 17px;border-radius: 32px;"><a href="javascript:void(0)" on:click={logout} >Déconnexion</a></li>
+          <li style="border: 4px solid red;padding: 5px 17px;border-radius: 32px;" on:click={logout}><a href="javascript:void(0)" on:click={logout} >Déconnexion</a></li>
           {:else}
             <li
               style="border: 4px solid #ff9c09;padding: 5px 17px;border-radius: 32px;"

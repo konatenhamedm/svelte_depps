@@ -13,8 +13,8 @@
 
     </div><div id="">
      
-        <Header />
-        <Slide />
+        <Header user={user} />
+        <Slide user={user} />
      <style>
   .tablo:not(:last-child) {
       margin-bottom: 35px;
