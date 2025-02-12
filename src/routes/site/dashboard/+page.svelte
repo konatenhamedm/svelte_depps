@@ -25,7 +25,7 @@
     { icon: 'fas fa-bell', text: 'Alertes', link: 'profil' },
     { icon: 'fas fa-comments', text: 'MyDEPPS chat', link: 'chatbox' },
     { icon: 'fas fa-book', text: 'Guide utilisateur', link: 'Guide utilisateur' },
-    { icon: 'fas fa-file-pdf', text: "Guide utilisateur (PDF)", link: "_files/GUIDE-D'UTILISATION.pdf" },
+    { icon: 'fas fa-file-pdf', text: "Guide utilisateur (PDF)", link: "guide-utilisateur" },
     { icon: 'fas fa-users', text: 'Forum', link: 'Forum' }
   ];
 </script>
