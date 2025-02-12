@@ -1,5 +1,4 @@
 <script lang="ts">
-  import { onMount, tick } from "svelte";
   import { goto } from "$app/navigation";
   import type { User } from "../types";
  
