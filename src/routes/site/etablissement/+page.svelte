@@ -10,7 +10,7 @@
     Genre,
     Pays,
     Specialite,
-    Ville
+    Ville,
   } from "../../../types.js";
   import { getProfessions } from "$lib/constants";
 
@@ -19,7 +19,7 @@
   export let data; // Récupérer les données du layout
   let user = data?.user;
 
-  let step = 1;
+  let step = 5;
 
   let formData = {
     // Login informations
@@ -31,21 +31,21 @@
     // Informations générales
     id: null,
     typePersonne: null,
-    nature: "",
-    type: "",
-    gps: "",
-    niveau: "",
-    contact: "",
-    entrepriseName: "",
+    natureEntreprise: "",
+    typeEntreprise: "",
+    gpsEntreprise: "",
+    niveauEntreprise: "",
+    contactEntreprise: "",
+    nomEntreprise: "",
     emailEntreprise: "",
-    space: "",
+    spaceEntreprise: "",
 
     // Promoteur
     genre: null,
-    nomComplet: "",
+    nomCompletPromoteur: "",
     emailPro: "",
     profession: "",
-    contacts: "",
+    contactsPromoteur: "",
     lieuResidence: "",
     numeroCni: "",
 
@@ -64,9 +64,6 @@
     diplomeFilePhysique: null,
     cvPhysique: null,
     dfePhysique: null,
-
-    // Autres informations
-    inscriptionProfessionId: null
   };
 
   // Définition des erreurs
@@ -78,21 +75,21 @@
 
     // Informations générales
     typePersonne: "",
-    nature: "",
-    type: "",
-    gps: "",
-    niveau: "",
-    contact: "",
-    entrepriseName: "",
+    natureEntreprise: "",
+    typeEntreprise: "",
+    gpsEntreprise: "",
+    niveauEntreprise: "",
+    contactEntreprise: "",
+    nomEntreprise: "",
     emailEntreprise: "",
-    space: "",
+    spaceEntreprise: "",
 
     // Promoteur
     genre: "",
-    nomComplet: "",
+    nomCompletPromoteur: "",
     emailPro: "",
     profession: "",
-    contacts: "",
+    contactsPromoteur: "",
     lieuResidence: "",
     numeroCni: "",
 
@@ -113,7 +110,7 @@
     dfePhysique: "",
 
     // Autres informations
-    inscriptionProfessionId: ""
+    inscriptionProfessionId: "",
   };
 
   // Fonction de validation des étapes
@@ -136,35 +133,47 @@
     }
 
     if (step === 2) {
-      errors.nature = formData.nature ? "" : "La nature est requise";
-      errors.type = formData.type ? "" : "Le type est requis";
-      errors.gps = formData.gps ? "" : "Les coordonnées GPS sont requises";
-      errors.niveau = formData.niveau ? "" : "Le niveau est requis";
-      errors.contact = formData.contact ? "" : "Le contact est requis";
-      errors.entrepriseName = formData.entrepriseName
+      errors.natureEntreprise = formData.natureEntreprise
+        ? ""
+        : "La natureEntreprise est requise";
+      errors.typeEntreprise = formData.typeEntreprise
+        ? ""
+        : "Le type est requis";
+      errors.gpsEntreprise = formData.gpsEntreprise
+        ? ""
+        : "Les coordonnées GPS sont requises";
+      errors.niveauEntreprise = formData.niveauEntreprise
+        ? ""
+        : "Le niveau est requis";
+      errors.contactEntreprise = formData.contactEntreprise
+        ? ""
+        : "Le contact est requis";
+      errors.nomEntreprise = formData.nomEntreprise
         ? ""
         : "Le nom de l'entreprise est requis";
       errors.emailEntreprise = formData.emailEntreprise
         ? ""
         : "L'email de l'entreprise est requis";
-      errors.space = formData.space ? "" : "L'espace est requis";
+      errors.spaceEntreprise = formData.spaceEntreprise
+        ? ""
+        : "L'espace est requis";
       //  errors.typePersonneId = formData.typePersonneId ? "" : "Le type de personne est requis";
 
       valid =
-        !errors.nature &&
-        !errors.type &&
-        !errors.gps &&
-        !errors.niveau &&
-        !errors.contact &&
-        !errors.entrepriseName &&
+        !errors.natureEntreprise &&
+        !errors.typeEntreprise &&
+        !errors.gpsEntreprise &&
+        !errors.niveauEntreprise &&
+        !errors.contactEntreprise &&
+        !errors.nomEntreprise &&
         !errors.emailEntreprise &&
-        !errors.space;
+        !errors.spaceEntreprise;
       // && !errors.typePersonneId
     }
 
     if (step === 3) {
       errors.genre = formData.genre ? "" : "Le genre est requis";
-      errors.nomComplet = formData.nomComplet
+      errors.nomCompletPromoteur = formData.nomCompletPromoteur
         ? ""
         : "Le nom complet est requis";
       errors.emailPro = formData.emailPro
@@ -173,7 +182,9 @@
       errors.profession = formData.profession
         ? ""
         : "La profession est requise";
-      errors.contacts = formData.contacts ? "" : "Les contacts sont requis";
+      errors.contactsPromoteur = formData.contactsPromoteur
+        ? ""
+        : "Les contacts sont requis";
       errors.lieuResidence = formData.lieuResidence
         ? ""
         : "Le lieu de résidence est requis";
@@ -259,7 +270,7 @@
       reader.onload = () => {
         selectedFiles = {
           ...selectedFiles,
-          [fieldName]: { name: file.name, data: reader.result }
+          [fieldName]: { name: file.name, data: reader.result },
         };
 
         // Stocker dans le localStorage
@@ -361,7 +372,7 @@
 
       fetch("http://depps.leadagro.net/api/professionnel/create", {
         method: "POST",
-        body: data
+        body: data,
       })
         .then((response) => response.json())
         .then((result) => {
@@ -395,7 +406,7 @@
 
     fetch("https://depps.leadagro.net/api/paiement/paiement", {
       method: "POST",
-      body: data
+      body: data,
     })
       .then((response) => response.json())
       .then((result) => {
@@ -454,7 +465,7 @@
     { name: "genre", url: "/genre" },
     { name: "nationate", url: "/pays" },
     { name: "specialite", url: "/specialite" },
-    { name: "ville", url: "/ville" }
+    { name: "ville", url: "/ville" },
   ];
 
   let values: {
@@ -619,104 +630,8 @@
               </h2>
               <div class="tablo">
                 <div class="tablo--1h-ve-2">
-                  <div class="grid grid-cols-3">
-                    <!-- Champ Nature -->
-                    <div class="form__grup">
-                      <label class="form_label">Nature de l'entreprise privée sanitaire *</label>
-                      <input
-                        on:input={saveFormState}
-                        on:input={(e: any) =>
-                          updateField("nature", e.target.value)}
-                        type="text"
-                        class="form__input"
-                        bind:value={formData.nature}
-                        placeholder="Nature"
-                      />
-                      {#if errors.nature}<p class="error">
-                          {errors.nature}
-                        </p>{/if}
-                    </div>
-
-                    <!-- Champ Type -->
-                    <div class="form__grup">
-                      <label class="form_label">Type d'entreprise privée sanitaire *</label>
-                      <input
-                        on:input={saveFormState}
-                        on:input={(e: any) =>
-                          updateField("type", e.target.value)}
-                        type="text"
-                        class="form__input"
-                        bind:value={formData.type}
-                        placeholder="Type"
-                      />
-                      {#if errors.type}<p class="error">{errors.type}</p>{/if}
-                    </div>
-
-                    <!-- Champ GPS -->
-                    <div class="form__grup">
-                      <label class="form_label">coordonnées GPS *</label>
-                      <input
-                        on:input={saveFormState}
-                        on:input={(e: any) =>
-                          updateField("gps", e.target.value)}
-                        type="text"
-                        class="form__input"
-                        bind:value={formData.gps}
-                        placeholder="GPS"
-                      />
-                      {#if errors.gps}<p class="error">{errors.gps}</p>{/if}
-                    </div>
-
-                    <!-- Champ Niveau -->
-                    <div class="form__grup">
-                      <label class="form_label">Niveau d'intervention *</label>
-                      <input
-                        on:input={saveFormState}
-                        on:input={(e: any) =>
-                          updateField("niveau", e.target.value)}
-                        type="text"
-                        class="form__input"
-                        bind:value={formData.niveau}
-                        placeholder="Niveau"
-                      />
-                      {#if errors.niveau}<p class="error">
-                          {errors.niveau}
-                        </p>{/if}
-                    </div>
-
-                    <!-- Champ Contact -->
-                    <div class="form__grup">
-                      <label class="form_label">Contact de l'entreprise privée sanitaire  *</label>
-                      <input
-                        on:input={saveFormState}
-                        on:input={(e: any) =>
-                          updateField("contact", e.target.value)}
-                        type="text"
-                        class="form__input"
-                        bind:value={formData.contact}
-                        placeholder="Contact"
-                      />
-                      {#if errors.contact}<p class="error">
-                          {errors.contact}
-                        </p>{/if}
-                    </div>
-
-                    <!-- Champ Nom de l'entreprise -->
-                    <div class="form__grup">
-                      <label class="form_label">Nom de l'entreprise de l'entreprise privée sanitaire  *</label>
-                      <input
-                        on:input={saveFormState}
-                        on:input={(e: any) =>
-                          updateField("entrepriseName", e.target.value)}
-                        type="text"
-                        class="form__input"
-                        bind:value={formData.entrepriseName}
-                        placeholder="Nom de l'entreprise"
-                      />
-                      {#if errors.entrepriseName}<p class="error">
-                          {errors.entrepriseName}
-                        </p>{/if}
-                    </div>
+                  <div class="grid grid-cols-2">
+                    <!-- Champ natureEntreprise -->
 
                     <div class="form__grup">
                       <label class="form_label">Personne Physique *</label>
@@ -735,26 +650,105 @@
 
                         <option
                           value="Personne_physique"
-                          selected={formData.typePersonne === "Personne_physique"}
-                          >Personne physique</option
+                          selected={formData.typePersonne ===
+                            "Personne_physique"}>Personne physique</option
                         >
                         <option
                           value="Personne_Morale"
                           selected={formData.typePersonne === "Personne_Morale"}
                           >Personne Morale</option
                         >
-                        
                       </select>
                       {#if errors.typePersonne}<p class="error">
                           {errors.typePersonne}
                         </p>{/if}
                     </div>
 
-                    
 
-                    <!-- Champ Email de l'entreprise -->
+                    <!-- Champ Type -->
+                   
                     <div class="form__grup">
-                      <label class="form_label">E-mail de l'entreprise privée sanitaire  *</label>
+                      <label class="form_label"
+                        >Nature de l'entreprise privée sanitaire *</label
+                      >
+                      <input
+                        on:input={saveFormState}
+                        on:input={(e: any) =>
+                          updateField("natureEntreprise", e.target.value)}
+                        type="text"
+                        class="form__input"
+                        bind:value={formData.natureEntreprise}
+                        placeholder="Nature"
+                      />
+                      {#if errors.natureEntreprise}<p class="error">
+                          {errors.natureEntreprise}
+                        </p>{/if}
+                    </div>
+                 
+                    <!-- Champ contactEntreprise -->
+                  
+                     <div class="form__grup">
+                      <label class="form_label"
+                        >Nom de l'entreprise de l'entreprise privée sanitaire *</label
+                      >
+                      <input
+                        on:input={saveFormState}
+                        on:input={(e: any) =>
+                          updateField("nomEntreprise", e.target.value)}
+                        type="text"
+                        class="form__input"
+                        bind:value={formData.nomEntreprise}
+                        placeholder="Nom de l'entreprise"
+                      />
+                      {#if errors.nomEntreprise}<p class="error">
+                          {errors.nomEntreprise}
+                        </p>{/if}
+                    </div>
+
+                     <div class="form__grup">
+                      <label class="form_label"
+                        >Type d'entreprise privée sanitaire *</label
+                      >
+                      <input
+                        on:input={saveFormState}
+                        on:input={(e: any) =>
+                          updateField("typeEntreprise", e.target.value)}
+                        type="text"
+                        class="form__input"
+                        bind:value={formData.typeEntreprise}
+                        placeholder="typeEntreprise"
+                      />
+                      {#if errors.typeEntreprise}<p class="error">
+                          {errors.typeEntreprise}
+                        </p>{/if}
+                    </div>
+
+                    <!-- Champ Type -->
+                     <div class="form__grup">
+                      <label class="form_label"
+                        >contact de l'entreprise privée sanitaire *</label
+                      >
+                      <input
+                        on:input={saveFormState}
+                        on:input={(e: any) =>
+                          updateField("contactEntreprise", e.target.value)}
+                        type="text"
+                        class="form__input"
+                        bind:value={formData.contactEntreprise}
+                        placeholder="contact"
+                      />
+                      {#if errors.contactEntreprise}<p class="error">
+                          {errors.contactEntreprise}
+                        </p>{/if}
+                    </div>
+
+                    <!-- Champ gpsEntreprise -->
+                   
+                    
+                     <div class="form__grup">
+                      <label class="form_label"
+                        >E-mail de l'entreprise privée sanitaire *</label
+                      >
                       <input
                         on:input={saveFormState}
                         on:input={(e: any) =>
@@ -769,20 +763,64 @@
                         </p>{/if}
                     </div>
 
-                    <!-- Champ Espace -->
+                    <!-- Champ niveauEntreprise -->
                     <div class="form__grup">
-                      <label class="form_label">Distrite, ville , commune *</label>
+                      <label class="form_label">Niveau d'intervention *</label>
                       <input
                         on:input={saveFormState}
                         on:input={(e: any) =>
-                          updateField("space", e.target.value)}
+                          updateField("niveauEntreprise", e.target.value)}
                         type="text"
                         class="form__input"
-                        bind:value={formData.space}
+                        bind:value={formData.niveauEntreprise}
+                        placeholder="niveauEntreprise"
+                      />
+                      {#if errors.niveauEntreprise}<p class="error">
+                          {errors.niveauEntreprise}
+                        </p>{/if}
+                    </div>
+                    <!-- Champ Nom de l'entreprise -->
+
+                    <!-- Champ Email de l'entreprise -->
+                   
+
+                      <div class="form__grup">
+                      <label class="form_label"
+                        >Distrite, ville , commune *</label
+                      >
+                      <input
+                        on:input={saveFormState}
+                        on:input={(e: any) =>
+                          updateField("spaceEntreprise", e.target.value)}
+                        type="text"
+                        class="form__input"
+                        bind:value={formData.spaceEntreprise}
                         placeholder="Espace"
                       />
-                      {#if errors.space}<p class="error">{errors.space}</p>{/if}
+                      {#if errors.spaceEntreprise}<p class="error">
+                          {errors.spaceEntreprise}
+                        </p>{/if}
                     </div>
+
+                    <!-- Champ Espace -->
+                    <div class="form__grup">
+                      <label class="form_label"
+                        >coordonnées gpsEntreprise *</label
+                      >
+                      <input
+                        on:input={saveFormState}
+                        on:input={(e: any) =>
+                          updateField("gpsEntreprise", e.target.value)}
+                        type="text"
+                        class="form__input"
+                        bind:value={formData.gpsEntreprise}
+                        placeholder="gps de Entreprise"
+                      />
+                      {#if errors.gpsEntreprise}<p class="error">
+                          {errors.gpsEntreprise}
+                        </p>{/if}
+                    </div>
+
                   </div>
                 </div>
               </div>
@@ -795,12 +833,11 @@
               </h2>
               <div class="tablo">
                 <div class="tablo--1h-ve-2">
-                  <div class="grid grid-cols-3">
+                  <div class="grid grid-cols-2">
                     <div class="form__grup">
                       <label class="form_label">Genre *</label>
                       <select
                         on:change={saveFormState}
-                       
                         class="form__input"
                         name=""
                         id=""
@@ -822,24 +859,63 @@
                         </p>{/if}
                     </div>
 
-                    <!-- Champ Nom Complet -->
+                  <!-- Champ contactsPromoteur -->
+                    <div class="form__grup">
+                      <label class="form_label">Contact *</label>
+                      <input
+                        on:input={saveFormState}
+                        on:input={(e: any) =>
+                          updateField("contactsPromoteur", e.target.value)}
+                        type="text"
+                        class="form__input"
+                        bind:value={formData.contactsPromoteur}
+                        placeholder="contacts Promoteur"
+                      />
+                      {#if errors.contactsPromoteur}<p class="error">
+                          {errors.contactsPromoteur}
+                        </p>{/if}
+                    </div>
+
+
+                 
+                       <!-- Champ Nom Complet -->
                     <div class="form__grup">
                       <label class="form_label">Nom complet *</label>
                       <input
                         on:input={saveFormState}
                         on:input={(e: any) =>
-                          updateField("nomComplet", e.target.value)}
+                          updateField("nomCompletPromoteur", e.target.value)}
                         type="text"
                         class="form__input"
-                        bind:value={formData.nomComplet}
+                        bind:value={formData.nomCompletPromoteur}
                         placeholder="Nom complet"
                       />
-                      {#if errors.nomComplet}<p class="error">
-                          {errors.nomComplet}
+                      {#if errors.nomCompletPromoteur}<p class="error">
+                          {errors.nomCompletPromoteur}
                         </p>{/if}
                     </div>
 
-                    <!-- Champ Email Pro -->
+                   <!-- Champ Numéro de CNI -->
+                    <div class="form__grup">
+                      <label class="form_label">N° de CNI *</label>
+                      <input
+                        on:input={saveFormState}
+                        on:input={(e: any) =>
+                          updateField("numeroCni", e.target.value)}
+                        type="text"
+                        class="form__input"
+                        bind:value={formData.numeroCni}
+                        placeholder="Numéro de CNI"
+                      />
+                      {#if errors.numeroCni}<p class="error">
+                          {errors.numeroCni}
+                        </p>{/if}
+                    </div>
+
+                  
+
+
+                      <!-- Champ Email Pro -->
                     <div class="form__grup">
                       <label class="form_label">Adresse E-mail *</label>
                       <input
@@ -853,40 +929,6 @@
                       />
                       {#if errors.emailPro}<p class="error">
                           {errors.emailPro}
-                        </p>{/if}
-                    </div>
-
-                    <!-- Champ Profession -->
-                    <div class="form__grup">
-                      <label class="form_label">Profession *</label>
-                      <input
-                        on:input={saveFormState}
-                        on:input={(e: any) =>
-                          updateField("profession", e.target.value)}
-                        type="text"
-                        class="form__input"
-                        bind:value={formData.profession}
-                        placeholder="Profession"
-                      />
-                      {#if errors.profession}<p class="error">
-                          {errors.profession}
-                        </p>{/if}
-                    </div>
-
-                    <!-- Champ Contacts -->
-                    <div class="form__grup">
-                      <label class="form_label">Contact *</label>
-                      <input
-                        on:input={saveFormState}
-                        on:input={(e: any) =>
-                          updateField("contacts", e.target.value)}
-                        type="text"
-                        class="form__input"
-                        bind:value={formData.contacts}
-                        placeholder="Contacts"
-                      />
-                      {#if errors.contacts}<p class="error">
-                          {errors.contacts}
                         </p>{/if}
                     </div>
 
@@ -907,20 +949,22 @@
                         </p>{/if}
                     </div>
 
-                    <!-- Champ Numéro de CNI -->
+                   
+
+                     <!-- Champ Profession -->
                     <div class="form__grup">
-                      <label class="form_label">N° de CNI *</label>
+                      <label class="form_label">Profession *</label>
                       <input
                         on:input={saveFormState}
                         on:input={(e: any) =>
-                          updateField("numeroCni", e.target.value)}
+                          updateField("profession", e.target.value)}
                         type="text"
                         class="form__input"
-                        bind:value={formData.numeroCni}
-                        placeholder="Numéro de CNI"
+                        bind:value={formData.profession}
+                        placeholder="Profession"
                       />
-                      {#if errors.numeroCni}<p class="error">
-                          {errors.numeroCni}
+                      {#if errors.profession}<p class="error">
+                          {errors.profession}
                         </p>{/if}
                     </div>
                   </div>
@@ -935,7 +979,7 @@
               </h2>
               <div class="tablo">
                 <div class="tablo--1h-ve-2">
-                  <div class="grid grid-cols-3">
+                  <div class="grid grid-cols-2">
                     <!-- Champ Nom Complet Technique -->
                     <div class="form__grup">
                       <label class="form_label">Nom complet *</label>
@@ -953,39 +997,9 @@
                         </p>{/if}
                     </div>
 
-                    <!-- Champ Email Pro Technique -->
-                    <div class="form__grup">
-                      <label class="form_label">Adresse E-mail  *</label>
-                      <input
-                        on:input={saveFormState}
-                        on:input={(e: any) =>
-                          updateField("emailProTechnique", e.target.value)}
-                        type="email"
-                        class="form__input"
-                        bind:value={formData.emailProTechnique}
-                        placeholder="E-mail professionnel"
-                      />
-                      {#if errors.emailProTechnique}<p class="error">
-                          {errors.emailProTechnique}
-                        </p>{/if}
-                    </div>
+                    
 
-                    <!-- Champ Profession Technique -->
-                    <div class="form__grup">
-                      <label class="form_label">Profession *</label>
-                      <input
-                        on:input={saveFormState}
-                        on:input={(e: any) =>
-                          updateField("professionTechnique", e.target.value)}
-                        type="text"
-                        class="form__input"
-                        bind:value={formData.professionTechnique}
-                        placeholder="Profession"
-                      />
-                      {#if errors.professionTechnique}<p class="error">
-                          {errors.professionTechnique}
-                        </p>{/if}
-                    </div>
+                   
 
                     <!-- Champ Contact Pro Technique -->
                     <div class="form__grup">
@@ -1004,6 +1018,24 @@
                         </p>{/if}
                     </div>
 
+
+                    <!-- Champ Email Pro Technique -->
+                    <div class="form__grup">
+                      <label class="form_label">Adresse E-mail *</label>
+                      <input
+                        on:input={saveFormState}
+                        on:input={(e: any) =>
+                          updateField("emailProTechnique", e.target.value)}
+                        type="email"
+                        class="form__input"
+                        bind:value={formData.emailProTechnique}
+                        placeholder="E-mail professionnel"
+                      />
+                      {#if errors.emailProTechnique}<p class="error">
+                          {errors.emailProTechnique}
+                        </p>{/if}
+                    </div>
+
                     <!-- Champ Lieu de Résidence Technique -->
                     <div class="form__grup">
                       <label class="form_label">Lieu de résidence *</label>
@@ -1018,6 +1050,23 @@
                       />
                       {#if errors.lieuResidenceTechnique}<p class="error">
                           {errors.lieuResidenceTechnique}
+                        </p>{/if}
+                    </div>
+
+                     <!-- Champ Profession Technique -->
+                    <div class="form__grup">
+                      <label class="form_label">Profession *</label>
+                      <input
+                        on:input={saveFormState}
+                        on:input={(e: any) =>
+                          updateField("professionTechnique", e.target.value)}
+                        type="text"
+                        class="form__input"
+                        bind:value={formData.professionTechnique}
+                        placeholder="Profession"
+                      />
+                      {#if errors.professionTechnique}<p class="error">
+                          {errors.professionTechnique}
                         </p>{/if}
                     </div>
 
@@ -1058,8 +1107,8 @@
              {/if} -->
               <div class="tablo">
                 <div class="tablo--1h-ve-2">
-                  <div class="grid grid-cols-3">
-                    {#each ["02 photos identité de même tirage *", "Copie de cni(carte nationale identité) *", "inscription à l’Ordre National de la profession concernée et de l’année en cours *", "Diplome legalise *", " Copie de la dfe *", "cv *"] as fieldName}
+                  <div class="grid grid-cols-2">
+                    {#each ["photo", "diplomeFile", "cni", "cv", "ordreNational", "dfe"] as fieldName}
                       <div class="form__grup">
                         <label class="form_label"
                           >{fieldName.toUpperCase()}</label
@@ -1070,7 +1119,7 @@
                           on:change={(e) => handleFileChange(e, fieldName)}
                         />
                         {#if fileNames[fieldName]}
-                          <p>{fileNames[fieldName]}</p>
+                          <p>{fileNames[fieldName]} *</p>
                         {/if}
                         {#if errors[fieldName]}
                           <p class="error">{errors[fieldName]}</p>
