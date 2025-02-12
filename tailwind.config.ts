@@ -8,6 +8,13 @@ export default {
       fontFamily: {
         sans: ['"Segoe UI"', 'Tahoma', 'Geneva', 'Verdana', 'sans-serif'],
       },
+      colors: {
+        primary: '#0c52aa',
+        gradient: {
+          start: '#4b9bd8',
+          end: '#7158be'
+        }
+      }
     }
   },
 

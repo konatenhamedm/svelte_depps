@@ -58,3 +58,20 @@ body{
   }
 }
 
+.title-faq {
+    color: black !important;
+}
+
+.footerss p {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: start !important;
+    align-items: start !important;
+}
+h2.h2-baslik-footer.h-yazi-margin-kucuk,.footer__list,.footer__sosyal {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: start !important;
+    align-items: start !important;
+}
+
