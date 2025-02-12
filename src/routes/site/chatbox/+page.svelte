@@ -70,7 +70,7 @@ let messages: Message[] = [];
     style="border-color: rgb(113, 88, 190); transform: translate(228px, 635px);"
   ></div>
   <div id="">
-    <Header user={user} />
+   <!--  <Header user={user} /> -->
     <Slide user={user} />
     <style>
       .tablo:not(:last-child) {
