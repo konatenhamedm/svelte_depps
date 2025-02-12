@@ -17,7 +17,13 @@
         faqOpen[index] = !faqOpen[index];
     };
 </script>
+<div class="bg-gradient-to-r from-blue-500 to-purple-500">
+    test couleur
+</div>
 
+<div class="bg-primary">
+    test couleur
+</div>
 <div id="">
     <Header user={user}/>
     <main class="min-h-screen bg-gray-50">
