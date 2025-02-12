@@ -1,6 +1,6 @@
 <script lang="ts">
     import Footer from "$components/Footer.svelte";
-    import Header from "$components/Header.svelte";
+    import Slide from "$components/Slide.svelte";
     export let data;
     let user = data.user;
 
@@ -55,12 +55,12 @@
 
 
 <div id="">
-    <Header user={user}/>
+    <Slide user={user}/>
     <main class="min-h-screen bg-gray-50">
         <!-- Hero Section -->
         <div class="relative overflow-hidden">
             <div class="absolute inset-0 bg-gradient-to-r from-gradient-start to-gradient-end opacity-10"></div>
-            <div class="max-w-[118rem] mx-auto px-4 sm:px-6 lg:px-8 py-24 relative">
+            <div class="max-w-[118rem] mx-auto px-4 sm:px-6 lg:px-8 py-24 pt-[180px] relative">
                 <div class="text-center">
                     <h1 class="text-5xl md:text-6xl font-bold text-gray-900  mb-6">
                         Au Service de Votre Santé

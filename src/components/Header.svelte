@@ -21,9 +21,9 @@
       <ul>
         
         <li><a href="/">Accueiliooo</a></li>
-        <li><a href="#">A propos</a></li>
+        <li><a href="/site/about">A propos</a></li>
         <li><a href="#">E-DEPPS</a></li>
-        <li><a href="#">Contactez-nous</a></li>
+        <li><a href="/site/contact">Contactez-nous</a></li>
        
         {#if user }
             

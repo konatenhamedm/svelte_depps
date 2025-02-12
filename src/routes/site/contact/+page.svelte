@@ -1,6 +1,6 @@
 <script>
-    import Header from "$components/Header.svelte";
     import Footer from "$components/Footer.svelte";
+    import Slide from "$components/Slide.svelte";
 
     let email = '';
     let firstName = '';
@@ -17,17 +17,11 @@
         faqOpen[index] = !faqOpen[index];
     };
 </script>
-<div class="bg-gradient-to-r from-blue-500 to-purple-500">
-    test couleur
-</div>
 
-<div class="bg-primary">
-    test couleur
-</div>
 <div id="">
-    <Header user={user}/>
+    <Slide user={user}/>
     <main class="min-h-screen bg-gray-50">
-        <div class="max-w-[134rem] mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="max-w-[134rem] mx-auto px-4 sm:px-6 lg:px-8 pt-[150px]">
             <div class="grid grid-cols-1 md:grid-cols-2 gap-12">
                 <!-- Left Column -->
                 <div>
@@ -152,7 +146,7 @@
 
                 <div class="space-y-4">
                     <div class="p-4 border rounded-lg">
-                        <button class="w-full text-left font-medium" on:click={() => toggleFaq(0)}>
+                        <button class="w-full text-left font-medium title-faq"  on:click={() => toggleFaq(0)}>
                             Qu'est-ce qui rend Snappy différent des autres applications de messagerie ?
                         </button>
                         {#if faqOpen[0]}
