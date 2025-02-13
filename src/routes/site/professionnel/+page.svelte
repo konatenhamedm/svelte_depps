@@ -1138,8 +1138,6 @@
                       >
                       <select
                         on:change={saveFormState}
-                        on:change={(e: any) =>
-                          updateField("appartenirOrganisation", e.target.value)}
                         class="form__input"
                         name=""
                         id=""
