@@ -20,8 +20,8 @@
 
     let messages: Message[] = [];
 
-    function selectUser(user: any) {
-        selectedUser = user;
+    function selectUser(userCurente: any) {
+        selectedUser = userCurente;
         messages = [
             { sender: 'Alice', text: "Bonjour, comment ça va ?" },
             { sender: 'Vous', text: "Ça va bien, merci ! Et toi ?" },
