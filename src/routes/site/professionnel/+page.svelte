@@ -209,7 +209,7 @@
       errors.cv = formData.cv ? "" : "Le CV est requis";
 
       valid = true;
-       /*  !errors.photo &&
+      /*  !errors.photo &&
         !errors.cni &&
         !errors.casier &&
         !errors.diplomeFile &&
@@ -303,7 +303,7 @@
 
   // ✅ Vérifier si on revient après un paiement
   onMount(() => {
-   /*  localStorage.clear(); */
+    /*  localStorage.clear(); */
 
     const urlParams = new URLSearchParams(window.location.search);
     if (urlParams.has("return")) {
@@ -334,27 +334,22 @@
 
   // 🔹 Soumission du formulaire
   function submitForm() {
-  if (validateStep()) {
-    let data = new FormData();
-    
+    if (validateStep()) {
+      let data = new FormData();
 
-    
-    // Ajout de la référence stockée en local
-    const reference = localStorage.getItem("reference");
-    if (reference) {
-      data.append("reference", reference);
-    }
+      // Ajout de la référence stockée en local
+      const reference = localStorage.getItem("reference");
+      if (reference) {
+        data.append("reference", reference);
+      }
 
-    // Ajouter les fichiers au FormData
+      // Ajouter les fichiers au FormData
 
-    Object.keys(formData).forEach((key) => {
-    
-       
+      Object.keys(formData).forEach((key) => {
         data.append(key, formData[key]);
-    
       });
 
- /*      Object.keys(selectedFiles).forEach((key) => {
+      /*      Object.keys(selectedFiles).forEach((key) => {
       const fileData = selectedFiles[key];
       if (fileData.data) {
         // Convertir le Base64 en Blob pour l'envoi
@@ -372,28 +367,24 @@
 
       console.log(data);
 
-
-    
-
-    fetch("http://depps.leadagro.net/api/professionnel/create", {
-      method: "POST",
-      body: data
-    })
-      .then((response) => response.json())
-      .then((result) => {
-        if (result.errors && Object.keys(result.errors).length > 0) {
-          console.log(result.errors);
-        } else {
-          window.location.href = "/site/connexion";
-          localStorage.clear();
-        }
+      fetch("http://depps.leadagro.net/api/professionnel/create", {
+        method: "POST",
+        body: data
       })
-      .catch((error) => {
-        console.log("Erreur lors de la soumission du formulaire:", error);
-      });
+        .then((response) => response.json())
+        .then((result) => {
+          if (result.errors && Object.keys(result.errors).length > 0) {
+            console.log(result.errors);
+          } else {
+            window.location.href = "/site/connexion";
+            localStorage.clear();
+          }
+        })
+        .catch((error) => {
+          console.log("Erreur lors de la soumission du formulaire:", error);
+        });
+    }
   }
-}
-
 
   // 🔹 Gestion du paiement
   function clickPaiement() {
@@ -418,9 +409,8 @@
       .then((result) => {
         if (result.url) {
           localStorage.setItem("reference", result.reference);
-         
-            window.location.href = result.url + "?return=1"; // 🔥 Ajout du paramètre `return`
-        
+
+          window.location.href = result.url + "?return=1"; // 🔥 Ajout du paramètre `return`
         }
       })
       .catch((error) => {
@@ -548,8 +538,8 @@
   style="border-color: rgb(113, 88, 190); transform: translate(333px, 673px);"
 ></div>
 <div id="">
-  <Header user={user} />
-  <Slide user={user} />
+  <Header {user} />
+  <Slide {user} />
   <section class="text-center pb-20" style="padding-top:150px">
     <h2 class="h2-baslik-anasayfa-ozel pb-10 text-uppercase">
       Inscription en tant que professionnel de santé
@@ -643,8 +633,7 @@
                       <label class="form_label">Genre *</label>
                       <select
                         on:change={saveFormState}
-                        on:change={(e: any) =>
-                          updateField("genre", e.target.value)}
+                       
                         class="form__input"
                         name=""
                         id=""
@@ -670,8 +659,6 @@
                       <label class="form_label">Civilité *</label>
                       <select
                         on:change={saveFormState}
-                        on:change={(e: any) =>
-                          updateField("civilite", e.target.value)}
                         class="form__input"
                         name=""
                         id=""
@@ -728,25 +715,27 @@
                     <div class="form__grup">
                       <label class="form_label">Nationalité *</label>
                       <select
-                        on:change={saveFormState}
-                        on:change={(e: any) =>
-                          updateField("nationate", e.target.value)}
-                        class="form__input"
-                        name=""
-                        id=""
                         bind:value={formData.nationate}
+                        class="form__input"
+                        on:change={saveFormState}
                       >
-                        <option value="" selected={!formData.nationate}
-                          >Veuillez sélectionner une option</option
+                        <option
+                          value=""
+                          disabled
+                          selected={!formData.nationate}
                         >
+                          Veuillez sélectionner une option
+                        </option>
+
                         {#each values.nationate as nationate}
-                          <option
-                            value={nationate.id}
-                            selected={formData.nationate === nationate.id}
-                            >{nationate.libelle}</option
-                          >
+                        <option
+                        value={nationate.id}
+                        selected={formData.nationate === nationate.id}
+                        >{nationate.libelle}</option
+                      >
                         {/each}
                       </select>
+
                       {#if errors.nationate}<p class="error">
                           {errors.nationate}
                         </p>{/if}
@@ -956,7 +945,8 @@
 
                   <div class="grid grid-cols-3">
                     <div class="form__grup">
-                      <label class="form_label">Situation professionnelle *</label
+                      <label class="form_label"
+                        >Situation professionnelle *</label
                       >
                       <input
                         on:input={saveFormState}
@@ -1110,12 +1100,14 @@
                  <span class="block sm:inline">{messagefile}</span>
                </div>
              {/if} -->
-             <div class="tablo">
+              <div class="tablo">
                 <div class="tablo--1h-ve-2">
                   <div class="grid grid-cols-3">
                     {#each ["photo", "cni", "casier", "diplomeFile", "certificat", "cv"] as fieldName}
                       <div class="form__grup">
-                        <label class="form_label">{fieldName.toUpperCase()}</label>
+                        <label class="form_label"
+                          >{fieldName.toUpperCase()}</label
+                        >
                         <input
                           type="file"
                           class="form__input"
@@ -1172,7 +1164,8 @@
 
                     {#if formData.appartenirOrganisation}
                       <div class="form__grup">
-                        <label class="form_label">Nom de l'organisation *</label>
+                        <label class="form_label">Nom de l'organisation *</label
+                        >
                         <input
                           on:input={saveFormState}
                           on:input={(e: any) =>
@@ -1243,7 +1236,7 @@
                         </p>
                         <br />
 
-                       <!--  <button
+                        <!--  <button
                           id="reloadPaiementLsssink"
                           class="px-6 py-3 bg-green-500 text-white font-medium rounded-lg shadow-lg hover:bg-green-500 transition duration-300"
                           on:click={clickPaiement}
@@ -1257,7 +1250,7 @@
                           bouton ci-dessous.
                         </p>
                         <br />
-                       <!--  <button
+                        <!--  <button
                           type="button"
                           id="r"
                           class="px-6 py-3 bg-green-500 text-white font-medium rounded-lg shadow-lg hover:bg-green-500 transition duration-300"
@@ -1303,10 +1296,8 @@
                   on:click={nextStep}>SUIVANT →</button
                 >
               {:else}
-
-              {#if !isPaiementDone}
-                        
-                        <!-- <button
+                {#if !isPaiementDone}
+                  <!-- <button
                           id="reloadPaiementLsssink"
                           class="px-6 py-3 bg-green-500 text-white font-medium rounded-lg shadow-lg hover:bg-green-500 transition duration-300"
                           on:click={clickPaiement}
@@ -1314,28 +1305,24 @@
                           Effectuer le paiement
                         </button> -->
 
-                        <button
-                        type="submit"
-                        on:click={clickPaiement}
-                        class="buton buton--kirmizi bg-green-500 "
-                       
-                      >
-                      Effectuer le paiement
-                      </button>
-                      {/if}
-                      {#if isPaiementDone}
-                       
-                      <button
-                        type="button"
-                        on:click={clickPaiement}
-                        class="buton buton--kirmizi bg-green-500 "
-                        disabled={!isPaiementDone}
-                      >
-                      Finaliser l'inscription
-                      </button>
-                      
-                      {/if}
-
+                  <button
+                    type="submit"
+                    on:click={clickPaiement}
+                    class="buton buton--kirmizi bg-green-500"
+                  >
+                    Effectuer le paiement
+                  </button>
+                {/if}
+                {#if isPaiementDone}
+                  <button
+                    type="button"
+                    on:click={clickPaiement}
+                    class="buton buton--kirmizi bg-green-500"
+                    disabled={!isPaiementDone}
+                  >
+                    Finaliser l'inscription
+                  </button>
+                {/if}
 
                 <!-- disabled={!isPaiementDone} -->
                 <!--   <button

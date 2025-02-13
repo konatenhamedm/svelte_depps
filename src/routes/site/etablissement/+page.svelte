@@ -1194,14 +1194,9 @@
                 <button
                   type="button"
                   class="buton buton--kirmizi"
-                  on:click={() => nextStep()}>SUIVANTyyy →</button
+                  on:click={() => nextStep()}>SUIVANT →</button
                 >
-              {:else if step === 6}
-                <button
-                  type="button"
-                  class="buton buton--kirmizi"
-                  on:click={nextStep}>SUIVANT →</button
-                >
+            
               {:else}
 
               {#if !isPaiementDone}
