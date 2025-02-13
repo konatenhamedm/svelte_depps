@@ -92,11 +92,12 @@ export function logout() {
 
 
 export function logoutKIte() {
-    // Supprimer le token d'authentification en vidant le cookie
-    document.cookie = cookie.serialize('auth', '', {
-        expires: new Date(0),
-        path: '/'
-    });
+   
+        // Supprimer le cookie 'auth' lors de la déconnexion
+        document.cookie = 'auth=; path=/; max-age=0; secure=' + (location.protocol === 'https:' ? 'true' : 'false');
+        
+        // Recharger la page après la suppression du cookie
+        window.location.reload();
    
 }
 

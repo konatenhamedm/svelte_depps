@@ -234,16 +234,11 @@
       errors.ordreNational = formData.ordreNational ? "" : "Le CV est requis";
       errors.cv = formData.cv ? "" : "Le DFE est requis";
 
-      valid =  !errors.photo &&
-        !errors.cni &&
-        !errors.dfe &&
-        !errors.diplomeFile &&
-        !errors.cv &&
-        !errors.ordreNational ;
+      valid = true ;
     }
 
     if (step === 6) {
-      valid = true;
+      valid = isPaiementDone;
     }
 
     return valid;

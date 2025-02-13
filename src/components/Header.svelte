@@ -1,5 +1,6 @@
 <script lang="ts">
   import { goto } from "$app/navigation";
+  import { logoutKIte } from "$lib/auth";
   import type { User } from "../types";
  
 
@@ -27,7 +28,7 @@
        
         {#if user }
             
-        <li style="border: 4px solid red;padding: 5px 17px;border-radius: 32px;" on:click={logout}><a href="javascript:void(0)" on:click={logout} >Déconnexion</a></li>
+        <li style="border: 4px solid red;padding: 5px 17px;border-radius: 32px;" on:click={logoutKIte()}><a href="javascript:void(0)" on:click={logout} >Déconnexion</a></li>
         {:else}
         <li><a href="/site/inscription">Inscription</a></li>
         <li><a href="/site/connexion">Connexion</a></li>

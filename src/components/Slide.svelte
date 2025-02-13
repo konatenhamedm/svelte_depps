@@ -3,6 +3,7 @@
   import { goto } from "$app/navigation";
   import cookie from "cookie";
   import type { User } from "../types";
+  import { logoutKIte } from "$lib/auth";
  
 
   export let user:User[] =  [];
@@ -44,7 +45,7 @@
 
          
             
-          <li style="border: 4px solid red;padding: 5px 17px;border-radius: 32px;" on:click={logout}><a href="javascript:void(0)" on:click={logout} >Déconnexion</a></li>
+          <li style="border: 4px solid red;padding: 5px 17px;border-radius: 32px;" on:click={logoutKIte()}><a href="javascript:void(0)" on:click={logout} >Déconnexion</a></li>
           {:else}
             <li
               style="border: 4px solid #ff9c09;padding: 5px 17px;border-radius: 32px;"
