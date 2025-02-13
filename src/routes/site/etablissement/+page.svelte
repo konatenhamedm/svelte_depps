@@ -58,12 +58,12 @@
     numeroOrdreTechnique: "",
 
     // Documents
-    photoRespo: "",
-    photoPhysique: null,
-    cniPhysique: null,
-    diplomeFilePhysique: null,
-    cvPhysique: null,
-    dfePhysique: null,
+    photo: "",
+    cni: null,
+    dfe: null,
+    diplomeFile: null,
+    ordreNational: null,
+    cv: null,
   };
 
   // Définition des erreurs
@@ -102,12 +102,12 @@
     numeroOrdreTechnique: "",
 
     // Documents
-    photoRespo: "",
-    photoPhysique: "",
-    cniPhysique: "",
-    diplomeFilePhysique: "",
-    cvPhysique: "",
-    dfePhysique: "",
+    photo: "",
+    cni: "",
+    dfe: "",
+    diplomeFile: "",
+    ordreNational: "",
+    cv: "",
 
     // Autres informations
     inscriptionProfessionId: "",
@@ -219,20 +219,20 @@
     }
 
     if (step === 5) {
-      errors.photoRespo = formData.photoRespo
+      errors.photo = formData.photo
         ? ""
         : "La photo du responsable est requise";
-      errors.photoPhysique = formData.photoPhysique
+      errors.cni = formData.cni
         ? ""
         : "La photo physique est requise";
-      errors.cniPhysique = formData.cniPhysique
+      errors.dfe = formData.dfe
         ? ""
         : "La CNI physique est requise";
-      errors.diplomeFilePhysique = formData.diplomeFilePhysique
+      errors.diplomeFile = formData.diplomeFile
         ? ""
         : "Le fichier du diplôme est requis";
-      errors.cvPhysique = formData.cvPhysique ? "" : "Le CV est requis";
-      errors.dfePhysique = formData.dfePhysique ? "" : "Le DFE est requis";
+      errors.ordreNational = formData.ordreNational ? "" : "Le CV est requis";
+      errors.cv = formData.cv ? "" : "Le DFE est requis";
 
       valid = true;
     }
@@ -395,10 +395,10 @@
 
   function initPaiement() {
     let data = new FormData();
-    /*     data.append("nom", formData.nom);
-    data.append("prenoms", formData.prenoms);
+        data.append("nom", formData.nomEntreprise);
+    data.append("prenoms", formData.natureEntreprise);
     data.append("email", formData.email);
-    data.append("numero", formData.numero); */
+    data.append("numero", formData.contactEntreprise);
 
     fetch("https://depps.leadagro.net/api/paiement/paiement", {
       method: "POST",
@@ -633,8 +633,7 @@
                       <label class="form_label">Personne Physique *</label>
                       <select
                         on:change={saveFormState}
-                        on:change={(e: any) =>
-                          updateField("situation", e.target.value)}
+                     
                         class="form__input"
                         name=""
                         id=""

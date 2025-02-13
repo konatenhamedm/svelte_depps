@@ -966,8 +966,6 @@
                       <label class="form_label">Spécialité *</label>
                       <select
                         on:change={saveFormState}
-                        on:change={(e: any) =>
-                          updateField("specialite", e.target.value)}
                         class="form__input"
                         name=""
                         id=""
