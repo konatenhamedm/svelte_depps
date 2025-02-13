@@ -258,29 +258,31 @@
   let selectedFiles = {};
 
   function updateFormData(fieldName, file) {
-    if (file) {
-      // Lire le fichier en Base64 pour le stocker dans localStorage
-      const reader = new FileReader();
-      reader.readAsDataURL(file);
-      reader.onload = () => {
-        selectedFiles = {
-          ...selectedFiles,
-          [fieldName]: { name: file.name, data: reader.result }
-        };
-
-        // Stocker dans le localStorage
-        localStorage.setItem("selectedFiles", JSON.stringify(selectedFiles));
-
-        // Mettre à jour les noms de fichiers affichés
-        fileNames = { ...fileNames, [fieldName]: file.name };
+  if (file) {
+    // Lire le fichier en Base64 pour le stocker dans localStorage
+    const reader = new FileReader();
+    reader.readAsDataURL(file);
+    reader.onload = () => {
+      // Ajouter le fichier à selectedFiles
+      selectedFiles = {
+        ...selectedFiles,
+        [fieldName]: { name: file.name, data: reader.result },
       };
-    }
-  }
 
-  function handleFileChange(event, fieldName) {
-    const file = event.target.files[0] || null;
-    updateFormData(fieldName, file);
+      // Stocker dans le localStorage
+      localStorage.setItem("selectedFiles", JSON.stringify(selectedFiles));
+
+      // Mettre à jour les noms de fichiers affichés
+      fileNames = { ...fileNames, [fieldName]: file.name };
+    };
   }
+}
+
+function handleFileChange(event, fieldName) {
+  const file = event.target.files[0] || null;
+  updateFormData(fieldName, file);
+}
+
 
   // 🔹 Fonction pour restaurer le formulaire après un retour
   // Restaurer les données et l'étape depuis localStorage
@@ -334,57 +336,78 @@
 
   // 🔹 Soumission du formulaire
   function submitForm() {
-    if (validateStep()) {
-      let data = new FormData();
+  if (validateStep()) {
+    // Créer un FormData pour les données du formulaire
+    let formDatas = new FormData();
 
-      // Ajout de la référence stockée en local
-      const reference = localStorage.getItem("reference");
-      if (reference) {
-        data.append("reference", reference);
-      }
-
-      // Ajouter les fichiers au FormData
-
-      Object.keys(formData).forEach((key) => {
-        data.append(key, formData[key]);
+        Object.keys(formData).forEach((key) => {
+          formDatas.append(key, formData[key]);
       });
 
-      /*      Object.keys(selectedFiles).forEach((key) => {
-      const fileData = selectedFiles[key];
-      if (fileData.data) {
-        // Convertir le Base64 en Blob pour l'envoi
-        const byteCharacters = atob(fileData.data.split(",")[1]);
-        const byteNumbers = new Array(byteCharacters.length);
-        for (let i = 0; i < byteCharacters.length; i++) {
-          byteNumbers[i] = byteCharacters.charCodeAt(i);
-        }
-        const byteArray = new Uint8Array(byteNumbers);
-        const blob = new Blob([byteArray], { type: "application/octet-stream" });
-
-        data.append(key, blob, fileData.name);
-      }
+    // Ajouter les données de référence stockées en localStorage
+    const reference = localStorage.getItem("reference");
+    if (reference) {
+      formDatas.append("reference", reference);
+    }
+/* 
+    // Ajouter les autres données du formulaire
+    Object.keys(formDataState).forEach((key) => {
+      formData.append(key, formDataState[key]);
     }); */
 
-      console.log(data);
+    // Récupérer les fichiers stockés en localStorage
+    const selectedFilesFromStorage = JSON.parse(localStorage.getItem("selectedFiles"));
 
-      fetch("http://depps.leadagro.net/api/professionnel/create", {
-        method: "POST",
-        body: data
-      })
-        .then((response) => response.json())
-        .then((result) => {
-          if (result.errors && Object.keys(result.errors).length > 0) {
-            console.log(result.errors);
-          } else {
-            window.location.href = "/site/connexion";
-            localStorage.clear();
+    if (selectedFilesFromStorage) {
+      // Ajouter chaque fichier au FormData
+      Object.keys(selectedFilesFromStorage).forEach((fieldName) => {
+        const fileData = selectedFilesFromStorage[fieldName];
+        if (fileData && fileData.data) {
+          // Ajouter chaque fichier en tant que base64 (si tu veux envoyer en base64)
+          // formData.append(fieldName, fileData.data, fileData.name);
+
+          // Si tu veux envoyer le fichier en tant qu'objet Blob, tu peux utiliser cette ligne
+          const byteCharacters = atob(fileData.data.split(',')[1]);
+          const byteArrays = [];
+
+          for (let offset = 0; offset < byteCharacters.length; offset += 512) {
+            const slice = byteCharacters.slice(offset, offset + 512);
+            const byteNumbers = new Array(slice.length);
+            for (let i = 0; i < slice.length; i++) {
+              byteNumbers[i] = slice.charCodeAt(i);
+            }
+            byteArrays.push(new Uint8Array(byteNumbers));
           }
-        })
-        .catch((error) => {
-          console.log("Erreur lors de la soumission du formulaire:", error);
-        });
+
+          const blob = new Blob(byteArrays, { type: "application/octet-stream" });
+          formDatas.append(fieldName, blob, fileData.name);
+        }
+      });
     }
+
+    console.log(selectedFilesFromStorage);
+
+    // Envoi des données au serveur
+    fetch("http://depps.leadagro.net/api/professionnel/create", {
+      method: "POST",
+      body: formDatas,
+    })
+      .then((response) => response.json())
+      .then((result) => {
+        if (result.errors && Object.keys(result.errors).length > 0) {
+          console.log(result.errors);
+        } else {
+          // Rediriger l'utilisateur après une soumission réussie
+          window.location.href = "/site/connexion";
+          localStorage.clear();  // Nettoyer les données du localStorage
+        }
+      })
+      .catch((error) => {
+        console.log("Erreur lors de la soumission du formulaire:", error);
+      });
   }
+}
+
 
   // 🔹 Gestion du paiement
   function clickPaiement() {
@@ -527,6 +550,7 @@
     formData[field] = value;
     localStorage.setItem("formData", JSON.stringify(formData));
   }
+
 </script>
 
 <div
@@ -633,7 +657,6 @@
                       <label class="form_label">Genre *</label>
                       <select
                         on:change={saveFormState}
-                       
                         class="form__input"
                         name=""
                         id=""
@@ -728,11 +751,11 @@
                         </option>
 
                         {#each values.nationate as nationate}
-                        <option
-                        value={nationate.id}
-                        selected={formData.nationate === nationate.id}
-                        >{nationate.libelle}</option
-                      >
+                          <option
+                            value={nationate.id}
+                            selected={formData.nationate === nationate.id}
+                            >{nationate.libelle}</option
+                          >
                         {/each}
                       </select>
 
@@ -1041,8 +1064,7 @@
                       <label class="form_label">Ville *</label>
                       <select
                         on:change={saveFormState}
-                        on:change={(e: any) =>
-                          updateField("ville", e.target.value)}
+                        
                         class="form__input"
                         name=""
                         id=""
@@ -1302,7 +1324,7 @@
                         </button> -->
 
                   <button
-                    type="submit"
+                    type="button"
                     on:click={clickPaiement}
                     class="buton buton--kirmizi bg-green-500"
                   >
@@ -1311,8 +1333,8 @@
                 {/if}
                 {#if isPaiementDone}
                   <button
-                    type="button"
-                    on:click={clickPaiement}
+                     type="submit"
+                    on:click={submitForm}
                     class="buton buton--kirmizi bg-green-500"
                     disabled={!isPaiementDone}
                   >

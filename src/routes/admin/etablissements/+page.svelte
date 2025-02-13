@@ -1,4 +1,5 @@
 <script lang="ts">
+  import Entete from "$components/_includes/Entete.svelte";
   import {
     Button,
     Input,
@@ -11,43 +12,50 @@
   } from "flowbite-svelte";
   import {
     EditOutline,
+    TrashBinSolid,
     EyeOutline,
-    TrashBinSolid
+    LockOpenOutline,
+    LockOutline,
+    CheckCircleOutline
   } from "flowbite-svelte-icons";
-  import Entete from "../../../components/_includes/Entete.svelte";
-  import MessageError from "../../../components/MessageError.svelte";
-  import Pagination from "../../../components/_includes/Pagination.svelte";
-  // Importer le store pageSize
+  import Pagination from "$components/_includes/Pagination.svelte";
+  import { pageSize } from "../../../store";
   import { get } from "svelte/store";
-  import type { Permission, User, MembreEtablissement } from "../../../types";
+  import { onMount, onDestroy } from "svelte";
+  import MessageError from "$components/MessageError.svelte";
+
   import { apiFetch } from "$lib/api";
-  import { pageSize } from "../../../store"; // Importer le store pageSize
-  import { onMount } from "svelte";
-  import { getAuthCookie } from "$lib/auth";
+  import type { EndUser, professionnel } from "../../../types";
+ 
+  import Show from "./Show.svelte";
+  export let data; // Les données retournées par `load()`
+  let user = data.user;
 
-  let user: User;
+  const path: string = "/admin/end-user";
+  const description: string = "Liste des end users freewan";
+  const title: string = "Admin | end users";
+  const subtitle: string = "Liste des end users";
 
-  let main_data: MembreEtablissement[] = [];
-  let searchQuery = ""; // Pour la recherche par texte
-  let selectedService: any = ""; // Pour filtrer par service
-  let selectedStatus: any = ""; // Pour filtrer par status
-  let startDate: any | null = null; // Date de début
-  let endDate: any | null = null; // Date de fin
-  let currentPage = 1;
-  let loading = false;
   let openDelete: boolean = false;
   let openEdit: boolean = false;
   let openAdd: boolean = false;
   let openShow: boolean = false;
   let current_data: any = {};
+  let activeTab = "all"; // Valeur par défaut : "En attente"
 
+  // Données et pagination
+  let currentPage = 1;
+  let main_data: professionnel[] = [];
+  let loading = false;
+  $: searchQuery = "";
+
+  // Fonction pour récupérer les données
   async function fetchData() {
     loading = true; // Active le spinner de chargement
     try {
-      const res = await apiFetch(true, "/user/get/admin");
-      console.log("rrrerere", res);
+      const res = await apiFetch(true, "/etablissement/");
       if (res) {
-        main_data = res.data as MembreEtablissement[];
+        main_data = res.data as professionnel[];
       } else {
         console.error(
           "Erreur lors de la récupération des données:",
@@ -62,21 +70,28 @@
   }
 
   onMount(async () => {
-    await fetchData();
+    fetchData();
   });
 
-  $: filteredData = main_data.filter((item) => {
-    return (
-      item.entrepriseName.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      item.nomComplet.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      item.nomCompletTechnique.toLowerCase().includes(searchQuery.toLowerCase())
-    );
-  });
+  // Liste des onglets avec leur label et couleur
+  const tabs = [
+    { key: "all", label: "Tous" },
+    { key: "attente", label: "En attente" },
+    { key: "accepte", label: "Accepté" },
+    { key: "valide", label: "Validé" },
+    { key: "refuse", label: "Refusé" },
+    { key: "renouvellement", label: "Renouvellement" },
+    { key: "a_jour", label: "À jour" }
+  ];
 
-  // $: totalPages = Math.ceil(filteredData.length / get(pageSize)) pageSize se trouve store.ts;
+  // Filtrage des données selon l'onglet actif
+  // Filtrage des données selon l'onglet actif
+  $: filteredData = main_data.filter((user) =>
+    activeTab === "all" ? true : user.status === activeTab
+  );
+
   $: totalPages = Math.max(1, Math.ceil(filteredData.length / get(pageSize)));
 
-  //$: paginatedProducts = filteredData.slice((currentPage - 1) * get(pageSize), currentPage * get(pageSize));
   $: paginatedProducts =
     filteredData.length > 0
       ? filteredData.slice(
@@ -92,6 +107,11 @@
     currentPage = event.detail;
   }
 
+  function handleTabChange(tab: string) {
+    activeTab = tab;
+    currentPage = 1; // Réinitialiser la pagination lors du changement de tabulation
+  }
+
   $: if (currentPage > totalPages) {
     currentPage = totalPages;
   }
@@ -100,31 +120,55 @@
     currentPage = 1;
   }
 
-  // Fonction pour rafraîchir les données après certaines actions
   async function refreshDataIfNeeded() {
-    await fetchData();
+    fetchData();
   }
 
   // Rafraîchir les données après fermeture des modales
-  $: if (!openAdd || !openEdit || !openDelete) {
+  $: if (!openAdd || !openEdit || !openDelete || !openShow) {
     refreshDataIfNeeded();
   }
 </script>
 
 <Entete
-  libelle="Gestion des membre"
+  libelle=" dossiers acceptés "
   parent="Parametres"
-  descr="Etablissements de santé"
+  descr="Liste des dossiers acceptés"
 />
 <section class="content">
   <div class="row">
     <div class="col-12">
       <div class="box">
         <div class="box-header with-border flex justify-between items-center">
-          <h4 class="box-title text-xl font-medium">Etablissements de santé</h4>
+          <h4 class="box-title text-xl font-medium">
+            Liste des dossiers accepte
+          </h4>
         </div>
         <!-- /.box-header -->
         <div class="box-body">
+          <div class="tabs flex gap-4 pr-0 pb-4">
+            {#each tabs as tab}
+              <button
+                class="tab px-4 py-2 rounded-md transition-colors duration-200
+                          {activeTab === tab.key
+                  ? 'bg-gray-700 text-white'
+                  : 'bg-green-500 text-white'}"
+                on:click={() => handleTabChange(tab.key)}
+              >
+                {tab.label}
+                <span
+                  class="badge rounded-full px-2 py-0.5 text-xs ml-2
+                              {activeTab === tab.key
+                    ? 'bg-gray-700 text-white'
+                    : 'bg-gray-300 text-black'}"
+                >
+                  {main_data.filter(
+                    (user) => tab.key === "all" || user.status === tab.key
+                  ).length}
+                </span>
+              </button>
+            {/each}
+          </div>
           <div class="table-responsive">
             <div class="w-full grid grid-cols-4">
               <div>
@@ -136,13 +180,12 @@
                 />
               </div>
             </div>
+
             <Table class="border border-gray-300">
               <TableHead
                 class="border-y border-gray-200 bg-gray-100 dark:border-gray-700"
               >
-                {#each ["entrepriseName", "emailEntreprise", "nomComplet", "nomCompletTechnique", "emailProTechnique"] as title}
-
-                
+                {#each ["nom", "prénoms", "Téléphone", "email", "type", "statut", "Action"] as title}
                   <TableHeadCell class="ps-4 font-normal border border-gray-300"
                     >{title}</TableHeadCell
                   >
@@ -191,24 +234,77 @@
                   {#each paginatedProducts as item}
                     <TableBodyRow class="text-base border border-gray-300">
                       <TableBodyCell class="p-4 border border-gray-300"
-                        >{item.entrepriseName}</TableBodyCell
+                        >{item.nom}</TableBodyCell
                       >
                       <TableBodyCell class="p-4 border border-gray-300"
-                        >{item.emailEntreprise}</TableBodyCell
+                        >{item.prenoms}</TableBodyCell
                       >
                       <TableBodyCell class="p-4 border border-gray-300"
-                        >{item.nomComplet}</TableBodyCell
+                        >{item.user.phone}</TableBodyCell
                       >
                       <TableBodyCell class="p-4 border border-gray-300"
-                        >{item.nomCompletTechnique}</TableBodyCell
+                        >{item.user.email}</TableBodyCell
                       >
                       <TableBodyCell class="p-4 border border-gray-300"
-                        >{item.emailProTechnique}</TableBodyCell
+                        >{item.user.typeUser}</TableBodyCell
                       >
-                    
+                      <TableBodyCell class="p-4 border border-gray-300"
+                        >{item.status}</TableBodyCell
+                      >
 
-                      <!--  <TableBodyCell class="p-4 border border-gray-300">{item.sous_menu.libelle}</TableBodyCell>
-                                   -->
+                      <TableBodyCell class="p-2 w-8 border border-gray-300">
+                        <div class="relative group">
+                          <!-- Bouton du menu dropdown -->
+                          <button
+                            class="p-1 hover:bg-gray-100 rounded-full transition-colors"
+                          >
+                            <svg
+                              xmlns="http://www.w3.org/2000/svg"
+                              class="h-5 w-5 text-gray-600"
+                              fill="none"
+                              viewBox="0 0 24 24"
+                              stroke="currentColor"
+                            >
+                              <path
+                                stroke-linecap="round"
+                                stroke-linejoin="round"
+                                stroke-width="2"
+                                d="M12 5v.01M12 12v.01M12 19v.01M12 6a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2z"
+                              />
+                            </svg>
+                          </button>
+
+                          <!-- Menu dropdown -->
+                          <div
+                            class="absolute right-0 mt-1 w-32 bg-black border border-gray-200 rounded-md shadow-lg opacity-0 group-hover:opacity-100 transition-opacity duration-150 z-10"
+                          >
+                            <div class="py-1">
+                              <!-- Bouton Voir -->
+                              <button
+                                class="w-full flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-green-800 hover:text-green-800"
+                                on:click={() => (
+                                  (current_data = item), (openShow = true)
+                                )}
+                              >
+                                <EyeOutline size="sm" class="mr-2" />
+                                Voir
+                              </button>
+                            </div>
+                          </div>
+                        </div>
+                      </TableBodyCell>
+
+                      <!-- <Button
+                          color="green"
+                          style="background-color: green"
+                          size="sm"
+                          class="gap-2 px-3 bg-green-800"
+                          on:click={() => (
+                            (current_data = item), (openShow = true)
+                          )}
+                        >
+                          <EyeOutline size="sm" />
+                        </Button> -->
                     </TableBodyRow>
                   {/each}
                 {/if}
@@ -251,6 +347,14 @@
 
 <!-- Modales -->
 
+<Show bind:open={openShow} data={current_data} sizeModal="xl" />
 
 
-
+<style>
+  .tab {
+    @apply px-4 py-2 rounded-lg border border-gray-300 text-gray-700;
+  }
+  .tab-active {
+    @apply text-white border-transparent;
+  }
+</style>

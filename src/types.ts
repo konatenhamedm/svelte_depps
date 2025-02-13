@@ -374,6 +374,21 @@ export interface professionnel {
     typeUser: string;
   };
 }
+export interface Etablissement {
+  nom: string;
+  prenoms: string;
+  phone: string;
+  email: string;
+  type: string;
+  status: string;
+
+  user: {
+    username: string;
+    email: string;
+    phone: string;
+    typeUser: string;
+  };
+}
 export interface EndUser {
   id: string; // Identifiant unique de l'utilisateur
   public_id: string; // Identifiant public
