@@ -19,7 +19,7 @@
   export let data; // Récupérer les données du layout
   let user = data?.user;
 
-  let step = 5;
+  let step = 1;
 
   let formData = {
     // Login informations
@@ -234,15 +234,11 @@
       errors.cvPhysique = formData.cvPhysique ? "" : "Le CV est requis";
       errors.dfePhysique = formData.dfePhysique ? "" : "Le DFE est requis";
 
-      valid = Object.values(errors).every((e) => e === "");
+      valid = true;
     }
 
     if (step === 6) {
-      errors.inscriptionProfessionId = formData.inscriptionProfessionId
-        ? ""
-        : "L'inscription à la profession est requise";
-
-      valid = Object.values(errors).every((e) => e === "");
+      valid = true;
     }
 
     return valid;
@@ -370,7 +366,7 @@
 
       console.log(data);
 
-      fetch("http://depps.leadagro.net/api/professionnel/create", {
+      fetch("http://depps.leadagro.net/api/etablissement/create", {
         method: "POST",
         body: data,
       })
@@ -1130,6 +1126,59 @@
                 </div>
               </div>
             {/if}
+  <!-- Étape 6 : Paiement -->
+  {#if step === 6}
+  <h2 class="h2-baslik-anasayfa-ozel h-yazi-margin-kucuk">
+    VEUILLEZ PROCéDER AU PAIEMENT
+  </h2>
+  <div class="tablo">
+    <div class="tablo--1h-ve-2">
+      <!--   on:click={clickPaiement} -->
+      <div class="grid grid-cols-1 gap-20 flex justify-center">
+        <div class="">
+          {#if !isPaiementDone}
+            <p>
+              Veillez vous rendre sur le site de votre banque et
+              effectuer le paiement.
+            </p>
+            <br />
+
+           <!--  <button
+              id="reloadPaiementLsssink"
+              class="px-6 py-3 bg-green-500 text-white font-medium rounded-lg shadow-lg hover:bg-green-500 transition duration-300"
+              on:click={clickPaiement}
+            >
+              Effectuer le paiement
+            </button> -->
+          {/if}
+          {#if isPaiementDone}
+            <p>
+              Veillez finaliser votre inscription en cliquant sur le
+              bouton ci-dessous.
+            </p>
+            <br />
+           <!--  <button
+              type="button"
+              id="r"
+              class="px-6 py-3 bg-green-500 text-white font-medium rounded-lg shadow-lg hover:bg-green-500 transition duration-300"
+              on:click={submitForm}
+              disabled={!isPaiementDone}
+            >
+              Finaliser l'inscription
+            </button> -->
+          {/if}
+
+          <br />
+          <!--  <p>
+                Une fois le paiement effectué, veuillez renseigner
+                l'identifiant de la transaction pour valider votre
+                inscription.
+              </p> -->
+        </div>
+      </div>
+    </div>
+  </div>
+{/if}
 
             <!-- Boutons de navigation -->
             <div class="form__grup">
@@ -1141,28 +1190,62 @@
                 >
               {/if}
 
-              {#if step < 5}
+              {#if step < 6}
                 <button
                   type="button"
                   class="buton buton--kirmizi"
-                  on:click={nextStep}>SUIVANT →</button
+                  on:click={() => nextStep()}>SUIVANTyyy →</button
                 >
-              {:else if step === 4}
+              {:else if step === 6}
                 <button
                   type="button"
                   class="buton buton--kirmizi"
                   on:click={nextStep}>SUIVANT →</button
                 >
               {:else}
+
+              {#if !isPaiementDone}
+                        
+                        <!-- <button
+                          id="reloadPaiementLsssink"
+                          class="px-6 py-3 bg-green-500 text-white font-medium rounded-lg shadow-lg hover:bg-green-500 transition duration-300"
+                          on:click={clickPaiement}
+                        >
+                          Effectuer le paiement
+                        </button> -->
+
+                        <button
+                        type="submit"
+                        on:click={clickPaiement}
+                        class="buton buton--kirmizi bg-green-500 "
+                       
+                      >
+                      Effectuer le paiement
+                      </button>
+                      {/if}
+                      {#if isPaiementDone}
+                       
+                      <button
+                        type="button"
+                        on:click={clickPaiement}
+                        class="buton buton--kirmizi bg-green-500 "
+                        disabled={!isPaiementDone}
+                      >
+                      Finaliser l'inscription
+                      </button>
+                      
+                      {/if}
+
+
                 <!-- disabled={!isPaiementDone} -->
-                <button
-                  type="submit"
-                  on:click={submitForm}
-                  class="buton buton--kirmizi"
-                  disabled={!isPaiementDone}
-                >
-                  VALIDER
-                </button>
+                <!--   <button
+                    type="submit"
+                    on:click={submitForm}
+                    class="buton buton--kirmizi"
+                    disabled={!isPaiementDone}
+                  >
+                    VALIDER
+                  </button> -->
               {/if}
 
               <br />
