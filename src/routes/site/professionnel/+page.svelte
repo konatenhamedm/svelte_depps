@@ -303,7 +303,7 @@ function handleFileChange(event, fieldName) {
     }
   }
 
-  // ✅ Vérifier si on revient après un paiement
+  // ✅ Vérifier si on revient après un paiements
   onMount(() => {
     /*  localStorage.clear(); */
 
@@ -409,7 +409,7 @@ function handleFileChange(event, fieldName) {
 }
 
 
-  // 🔹 Gestion du paiement
+  // 🔹 Gestion du paiements
   function clickPaiement() {
     isPaiementProcessing = true;
     saveFormState(); // 🔥 Sauvegarder avant de partir
@@ -437,7 +437,7 @@ function handleFileChange(event, fieldName) {
         }
       })
       .catch((error) => {
-        console.error("Erreur paiement :", error);
+        console.error("Erreur paiements :", error);
         isPaiementProcessing = false;
       });
   }
@@ -1259,7 +1259,7 @@ function handleFileChange(event, fieldName) {
                           class="px-6 py-3 bg-green-500 text-white font-medium rounded-lg shadow-lg hover:bg-green-500 transition duration-300"
                           on:click={clickPaiement}
                         >
-                          Effectuer le paiement
+                          Effectuer le paiements
                         </button> -->
                       {/if}
                       {#if isPaiementDone}
@@ -1281,7 +1281,7 @@ function handleFileChange(event, fieldName) {
 
                       <br />
                       <!--  <p>
-                            Une fois le paiement effectué, veuillez renseigner
+                            Une fois le paiements effectué, veuillez renseigner
                             l'identifiant de la transaction pour valider votre
                             inscription.
                           </p> -->
@@ -1320,7 +1320,7 @@ function handleFileChange(event, fieldName) {
                           class="px-6 py-3 bg-green-500 text-white font-medium rounded-lg shadow-lg hover:bg-green-500 transition duration-300"
                           on:click={clickPaiement}
                         >
-                          Effectuer le paiement
+                          Effectuer le paiements
                         </button> -->
 
                   <button

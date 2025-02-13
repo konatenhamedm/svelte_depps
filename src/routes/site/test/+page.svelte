@@ -224,7 +224,7 @@ function validateStep() {
     }
   }
 
-  // ✅ Vérifier si on revient après un paiement
+  // ✅ Vérifier si on revient après un paiements
   onMount(() => {
     const urlParams = new URLSearchParams(window.location.search);
     if (urlParams.has("return")) {
@@ -316,7 +316,7 @@ function validateStep() {
 }
 
 
-  // 🔹 Gestion du paiement
+  // 🔹 Gestion du paiements
   function clickPaiement() {
     isPaiementProcessing = true;
     saveFormState(); // 🔥 Sauvegarder avant de partir
@@ -345,7 +345,7 @@ function validateStep() {
         }
       })
       .catch((error) => {
-        console.error("Erreur paiement :", error);
+        console.error("Erreur paiements :", error);
         isPaiementProcessing = false;
       });
   }

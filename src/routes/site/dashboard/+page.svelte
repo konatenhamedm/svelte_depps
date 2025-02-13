@@ -24,8 +24,8 @@
     { icon: 'fas fa-folder-open', text: 'Mise à jour du dossier', link: 'profil' },
     { icon: 'fas fa-bell', text: 'Alertes', link: 'profil' },
     { icon: 'fas fa-comments', text: 'MyDEPPS chat', link: 'chatbox' },
-    { icon: 'fas fa-book', text: 'Guide utilisateur', link: 'Guide utilisateur' },
-    { icon: 'fas fa-file-pdf', text: "Guide utilisateur (PDF)", link: "guide-utilisateur" },
+    { icon: 'fas fa-book', text: 'profil', link: 'profil' },
+    { icon: 'fas fa-file-pdf', text: "Guide utilisateur (PDF)", link: "/_files/GUIDE-D'UTILISATION.pdf" },
     { icon: 'fas fa-users', text: 'Forum', link: 'Forum' }
   ];
 </script>
@@ -200,7 +200,7 @@
         <br />
         <!-- <div class="alert alert-danger" style="font-size:18px">
           Bienvenue! Veuillez payer votre adhésion pour activer votre compte! <b
-            ><u><a href="paiement" style="color:#58151c">Cliquez ici</a></u></b
+            ><u><a href="paiements" style="color:#58151c">Cliquez ici</a></u></b
           >
         </div> -->
         <!-- <div class="alert alert-info" style="font-size:18px">
