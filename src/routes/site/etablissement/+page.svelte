@@ -422,6 +422,7 @@ function handleFileChange(event, fieldName) {
     data.append("prenoms", formData.natureEntreprise);
     data.append("email", formData.email);
     data.append("numero", formData.contactEntreprise);
+    data.append("type", "etablissement");
 
     fetch("https://depps.leadagro.net/api/paiement/paiement", {
       method: "POST",
