@@ -59,6 +59,63 @@ export interface Civilite {
   libelle: string;
 }
 
+export interface Etablissement {
+  id: number;
+  typePersonne: {
+    id: number;
+    libelle: string;
+  };
+  genre: {
+    id: number;
+    libelle: string;
+  };
+  photo: {
+    path: string;
+    alt: string;
+    url: string;
+  };
+  cni: {
+    path: string;
+    alt: string;
+    url: string;
+  } | null;
+  diplomeFile: {
+    path: string;
+    alt: string;
+    url: string;
+  };
+  cv: {
+    path: string;
+    alt: string;
+    url: string;
+  } | null;
+  dfe: {
+    path: string;
+    alt: string;
+    url: string;
+  } | null;
+  ordreNational: {
+    path: string;
+    alt: string;
+    url: string;
+  } | null;
+  nomEntreprise: string;
+  natureEntreprise: string;
+  typeEntreprise: string;
+  contactEntreprise: string;
+  nomCompletTechnique: string;
+  appartenirOrganisation: string;
+  status: string;
+  reason: string;
+  user: {
+    id: number;
+    username: string;
+    email: string;
+    typeUser: string;
+  };
+}
+
+
 export interface Genre {
   id: string;
   libelle: string;

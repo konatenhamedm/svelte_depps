@@ -30,6 +30,8 @@
   import Edit from "./Edit.svelte";
   import Show from "./Show.svelte";
   import Delete from "./Delete.svelte";
+  import DropdownMenu from "$components/DropdownMenu.svelte";
+  import DropdownMenuShow from "$components/DropdownMenuShow.svelte";
   export let data; // Les données retournées par `load()`
   let user = data.user;
   
@@ -138,7 +140,16 @@
     }
 
 
-
+    const handleAction = (action: any, item: any) => {
+    current_data = item;
+    if (action === "view") {
+      openShow = true;
+    } else if (action === "edit") {
+      openEdit = false;
+    } else if (action === "delete") {
+      openDelete = false;
+    }
+  };
 
   
   
@@ -265,31 +276,9 @@
                           
 
                           <TableBodyCell class="p-2 w-8 border border-gray-300">
-  <div class="relative group">
-    <!-- Bouton du menu dropdown -->
-    <button class="p-1 hover:bg-gray-100 rounded-full transition-colors">
-      <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 5v.01M12 12v.01M12 19v.01M12 6a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2z" />
-      </svg>
-    </button>
+                            <DropdownMenuShow {item} onAction={handleAction} />
 
-    <!-- Menu dropdown -->
-    <div class="absolute right-0 mt-1 w-32 bg-black border border-gray-200 rounded-md shadow-lg opacity-0 group-hover:opacity-100 transition-opacity duration-150 z-10">
-      <div class="py-1">
-        <!-- Bouton Voir -->
-        <button 
-          class="w-full flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-green-800 hover:text-green-800"
-          on:click={() => (current_data = item, openShow = true)}
-        >
-          <EyeOutline size="sm" class="mr-2" />
-          Voir
-        </button>
-        
-        
-      </div>
-    </div>
-  </div>
-</TableBodyCell>
+                          </TableBodyCell>
   
                           <!-- <Button
                             color="green"

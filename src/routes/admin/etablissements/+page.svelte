@@ -25,9 +25,11 @@
   import MessageError from "$components/MessageError.svelte";
 
   import { apiFetch } from "$lib/api";
-  import type { EndUser, professionnel } from "../../../types";
+  import type { EndUser, Etablissement, professionnel } from "../../../types";
  
   import Show from "./Show.svelte";
+  import DropdownMenu from "$components/DropdownMenu.svelte";
+  import DropdownMenuShow from "$components/DropdownMenuShow.svelte";
   export let data; // Les données retournées par `load()`
   let user = data.user;
 
@@ -45,7 +47,7 @@
 
   // Données et pagination
   let currentPage = 1;
-  let main_data: professionnel[] = [];
+  let main_data: Etablissement[] = [];
   let loading = false;
   $: searchQuery = "";
 
@@ -55,7 +57,7 @@
     try {
       const res = await apiFetch(true, "/etablissement/");
       if (res) {
-        main_data = res.data as professionnel[];
+        main_data = res.data as Etablissement[];
       } else {
         console.error(
           "Erreur lors de la récupération des données:",
@@ -128,6 +130,16 @@
   $: if (!openAdd || !openEdit || !openDelete || !openShow) {
     refreshDataIfNeeded();
   }
+  const handleAction = (action: any, data: any) => {
+    current_data = data;
+    if (action === "view") {
+      openShow = true;
+    } else if (action === "edit") {
+      openEdit = false;
+    } else if (action === "delete") {
+      openDelete = false;
+    }
+  };
 </script>
 
 <Entete
@@ -185,7 +197,7 @@
               <TableHead
                 class="border-y border-gray-200 bg-gray-100 dark:border-gray-700"
               >
-                {#each ["nom", "prénoms", "Téléphone", "email", "type", "statut", "Action"] as title}
+                {#each ["Nom entreprise", "Nature entreprise", "Contact", "email", "Nom technicien",  "Action"] as title}
                   <TableHeadCell class="ps-4 font-normal border border-gray-300"
                     >{title}</TableHeadCell
                   >
@@ -234,64 +246,25 @@
                   {#each paginatedProducts as item}
                     <TableBodyRow class="text-base border border-gray-300">
                       <TableBodyCell class="p-4 border border-gray-300"
-                        >{item.nom}</TableBodyCell
+                        >{item.nomEntreprise}</TableBodyCell
                       >
                       <TableBodyCell class="p-4 border border-gray-300"
-                        >{item.prenoms}</TableBodyCell
+                        >{item.natureEntreprise}</TableBodyCell
                       >
                       <TableBodyCell class="p-4 border border-gray-300"
-                        >{item.user.phone}</TableBodyCell
+                        >{item.contactEntreprise}</TableBodyCell
                       >
                       <TableBodyCell class="p-4 border border-gray-300"
                         >{item.user.email}</TableBodyCell
                       >
                       <TableBodyCell class="p-4 border border-gray-300"
-                        >{item.user.typeUser}</TableBodyCell
+                        >{item.nomCompletTechnique}</TableBodyCell
                       >
-                      <TableBodyCell class="p-4 border border-gray-300"
-                        >{item.status}</TableBodyCell
-                      >
+                      
 
                       <TableBodyCell class="p-2 w-8 border border-gray-300">
-                        <div class="relative group">
-                          <!-- Bouton du menu dropdown -->
-                          <button
-                            class="p-1 hover:bg-gray-100 rounded-full transition-colors"
-                          >
-                            <svg
-                              xmlns="http://www.w3.org/2000/svg"
-                              class="h-5 w-5 text-gray-600"
-                              fill="none"
-                              viewBox="0 0 24 24"
-                              stroke="currentColor"
-                            >
-                              <path
-                                stroke-linecap="round"
-                                stroke-linejoin="round"
-                                stroke-width="2"
-                                d="M12 5v.01M12 12v.01M12 19v.01M12 6a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2z"
-                              />
-                            </svg>
-                          </button>
+                        <DropdownMenuShow {item} onAction={handleAction} />
 
-                          <!-- Menu dropdown -->
-                          <div
-                            class="absolute right-0 mt-1 w-32 bg-black border border-gray-200 rounded-md shadow-lg opacity-0 group-hover:opacity-100 transition-opacity duration-150 z-10"
-                          >
-                            <div class="py-1">
-                              <!-- Bouton Voir -->
-                              <button
-                                class="w-full flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-green-800 hover:text-green-800"
-                                on:click={() => (
-                                  (current_data = item), (openShow = true)
-                                )}
-                              >
-                                <EyeOutline size="sm" class="mr-2" />
-                                Voir
-                              </button>
-                            </div>
-                          </div>
-                        </div>
                       </TableBodyCell>
 
                       <!-- <Button

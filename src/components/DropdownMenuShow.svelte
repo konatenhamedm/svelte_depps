@@ -58,16 +58,7 @@
         on:click={() => onAction('view', item)}>
         <EyeOutline size="sm" class="mr-2" /> Voir
       </button>
-      
-      <button class="menu-item hover:bg-blue-100 hover:text-blue-800"
-        on:click={() => onAction('edit', item)}>
-        <EditOutline size="sm" class="mr-2" /> Modifier
-      </button>
-      
-      <button class="menu-item hover:bg-red-100 hover:text-red-800"
-        on:click={() => onAction('delete', item)}>
-        <TrashBinSolid size="sm" class="mr-2" /> Supprimer
-      </button>
+     
     </div>
   {/if}
 </div>

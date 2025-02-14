@@ -43,6 +43,7 @@
 				 <li><a href="/admin/genre"><i class="icon-Commit"><span class="path1"></span><span class="path2"></span></i>Genres</a></li>         
 				 <li><a href="/admin/specialite"><i class="icon-Commit"><span class="path1"></span><span class="path2"></span></i>Spécialités</a></li>         
 				 <li><a href="/admin/ville"><i class="icon-Commit"><span class="path1"></span><span class="path2"></span></i>Villes</a></li>         
+				 <li><a href="/admin/destinataire"><i class="icon-Commit"><span class="path1"></span><span class="path2"></span></i>Destinataires</a></li>         
 				</ul>
 			</li>
 
