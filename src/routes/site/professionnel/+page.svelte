@@ -417,7 +417,7 @@ function handleFileChange(event, fieldName) {
     initPaiement();
   }
 
-  function initPaiement() {
+  function initPaiement() { 
     let data = new FormData();
     data.append("nom", formData.nom);
     data.append("prenoms", formData.prenoms);

@@ -485,6 +485,7 @@ function handleFileChange(event, fieldName) {
     { name: "genre", url: "/genre" },
     { name: "nationate", url: "/pays" },
     { name: "specialite", url: "/specialite" },
+    { name: "typePersonne", url: "/typePersonne" },
     { name: "ville", url: "/ville" },
   ];
 
@@ -493,8 +494,9 @@ function handleFileChange(event, fieldName) {
     civilite: Civilite[];
     nationate: Pays[];
     specialite: Specialite[];
+    typePersonne: Pays[];
     ville: Ville[];
-  } = { genre: [], civilite: [], nationate: [], specialite: [], ville: [] };
+  } = { genre: [], civilite: [], nationate: [], specialite: [], ville: [],typePersonne: [] };
 
   async function fetchData() {
     try {
@@ -657,6 +659,31 @@ function handleFileChange(event, fieldName) {
                       <label class="form_label">Personne Physique *</label>
                       <select
                         on:change={saveFormState}
+                        class="form__input"
+                        name=""
+                        id=""
+                        bind:value={formData.typePersonne}
+                      >
+                        <option value="" selected={!formData.typePersonne}
+                          >Veuillez sélectionner une option</option
+                        >
+                        {#each values.typePersonne as typePersonne}
+                          <option
+                            value={typePersonne.id}
+                            selected={formData.typePersonne === typePersonne.id}
+                            >{typePersonne.libelle}</option
+                          >
+                        {/each}
+                      </select>
+                      {#if errors.genre}<p class="error">
+                          {errors.genre}
+                        </p>{/if}
+                    </div>
+
+                    <!-- <div class="form__grup">
+                      <label class="form_label">Personne Physique *</label>
+                      <select
+                        on:change={saveFormState}
                      
                         class="form__input"
                         name=""
@@ -681,7 +708,7 @@ function handleFileChange(event, fieldName) {
                       {#if errors.typePersonne}<p class="error">
                           {errors.typePersonne}
                         </p>{/if}
-                    </div>
+                    </div> -->
 
 
                     <!-- Champ Type -->
