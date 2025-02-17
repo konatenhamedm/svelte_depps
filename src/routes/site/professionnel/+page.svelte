@@ -13,6 +13,7 @@
     Ville
   } from "../../../types.js";
   import { getProfessions } from "$lib/constants";
+  import Spinner from "$components/_skeletons/Spinner.svelte";
 
   const professions = getProfessions();
 
@@ -258,31 +259,30 @@
   let selectedFiles = {};
 
   function updateFormData(fieldName, file) {
-  if (file) {
-    // Lire le fichier en Base64 pour le stocker dans localStorage
-    const reader = new FileReader();
-    reader.readAsDataURL(file);
-    reader.onload = () => {
-      // Ajouter le fichier à selectedFiles
-      selectedFiles = {
-        ...selectedFiles,
-        [fieldName]: { name: file.name, data: reader.result },
+    if (file) {
+      // Lire le fichier en Base64 pour le stocker dans localStorage
+      const reader = new FileReader();
+      reader.readAsDataURL(file);
+      reader.onload = () => {
+        // Ajouter le fichier à selectedFiles
+        selectedFiles = {
+          ...selectedFiles,
+          [fieldName]: { name: file.name, data: reader.result }
+        };
+
+        // Stocker dans le localStorage
+        localStorage.setItem("selectedFiles", JSON.stringify(selectedFiles));
+
+        // Mettre à jour les noms de fichiers affichés
+        fileNames = { ...fileNames, [fieldName]: file.name };
       };
-
-      // Stocker dans le localStorage
-      localStorage.setItem("selectedFiles", JSON.stringify(selectedFiles));
-
-      // Mettre à jour les noms de fichiers affichés
-      fileNames = { ...fileNames, [fieldName]: file.name };
-    };
+    }
   }
-}
 
-function handleFileChange(event, fieldName) {
-  const file = event.target.files[0] || null;
-  updateFormData(fieldName, file);
-}
-
+  function handleFileChange(event, fieldName) {
+    const file = event.target.files[0] || null;
+    updateFormData(fieldName, file);
+  }
 
   // 🔹 Fonction pour restaurer le formulaire après un retour
   // Restaurer les données et l'étape depuis localStorage
@@ -334,80 +334,91 @@ function handleFileChange(event, fieldName) {
     }
   }
 
+  let authenticating_submit = false;
+
   // 🔹 Soumission du formulaire
   function submitForm() {
-  if (validateStep()) {
-    // Créer un FormData pour les données du formulaire
-    let formDatas = new FormData();
+    if (validateStep()) {
+      // Créer un FormData pour les données du formulaire
+      let formDatas = new FormData();
 
-        Object.keys(formData).forEach((key) => {
-          formDatas.append(key, formData[key]);
+      Object.keys(formData).forEach((key) => {
+        formDatas.append(key, formData[key]);
       });
 
-    // Ajouter les données de référence stockées en localStorage
-    const reference = localStorage.getItem("reference");
-    if (reference) {
-      formDatas.append("reference", reference);
-    }
-/* 
+      // Ajouter les données de référence stockées en localStorage
+      const reference = localStorage.getItem("reference");
+      if (reference) {
+        formDatas.append("reference", reference);
+      }
+      /* 
     // Ajouter les autres données du formulaire
     Object.keys(formDataState).forEach((key) => {
       formData.append(key, formDataState[key]);
     }); */
 
-    // Récupérer les fichiers stockés en localStorage
-    const selectedFilesFromStorage = JSON.parse(localStorage.getItem("selectedFiles"));
+      // Récupérer les fichiers stockés en localStorage
+      const selectedFilesFromStorage = JSON.parse(
+        localStorage.getItem("selectedFiles")
+      );
 
-    if (selectedFilesFromStorage) {
-      // Ajouter chaque fichier au FormData
-      Object.keys(selectedFilesFromStorage).forEach((fieldName) => {
-        const fileData = selectedFilesFromStorage[fieldName];
-        if (fileData && fileData.data) {
-          // Ajouter chaque fichier en tant que base64 (si tu veux envoyer en base64)
-          // formData.append(fieldName, fileData.data, fileData.name);
+      if (selectedFilesFromStorage) {
+        // Ajouter chaque fichier au FormData
+        Object.keys(selectedFilesFromStorage).forEach((fieldName) => {
+          const fileData = selectedFilesFromStorage[fieldName];
+          if (fileData && fileData.data) {
+            // Ajouter chaque fichier en tant que base64 (si tu veux envoyer en base64)
+            // formData.append(fieldName, fileData.data, fileData.name);
 
-          // Si tu veux envoyer le fichier en tant qu'objet Blob, tu peux utiliser cette ligne
-          const byteCharacters = atob(fileData.data.split(',')[1]);
-          const byteArrays = [];
+            // Si tu veux envoyer le fichier en tant qu'objet Blob, tu peux utiliser cette ligne
+            const byteCharacters = atob(fileData.data.split(",")[1]);
+            const byteArrays = [];
 
-          for (let offset = 0; offset < byteCharacters.length; offset += 512) {
-            const slice = byteCharacters.slice(offset, offset + 512);
-            const byteNumbers = new Array(slice.length);
-            for (let i = 0; i < slice.length; i++) {
-              byteNumbers[i] = slice.charCodeAt(i);
+            for (
+              let offset = 0;
+              offset < byteCharacters.length;
+              offset += 512
+            ) {
+              const slice = byteCharacters.slice(offset, offset + 512);
+              const byteNumbers = new Array(slice.length);
+              for (let i = 0; i < slice.length; i++) {
+                byteNumbers[i] = slice.charCodeAt(i);
+              }
+              byteArrays.push(new Uint8Array(byteNumbers));
             }
-            byteArrays.push(new Uint8Array(byteNumbers));
+
+            const blob = new Blob(byteArrays, {
+              type: "application/octet-stream"
+            });
+            formDatas.append(fieldName, blob, fileData.name);
           }
+        });
+      }
 
-          const blob = new Blob(byteArrays, { type: "application/octet-stream" });
-          formDatas.append(fieldName, blob, fileData.name);
-        }
-      });
-    }
+      console.log(selectedFilesFromStorage);
 
-    console.log(selectedFilesFromStorage);
-
-    // Envoi des données au serveur
-    fetch("http://depps.leadagro.net/api/professionnel/create", {
-      method: "POST",
-      body: formDatas,
-    })
-      .then((response) => response.json())
-      .then((result) => {
-        if (result.errors && Object.keys(result.errors).length > 0) {
-          console.log(result.errors);
-        } else {
-          // Rediriger l'utilisateur après une soumission réussie
-          window.location.href = "/site/connexion";
-          localStorage.clear();  // Nettoyer les données du localStorage
-        }
+      authenticating_submit = true;
+      // Envoi des données au serveur
+      fetch("http://depps.leadagro.net/api/professionnel/create", {
+        method: "POST",
+        body: formDatas
       })
-      .catch((error) => {
-        console.log("Erreur lors de la soumission du formulaire:", error);
-      });
+        .then((response) => response.json())
+        .then((result) => {
+          if (result.errors && Object.keys(result.errors).length > 0) {
+            console.log(result.errors);
+          } else {
+            // Rediriger l'utilisateur après une soumission réussie
+            window.location.href = "/site/connexion";
+            localStorage.clear(); // Nettoyer les données du localStorage
+          }
+        })
+        .catch((error) => {
+          console.log("Erreur lors de la soumission du formulaire:", error);
+          authenticating_submit = false;
+        });
+    }
   }
-}
-
 
   // 🔹 Gestion du paiements
   function clickPaiement() {
@@ -416,15 +427,15 @@ function handleFileChange(event, fieldName) {
 
     initPaiement();
   }
-
-  function initPaiement() { 
+  let authenticating = false;
+  function initPaiement() {
     let data = new FormData();
     data.append("nom", formData.nom);
     data.append("prenoms", formData.prenoms);
     data.append("email", formData.email);
     data.append("numero", formData.numero);
     data.append("type", "professionnel");
-
+    authenticating = true;
 
     fetch("https://depps.leadagro.net/api/paiement/paiement", {
       method: "POST",
@@ -441,6 +452,7 @@ function handleFileChange(event, fieldName) {
       .catch((error) => {
         console.error("Erreur paiements :", error);
         isPaiementProcessing = false;
+        let authenticating = false;
       });
   }
 
@@ -552,7 +564,6 @@ function handleFileChange(event, fieldName) {
     formData[field] = value;
     localStorage.setItem("formData", JSON.stringify(formData));
   }
-
 </script>
 
 <div
@@ -1066,7 +1077,6 @@ function handleFileChange(event, fieldName) {
                       <label class="form_label">Ville *</label>
                       <select
                         on:change={saveFormState}
-                        
                         class="form__input"
                         name=""
                         id=""
@@ -1297,6 +1307,7 @@ function handleFileChange(event, fieldName) {
             <div class="form__grup">
               {#if step > 1}
                 <button
+                  disabled={authenticating == true || authenticating_submit == true}
                   type="button"
                   class="buton buton--kirmizi"
                   on:click={prevStep}>← RETOUR</button
@@ -1317,32 +1328,43 @@ function handleFileChange(event, fieldName) {
                 >
               {:else}
                 {#if !isPaiementDone}
-                  <!-- <button
-                          id="reloadPaiementLsssink"
-                          class="px-6 py-3 bg-green-500 text-white font-medium rounded-lg shadow-lg hover:bg-green-500 transition duration-300"
-                          on:click={clickPaiement}
-                        >
-                          Effectuer le paiements
-                        </button> -->
-
                   <button
                     type="button"
                     on:click={clickPaiement}
                     class="buton buton--kirmizi bg-green-500"
                   >
+                    {#if authenticating}
+                      <div class="grid grid-cols-2">
+                        <div>
+                          <Spinner />
+                        </div>
+                        <div>Effectuer le paiement</div>
+                      </div>
+                    {:else}
                     Effectuer le paiement
+                    {/if}
                   </button>
                 {/if}
                 {#if isPaiementDone}
-                  <button
-                     type="submit"
+
+                <button
+                    type="submit"
                     on:click={submitForm}
                     class="buton buton--kirmizi bg-green-500"
-                    disabled={!isPaiementDone}
                   >
+                    {#if authenticating_submit }
+                      <div class="grid grid-cols-2">
+                        <div>
+                          <Spinner />
+                        </div>
+                        <div>Finaliser l'inscription</div>
+                      </div>
+                    {:else}
                     Finaliser l'inscription
+                    {/if}
                   </button>
                 {/if}
+              
 
                 <!-- disabled={!isPaiementDone} -->
                 <!--   <button

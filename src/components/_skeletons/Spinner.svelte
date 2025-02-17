@@ -38,8 +38,8 @@
 
 .dot-spinner__dot::before {
   content: '';
-  height: 20%;
-  width: 20%;
+  height: 15%;
+  width: 15%;
   border-radius: 50%;
   background-color: var(--uib-color);
   transform: scale(0);
