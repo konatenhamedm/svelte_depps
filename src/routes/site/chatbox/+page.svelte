@@ -1,17 +1,36 @@
 <script lang="ts">
     import Footer from "$components/Footer.svelte";
     import Slide from "$components/Slide.svelte";
+    import { apiFetch } from "$lib/api";
+    import { onMount } from "svelte";
 
     export let data;
     let user = data?.user;
 
-    let users = [
-        { id: 1, name: "Alice" },
-        { id: 2, name: "Bob" },
-        { id: 3, name: "Charlie" }
-    ];
+    let users: any = [];
+    let loading = true;
 
-    let selectedUser : any = null;
+
+    async function getUsers() {
+        try {
+            const data = await apiFetch(true, "/user");
+            users = data.data.map((p) => ({
+                id: p.id,
+                username: p.username,
+            }));
+            console.log("data returned", users);
+        } catch (error) {
+            console.error("Erreur lors de la récupération des usernames:", error);
+        } finally {
+            loading = false;
+        }
+    }
+
+    onMount(() => {
+        getUsers();
+    });
+
+    let selectedUser: any = null;
 
     interface Message {
         sender: string;
@@ -20,31 +39,73 @@
 
     let messages: Message[] = [];
 
-    function selectUser(userCurente: any) {
-        selectedUser = userCurente;
-        messages = [
-            { sender: 'Alice', text: "Bonjour, comment ça va ?" },
-            { sender: 'Vous', text: "Ça va bien, merci ! Et toi ?" },
-            { sender: 'Alice', text: "Je vais bien, merci !" },
-        ];
-        setTimeout(scrollToBottom, 50);
+    async function getMessages(sender: string, receiver: string) {
+        try {
+            const data = await apiFetch(true, `/message/get/all/${sender}/${receiver}`);
+            if (data.data) {  // Vérification que data.data existe
+                messages = data.data.map((msg: any) => {
+                    const isSentByCurrentUser = msg.sender.id === user.id;
+
+                    return {
+                        sender: isSentByCurrentUser ? 'Vous' : msg.sender.username,
+                        text: msg.message,
+                    };
+                });
+                console.log("Messages après mapping:", messages);
+                setTimeout(scrollToBottom, 50);
+            }
+        } catch (error) {
+            console.error("Erreur lors de la récupération des messages:", error);
+        }
+    }
+
+    function selectUser(userCurrent: any) {
+        selectedUser = userCurrent;
+        messages = [];
+        if (user?.id && selectedUser.id) {
+            getMessages(user.id, selectedUser.id);
+        }
     }
 
     let newMessage = '';
 
-    function sendMessage() {
+    async function sendMessage() {
         if (newMessage.trim() !== '') {
-            messages = [...messages, { sender: 'Vous', text: newMessage }];
+            const messageToSend = newMessage;
+
+            // Ajout immédiat du message à l'interface
+            messages = [...messages, { sender: 'Vous', text: messageToSend }];
             newMessage = '';
             setTimeout(scrollToBottom, 50);
+
+            let data = {
+                sender: user?.id,
+                receiver: selectedUser?.id,
+                message: messageToSend,
+                userUpdate: selectedUser?.id
+            };
+
+            console.log("Message envoyé - données:", data);
+
+            try {
+                const response = await apiFetch(true, "/message/create", "POST", data);
+                console.log("Réponse du serveur après envoi:", response);
+            } catch (error) {
+                console.error("Erreur lors de l'envoi du message:", error);
+                // En cas d'erreur, on pourrait vouloir retirer le message de l'interface
+                messages = messages.slice(0, -1);
+            }
         }
     }
+
+
 
     function scrollToBottom() {
         const chatContainer = document.getElementById('chat-container');
         chatContainer.scrollTop = chatContainer.scrollHeight;
     }
 </script>
+
 
 <div id="chatbox">
     <Slide user={user} />
@@ -57,7 +118,7 @@
                 <ul>
                     {#each users as user}
                         <li>
-                            <button class="bg-gradient-to-r from-gradient-start to-gradient-end" on:click={() => selectUser(user)}>{user.name}</button>
+                            <button class="bg-gradient-to-r from-gradient-start to-gradient-end" on:click={() => selectUser(user)}>{user.username}</button>
                         </li>
                     {/each}
                 </ul>
@@ -67,11 +128,11 @@
             <div class="messages-container">
                 {#if selectedUser}
                     <div class="chat-container" id="chat-container">
-                        <h3>Conversation avec {selectedUser.name}</h3>
+                        <h3>Conversation avec {selectedUser.username}</h3>
                         <div class="messages">
                             {#each messages as message}
-                                <div class="message" class:sent={message.sender === 'Vous'}>
-                                    <div class="message-text ">{message.text}</div>
+                                <div class="message" class:sent={message.sender === 'Vous'} class:received={message.sender !== 'Vous'}>
+                                    <div class="message-text">{message.text}</div>
                                 </div>
                             {/each}
                         </div>
@@ -119,7 +180,9 @@
         padding: 20px;
         height: 90vh;
         box-sizing: border-box;
+        overflow-y: auto; /* Active le scroll vertical */
     }
+
 
     .user-list h2 {
         font-size: 1.5rem;
@@ -142,14 +205,7 @@
         background-color: #ddd;
     }
 
-    .messages-container {
-        width: 70%;
-        display: flex;
-        flex-direction: column;
-        padding: 20px;
-        height: 90vh;
-        box-sizing: border-box;
-    }
+
 
     .chat-container {
         flex: 1;
@@ -167,25 +223,48 @@
         gap: 10px;
     }
 
+
     .message {
         display: flex;
-        gap: 10px;
+        max-width: 70%;
+        padding: 10px;
+        border-radius: 15px;
+        word-wrap: break-word;
     }
 
     .message.sent {
-        flex-direction: row-reverse;
+        align-self: flex-end;
+        background-color: #5290d3;
+        color: white;
+        border-top-right-radius: 0;
+    }
+
+    .message.received {
+        align-self: flex-start;
+        background-color: #e5e5e5;
+        color: black;
+        border-top-left-radius: 0;
     }
 
     .message-text {
         padding: 10px;
         border-radius: 8px;
-        max-width: 80%;
+        max-width: 100%;
         word-wrap: break-word;
         background-color: #e5e5e5;
     }
 
+    .messages-container {
+        width: 70%;
+        display: flex;
+        flex-direction: column;
+        padding: 20px;
+        height: 90vh;
+        box-sizing: border-box;
+    }
+
     .message.sent .message-text {
-        background-color: #3b82f6;
+        background:#5290d3;
         color: white;
     }
 
