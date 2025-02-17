@@ -406,7 +406,8 @@
         .then((response) => response.json())
         .then((result) => {
           if (result.errors && Object.keys(result.errors).length > 0) {
-            console.log(result.errors);
+            authenticating_submit = false;
+            messagefile = result.errors
           } else {
             // Rediriger l'utilisateur après une soumission réussie
             window.location.href = "/site/connexion";

@@ -10,9 +10,10 @@
     Genre,
     Pays,
     Specialite,
-    Ville,
+    Ville
   } from "../../../types.js";
   import { getProfessions } from "$lib/constants";
+  import MessageError from "$components/MessageError.svelte";
 
   const professions = getProfessions();
 
@@ -63,7 +64,7 @@
     dfe: null,
     diplomeFile: null,
     ordreNational: null,
-    cv: null,
+    cv: null
   };
 
   // Définition des erreurs
@@ -110,7 +111,7 @@
     cv: "",
 
     // Autres informations
-    inscriptionProfessionId: "",
+    inscriptionProfessionId: ""
   };
 
   // Fonction de validation des étapes
@@ -222,19 +223,15 @@
       errors.photo = formData.photo
         ? ""
         : "La photo du responsable est requise";
-      errors.cni = formData.cni
-        ? ""
-        : "La photo physique est requise";
-      errors.dfe = formData.dfe
-        ? ""
-        : "La CNI physique est requise";
+      errors.cni = formData.cni ? "" : "La photo physique est requise";
+      errors.dfe = formData.dfe ? "" : "La CNI physique est requise";
       errors.diplomeFile = formData.diplomeFile
         ? ""
         : "Le fichier du diplôme est requis";
       errors.ordreNational = formData.ordreNational ? "" : "Le CV est requis";
       errors.cv = formData.cv ? "" : "Le DFE est requis";
 
-      valid = true ;
+      valid = true;
     }
 
     if (step === 6) {
@@ -258,33 +255,31 @@
   let fileNames = {}; // Stocke uniquement les noms des fichiers pour éviter les problèmes avec `localStorage`
   let selectedFiles = {};
 
-  
   function updateFormData(fieldName, file) {
-  if (file) {
-    // Lire le fichier en Base64 pour le stocker dans localStorage
-    const reader = new FileReader();
-    reader.readAsDataURL(file);
-    reader.onload = () => {
-      // Ajouter le fichier à selectedFiles
-      selectedFiles = {
-        ...selectedFiles,
-        [fieldName]: { name: file.name, data: reader.result },
+    if (file) {
+      // Lire le fichier en Base64 pour le stocker dans localStorage
+      const reader = new FileReader();
+      reader.readAsDataURL(file);
+      reader.onload = () => {
+        // Ajouter le fichier à selectedFiles
+        selectedFiles = {
+          ...selectedFiles,
+          [fieldName]: { name: file.name, data: reader.result }
+        };
+
+        // Stocker dans le localStorage
+        localStorage.setItem("selectedFiles", JSON.stringify(selectedFiles));
+
+        // Mettre à jour les noms de fichiers affichés
+        fileNames = { ...fileNames, [fieldName]: file.name };
       };
-
-      // Stocker dans le localStorage
-      localStorage.setItem("selectedFiles", JSON.stringify(selectedFiles));
-
-      // Mettre à jour les noms de fichiers affichés
-      fileNames = { ...fileNames, [fieldName]: file.name };
-    };
+    }
   }
-}
 
-function handleFileChange(event, fieldName) {
-  const file = event.target.files[0] || null;
-  updateFormData(fieldName, file);
-}
-
+  function handleFileChange(event, fieldName) {
+    const file = event.target.files[0] || null;
+    updateFormData(fieldName, file);
+  }
 
   // 🔹 Fonction pour restaurer le formulaire après un retour
   // Restaurer les données et l'étape depuis localStorage
@@ -333,80 +328,92 @@ function handleFileChange(event, fieldName) {
       localStorage.setItem("step", step.toString());
     }
   }
-
+  let authenticating_submit = false;
   // 🔹 Soumission du formulaire
   function submitForm() {
-  if (validateStep()) {
-    // Créer un FormData pour les données du formulaire
-    let formDatas = new FormData();
+    if (validateStep()) {
+      // Créer un FormData pour les données du formulaire
+      let formDatas = new FormData();
 
-        Object.keys(formData).forEach((key) => {
-          formDatas.append(key, formData[key]);
+      Object.keys(formData).forEach((key) => {
+        formDatas.append(key, formData[key]);
       });
 
-    // Ajouter les données de référence stockées en localStorage
-    const reference = localStorage.getItem("reference");
-    if (reference) {
-      formDatas.append("reference", reference);
-    }
-/* 
+      // Ajouter les données de référence stockées en localStorage
+      const reference = localStorage.getItem("reference");
+      if (reference) {
+        formDatas.append("reference", reference);
+      }
+      /* 
     // Ajouter les autres données du formulaire
     Object.keys(formDataState).forEach((key) => {
       formData.append(key, formDataState[key]);
     }); */
 
-    // Récupérer les fichiers stockés en localStorage
-    const selectedFilesFromStorage = JSON.parse(localStorage.getItem("selectedFiles"));
+      // Récupérer les fichiers stockés en localStorage
+      const selectedFilesFromStorage = JSON.parse(
+        localStorage.getItem("selectedFiles")
+      );
 
-    if (selectedFilesFromStorage) {
-      // Ajouter chaque fichier au FormData
-      Object.keys(selectedFilesFromStorage).forEach((fieldName) => {
-        const fileData = selectedFilesFromStorage[fieldName];
-        if (fileData && fileData.data) {
-          // Ajouter chaque fichier en tant que base64 (si tu veux envoyer en base64)
-          // formData.append(fieldName, fileData.data, fileData.name);
+      if (selectedFilesFromStorage) {
+        // Ajouter chaque fichier au FormData
+        Object.keys(selectedFilesFromStorage).forEach((fieldName) => {
+          const fileData = selectedFilesFromStorage[fieldName];
+          if (fileData && fileData.data) {
+            // Ajouter chaque fichier en tant que base64 (si tu veux envoyer en base64)
+            // formData.append(fieldName, fileData.data, fileData.name);
 
-          // Si tu veux envoyer le fichier en tant qu'objet Blob, tu peux utiliser cette ligne
-          const byteCharacters = atob(fileData.data.split(',')[1]);
-          const byteArrays = [];
+            // Si tu veux envoyer le fichier en tant qu'objet Blob, tu peux utiliser cette ligne
+            const byteCharacters = atob(fileData.data.split(",")[1]);
+            const byteArrays = [];
 
-          for (let offset = 0; offset < byteCharacters.length; offset += 512) {
-            const slice = byteCharacters.slice(offset, offset + 512);
-            const byteNumbers = new Array(slice.length);
-            for (let i = 0; i < slice.length; i++) {
-              byteNumbers[i] = slice.charCodeAt(i);
+            for (
+              let offset = 0;
+              offset < byteCharacters.length;
+              offset += 512
+            ) {
+              const slice = byteCharacters.slice(offset, offset + 512);
+              const byteNumbers = new Array(slice.length);
+              for (let i = 0; i < slice.length; i++) {
+                byteNumbers[i] = slice.charCodeAt(i);
+              }
+              byteArrays.push(new Uint8Array(byteNumbers));
             }
-            byteArrays.push(new Uint8Array(byteNumbers));
+
+            const blob = new Blob(byteArrays, {
+              type: "application/octet-stream"
+            });
+            formDatas.append(fieldName, blob, fileData.name);
           }
+        });
+      }
 
-          const blob = new Blob(byteArrays, { type: "application/octet-stream" });
-          formDatas.append(fieldName, blob, fileData.name);
-        }
-      });
-    }
-
-    console.log(selectedFilesFromStorage);
-
-    // Envoi des données au serveur
-    fetch("http://depps.leadagro.net/api/etablissement/create", {
-      method: "POST",
-      body: formDatas,
-    })
-      .then((response) => response.json())
-      .then((result) => {
-        if (result.errors && Object.keys(result.errors).length > 0) {
-          console.log(result.errors);
-        } else {
-          // Rediriger l'utilisateur après une soumission réussie
-          window.location.href = "/site/connexion";
-          localStorage.clear();  // Nettoyer les données du localStorage
-        }
+    
+      authenticating_submit = true;
+      // Envoi des données au serveur
+      fetch("http://depps.leadagro.net/api/etablissement/create", {
+        method: "POST",
+        body: formDatas
       })
-      .catch((error) => {
-        console.log("Erreur lors de la soumission du formulaire:", error);
-      });
+        .then((response) => response.json())
+        .then((result) => {
+          if (result.errors && Object.keys(result.errors).length > 0) {
+            console.log(result.errors);
+            authenticating_submit = false;
+            messagefile = result.errors
+          } else {
+            // Rediriger l'utilisateur après une soumission réussie
+            window.location.href = "/site/connexion";
+            localStorage.clear(); // Nettoyer les données du localStorage
+          }
+        })
+        .catch((error) => {
+          console.log("Erreur lors de la soumission du formulaire:", error);
+          authenticating_submit = false;
+
+        });
+    }
   }
-}
 
   // 🔹 Gestion du paiements
   function clickPaiement() {
@@ -415,6 +422,7 @@ function handleFileChange(event, fieldName) {
 
     initPaiement();
   }
+  let authenticating = false;
 
   function initPaiement() {
     let data = new FormData();
@@ -426,7 +434,7 @@ function handleFileChange(event, fieldName) {
 
     fetch("https://depps.leadagro.net/api/paiement/paiement", {
       method: "POST",
-      body: data,
+      body: data
     })
       .then((response) => response.json())
       .then((result) => {
@@ -439,6 +447,8 @@ function handleFileChange(event, fieldName) {
       .catch((error) => {
         console.error("Erreur paiements :", error);
         isPaiementProcessing = false;
+      authenticating = false;
+
       });
   }
 
@@ -486,7 +496,7 @@ function handleFileChange(event, fieldName) {
     { name: "nationate", url: "/pays" },
     { name: "specialite", url: "/specialite" },
     { name: "typePersonne", url: "/typePersonne" },
-    { name: "ville", url: "/ville" },
+    { name: "ville", url: "/ville" }
   ];
 
   let values: {
@@ -496,7 +506,14 @@ function handleFileChange(event, fieldName) {
     specialite: Specialite[];
     typePersonne: Pays[];
     ville: Ville[];
-  } = { genre: [], civilite: [], nationate: [], specialite: [], ville: [],typePersonne: [] };
+  } = {
+    genre: [],
+    civilite: [],
+    nationate: [],
+    specialite: [],
+    ville: [],
+    typePersonne: []
+  };
 
   async function fetchData() {
     try {
@@ -710,9 +727,8 @@ function handleFileChange(event, fieldName) {
                         </p>{/if}
                     </div> -->
 
-
                     <!-- Champ Type -->
-                   
+
                     <div class="form__grup">
                       <label class="form_label"
                         >Nature de l'entreprise privée sanitaire *</label
@@ -730,10 +746,10 @@ function handleFileChange(event, fieldName) {
                           {errors.natureEntreprise}
                         </p>{/if}
                     </div>
-                 
+
                     <!-- Champ contactEntreprise -->
-                  
-                     <div class="form__grup">
+
+                    <div class="form__grup">
                       <label class="form_label"
                         >Nom de l'entreprise de l'entreprise privée sanitaire *</label
                       >
@@ -751,7 +767,7 @@ function handleFileChange(event, fieldName) {
                         </p>{/if}
                     </div>
 
-                     <div class="form__grup">
+                    <div class="form__grup">
                       <label class="form_label"
                         >Type d'entreprise privée sanitaire *</label
                       >
@@ -770,7 +786,7 @@ function handleFileChange(event, fieldName) {
                     </div>
 
                     <!-- Champ Type -->
-                     <div class="form__grup">
+                    <div class="form__grup">
                       <label class="form_label"
                         >contact de l'entreprise privée sanitaire *</label
                       >
@@ -789,9 +805,8 @@ function handleFileChange(event, fieldName) {
                     </div>
 
                     <!-- Champ gpsEntreprise -->
-                   
-                    
-                     <div class="form__grup">
+
+                    <div class="form__grup">
                       <label class="form_label"
                         >E-mail de l'entreprise privée sanitaire *</label
                       >
@@ -828,9 +843,8 @@ function handleFileChange(event, fieldName) {
                     <!-- Champ Nom de l'entreprise -->
 
                     <!-- Champ Email de l'entreprise -->
-                   
 
-                      <div class="form__grup">
+                    <div class="form__grup">
                       <label class="form_label"
                         >Distrite, ville , commune *</label
                       >
@@ -866,7 +880,6 @@ function handleFileChange(event, fieldName) {
                           {errors.gpsEntreprise}
                         </p>{/if}
                     </div>
-
                   </div>
                 </div>
               </div>
@@ -905,7 +918,7 @@ function handleFileChange(event, fieldName) {
                         </p>{/if}
                     </div>
 
-                  <!-- Champ contactsPromoteur -->
+                    <!-- Champ contactsPromoteur -->
                     <div class="form__grup">
                       <label class="form_label">Contact *</label>
                       <input
@@ -922,9 +935,7 @@ function handleFileChange(event, fieldName) {
                         </p>{/if}
                     </div>
 
-
-                 
-                       <!-- Champ Nom Complet -->
+                    <!-- Champ Nom Complet -->
                     <div class="form__grup">
                       <label class="form_label">Nom complet *</label>
                       <input
@@ -941,7 +952,7 @@ function handleFileChange(event, fieldName) {
                         </p>{/if}
                     </div>
 
-                   <!-- Champ Numéro de CNI -->
+                    <!-- Champ Numéro de CNI -->
                     <div class="form__grup">
                       <label class="form_label">N° de CNI *</label>
                       <input
@@ -958,10 +969,7 @@ function handleFileChange(event, fieldName) {
                         </p>{/if}
                     </div>
 
-                  
-
-
-                      <!-- Champ Email Pro -->
+                    <!-- Champ Email Pro -->
                     <div class="form__grup">
                       <label class="form_label">Adresse E-mail *</label>
                       <input
@@ -995,9 +1003,7 @@ function handleFileChange(event, fieldName) {
                         </p>{/if}
                     </div>
 
-                   
-
-                     <!-- Champ Profession -->
+                    <!-- Champ Profession -->
                     <div class="form__grup">
                       <label class="form_label">Profession *</label>
                       <input
@@ -1043,10 +1049,6 @@ function handleFileChange(event, fieldName) {
                         </p>{/if}
                     </div>
 
-                    
-
-                   
-
                     <!-- Champ Contact Pro Technique -->
                     <div class="form__grup">
                       <label class="form_label">Contact *</label>
@@ -1063,7 +1065,6 @@ function handleFileChange(event, fieldName) {
                           {errors.contactProTechnique}
                         </p>{/if}
                     </div>
-
 
                     <!-- Champ Email Pro Technique -->
                     <div class="form__grup">
@@ -1099,7 +1100,7 @@ function handleFileChange(event, fieldName) {
                         </p>{/if}
                     </div>
 
-                     <!-- Champ Profession Technique -->
+                    <!-- Champ Profession Technique -->
                     <div class="form__grup">
                       <label class="form_label">Profession *</label>
                       <input
@@ -1176,38 +1177,38 @@ function handleFileChange(event, fieldName) {
                 </div>
               </div>
             {/if}
-  <!-- Étape 6 : Paiement -->
-  {#if step === 6}
-  <h2 class="h2-baslik-anasayfa-ozel h-yazi-margin-kucuk">
-    VEUILLEZ PROCéDER AU PAIEMENT
-  </h2>
-  <div class="tablo">
-    <div class="tablo--1h-ve-2">
-      <!--   on:click={clickPaiement} -->
-      <div class="grid grid-cols-1 gap-20 flex justify-center">
-        <div class="">
-          {#if !isPaiementDone}
-            <p>
-              Veillez vous rendre sur le site de votre banque et
-              effectuer le paiement.
-            </p>
-            <br />
+            <!-- Étape 6 : Paiement -->
+            {#if step === 6}
+              <h2 class="h2-baslik-anasayfa-ozel h-yazi-margin-kucuk">
+                VEUILLEZ PROCéDER AU PAIEMENT
+              </h2>
+              <div class="tablo">
+                <div class="tablo--1h-ve-2">
+                  <!--   on:click={clickPaiement} -->
+                  <div class="grid grid-cols-1 gap-20 flex justify-center">
+                    <div class="">
+                      {#if !isPaiementDone}
+                        <p>
+                          Veillez vous rendre sur le site de votre banque et
+                          effectuer le paiement.
+                        </p>
+                        <br />
 
-           <!--  <button
+                        <!--  <button
               id="reloadPaiementLsssink"
               class="px-6 py-3 bg-green-500 text-white font-medium rounded-lg shadow-lg hover:bg-green-500 transition duration-300"
               on:click={clickPaiement}
             >
               Effectuer le paiements
             </button> -->
-          {/if}
-          {#if isPaiementDone}
-            <p>
-              Veillez finaliser votre inscription en cliquant sur le
-              bouton ci-dessous.
-            </p>
-            <br />
-           <!--  <button
+                      {/if}
+                      {#if isPaiementDone}
+                        <p>
+                          Veillez finaliser votre inscription en cliquant sur le
+                          bouton ci-dessous.
+                        </p>
+                        <br />
+                        <!--  <button
               type="button"
               id="r"
               class="px-6 py-3 bg-green-500 text-white font-medium rounded-lg shadow-lg hover:bg-green-500 transition duration-300"
@@ -1216,19 +1217,19 @@ function handleFileChange(event, fieldName) {
             >
               Finaliser l'inscription
             </button> -->
-          {/if}
+                      {/if}
 
-          <br />
-          <!--  <p>
+                      <br />
+                      <!--  <p>
                 Une fois le paiements effectué, veuillez renseigner
                 l'identifiant de la transaction pour valider votre
                 inscription.
               </p> -->
-        </div>
-      </div>
-    </div>
-  </div>
-{/if}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            {/if}
 
             <!-- Boutons de navigation -->
             <div class="form__grup">
@@ -1246,41 +1247,43 @@ function handleFileChange(event, fieldName) {
                   class="buton buton--kirmizi"
                   on:click={() => nextStep()}>SUIVANT →</button
                 >
-            
               {:else}
-
-              {#if !isPaiementDone}
-                        
-                        <!-- <button
-                          id="reloadPaiementLsssink"
-                          class="px-6 py-3 bg-green-500 text-white font-medium rounded-lg shadow-lg hover:bg-green-500 transition duration-300"
-                          on:click={clickPaiement}
-                        >
-                          Effectuer le paiements
-                        </button> -->
-
-                        <button
-                      
-                        on:click={clickPaiement}
-                        class="buton buton--kirmizi bg-green-500 "
-                       
-                      >
+                {#if !isPaiementDone}
+                  <button
+                    type="button"
+                    on:click={clickPaiement}
+                    class="buton buton--kirmizi bg-green-500"
+                  >
+                    {#if authenticating}
+                      <div class="grid grid-cols-2">
+                        <div>
+                          <Spinner />
+                        </div>
+                        <div>Effectuer le paiement</div>
+                      </div>
+                    {:else}
                       Effectuer le paiement
-                      </button>
-                      {/if}
-                      {#if isPaiementDone}
-                       
-                      <button
-                         type="submit"
-                        on:click={submitForm}
-                        class="buton buton--kirmizi bg-green-500 "
-                        disabled={!isPaiementDone}
-                      >
+                    {/if}
+                  </button>
+                {/if}
+                {#if isPaiementDone}
+                  <button
+                    type="submit"
+                    on:click={submitForm}
+                    class="buton buton--kirmizi bg-green-500"
+                  >
+                    {#if authenticating_submit}
+                      <div class="grid grid-cols-2">
+                        <div>
+                          <Spinner />
+                        </div>
+                        <div>Finaliser l'inscription</div>
+                      </div>
+                    {:else}
                       Finaliser l'inscription
-                      </button>
-                      
-                      {/if}
-
+                    {/if}
+                  </button>
+                {/if}
 
                 <!-- disabled={!isPaiementDone} -->
                 <!--   <button
