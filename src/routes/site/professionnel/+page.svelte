@@ -474,7 +474,7 @@
 
      
 
-      fetch("https://depps.leadagro.net/api/paiement/paiement", {
+      fetch("http://127.0.0.1:8001/api/paiement/paiement", {
         method: "POST",
         body: formDatas
       })
@@ -1387,7 +1387,7 @@
                     {/if}
                   </button>
                 {/if}
-                {#if isPaiementDone}
+               <!--  {#if isPaiementDone}
                   <button
                     type="submit"
                     on:click={submitForm}
@@ -1404,7 +1404,7 @@
                       Finaliser l'inscription
                     {/if}
                   </button>
-                {/if}
+                {/if} -->
 
                 <!-- disabled={!isPaiementDone} -->
                 <!--   <button
