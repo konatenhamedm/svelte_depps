@@ -423,7 +423,7 @@
   }
   let authenticating = false;
   function initPaiement() {
-    if (validateStep()) {
+    authenticating = true;
       // Créer un FormData pour les données du formulaire
       let formDatas = new FormData();
 
@@ -470,7 +470,7 @@
         });
       }
 
-      authenticating = true;
+     
 
       fetch("https://depps.leadagro.net/api/paiement/paiement", {
         method: "POST",
@@ -496,7 +496,7 @@
         });
 
       
-    }
+    
   }
 
   async function checkTransactionID(idtransaction: any) {
