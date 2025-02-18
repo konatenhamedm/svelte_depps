@@ -396,6 +396,7 @@
           if (result.errors && Object.keys(result.errors).length > 0) {
             authenticating = false;
             messagefile = result.errors;
+            console.log(result.errors)
           } else {
             if (result.url) {
               localStorage.setItem("reference", result.reference);
@@ -421,6 +422,7 @@
 
     initPaiement();
   }
+
   let authenticating = false;
   function initPaiement() {
     authenticating = true;
@@ -478,24 +480,19 @@
       })
         .then((response) => response.json())
         .then((result) => {
-          if (result.errors && Object.keys(result.errors).length > 0) {
-            authenticating = false;
-            messagefile = result.errors;
-          } else {
-            if (result.url) {
-              localStorage.setItem("reference", result.reference);
+          authenticating = false;
 
-              window.location.href = result.url + "?return=1"; // 🔥 Ajout du paramètre `return`
+            if (result.data.url) {
+             console.log(result)
+              window.location.href = result.data.url + "?return=1"; // 🔥 Ajout du paramètre `return`
             }
-          }
+          
         })
         .catch((error) => {
           console.error("Erreur paiements :", error);
           isPaiementProcessing = false;
            authenticating = false;
         });
-
-      
     
   }
 
@@ -557,7 +554,7 @@
     try {
       let res = null;
       objects.forEach(async (element) => {
-        res = await apiFetch(true, element.url);
+        res = await apiFetch(false, element.url);
         if (res) {
           if (Object.keys(values).includes(element.name)) {
             values[element.name as keyof typeof values] = res.data;
