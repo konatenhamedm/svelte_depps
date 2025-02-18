@@ -346,18 +346,12 @@
         formDatas.append(key, formData[key]);
       });
 
-      // Ajouter les données de référence stockées en localStorage
       const reference = localStorage.getItem("reference");
       if (reference) {
         formDatas.append("reference", reference);
       }
-      /* 
-    // Ajouter les autres données du formulaire
-    Object.keys(formDataState).forEach((key) => {
-      formData.append(key, formDataState[key]);
-    }); */
+      formDatas.append("type", "professionnel");
 
-      // Récupérer les fichiers stockés en localStorage
       const selectedFilesFromStorage = JSON.parse(
         localStorage.getItem("selectedFiles")
       );
@@ -367,10 +361,6 @@
         Object.keys(selectedFilesFromStorage).forEach((fieldName) => {
           const fileData = selectedFilesFromStorage[fieldName];
           if (fileData && fileData.data) {
-            // Ajouter chaque fichier en tant que base64 (si tu veux envoyer en base64)
-            // formData.append(fieldName, fileData.data, fileData.name);
-
-            // Si tu veux envoyer le fichier en tant qu'objet Blob, tu peux utiliser cette ligne
             const byteCharacters = atob(fileData.data.split(",")[1]);
             const byteArrays = [];
 
@@ -395,29 +385,32 @@
         });
       }
 
-      console.log(selectedFilesFromStorage);
+      authenticating = true;
 
-      authenticating_submit = true;
-      // Envoi des données au serveur
-      fetch("http://depps.leadagro.net/api/professionnel/create", {
+      fetch("https://depps.leadagro.net/api/paiement/paiement", {
         method: "POST",
         body: formDatas
       })
         .then((response) => response.json())
         .then((result) => {
           if (result.errors && Object.keys(result.errors).length > 0) {
-            authenticating_submit = false;
-            messagefile = result.errors
+            authenticating = false;
+            messagefile = result.errors;
           } else {
-            // Rediriger l'utilisateur après une soumission réussie
-            window.location.href = "/site/connexion";
-            localStorage.clear(); // Nettoyer les données du localStorage
+            if (result.url) {
+              localStorage.setItem("reference", result.reference);
+
+              window.location.href = result.url + "?return=1"; // 🔥 Ajout du paramètre `return`
+            }
           }
         })
         .catch((error) => {
-          console.log("Erreur lors de la soumission du formulaire:", error);
-          authenticating_submit = false;
+          console.error("Erreur paiements :", error);
+          isPaiementProcessing = false;
+          let authenticating = false;
         });
+
+      
     }
   }
 
@@ -430,31 +423,80 @@
   }
   let authenticating = false;
   function initPaiement() {
-    let data = new FormData();
-    data.append("nom", formData.nom);
-    data.append("prenoms", formData.prenoms);
-    data.append("email", formData.email);
-    data.append("numero", formData.numero);
-    data.append("type", "professionnel");
-    authenticating = true;
+    if (validateStep()) {
+      // Créer un FormData pour les données du formulaire
+      let formDatas = new FormData();
 
-    fetch("https://depps.leadagro.net/api/paiement/paiement", {
-      method: "POST",
-      body: data
-    })
-      .then((response) => response.json())
-      .then((result) => {
-        if (result.url) {
-          localStorage.setItem("reference", result.reference);
-
-          window.location.href = result.url + "?return=1"; // 🔥 Ajout du paramètre `return`
-        }
-      })
-      .catch((error) => {
-        console.error("Erreur paiements :", error);
-        isPaiementProcessing = false;
-        let authenticating = false;
+      Object.keys(formData).forEach((key) => {
+        formDatas.append(key, formData[key]);
       });
+
+      const reference = localStorage.getItem("reference");
+      if (reference) {
+        formDatas.append("reference", reference);
+      }
+      formDatas.append("type", "professionnel");
+
+      const selectedFilesFromStorage = JSON.parse(
+        localStorage.getItem("selectedFiles")
+      );
+
+      if (selectedFilesFromStorage) {
+        // Ajouter chaque fichier au FormData
+        Object.keys(selectedFilesFromStorage).forEach((fieldName) => {
+          const fileData = selectedFilesFromStorage[fieldName];
+          if (fileData && fileData.data) {
+            const byteCharacters = atob(fileData.data.split(",")[1]);
+            const byteArrays = [];
+
+            for (
+              let offset = 0;
+              offset < byteCharacters.length;
+              offset += 512
+            ) {
+              const slice = byteCharacters.slice(offset, offset + 512);
+              const byteNumbers = new Array(slice.length);
+              for (let i = 0; i < slice.length; i++) {
+                byteNumbers[i] = slice.charCodeAt(i);
+              }
+              byteArrays.push(new Uint8Array(byteNumbers));
+            }
+
+            const blob = new Blob(byteArrays, {
+              type: "application/octet-stream"
+            });
+            formDatas.append(fieldName, blob, fileData.name);
+          }
+        });
+      }
+
+      authenticating = true;
+
+      fetch("https://depps.leadagro.net/api/paiement/paiement", {
+        method: "POST",
+        body: formDatas
+      })
+        .then((response) => response.json())
+        .then((result) => {
+          if (result.errors && Object.keys(result.errors).length > 0) {
+            authenticating = false;
+            messagefile = result.errors;
+          } else {
+            if (result.url) {
+              localStorage.setItem("reference", result.reference);
+
+              window.location.href = result.url + "?return=1"; // 🔥 Ajout du paramètre `return`
+            }
+          }
+        })
+        .catch((error) => {
+          console.error("Erreur paiements :", error);
+          isPaiementProcessing = false;
+           authenticating = false;
+        });
+
+      
+    }
   }
 
   async function checkTransactionID(idtransaction: any) {
@@ -1308,7 +1350,7 @@
             <div class="form__grup">
               {#if step > 1}
                 <button
-                  disabled={authenticating == true || authenticating_submit == true}
+                  disabled={authenticating == true }
                   type="button"
                   class="buton buton--kirmizi"
                   on:click={prevStep}>← RETOUR</button
@@ -1334,7 +1376,7 @@
                     on:click={clickPaiement}
                     class="buton buton--kirmizi bg-green-500"
                   >
-                    {#if authenticating}
+                    {#if authenticating }
                       <div class="grid grid-cols-2">
                         <div>
                           <Spinner />
@@ -1342,18 +1384,17 @@
                         <div>Effectuer le paiement</div>
                       </div>
                     {:else}
-                    Effectuer le paiement
+                      Effectuer le paiement
                     {/if}
                   </button>
                 {/if}
                 {#if isPaiementDone}
-
-                <button
+                  <button
                     type="submit"
                     on:click={submitForm}
                     class="buton buton--kirmizi bg-green-500"
                   >
-                    {#if authenticating_submit }
+                    {#if authenticating_submit}
                       <div class="grid grid-cols-2">
                         <div>
                           <Spinner />
@@ -1361,11 +1402,10 @@
                         <div>Finaliser l'inscription</div>
                       </div>
                     {:else}
-                    Finaliser l'inscription
+                      Finaliser l'inscription
                     {/if}
                   </button>
                 {/if}
-              
 
                 <!-- disabled={!isPaiementDone} -->
                 <!--   <button
