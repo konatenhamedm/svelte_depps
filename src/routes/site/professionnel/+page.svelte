@@ -554,7 +554,7 @@
     try {
       let res = null;
       objects.forEach(async (element) => {
-        res = await apiFetch(false, element.url);
+        res = await apiFetch(true, element.url);
         if (res) {
           if (Object.keys(values).includes(element.name)) {
             values[element.name as keyof typeof values] = res.data;
