@@ -474,7 +474,7 @@
 
      
 
-      fetch("http://127.0.0.1:8001/api/paiement/paiement", {
+      fetch("https://depps.leadagro.net/api/paiement/paiement", {
         method: "POST",
         body: formDatas
       })
