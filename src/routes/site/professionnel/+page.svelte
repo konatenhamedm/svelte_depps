@@ -577,6 +577,8 @@
     fetchData();
   });
   onMount(() => {
+    //localStorage.clear(); // Nettoyer les données du localStorage
+
     const savedStep = localStorage.getItem("step");
     if (savedStep) {
       step = parseInt(savedStep);
