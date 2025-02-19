@@ -127,7 +127,8 @@ export function getAuthCookie(): User | null {
           type: auth.type || "",
           status: auth.status || "",
           payement: auth.payement || "",
-          avatar: auth.avatar || ""
+          avatar: auth.avatar || "",
+          personneId : auth.personneId || ""
       };
   } catch (error) {
       console.error("Erreur lors de la récupération du cookie d'auth:", error);

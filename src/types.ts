@@ -48,6 +48,7 @@ export interface User {
   role: [];
   token: string;
   username: string;
+  avatar: string;
   type: string;
   status: string;
   payement: string;
