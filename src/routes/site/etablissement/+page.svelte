@@ -1283,7 +1283,8 @@
                       Effectuer le paiement
                     {/if}
                   </button>
-                {:else}
+                  {/if}
+                {#if isPaiementDone == true }
                   <button
                     type="button"
                     on:click={connexion}
