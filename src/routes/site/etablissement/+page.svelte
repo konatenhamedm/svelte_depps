@@ -1266,7 +1266,7 @@
                   on:click={() => nextStep()}>SUIVANT →</button
                 >
               {:else}
-                {#if isPaiementDone == false}
+                {#if isPaiementDone == false }
                   <button
                     type="button"
                     on:click={clickPaiement}
