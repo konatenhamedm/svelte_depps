@@ -46,13 +46,10 @@
         }
     }
 
-    let showDeleteModal = false;
-    let deleteId = null;
-
-    async function fetchData() {
+    async function fetchData(userId:number) {
         loading = true;
         try {
-            const res = await apiFetch(true, "/alerte/");
+            const res = await apiFetch(true,`/alerte/get/all/${userId}`);
             if (res) {
                 main_data = res.data;
                 console.log("content main_data",main_data)
@@ -67,7 +64,7 @@
     }
 
     onMount(() => {
-        fetchData();
+        fetchData(user.id);
         getDestinataire();
 
     });
@@ -94,7 +91,7 @@
             });
             if (res.ok) {
                 resetForm();
-                await fetchData();
+                await fetchData(user.id);
             }
         } catch (error) {
             console.error("Erreur lors de l'enregistrement:", error);
@@ -117,28 +114,17 @@
         alerte.destinataire = item?.destinateur?.id || '';
     }
 
-
-    function confirmDelete(id) {
-        deleteId = id;
-        showDeleteModal = true;
-    }
-
-    async function deleteAlerte() {
+    async function deleteAlerte(alertId:number) {
         loading = true;
         try {
-            const res = await fetch(`https://depps.leadagro.net/api/alerte/delete/${deleteId}`, {
-                method: "DELETE",
-            });
-
+            const res = await apiFetch(true,`/alerte/delete/${alertId}`, "DELETE")
             if (res.ok) {
-                await fetchData();
+                await fetchData(user.id);
             }
         } catch (error) {
             console.error("Erreur suppression:", error);
         } finally {
             loading = false;
-            showDeleteModal = false;
-            deleteId = null;
         }
     }
 </script>
@@ -193,7 +179,7 @@
             </div>
 
             <div class="mb-4">
-                <Input placeholder="Rechercher..." type="text" bind:value={searchQuery} class="w-full" />
+                <Input placeholder="Rechercher..." type="text" bind:value={searchQuery} class="w-full input-search" />
             </div>
 
             <Table class="border border-gray-300">
@@ -221,7 +207,7 @@
                                     <button on:click={() => editAlerte(item)} class="text-blue-500 mr-2">
                                         ✏️
                                     </button>
-                                    <button on:click={() => confirmDelete(item.id)} class="text-red-500">
+                                    <button on:click={() => deleteAlerte(item.id)} class="text-red-500">
                                         🗑️
                                     </button>
                                 </TableBodyCell>
@@ -235,23 +221,63 @@
 </section>
 
 <!-- Modal de confirmation -->
-<Modal bind:open={showDeleteModal} title="Confirmation">
+<!--<Modal bind:open={showDeleteModal} title="Confirmation">
     <p>Voulez-vous vraiment supprimer cette alerte ?</p>
     <div class="flex justify-end space-x-4 mt-4">
         <Button on:click={() => (showDeleteModal = false)} class="bg-gray-500 text-white">Annuler</Button>
         <Button on:click={deleteAlerte} class="bg-red-600 text-white">Supprimer</Button>
     </div>
-</Modal>
+</Modal>-->
 
 <Footer />
 
 <style>
+
+    .main-content label {
+        font-size: 15px;
+        margin-bottom: 10px;
+    }
     .main-content {
         margin-top: 135px;
     }
 
-    .table-cell {
-        font-size: 1rem; /* Augmente la taille de la police */
+    h4 {
+        font-size: 2rem;
+        margin-bottom: 20px;
     }
+
+    .main-content input {
+        height: 32px;
+    }
+
+    .input-search {
+        height: 28px !important;
+        width: 30%;
+    }
+
+    .table-cell {
+        font-size: 1.2rem;
+    }
+
+    label {
+        font-size: 1rem;
+    }
+
+    button {
+        font-size: 1.1rem;
+    }
+
+    table td {
+        font-size: 15px;
+    }
+
+    table th {
+        font-size: 12px;
+    }
+
+    table td button {
+        font-size: 18px !important;
+    }
+
 
 </style>
