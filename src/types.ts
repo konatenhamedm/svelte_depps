@@ -51,6 +51,7 @@ export interface User {
   type: string;
   status: string;
   payement: string;
+  personneId: string;
 }
 
 export interface Civilite {
