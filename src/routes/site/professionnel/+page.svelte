@@ -14,6 +14,7 @@
   } from "../../../types.js";
   import { getProfessions } from "$lib/constants";
   import Spinner from "$components/_skeletons/Spinner.svelte";
+  import { goto } from "$app/navigation";
 
   const professions = getProfessions();
 
@@ -255,10 +256,11 @@
       localStorage.setItem("step", step.toString());
     }
   }
-  let fileNames = {}; // Stocke uniquement les noms des fichiers pour éviter les problèmes avec `localStorage`
+  let fileNames: { [key: string]: string } = {};
+
   let selectedFiles = {};
 
-  function updateFormData(fieldName, file) {
+  function updateFormData(fieldName:any, file:any) {
     if (file) {
       // Lire le fichier en Base64 pour le stocker dans localStorage
       const reader = new FileReader();
@@ -396,7 +398,7 @@
           if (result.errors && Object.keys(result.errors).length > 0) {
             authenticating = false;
             messagefile = result.errors;
-            console.log(result.errors)
+            console.log(result.errors);
           } else {
             if (result.url) {
               localStorage.setItem("reference", result.reference);
@@ -410,8 +412,6 @@
           isPaiementProcessing = false;
           let authenticating = false;
         });
-
-      
     }
   }
 
@@ -426,74 +426,71 @@
   let authenticating = false;
   function initPaiement() {
     authenticating = true;
-      // Créer un FormData pour les données du formulaire
-      let formDatas = new FormData();
+    // Créer un FormData pour les données du formulaire
+    let formDatas = new FormData();
 
-      Object.keys(formData).forEach((key) => {
-        formDatas.append(key, formData[key]);
-      });
+    Object.keys(formData).forEach((key) => {
+      formDatas.append(key, formData[key]);
+    });
 
-      const reference = localStorage.getItem("reference");
-      if (reference) {
-        formDatas.append("reference", reference);
-      }
-      formDatas.append("type", "professionnel");
+    const reference = localStorage.getItem("reference");
+    if (reference) {
+      formDatas.append("reference", reference);
+    }
+    formDatas.append("type", "professionnel");
 
-      const selectedFilesFromStorage = JSON.parse(
-        localStorage.getItem("selectedFiles")
-      );
+    const selectedFilesFromStorage = JSON.parse(
+      localStorage.getItem("selectedFiles")
+    );
 
-      if (selectedFilesFromStorage) {
-        // Ajouter chaque fichier au FormData
-        Object.keys(selectedFilesFromStorage).forEach((fieldName) => {
-          const fileData = selectedFilesFromStorage[fieldName];
-          if (fileData && fileData.data) {
-            const byteCharacters = atob(fileData.data.split(",")[1]);
-            const byteArrays = [];
+    if (selectedFilesFromStorage) {
+      // Ajouter chaque fichier au FormData
+      Object.keys(selectedFilesFromStorage).forEach((fieldName) => {
+        const fileData = selectedFilesFromStorage[fieldName];
+        if (fileData && fileData.data) {
+          const byteCharacters = atob(fileData.data.split(",")[1]);
+          const byteArrays = [];
 
-            for (
-              let offset = 0;
-              offset < byteCharacters.length;
-              offset += 512
-            ) {
-              const slice = byteCharacters.slice(offset, offset + 512);
-              const byteNumbers = new Array(slice.length);
-              for (let i = 0; i < slice.length; i++) {
-                byteNumbers[i] = slice.charCodeAt(i);
-              }
-              byteArrays.push(new Uint8Array(byteNumbers));
+          for (let offset = 0; offset < byteCharacters.length; offset += 512) {
+            const slice = byteCharacters.slice(offset, offset + 512);
+            const byteNumbers = new Array(slice.length);
+            for (let i = 0; i < slice.length; i++) {
+              byteNumbers[i] = slice.charCodeAt(i);
             }
-
-            const blob = new Blob(byteArrays, {
-              type: "application/octet-stream"
-            });
-            formDatas.append(fieldName, blob, fileData.name);
+            byteArrays.push(new Uint8Array(byteNumbers));
           }
-        });
-      }
 
-     
+          const blob = new Blob(byteArrays, {
+            type: "application/octet-stream"
+          });
+          formDatas.append(fieldName, blob, fileData.name);
+        }
+      });
+    }
 
-      fetch("https://depps.leadagro.net/api/paiement/paiement", {
-        method: "POST",
-        body: formDatas
+    fetch("https://depps.leadagro.net/api/paiement/paiement", {
+      method: "POST",
+      body: formDatas
+    })
+      .then((response) => response.json())
+      .then((result) => {
+        authenticating = false;
+
+        if (result.data.url) {
+          localStorage.setItem("reference", result.data.reference);
+          window.location.href = result.data.url + "?return=1"; // 🔥 Ajout du paramètre `return`
+        }
       })
-        .then((response) => response.json())
-        .then((result) => {
-          authenticating = false;
+      .catch((error) => {
+        console.error("Erreur paiements :", error);
+        isPaiementProcessing = false;
+        authenticating = false;
+      });
+  }
 
-            if (result.data.url) {
-             console.log(result)
-              window.location.href = result.data.url + "?return=1"; // 🔥 Ajout du paramètre `return`
-            }
-          
-        })
-        .catch((error) => {
-          console.error("Erreur paiements :", error);
-          isPaiementProcessing = false;
-           authenticating = false;
-        });
-    
+  function connexion() {
+    goto("/site/connexion");
+    localStorage.clear(); // Nettoyer les données du localStorage
   }
 
   async function checkTransactionID(idtransaction: any) {
@@ -520,8 +517,8 @@
     if (reference) {
       checkTransactionID(reference).then((resultat) => {
         console.log(resultat);
-        if (!resultat) {
-          message = "Cet identifiant de transaction n'est pas valide";
+        if (resultat.data == false) {
+          message = "Votre paiement à échoué veillez ressayez svp.";
           isPaiementDone = false;
         } else {
           message = "";
@@ -578,7 +575,7 @@
   });
   onMount(() => {
     //localStorage.clear(); // Nettoyer les données du localStorage
-
+    //localStorage.setItem("reference", 'DEPPS250219004737016');
     const savedStep = localStorage.getItem("step");
     if (savedStep) {
       step = parseInt(savedStep);
@@ -602,7 +599,7 @@
   });
 
   // Sauvegarder les données du formulaire dans localStorage à chaque modification
-  function updateField(field, value) {
+  function updateField(field:any, value:any) {
     formData[field] = value;
     localStorage.setItem("formData", JSON.stringify(formData));
   }
@@ -793,18 +790,15 @@
                     <div class="form__grup">
                       <label class="form_label">Nationalité *</label>
                       <select
-                        bind:value={formData.nationate}
-                        class="form__input"
                         on:change={saveFormState}
+                        class="form__input"
+                        name=""
+                        id=""
+                        bind:value={formData.nationate}
                       >
-                        <option
-                          value=""
-                          disabled
-                          selected={!formData.nationate}
+                        <option value="" selected={!formData.nationate}
+                          >Veuillez sélectionner une option</option
                         >
-                          Veuillez sélectionner une option
-                        </option>
-
                         {#each values.nationate as nationate}
                           <option
                             value={nationate.id}
@@ -1301,44 +1295,22 @@
                   <!--   on:click={clickPaiement} -->
                   <div class="grid grid-cols-1 gap-20 flex justify-center">
                     <div class="">
-                      {#if !isPaiementDone}
+                      {#if isPaiementDone == false}
                         <p>
                           Veillez vous rendre sur le site de votre banque et
                           effectuer le paiement.
                         </p>
                         <br />
-
-                        <!--  <button
-                          id="reloadPaiementLsssink"
-                          class="px-6 py-3 bg-green-500 text-white font-medium rounded-lg shadow-lg hover:bg-green-500 transition duration-300"
-                          on:click={clickPaiement}
-                        >
-                          Effectuer le paiements
-                        </button> -->
                       {/if}
-                      {#if isPaiementDone}
+                      {#if isPaiementDone == true}
                         <p>
-                          Veillez finaliser votre inscription en cliquant sur le
-                          bouton ci-dessous.
+                          Votre inscription à été effectué avec success,veillez
+                          vous connecter.
                         </p>
                         <br />
-                        <!--  <button
-                          type="button"
-                          id="r"
-                          class="px-6 py-3 bg-green-500 text-white font-medium rounded-lg shadow-lg hover:bg-green-500 transition duration-300"
-                          on:click={submitForm}
-                          disabled={!isPaiementDone}
-                        >
-                          Finaliser l'inscription
-                        </button> -->
                       {/if}
 
                       <br />
-                      <!--  <p>
-                            Une fois le paiements effectué, veuillez renseigner
-                            l'identifiant de la transaction pour valider votre
-                            inscription.
-                          </p> -->
                     </div>
                   </div>
                 </div>
@@ -1349,7 +1321,7 @@
             <div class="form__grup">
               {#if step > 1}
                 <button
-                  disabled={authenticating == true }
+                  disabled={authenticating == true || isPaiementDone == true}
                   type="button"
                   class="buton buton--kirmizi"
                   on:click={prevStep}>← RETOUR</button
@@ -1369,13 +1341,13 @@
                   on:click={nextStep}>SUIVANT →</button
                 >
               {:else}
-                {#if !isPaiementDone}
+                {#if isPaiementDone == false }
                   <button
                     type="button"
                     on:click={clickPaiement}
                     class="buton buton--kirmizi bg-green-500"
                   >
-                    {#if authenticating }
+                    {#if authenticating} 
                       <div class="grid grid-cols-2">
                         <div>
                           <Spinner />
@@ -1386,8 +1358,16 @@
                       Effectuer le paiement
                     {/if}
                   </button>
+                {:else}
+                  <button
+                    type="button"
+                    on:click={connexion}
+                    class="buton buton--kirmizi bg-green-500"
+                  >
+                    Connectez vous
+                  </button>
                 {/if}
-               <!--  {#if isPaiementDone}
+                <!--  {#if isPaiementDone}
                   <button
                     type="submit"
                     on:click={submitForm}

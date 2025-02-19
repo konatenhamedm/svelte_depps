@@ -30,6 +30,9 @@
       } else {
         message = "Veuillez vérifier vos identifiants";
         authenticating = false;
+        setTimeout(() => {
+          message = ""; // Efface le message après 3 secondes
+        }, 3000);
       }
 	  authenticating = false;
     } catch (error) {

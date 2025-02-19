@@ -14,7 +14,16 @@ export default {
           start: '#4b9bd8',
           end: '#7158be'
         }
-      }
+      },
+      animation: {
+        fadeOut: 'fadeOut 20s ease-out forwards',
+      },
+      keyframes: {
+        fadeOut: {
+          '0%': { opacity: "1" },
+          '100%': { opacity: "0" },
+        },
+      },
     }
   },
 

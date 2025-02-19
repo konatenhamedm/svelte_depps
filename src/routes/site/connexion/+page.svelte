@@ -1,11 +1,12 @@
 <script lang="ts">
   import { goto } from "$app/navigation";
   import Notification from "$components/_includes/Notification.svelte";
+  import Spinner from "$components/_skeletons/Spinner.svelte";
   import Footer from "$components/Footer.svelte";
   import Header from "$components/Header.svelte";
   import Slide from "$components/Slide.svelte";
   import { loginloginUserFront } from "$lib/auth";
- 
+
   let showNotification = false;
   let notificationMessage = "";
   let notificationType = "info";
@@ -14,11 +15,10 @@
   let password = "";
   let authenticating = false;
   let showPassword = false; // To toggle password visibility
-  let message = "";
+  $: message = "";
   let error = "";
   export let data; // Récupérer les données du layout
   let user = data?.user;
-
 
   let passwordWarning = "";
   let isPasswordValid = false;
@@ -30,12 +30,16 @@
       const success = await loginloginUserFront(username, password);
 
       if (success.token != null) {
-        
         window.location.href = "/site/dashboard";
         /* goto(`http://localhost:5173/site/dashboard`); */
       } else {
         message = "Veuillez vérifier vos identifiants";
-        authenticating = false;
+        notificationMessage = "Veuillez vérifier vos identifiants";
+        showNotification = true;
+
+        setTimeout(() => {
+          message = ""; // Efface le message après 3 secondes
+        }, 3000);
       }
       authenticating = false;
     } catch (error) {
@@ -54,8 +58,8 @@
   style="border-color: rgb(113, 88, 190); transform: translate(333px, 673px);"
 ></div>
 <div id="">
-  <Header user={user} />
-  <Slide user={user} />
+  <Header {user} />
+  <Slide {user} />
   <main style="padding-top:200px">
     <!--İletişim Form Alanı-->
     <section class="iletisim-form-alani">
@@ -69,7 +73,7 @@
             on:submit|preventDefault={handleSubmit}
             class="form login_customerh"
           >
-          <!--   <input
+            <!--   <input
               name="token"
               value="2ab526b357c8673cc0d716c6898de772e274bc93412f7c60044d360d7d4a497e43fcd594a96add98"
               type="hidden"
@@ -104,20 +108,31 @@
               <button
                 class="buton buton--kirmizi"
                 style="width:100%"
-                id="login_customers">SE CONNECTER</button
+                id="login_customers"
               >
+                {#if authenticating}
+                  <div class="grid grid-cols-2">
+                    <div>
+                      <Spinner />
+                    </div>
+                    <div>SE CONNECTER</div>
+                  </div>
+                {:else}
+                  SE CONNECTER
+                {/if}
+              </button>
             </div>
             <br />
 
-            {#if !authenticating && message !== ""}
-				<div
-				  class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative"
-				  role="alert"
-				>
-				  <strong class="font-bold">Oups erreur!</strong>
-				  <span class="block sm:inline">{message}</span>
-				</div>
-			  {/if}
+            {#if authenticating == false && message !== ""}
+              <div
+                class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative"
+                role="alert"
+              >
+                <strong class="font-bold">Oups erreur!</strong>
+                <span class="block sm:inline">{message}</span>
+              </div>
+            {/if}
           </form>
         </div>
       </div>
@@ -142,18 +157,22 @@
   </style>
   <Footer />
 </div>
+
+{#if showNotification}
+  <Notification
+    message={notificationMessage}
+    type={notificationType}
+    duration={5000}
+  />
+{/if}
+
 <style>
-	@keyframes spin {
-	  from {
-		transform: rotate(0deg);
-	  }
-	  to {
-		transform: rotate(360deg);
-	  }
-	}
-  </style>
-  
-  {#if showNotification}
-	<Notification message={notificationMessage} type={notificationType} duration={5000} />
-  {/if}
-  
+  @keyframes spin {
+    from {
+      transform: rotate(0deg);
+    }
+    to {
+      transform: rotate(360deg);
+    }
+  }
+</style>
