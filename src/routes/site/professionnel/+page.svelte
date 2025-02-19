@@ -1321,7 +1321,7 @@
             <div class="form__grup">
               {#if step > 1}
                 <button
-                  disabled={authenticating == true || isPaiementDone == true}
+                  disabled={authenticating == true || isPaiementDone == false}
                   type="button"
                   class="buton buton--kirmizi"
                   on:click={prevStep}>← RETOUR</button
