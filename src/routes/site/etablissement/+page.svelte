@@ -333,6 +333,7 @@
   }
   let authenticating_submit = false;
   // 🔹 Soumission du formulaire
+  // 🔹 Soumission du formulaire
   function submitForm() {
     if (validateStep()) {
       // Créer un FormData pour les données du formulaire
@@ -342,18 +343,12 @@
         formDatas.append(key, formData[key]);
       });
 
-      // Ajouter les données de référence stockées en localStorage
       const reference = localStorage.getItem("reference");
       if (reference) {
         formDatas.append("reference", reference);
       }
-      /* 
-    // Ajouter les autres données du formulaire
-    Object.keys(formDataState).forEach((key) => {
-      formData.append(key, formDataState[key]);
-    }); */
+      formDatas.append("type", "professionnel");
 
-      // Récupérer les fichiers stockés en localStorage
       const selectedFilesFromStorage = JSON.parse(
         localStorage.getItem("selectedFiles")
       );
@@ -363,10 +358,6 @@
         Object.keys(selectedFilesFromStorage).forEach((fieldName) => {
           const fileData = selectedFilesFromStorage[fieldName];
           if (fileData && fileData.data) {
-            // Ajouter chaque fichier en tant que base64 (si tu veux envoyer en base64)
-            // formData.append(fieldName, fileData.data, fileData.name);
-
-            // Si tu veux envoyer le fichier en tant qu'objet Blob, tu peux utiliser cette ligne
             const byteCharacters = atob(fileData.data.split(",")[1]);
             const byteArrays = [];
 
@@ -391,27 +382,30 @@
         });
       }
 
-      authenticating_submit = true;
-      // Envoi des données au serveur
-      fetch("http://depps.leadagro.net/api/etablissement/create", {
+      authenticating = true;
+
+      fetch("https://depps.leadagro.net/api/paiement/paiement", {
         method: "POST",
         body: formDatas
       })
         .then((response) => response.json())
         .then((result) => {
           if (result.errors && Object.keys(result.errors).length > 0) {
-            console.log(result.errors);
-            authenticating_submit = false;
+            authenticating = false;
             messagefile = result.errors;
+            console.log(result.errors);
           } else {
-            // Rediriger l'utilisateur après une soumission réussie
-            window.location.href = "/site/connexion";
-            localStorage.clear(); // Nettoyer les données du localStorage
+            if (result.url) {
+              localStorage.setItem("reference", result.reference);
+
+              window.location.href = result.url + "?return=1"; // 🔥 Ajout du paramètre `return`
+            }
           }
         })
         .catch((error) => {
-          console.log("Erreur lors de la soumission du formulaire:", error);
-          authenticating_submit = false;
+          console.error("Erreur paiements :", error);
+          isPaiementProcessing = false;
+          let authenticating = false;
         });
     }
   }
@@ -443,20 +437,10 @@
     formDatas.append("numero", formData.contactEntreprise);
     formDatas.append("type", "etablissement");
 
-    /*  const selectedFilesFromStorage = JSON.parse(
+    const selectedFilesFromStorage = JSON.parse(
       localStorage.getItem("selectedFiles")
     );
- */
 
-    let selectedFilesFromStorage = null;
-    if (selectedFiles) {
-      try {
-        selectedFilesFromStorage = JSON.parse(selectedFiles);
-        localStorage.getItem("selectedFiles");
-      } catch (error) {
-        console.error("Erreur lors du parsing JSON de selectedFiles :", error);
-      }
-    }
     if (selectedFilesFromStorage) {
       // Ajouter chaque fichier au FormData
       Object.keys(selectedFilesFromStorage).forEach((fieldName) => {
@@ -491,7 +475,7 @@
         authenticating = false;
 
         if (result.data.url) {
-          //localStorage.setItem("reference", result.data.reference);
+          localStorage.setItem("reference", result.data.reference);
           window.location.href = result.data.url + "?return=1"; // 🔥 Ajout du paramètre `return`
         }
       })
