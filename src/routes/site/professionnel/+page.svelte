@@ -1295,14 +1295,14 @@
                   <!--   on:click={clickPaiement} -->
                   <div class="grid grid-cols-1 gap-20 flex justify-center">
                     <div class="">
-                      {#if isPaiementDone == false}
+                      {#if isPaiementDone == true }
                         <p>
                           Veillez vous rendre sur le site de votre banque et
                           effectuer le paiement.
                         </p>
                         <br />
                       {/if}
-                      {#if isPaiementDone == true}
+                      {#if isPaiementDone == false }
                         <p>
                           Votre inscription à été effectué avec success,veillez
                           vous connecter.
@@ -1341,7 +1341,7 @@
                   on:click={nextStep}>SUIVANT →</button
                 >
               {:else}
-                {#if isPaiementDone == false }
+                {#if isPaiementDone == true }
                   <button
                     type="button"
                     on:click={clickPaiement}
@@ -1359,7 +1359,7 @@
                     {/if}
                   </button>
                 {/if}
-                {#if isPaiementDone == true }
+                {#if isPaiementDone == false  }
                   <button
                     type="button"
                     on:click={connexion}
