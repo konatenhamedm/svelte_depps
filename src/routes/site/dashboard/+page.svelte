@@ -21,7 +21,7 @@
     goto("/");
   }
   let cards = [
-    { icon: 'fas fa-folder-open', text: 'Mise à jour du dossier', link: 'profil' },
+    { icon: 'fas fa-folder-open', text: 'Mise à jour du dossier', link: 'dossiers' },
     { icon: 'fas fa-bell', text: 'Alertes', link: 'alerte' },
     { icon: 'fas fa-comments', text: 'MyDEPPS chat', link: 'chatbox' },
     { icon: 'fas fa-book', text: 'profil', link: 'profil' },
