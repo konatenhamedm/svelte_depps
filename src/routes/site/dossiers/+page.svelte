@@ -9,14 +9,13 @@
     let user = data?.user;
     let activeTab = 'step2';
     let formData = {
-        // Personal Informations
         genre: "",
         civilite: "",
         nom: "",
         prenoms: "",
         nationalite: "",
         dateNaissance: "",
-        numero: "",
+        number: "",
         address: "",
         lieuResidence: "",
         diplome: "",
@@ -49,39 +48,113 @@
         organisationAnnee: ""
     };
 
-    const specialites = ['Spécialité 1', 'Spécialité 2'];
-    const nationalites = ['Nationalité 1', 'Nationalité 2'];
-    const genres = ['Masculin', 'Féminin', 'Autre'];
-    const civilites = ['M.', 'Mme', 'Mlle'];
+    let specialites = [];
+    let genres = [];
+    let civilites = [];
+    let villes = [];
+
+
     const situations = ['Célibataire', 'Marié(e)', 'Divorcé(e)', 'Veuf(ve)'];
     const situationsPro = ['Salarié', 'Indépendant', 'Sans emploi', 'Étudiant'];
 
     const handleSubmit = async () => {
         try {
-            const userId = user?.id || '/* insert user id */';
-            const response = await fetch(`https://depps.leadagro.net/api/user/admin/update/${userId}`, {
+            const formDataToSend = new FormData();
+
+            // Convertir l'objet formData en FormData
+            for (const [key, value] of Object.entries(formData)) {
+                // Pour les objets avec ID (comme les sélections)
+                if (typeof value === 'object' && value !== null && value.id) {
+                    formDataToSend.append(key, value.id);
+                }
+                // Pour les fichiers
+                else if (value instanceof File) {
+                    formDataToSend.append(key, value);
+                }
+                // Pour les dates
+                else if (key.includes('date') && value) {
+                    const formattedDate = new Date(value).toISOString().split("T")[0];
+                    formDataToSend.append(key, formattedDate);
+                }
+                // Pour toutes les autres valeurs
+                else if (value !== undefined && value !== null) {
+                    formDataToSend.append(key, value);
+                }
+            }
+
+            const userId = user?.personneId;
+            const response = await fetch(`https://depps.leadagro.net/api/professionnel/update/${userId}`, {
                 method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(formData)
+                body: formDataToSend
             });
+
             if (response.ok) {
-                alert('Mise à jour réussie!');
+                console.log('Mise à jour réussie!',response);
             }
         } catch (error) {
             console.error('Erreur lors de la mise à jour:', error);
         }
     };
 
+    function formatDateForInput(dateString) {
+        if (!dateString) return "";
+        try {
+            const date = new Date(dateString);
+            return date.toISOString().split('T')[0];
+        } catch (e) {
+            console.error("Erreur de formatage de date:", e);
+            return "";
+        }
+    }
+
     async function getUserInfos() {
         try {
-            const userId = user?.id;
+            const userId = user?.personneId;
             const response = await apiFetch(true, `/professionnel/get/one/${userId}`);
             console.log("response before condition", response);
-            if (response.code) {
-                formData = await response.data
-                console.log("content formData", formData);
+            if (response.code === 200 && response.data) {
+                const apiData = response.data;
+                console.log("content api data", apiData);
+
+                formData = {
+                    genre: apiData.genre ? apiData.genre.id : "",
+                    civilite: apiData.civilite ? apiData.civilite.id : "",
+                    nom: apiData.nom || "",
+                    prenoms: apiData.prenoms || "",
+                    nationalite: apiData.nationalite ? apiData.nationalite.id : "",
+                    dateNaissance: formatDateForInput(apiData.dateNaissance),
+                    number: apiData.number || "",
+                    address: apiData.address || "",
+                    lieuResidence: apiData.lieuResidence || "",
+                    diplome: apiData.diplome || "",
+                    dateDiplome: formatDateForInput(apiData.dateDiplome),
+                    lieuDiplome: apiData.lieuDiplome || "",
+                    situation: apiData.situation || "",
+
+                    profession: apiData.profession || "",
+                    situationPro: apiData.situationPro || "",
+                    specialite: apiData.specialite ? apiData.specialite.id : "",
+                    emailPro: apiData.emailPro || "",
+                    contactPro: apiData.contactPro || "",
+                    professionnel: apiData.professionnel || "",
+                    ville: apiData.ville ? apiData.ville.id : "",
+                    dateEmploi: formatDateForInput(apiData.dateEmploi),
+
+                    photo: apiData.photo || "",
+                    cni: apiData.cni || "",
+                    casier: apiData.casier || "",
+                    diplomeFile: apiData.diplomeFile || "",
+                    certificat: apiData.certificat || "",
+                    cv: apiData.cv || "",
+
+                    // Organisation
+                    appartenirOrganisation: apiData.appartenirOrganisation !== null ? apiData.appartenirOrganisation : false,
+                    organisationNom: apiData.organisationNom || "",
+                    organisationNumero: apiData.organisationNumero || "",
+                    organisationAnnee: apiData.organisationAnnee || ""
+                };
+
+                console.log("Données chargées:", formData);
             } else {
                 console.error("Erreur API", response.status);
             }
@@ -90,13 +163,40 @@
         }
     }
 
-    onMount(() => {
-        getUserInfos();
+    async function loadReferenceData() {
+        try {
+            const genresResponse = await apiFetch(true, '/genre');
+            if (genresResponse.code === 200) {
+                genres = genresResponse.data || [];
+            }
+
+            const civilitesResponse = await apiFetch(true, '/civilite');
+            if (civilitesResponse.code === 200) {
+                civilites = civilitesResponse.data || [];
+            }
+
+            const specialitesResponse = await apiFetch(true, '/specialite');
+            if (specialitesResponse.code === 200) {
+                specialites = specialitesResponse.data || [];
+            }
+
+            const villesResponse = await apiFetch(true, '/ville');
+            if (villesResponse.code === 200) {
+                villes = villesResponse.data || [];
+            }
+        } catch (error) {
+            console.error("Erreur lors du chargement des références:", error);
+        }
+    }
+
+    onMount(async () => {
+        await loadReferenceData();
+        await getUserInfos();
     });
 </script>
 
-<Header user={user} />
-<Slide user={user} />
+<Header user={user}/>
+<Slide user={user}/>
 <div class="w-full mx-auto p-4 content-sec">
     <!-- Tabs Navigation -->
     <div class="mb-4 border-b border-gray-200">
@@ -150,7 +250,7 @@
                         >
                             <option value="">Sélectionner un genre</option>
                             {#each genres as genre}
-                                <option value={genre}>{genre}</option>
+                                <option value={genre.id}>{genre.libelle}</option>
                             {/each}
                         </select>
                     </div>
@@ -163,7 +263,7 @@
                         >
                             <option value="">Sélectionner une civilité</option>
                             {#each civilites as civilite}
-                                <option value={civilite}>{civilite}</option>
+                                <option value={civilite.id}>{civilite.libelle}</option>
                             {/each}
                         </select>
                     </div>
@@ -184,19 +284,6 @@
                                 bind:value={formData.prenoms}
                                 class="w-full p-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                         />
-                    </div>
-
-                    <div class="space-y-2">
-                        <label class="block text-sm font-medium text-gray-700">Nationalité</label>
-                        <select
-                                bind:value={formData.nationalite}
-                                class="w-full p-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                        >
-                            <option value="">Sélectionner une nationalité</option>
-                            {#each nationalites as nationalite}
-                                <option value={nationalite}>{nationalite}</option>
-                            {/each}
-                        </select>
                     </div>
 
                     <div class="space-y-2">
@@ -293,15 +380,11 @@
 
                     <div class="space-y-2">
                         <label class="block text-sm font-medium text-gray-700">Situation Professionnelle</label>
-                        <select
+                        <input
+                                type="text"
                                 bind:value={formData.situationPro}
                                 class="w-full p-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                        >
-                            <option value="">Sélectionner une situation</option>
-                            {#each situationsPro as situation}
-                                <option value={situation}>{situation}</option>
-                            {/each}
-                        </select>
+                        />
                     </div>
 
                     <div class="space-y-2">
@@ -312,7 +395,7 @@
                         >
                             <option value="">Sélectionner une spécialité</option>
                             {#each specialites as specialite}
-                                <option value={specialite}>{specialite}</option>
+                                <option value={specialite.id}>{specialite.libelle}</option>
                             {/each}
                         </select>
                     </div>
@@ -346,11 +429,15 @@
 
                     <div class="space-y-2">
                         <label class="block text-sm font-medium text-gray-700">Ville d'exercice</label>
-                        <input
-                                type="text"
+                        <select
                                 bind:value={formData.ville}
                                 class="w-full p-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                        />
+                        >
+                            <option value="">Sélectionner une ville</option>
+                            {#each villes as ville}
+                                <option value={ville.id}>{ville.libelle}</option>
+                            {/each}
+                        </select>
                     </div>
 
                     <div class="space-y-2">
@@ -371,6 +458,17 @@
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div class="space-y-2">
                         <label class="block text-sm font-medium text-gray-700">Photo</label>
+                        {#if formData.photo && formData.photo.url}
+                            <div class="flex items-center mb-2">
+                                <span class="text-sm text-gray-500 mr-2">Fichier actuel : {formData.photo.alt}</span>
+                                {#if formData.photo.url === "pdf"}
+                                    <span class="px-2 py-1 bg-gray-100 text-gray-800 text-xs rounded">PDF</span>
+                                {:else}
+                                    <img src={formData.photo.path + "/" + formData.photo.alt} alt="Photo"
+                                         class="h-16 w-16 object-cover rounded"/>
+                                {/if}
+                            </div>
+                        {/if}
                         <input
                                 type="file"
                                 accept="image/*"
@@ -381,6 +479,11 @@
 
                     <div class="space-y-2">
                         <label class="block text-sm font-medium text-gray-700">CNI</label>
+                        {#if formData.cni && formData.cni.url}
+                            <div class="flex items-center mb-2">
+                                <span class="text-sm text-gray-500">Fichier actuel : {formData.cni.alt}</span>
+                            </div>
+                        {/if}
                         <input
                                 type="file"
                                 on:change={(e) => formData.cni = e.target.files[0]}
@@ -390,6 +493,11 @@
 
                     <div class="space-y-2">
                         <label class="block text-sm font-medium text-gray-700">Casier judiciaire</label>
+                        {#if formData.casier && formData.casier.url}
+                            <div class="flex items-center mb-2">
+                                <span class="text-sm text-gray-500">Fichier actuel : {formData.casier.alt}</span>
+                            </div>
+                        {/if}
                         <input
                                 type="file"
                                 on:change={(e) => formData.casier = e.target.files[0]}
@@ -399,6 +507,11 @@
 
                     <div class="space-y-2">
                         <label class="block text-sm font-medium text-gray-700">Diplôme</label>
+                        {#if formData.diplomeFile && formData.diplomeFile.url}
+                            <div class="flex items-center mb-2">
+                                <span class="text-sm text-gray-500">Fichier actuel : {formData.diplomeFile.alt}</span>
+                            </div>
+                        {/if}
                         <input
                                 type="file"
                                 on:change={(e) => formData.diplomeFile = e.target.files[0]}
@@ -408,6 +521,11 @@
 
                     <div class="space-y-2">
                         <label class="block text-sm font-medium text-gray-700">Certificat</label>
+                        {#if formData.certificat && formData.certificat.url}
+                            <div class="flex items-center mb-2">
+                                <span class="text-sm text-gray-500">Fichier actuel : {formData.certificat.alt}</span>
+                            </div>
+                        {/if}
                         <input
                                 type="file"
                                 on:change={(e) => formData.certificat = e.target.files[0]}
@@ -417,6 +535,11 @@
 
                     <div class="space-y-2">
                         <label class="block text-sm font-medium text-gray-700">CV</label>
+                        {#if formData.cv && formData.cv.url}
+                            <div class="flex items-center mb-2">
+                                <span class="text-sm text-gray-500">Fichier actuel : {formData.cv.alt}</span>
+                            </div>
+                        {/if}
                         <input
                                 type="file"
                                 on:change={(e) => formData.cv = e.target.files[0]}
@@ -503,6 +626,7 @@
     .content-sec {
         margin-top: 160px;
     }
+
     .btn-tabs {
         color: black !important;
         font-size: 14px;
