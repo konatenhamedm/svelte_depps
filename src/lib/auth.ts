@@ -1,7 +1,7 @@
 import axios from 'axios';
 import cookie from "cookie";
 import type { User } from '../types';
-import { BASE_URL_API, BASE_URL_API_V2 } from './api';
+import { BASE_URL_API } from './api';
 
 
 export async function login(username_field: string, password: string) {
@@ -35,7 +35,7 @@ export async function login(username_field: string, password: string) {
 }
 export async function loginloginUserFront(username_field: string, password: string) {
   try {
-      const response = await fetch(`${BASE_URL_API_V2}/login_check`, {
+      const response = await fetch(`${BASE_URL_API}/login_check`, {
           method: 'POST',
           headers: {
               'Content-Type': 'application/json'
