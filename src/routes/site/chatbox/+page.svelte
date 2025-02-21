@@ -3,6 +3,8 @@
     import Slide from "$components/Slide.svelte";
     import { apiFetch } from "$lib/api";
     import { onMount } from "svelte";
+    import UserListSkeleton from "$components/_skeletons/userList.svelte";
+
 
     export let data;
     let user = data?.user;
@@ -115,13 +117,17 @@
             <!-- Liste des utilisateurs -->
             <div class="user-list">
                 <h2>Utilisateurs</h2>
-                <ul>
-                    {#each users as user}
-                        <li>
-                            <button class="bg-gradient-to-r from-gradient-start to-gradient-end" on:click={() => selectUser(user)}>{user.username}</button>
-                        </li>
-                    {/each}
-                </ul>
+                {#if loading}
+                    <UserListSkeleton/>
+                {:else}
+                    <ul>
+                        {#each users as user}
+                            <li>
+                                <button class="bg-gradient-to-r from-gradient-start to-gradient-end" on:click={() => selectUser(user)}>{user.username}</button>
+                            </li>
+                        {/each}
+                    </ul>
+                {/if}
             </div>
 
             <!-- Section des messages -->
@@ -178,9 +184,9 @@
         background-color: #ffffff;
         border-right: 2px solid #e5e5e5;
         padding: 20px;
-        height: 90vh;
+        height: 70vh;
         box-sizing: border-box;
-        overflow-y: auto; /* Active le scroll vertical */
+        overflow-y: auto;
     }
 
 
@@ -205,7 +211,26 @@
         background-color: #ddd;
     }
 
+    .chatbox-container {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        width: 100%;
+        background-color: #f7f7f7;
+        padding-top: 95px;
+    }
 
+    .chatbox {
+        margin-top: 50px;
+        display: flex;
+        width: 70%;
+        max-width: 900px;
+        height: 70vh;
+        background: white;
+        border-radius: 10px;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        margin-bottom: 50px;
+    }
 
     .chat-container {
         flex: 1;
@@ -259,7 +284,7 @@
         display: flex;
         flex-direction: column;
         padding: 20px;
-        height: 90vh;
+        height: 70vh;
         box-sizing: border-box;
     }
 

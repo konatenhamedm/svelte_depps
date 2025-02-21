@@ -4,10 +4,12 @@
     import Header from "$components/Header.svelte";
     import Footer from "$components/Footer.svelte";
     import {apiFetch} from "$lib/api";
+    import SkeletonLoader from "$components/_skeletons/SkeletonLoader.svelte";
 
     export let data;
     let user = data?.user;
     let activeTab = 'step2';
+    let isLoading = true;
     let formData = {
         genre: "",
         civilite: "",
@@ -191,14 +193,19 @@
     }
 
     onMount(async () => {
+        isLoading = true;
         await loadReferenceData();
         await getUserInfos();
+        isLoading = false;
     });
 </script>
 
 <Header user={user}/>
 <Slide user={user}/>
-<div class="w-full mx-auto p-4 content-sec">
+{#if isLoading}
+    <SkeletonLoader {activeTab} />
+{:else}
+    <div class="w-full mx-auto p-4 content-sec">
     <!-- Tabs Navigation -->
     <div class="mb-4 border-b border-gray-200">
         <ul class="flex flex-wrap -mb-px text-sm font-medium text-center">
@@ -622,6 +629,7 @@
         </button>
     </div>
 </div>
+{/if}
 
 <style>
     .content-sec {
