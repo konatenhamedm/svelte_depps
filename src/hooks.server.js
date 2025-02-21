@@ -31,6 +31,9 @@ export async function handle({ event, resolve }) {
   if (event.url.pathname.startsWith("/site/dashboard") && !user) {
     return redirect(302, "/");
   }
+  if ((event.url.pathname.startsWith("/site/dossier") || event.url.pathname.startsWith("/site/alerte") || event.url.pathname.startsWith("/site/profil")) && !user) {
+    return redirect(302, "/");
+  }
 /*   if (user && !user.role.includes("ROLE_ADMIN")) {
     const response = new Response(null, {
       status: 302,

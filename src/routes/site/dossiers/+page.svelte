@@ -83,6 +83,7 @@
             }
 
             const userId = user?.personneId;
+            formDataToSend.append("userUpdate",userId );
             const response = await fetch(`https://depps.leadagro.net/api/professionnel/update/${userId}`, {
                 method: 'POST',
                 body: formDataToSend
