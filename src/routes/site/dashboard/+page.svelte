@@ -15,12 +15,15 @@
 
   export let data;
   let user = data?.user;
+  let cards:any = [];
 
   async function logout() {
     await fetch("/auth/logout", { method: "POST" });
     goto("/");
   }
-  let cards = [
+
+  if(user.type == "PROFESSIONNEL"){
+     cards = [
     { icon: 'fas fa-folder-open', text: 'Mise à jour du dossier', link: 'dossiers' },
     { icon: 'fas fa-bell', text: 'Alertes', link: 'alerte' },
     { icon: 'fas fa-comments', text: 'MyDEPPS chat', link: 'chatbox' },
@@ -28,6 +31,17 @@
     { icon: 'fas fa-file-pdf', text: "Guide utilisateur (PDF)", link: "/_files/GUIDE-D'UTILISATION.pdf" },
     { icon: 'fas fa-users', text: 'Forum', link: '#' }
   ];
+  }else{
+     cards = [
+    { icon: 'fas fa-folder-open', text: 'Mise à jour du dossier', link: 'dossiers_etablissement' },
+    { icon: 'fas fa-bell', text: 'Alertes', link: 'alerte' },
+    { icon: 'fas fa-comments', text: 'MyDEPPS chat', link: 'chatbox' },
+    { icon: 'fas fa-book', text: 'profil', link: 'profil' },
+    { icon: 'fas fa-file-pdf', text: "Guide utilisateur (PDF)", link: "/_files/GUIDE-D'UTILISATION.pdf" },
+    { icon: 'fas fa-users', text: 'Forum', link: '#' }
+  ];
+  }
+ 
 </script>
 
 <div

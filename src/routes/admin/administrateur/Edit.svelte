@@ -12,9 +12,21 @@
   } from "flowbite-svelte";
   import InputTextArea from "$components/inputs/InputTextArea.svelte";
   import InputSimplePassword from "$components/inputs/InputSimplePassword.svelte";
+  import InputSelect from "$components/inputs/InputSelect.svelte";
 
   export let open: boolean = false; // modal control
   let isLoad = false;
+
+  let typeUsers: any = [
+    {
+      'id':"ADMINISTRATEUR",
+      'libelle':"ADMINISTRATEUR"
+    },
+    {
+      'id':"INSTRUCTEUR",
+      'libelle':"INSTRUCTEUR"
+    }
+  ];
 
   let username: string = "";
   let prenoms: string = "";
@@ -22,6 +34,7 @@
   let phone: string = "";
   let password: string = "";
   let email: string = "";
+  let typeUser: string = "";
   let userUpdate: string = "";
 
   export let sizeModal: any = "lg";
@@ -35,7 +48,10 @@
     username = data?.username;
 
     email = data?.email;
+    nom = data.personne?.nom;
+    prenoms = data.personne?.prenoms;
     userUpdate = data?.userUpdate;
+    typeUser = data?.typeUser;
     password = "";
   }
 
@@ -46,13 +62,16 @@
       const formData = new FormData();
       formData.append("username", username);
       formData.append("password", password);
+      formData.append("nom", nom);
+      formData.append("prenoms", prenoms);
 
       formData.append("email", email);
       formData.append("userUpdate", userUpdateId);
+      formData.append("typeUser", typeUser);
       formData.append("Avatar", "null"); // Si Avatar est un fichier, il faut fournir un `File` ou `Blob`
 
       const res = await fetch(
-        BASE_URL_API_V2 + "/user/admin/update/" + data?.id,
+        BASE_URL_API + "/user/admin/update/" + data?.id,
         {
           method: "POST",
           body: formData,
@@ -86,7 +105,24 @@
   <!-- Modal body -->
   <div class="space-y-6 p-0">
     <form action="#" use:init>
-      <div class="grid grid-cols-6 gap-6">
+      <div class="grid grid-cols-6 gap-6 mb-4">
+        <InputSimple
+          fieldName="nom"
+          label="Nom"
+          bind:field={nom}
+          placeholder="entrez le nom"
+          class="w-full"
+        ></InputSimple>
+
+        <InputSimple
+          fieldName="prenoms"
+          label="Prenoms"
+          bind:field={prenoms}
+          placeholder="entrez le prénoms"
+          class="w-full"
+        ></InputSimple>
+      </div>
+      <div class="grid grid-cols-6 gap-6 mb-4">
         <InputSimple
           fieldName="username"
           label="Username"
@@ -105,7 +141,7 @@
       </div>
 
      
-      <div class="grid grid-cols-1 gap-6">
+      <div class="grid grid-cols-6 gap-6">
       
         <InputSimplePassword
           fieldName="password"
@@ -114,6 +150,12 @@
           placeholder="entrez le mot de passe"
           class="w-full"
         />
+        <InputSelect 
+        label="Icon"
+        bind:selectedId={typeUser}
+        datas={typeUsers}
+        id="icon"
+    />
       </div>
     </form>
   </div>

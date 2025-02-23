@@ -49,7 +49,7 @@
   async function fetchData() {
     loading = true; // Active le spinner de chargement
     try {
-      const res = await apiFetch(false, "/genre/");
+      const res = await apiFetch(true, "/genre/");
       console.log("LOLLLLLLLL", res);
       if (res) {
         main_data = res.data as sMenu[];

@@ -9,6 +9,8 @@
 
   let isLoad = false;
 
+  export let userUpdateId: any;
+
   export let open: boolean = false;
   export let sizeModal: any = "lg";
   export let data: Record<string, string> = {};
@@ -54,45 +56,45 @@
 
   function init(form: HTMLFormElement) {
     console.log(`je suis la data `, data);
-    numero = data.number || "";
-    nom = data.nom || "";
-    status = data.status || "";
-    prenoms = data.prenoms || "";
-    reason = data.reason || "";
-    addressPro = data.addressPro || "";
-    professionnel = data.professionnel || "";
-    profession = data.profession || "";
-    civilite = data.civilite.libelle || "";
-    dateNaissance = data.dateNaissance || "";
-    contactPro = data.contactPro || "";
-    dateDiplome = data.dateDiplome || "";
-    dateEmploi = data.dateEmploi || "";
-    diplome = data.diplome || "";
-    situationPro = data.situationPro || "";
-    lieuResidence = data.lieuResidence || "";
-    situation = data.situation || "";
-    typeUser = data.user?.typeUser || "";
-    userEmail = data.user?.email || "";
-    appartenirOrganisation = data.appartenirOrganisation || "";
-    photo = data.photo || "";
-    cni = data.cni || "";
-    CVpath = data.cv.path || "";
-    CValt = data.cv.alt || "";
+    numero = data.personne.number || "";
+    nom = data.personne.nom || "";
+    status = data.personne.status || "";
+    prenoms = data.personne.prenoms || "";
+    reason = data.personne.reason || "";
+    addressPro = data.personne.addressPro || "";
+    professionnel = data.personne.professionnel || "";
+    profession = data.personne.profession || "";
+    civilite = data.personne.civilite.libelle || "";
+    dateNaissance = data.personne.dateNaissance || "";
+    contactPro = data.personne.contactPro || "";
+    dateDiplome = data.personne.dateDiplome || "";
+    dateEmploi = data.personne.dateEmploi || "";
+    diplome = data.personne.diplome || "";
+    situationPro = data.personne.situationPro || "";
+    lieuResidence = data.personne.lieuResidence || "";
+    situation = data.personne.situation || "";
+    typeUser = data?.typeUser || "";
+    userEmail = data?.email || "";
+    appartenirOrganisation = data.personne.appartenirOrganisation || "";
+    photo = data.personne.photo || "";
+    cni = data.personne.cni || "";
+    CVpath = data.personne.cv.path || "";
+    CValt = data.personne.cv.alt || "";
 
-    Photopath = data.photo.path || "";
-    Photoalt = data.photo.alt || "";
+    Photopath = data.personne.photo.path || "";
+    Photoalt = data.personne.photo.alt || "";
 
-    diplomeFilePath = data.diplomeFile.path || "";
-    diplomeFileAlt = data.diplomeFile.alt || "";
+    diplomeFilePath = data.personne.diplomeFile.path || "";
+    diplomeFileAlt = data.personne.diplomeFile.alt || "";
 
-    cniPath = data.cni.path || "";
-    cniAlt = data.cni.alt || "";
+    cniPath = data.personne.cni.path || "";
+    cniAlt = data.personne.cni.alt || "";
 
-    casierPath = data.casier.path || "";
-    casierAlt = data.casier.alt || "";
+    casierPath = data.personne.casier.path || "";
+    casierAlt = data.personne.casier.alt || "";
 
-    certificatPath = data.certificat.path || "";
-    certificatAlt = data.certificat.alt || "";
+    certificatPath = data.personne.certificat.path || "";
+    certificatAlt = data.personne.certificat.alt || "";
   }
   let valid_endUser = {
         raison: "",
@@ -125,12 +127,13 @@
     function closeDialog() {
         isDialogOpen = false;
     }
-
     async function SaveFunction() {
+
+    
         isLoad = true;
         try {
             const res = await fetch(
-                BASE_URL_API +"/professionnel/active/" +data?.id,
+                BASE_URL_API +"/professionnel/active/" +data.personne?.id,
                 {
                     method: "PUT",
                     headers: {
@@ -140,6 +143,8 @@
                         status: valid_endUser.status,
                         raison:
                         valid_endUser.raison,
+                        userUpdate: userUpdateId,
+                        email: userEmail
                     }),
                 },
             );
@@ -160,7 +165,7 @@
         isLoad = true;
         try {
             const res = await fetch(
-                BASE_URL_API +"/professionnel/active/" +data?.id,
+                BASE_URL_API +"/professionnel/active/" +data.personne?.id,
                 {
                     method: "PUT",
                     headers: {
@@ -168,7 +173,9 @@
                     },
                     body: JSON.stringify({
                         status: etat,
-                        raison:""
+                        raison:"",
+                        userUpdate:userUpdateId,
+                        email: userEmail
                     }),
                 },
             );

@@ -9,6 +9,8 @@
 
   let isLoad = false;
 
+  export let userUpdateId: any;
+
   export let open: boolean = false;
   export let sizeModal: any = "lg";
   export let data: Record<string, string> = {};
@@ -16,7 +18,8 @@
 
   const url_image = "https://depps.leadagro.net/uploads/";
   let datas = {
-    id: "",
+    personne : {
+      id: "",
   typePersonne: "",
   genre: {
     id: "",
@@ -60,55 +63,57 @@
   appartenirOrganisation: "",
   status: "",
   reason: "",
-  user: {
+    },
+  
     id: "",
     username: "",
     email: "",
     typeUser: "",
-  }
+  
     };
  
 
   function init(form: HTMLFormElement) {
  
    datas = {
-    id: data.id,
-  typePersonne: data.typePersonne.libelle,
+    personne : {
+      id: data.personne.id,
+  typePersonne: data.personne.typePersonne.libelle,
   genre: {
-    id: data.genre.id,
-    libelle: data.genre.libelle,
+    id: data.personne.genre.id,
+    libelle: data.personne.genre.libelle,
   },
-  photo: data.photo ? {
-    path: data.photo.path,
-    alt: data.photo.alt,
-    url: data.photo.url,
+  photo: data.personne.photo ? {
+    path: data.personne.photo.path,
+    alt: data.personne.photo.alt,
+    url: data.personne.photo.url,
   } : {
     path: "",
     alt: "",
     url: "",
   },
 
-  cni: data.cni  ? {
-    path: data.cni.path,
-    alt: data.cni.alt,
-    url: data.cni.url,
+  cni: data.personne.cni  ? {
+    path: data.personne.cni.path,
+    alt: data.personne.cni.alt,
+    url: data.personne.cni.url,
   } : {
     path: "",
     alt: "",
     url: "",
   },
 
-  diplomeFile: data.diplomeFile ? {
-    path: data.diplomeFile.path,
-    alt: data.diplomeFile.alt,
-    url: data.diplomeFile.url,
+  diplomeFile: data.personne.diplomeFile ? {
+    path: data.personne.diplomeFile.path,
+    alt: data.personne.diplomeFile.alt,
+    url: data.personne.diplomeFile.url,
   } : {
     path: "",
     alt: "",
     url: "",
   }
   ,
-  cv: data.cv ?{
+  cv: data.personne.cv ?{
     path: "",
     alt: "",
     url: "",
@@ -117,7 +122,7 @@
     alt: "",
     url: "",
   },
-  dfe: data.dfe ?{
+  dfe: data.personne.dfe ?{
     path: "",
     alt: "",
     url: "",
@@ -126,7 +131,7 @@
     alt: "",
     url: "",
   },
-  ordreNational: data.ordreNational ? {
+  ordreNational: data.personne.ordreNational ? {
     path: "",
     alt: "",
     url: "",
@@ -135,22 +140,28 @@
     alt: "",
     url: "",  
   },
-  nomEntreprise: data.nomEntreprise,
-  natureEntreprise: data.natureEntreprise,
-  typeEntreprise: data.typeEntreprise,
-  contactEntreprise: data.contactEntreprise,
-  nomCompletTechnique: data.nomCompletTechnique,
-  appartenirOrganisation: data.appartenirOrganisation,
-  status: data.status,
-  reason: data.reason,
-  user: {
-    id: data.user.id,
-    username: data.user.username,
-    email: data.user.email,
-    typeUser: data.user.typeUser,
-  }
+  nomEntreprise: data.personne.nomEntreprise,
+  natureEntreprise: data.personne.natureEntreprise,
+  typeEntreprise: data.personne.typeEntreprise,
+  contactEntreprise: data.personne.contactEntreprise,
+  nomCompletTechnique: data.personne.nomCompletTechnique,
+  appartenirOrganisation: data.personne.appartenirOrganisation,
+  status: data.personne.status,
+  reason: data.personne.reason,
+    },
+ 
+    id: data.id,
+    username: data.username,
+    email: data.email,
+    typeUser: data.typeUser,
+  
     };
   }
+
+  let valid_endUser = {
+        raison: "",
+        status: "",
+    };
 
     let openShow: boolean = false;
     let current_data: any = {};
@@ -182,16 +193,18 @@
         isLoad = true;
         try {
             const res = await fetch(
-                BASE_URL_API +"/etablissement/active/" +data?.id,
+                BASE_URL_API +"/etablissement/active/" +data.personne?.id,
                 {
                     method: "PUT",
                     headers: {
                         "Content-Type": "application/json",
                     },
                     body: JSON.stringify({
-                        status: datas.status,
+                      status: valid_endUser.status,
                         raison:
-                        datas.reason,
+                        valid_endUser.raison,
+                        userUpdate: userUpdateId,
+                        email: datas.email
                     }),
                 },
             );
@@ -212,15 +225,17 @@
         isLoad = true;
         try {
             const res = await fetch(
-                BASE_URL_API +"/etablissement/active/" +data?.id,
+                BASE_URL_API +"/etablissement/active/" +data.personne?.id,
                 {
                     method: "PUT",
                     headers: {
                         "Content-Type": "application/json",
                     },
                     body: JSON.stringify({
-                        status: etat,
-                        raison:""
+                      status: valid_endUser.status,
+                      raison:"",
+                        userUpdate: userUpdateId,
+                        email: datas.email
                     }),
                 },
             );
@@ -248,7 +263,7 @@
           <InputSimple
             fieldName="nom"
             label="Nom entrepprise"
-            field={datas.nomEntreprise}
+            field={datas.personne.nomEntreprise}
             disabled={true}
           />
         </div>
@@ -256,7 +271,7 @@
           <InputSimple
             fieldName="prenoms"
             label="Nature entreprise"
-            field={datas.natureEntreprise}
+            field={datas.personne.natureEntreprise}
             disabled={true}
           />
         </div>
@@ -264,7 +279,7 @@
           <InputSimple
             fieldName="Email"
             label="Email"
-            field={datas.user.email}
+            field={datas.email}
             disabled={true}
           />
         </div>
@@ -274,7 +289,7 @@
           <InputSimple
             fieldName="nom"
             label="Contact entrepprise"
-            field={datas.contactEntreprise}
+            field={datas.personne.contactEntreprise}
             disabled={true}
           />
         </div>
@@ -282,7 +297,7 @@
           <InputSimple
             fieldName="prenoms"
             label="Nom technicien"
-            field={datas.nomCompletTechnique}
+            field={datas.personne.nomCompletTechnique}
             disabled={true}
           />
         </div>
@@ -290,7 +305,7 @@
           <InputSimple
             fieldName="Type personne"
             label="Type personne"
-            field={datas.typePersonne}
+            field={datas.personne.typePersonne}
             disabled={true}
           />
         </div>
@@ -301,7 +316,7 @@
           <div
             class="w-full h-9 flex justify-center bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 border border-blue-700 rounded"
           >
-            <a href={url_image + datas.photo.path + "/" + datas.photo.alt} target="_blank">
+            <a href={url_image + datas.personne.photo.path + "/" + datas.personne.photo.alt} target="_blank">
               Voir le photo
             </a>
           </div>
@@ -309,7 +324,7 @@
             class="w-full h-9 flex justify-center bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 border border-blue-700 rounded"
           >
             <a
-              href={url_image + datas.photo.path + "/" + datas.photo.alt}
+              href={url_image + datas.personne.photo.path + "/" + datas.personne.photo.alt}
               target="_blank"
             >
               Voir le diplome
@@ -319,7 +334,7 @@
           <div
             class="w-full h-9 flex justify-center bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 border border-blue-700 rounded"
           >
-            <a href={url_image + datas.photo.path + "/" + datas.photo.alt} target="_blank">
+            <a href={url_image + datas.personne.photo.path + "/" + datas.personne.photo.alt} target="_blank">
               Voir le casier
             </a>
           </div>
@@ -329,7 +344,7 @@
             class="w-full h-9 flex justify-center bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 border border-blue-700 rounded"
           >
             <a
-              href={url_image + datas.photo.path + "/" + datas.photo.alt}
+              href={url_image + datas.personne.photo.path + "/" + datas.personne.photo.alt}
               target="_blank"
             >
               Voir le certificat
@@ -338,7 +353,7 @@
           <div
             class="w-full h-9 flex justify-center bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 border border-blue-700 rounded"
           >
-            <a href={url_image + datas.photo.path + "/" + datas.photo.alt} target="_blank">
+            <a href={url_image + datas.personne.photo.path + "/" + datas.personne.photo.alt} target="_blank">
               Voir la photo
             </a>
           </div>
@@ -346,7 +361,7 @@
           <div
             class="w-full h-9 flex justify-center bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 border border-blue-700 rounded"
           >
-            <a href={url_image + datas.photo.path + "/" + datas.photo.alt} target="_blank">
+            <a href={url_image + datas.personne.photo.path + "/" + datas.personne.photo.alt} target="_blank">
               Voir cni
             </a>
           </div>
@@ -354,58 +369,58 @@
       </div>
 
       <br />
-
-      {#if datas.status === "attente"}
-        <fieldset class="border border-gray-300 rounded-md p-4">
-          <legend class="text-lg font-semibold text-blue-500">Traitement</legend
-          >
-          <div class="space-y-4">
+      {#if status === "attente"}
+      <fieldset class="border border-gray-300 rounded-md p-4">
+        <legend class="text-lg font-semibold text-blue-500">Traitement</legend>
+        <div class="space-y-4">
             <div class="flex items-center space-x-2">
-              <input
-                type="radio"
-                id="conforme"
-                name="profil"
-                value="acceptation"
-                bind:group={datas.status}
-                checked
-              />
-              <label for="conforme" class="text-gray-700 mt-2">Accepter</label>
+                <input
+                    type="radio"
+                    id="conforme"
+                    name="profil"
+                    value="acceptation"
+                    bind:group={valid_endUser.status}
+                    checked 
+                />
+                <label for="conforme" class="text-gray-700 mt-2">Accepter</label>
             </div>
             <div class="flex items-center space-x-2">
-              <input
-                type="radio"
-                id="unverified"
-                name="profil"
-                value="rejet"
-                bind:group={datas.status}
-              />
-              <label for="unverified" class="text-gray-700 mt-2">Refuser</label>
+                <input
+                    type="radio"
+                    id="unverified"
+                    name="profil"
+                    value="rejet"
+                    bind:group={valid_endUser.status}
+                />
+                <label for="unverified" class="text-gray-700 mt-2">Refuser</label>
             </div>
-            {#if datas.status === "rejet"}
-              <textarea
-                bind:value={datas.reason}
-                placeholder="Observation"
-                class="w-full border border-gray-300 rounded-md p-2"
-              ></textarea>
+            {#if valid_endUser.status === "rejet"}
+                <textarea
+                    bind:value={valid_endUser.raison}
+                    placeholder="Observation"
+                    class="w-full border border-gray-300 rounded-md p-2"
+                ></textarea>
             {/if}
-          </div>
-        </fieldset>
-      {/if}
-      {#if datas.status === "refuse"}
-        <fieldset class="border border-gray-300 rounded-md p-4">
-          <legend class="text-lg font-semibold text-blue-500">Traitement</legend
-          >
-          <div class="space-y-4">
-            <div
-              class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative"
-              role="alert"
-            >
-              <strong class="font-bold">Oups erreur!</strong>
-              <span class="block sm:inline">{datas.reason}</span>
-            </div>
-          </div>
-        </fieldset>
-      {/if}
+        </div>
+    </fieldset>
+    {/if }
+      {#if status === "refuse"}
+      <fieldset class="border border-gray-300 rounded-md p-4">
+        <legend class="text-lg font-semibold text-blue-500">Traitement</legend>
+        <div class="space-y-4">
+          <div
+          class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative"
+          role="alert"
+        >
+          <strong class="font-bold">Oups erreur!</strong>
+          <span class="block sm:inline">{reason}</span>
+        </div>
+           
+        </div>
+    </fieldset>
+    {/if }
+
+   
     </form>
   </div>
 
@@ -485,7 +500,7 @@
 
   <div slot="footer" class="w-full">
     <div class="w-full grid grid-cols-3">
-      {#if datas.status === "attente"}
+      {#if status === "attente"}
         <div class="col-span-2">
           {#if isLoad}
             <Button
@@ -511,9 +526,12 @@
               color="alternative"
               style="background-color: green !important; color: white;"
               on:click={SaveFunction}
+           
               type="submit">{"Traiter le dossier"}</Button
             >
           {/if}
+
+
 
           <!-- <Button
             color="alternative"
@@ -524,41 +542,38 @@
         </div>
       {:else}
         <div class="col-span-2">
-          {#if datas.status == "accepte" || datas.status == "valide" || datas.status == "renouvellement"}
-            {#if isLoad}
-              <Button
-                disabled={true}
-                color="alternative"
-                style="background-color: green !important; color: white;"
-                type="submit"
-              >
-                <div class="flex flex-row gap-2">
-                  <div
-                    class="w-3 h-3 rounded-full bg-white animate-bounce [animation-delay:.7s]"
-                  ></div>
-                  <div
-                    class="w-3 h-3 rounded-full bg-white animate-bounce [animation-delay:.3s]"
-                  ></div>
-                  <div
-                    class="w-3 h-3 rounded-full bg-white animate-bounce [animation-delay:.7s]"
-                  ></div>
-                </div>
-              </Button>
-            {:else}
-              <Button
-                color="alternative"
-                style="background-color: green !important; color: white;"
-                on:click={() =>
-                  datas.status === "accepte"
-                    ? SaveFunctionSingleMethode("validation")
-                    : datas.status === "valide"
-                      ? SaveFunctionSingleMethode("renouvellement")
-                      : SaveFunctionSingleMethode("mis_a_jour")}
-                type="submit"
-                >{#if datas.status === "accepte"}{"Valider l'inscription"}{:else if datas.status === "valide"}{"Renouveller l'inscription"}{:else if datas.status === "renouvellement"}{"Mise au jour de l'inscription"}{/if}</Button
-              >
-            {/if}
+          {#if status == 'accepte' || status == "valide" || status == "renouvellement"}
+          {#if isLoad}
+            <Button
+              disabled={true}
+              color="alternative"
+              style="background-color: green !important; color: white;"
+              type="submit"
+            >
+              <div class="flex flex-row gap-2">
+                <div
+                  class="w-3 h-3 rounded-full bg-white animate-bounce [animation-delay:.7s]"
+                ></div>
+                <div
+                  class="w-3 h-3 rounded-full bg-white animate-bounce [animation-delay:.3s]"
+                ></div>
+                <div
+                  class="w-3 h-3 rounded-full bg-white animate-bounce [animation-delay:.7s]"
+                ></div>
+              </div>
+            </Button>
+          {:else}
+          <Button
+            color="alternative"
+            style="background-color: green !important; color: white;"
+            on:click={() => status === "accepte" ? SaveFunctionSingleMethode("validation") : status === "valide" ? SaveFunctionSingleMethode("renouvellement") : SaveFunctionSingleMethode("mis_a_jour")}
+            type="submit"
+            >{#if status === "accepte"}{"Valider l'inscription"}{:else if status === "valide"}{"Renouveller l'inscription"}{:else if status === "renouvellement"}{"Mise au jour de l'inscription"}{/if}</Button
+          >
           {/if}
+          {/if}
+
+
         </div>
       {/if}
 

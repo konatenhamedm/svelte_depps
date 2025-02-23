@@ -97,7 +97,7 @@
      // Filtrage des données selon l'onglet actif
       // Filtrage des données selon l'onglet actif
     $: filteredData = main_data.filter(user => 
-        activeTab === "all" ? true : user.status === activeTab
+        activeTab === "all" ? true : user.personne.status === activeTab
     );
   
     $: totalPages = Math.max(1, Math.ceil(filteredData.length / get(pageSize)));
@@ -184,7 +184,7 @@
                             class="badge rounded-full px-2 py-0.5 text-xs ml-2 
                                 {activeTab === tab.key ? 'bg-gray-700 text-white' : 'bg-gray-300 text-black'}"
                         >
-                            {main_data.filter(user => tab.key === "all" || user.status === tab.key).length}
+                            {main_data.filter(user => tab.key === "all" || user.personne.status === tab.key).length}
                         </span>
                     </button>
                 {/each}
@@ -256,21 +256,21 @@
                     {#each paginatedProducts as item}
                       <TableBodyRow class="text-base border border-gray-300">
                         <TableBodyCell class="p-4 border border-gray-300"
-                          >{item.nom}</TableBodyCell
+                          >{item.personne.nom}</TableBodyCell
                         >
                         <TableBodyCell class="p-4 border border-gray-300"
-                          >{item.prenoms}</TableBodyCell
+                          >{item.personne.prenoms}</TableBodyCell
                         >
                         <TableBodyCell class="p-4 border border-gray-300"
-                          >{item.user.phone}</TableBodyCell
+                          >{item.phone}</TableBodyCell
                         >
                         <TableBodyCell class="p-4 border border-gray-300"
-                          >{item.user.email}</TableBodyCell
+                          >{item.email}</TableBodyCell
                         >
                         <TableBodyCell class="p-4 border border-gray-300"
-                          >{item.user.typeUser}</TableBodyCell
+                          >{item.typeUser}</TableBodyCell
                         >
-                         <TableBodyCell class="p-4 border border-gray-300">{item.status}</TableBodyCell>
+                         <TableBodyCell class="p-4 border border-gray-300">{item.personne.status}</TableBodyCell>
                                     
                        
                           
@@ -345,7 +345,7 @@
     sizeModal="xl"
     userUpdateId={user?.id}
   />
-  <Show bind:open={openShow} data={current_data} sizeModal="xl" />
+  <Show bind:open={openShow} data={current_data} sizeModal="xl" userUpdateId={user.id}/>
   <Delete bind:open={openDelete} data={current_data} />
   <style>
    

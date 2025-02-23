@@ -89,7 +89,7 @@
   // Filtrage des données selon l'onglet actif
   // Filtrage des données selon l'onglet actif
   $: filteredData = main_data.filter((user) =>
-    activeTab === "all" ? true : user.status === activeTab
+    activeTab === "all" ? true : user.personne.status === activeTab
   );
 
   $: totalPages = Math.max(1, Math.ceil(filteredData.length / get(pageSize)));
@@ -175,7 +175,7 @@
                     : 'bg-gray-300 text-black'}"
                 >
                   {main_data.filter(
-                    (user) => tab.key === "all" || user.status === tab.key
+                    (user) => tab.key === "all" || user.personne.status === tab.key
                   ).length}
                 </span>
               </button>
@@ -246,19 +246,19 @@
                   {#each paginatedProducts as item}
                     <TableBodyRow class="text-base border border-gray-300">
                       <TableBodyCell class="p-4 border border-gray-300"
-                        >{item.nomEntreprise}</TableBodyCell
+                        >{item.personne.nomEntreprise}</TableBodyCell
                       >
                       <TableBodyCell class="p-4 border border-gray-300"
-                        >{item.natureEntreprise}</TableBodyCell
+                        >{item.personne.natureEntreprise}</TableBodyCell
                       >
                       <TableBodyCell class="p-4 border border-gray-300"
-                        >{item.contactEntreprise}</TableBodyCell
+                        >{item.personne.contactEntreprise}</TableBodyCell
                       >
                       <TableBodyCell class="p-4 border border-gray-300"
-                        >{item.user.email}</TableBodyCell
+                        >{item.email}</TableBodyCell
                       >
                       <TableBodyCell class="p-4 border border-gray-300"
-                        >{item.nomCompletTechnique}</TableBodyCell
+                        >{item.personne.nomCompletTechnique}</TableBodyCell
                       >
                       
 
@@ -320,8 +320,7 @@
 
 <!-- Modales -->
 
-<Show bind:open={openShow} data={current_data} sizeModal="xl" />
-
+<Show bind:open={openShow} data={current_data} sizeModal="xl" userUpdateId={user.id}/>
 
 <style>
   .tab {

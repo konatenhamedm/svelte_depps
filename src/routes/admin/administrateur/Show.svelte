@@ -16,6 +16,8 @@
     username = data?.username;
 
     email = data?.email;
+	nom = data.personne?.nom;
+    prenoms = data.personne?.prenoms;
 	}
 </script>
 
@@ -28,8 +30,25 @@
 	<!-- Modal body -->
 	<div class="space-y-6 p-0">
 		<form action="#" use:init>
+			<div class="grid grid-cols-6 gap-6 mb-4">
+			  <InputSimple disabled
+				fieldName="nom"
+				label="Nom"
+				bind:field={nom}
+				placeholder="entrez le pseudo"
+				class="w-full"
+			  ></InputSimple>
+	  
+			  <InputSimple disabled
+				fieldName="prenoms"
+				label="Prénoms"
+				bind:field={prenoms}
+				placeholder="entrez email"
+				class="w-full"
+			  ></InputSimple>
+			</div>
 			<div class="grid grid-cols-6 gap-6">
-			  <InputSimple
+			  <InputSimple disabled
 				fieldName="username"
 				label="Username"
 				bind:field={username}
@@ -37,7 +56,7 @@
 				class="w-full"
 			  ></InputSimple>
 	  
-			  <InputSimple
+			  <InputSimple disabled
 				fieldName="email"
 				label="Email"
 				bind:field={email}

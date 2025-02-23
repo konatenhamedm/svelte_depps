@@ -23,13 +23,13 @@ export interface Transaction {
   channel: string;
   state: string;
   type: string;
-  user : {
+  user: {
     id: string;
     username: string;
     typeUser: string;
     email: string;
     payement: string;
-  },
+  };
   createdAt: string;
 }
 
@@ -61,7 +61,7 @@ export interface Civilite {
   libelle: string;
 }
 
-export interface Etablissement {
+/* export interface Etablissement {
   id: number;
   typePersonne: {
     id: number;
@@ -116,8 +116,7 @@ export interface Etablissement {
     typeUser: string;
   };
 }
-
-
+ */
 export interface Genre {
   id: string;
   libelle: string;
@@ -143,6 +142,11 @@ export interface Menu {
 export interface sMenu {
   id: number;
   libelle: string;
+}
+export interface StatsDashboard {
+  countEtablissement: number;
+  countProfessionnel: number;
+  professionnelAjour: string;
 }
 export interface Stats {
   civilite: string;
@@ -204,11 +208,11 @@ export interface UserAdmin {
   username: string;
   email: string;
   roles: string[];
-/*   nom: string; */
+  /*   nom: string; */
   /* prenoms: string;
   phone: string; */
- /*  status: string; */
- avatar: [];
+  /*  status: string; */
+  avatar: [];
   typeUser: string;
 }
 export interface Features {
@@ -419,33 +423,33 @@ export interface Select {
   libelle: string;
 }
 export interface professionnel {
-  nom: string;
-  prenoms: string;
-  phone: string;
+  username: string;
   email: string;
-  type: string;
-  status: string;
+  phone: string;
+  typeUser: string;
 
-  user: {
-    username: string;
-    email: string;
+  personne: {
+    nom: string;
+    prenoms: string;
     phone: string;
-    typeUser: string;
+    email: string;
+    type: string;
+    status: string;
   };
 }
 export interface Etablissement {
-  nom: string;
-  prenoms: string;
-  phone: string;
+  username: string;
   email: string;
-  type: string;
-  status: string;
+  phone: string;
+  typeUser: string;
 
-  user: {
-    username: string;
-    email: string;
+  personne: {
+    nom: string;
+    prenoms: string;
     phone: string;
-    typeUser: string;
+    email: string;
+    type: string;
+    status: string;
   };
 }
 export interface EndUser {
@@ -474,9 +478,7 @@ export interface EndUser {
   document_status: string; // Statut du document de l'utilisateur (peut être null)
 }
 
-
-
-export interface MembreEtablissement {
+/* export interface MembreEtablissement {
   id: number;
 
   typePersonneId: number;
@@ -521,4 +523,4 @@ export interface MembreEtablissement {
   dfePhysiqueId: number;
 
   inscriptionProfessionId: number;
-}
+} */
