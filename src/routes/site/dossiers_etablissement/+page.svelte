@@ -7,7 +7,7 @@
   import SkeletonLoader from "$components/_skeletons/SkeletonLoader.svelte";
   import Spinner from "$components/_skeletons/Spinner.svelte";
 
-  export let data../dossiers copy/$types.js;
+  export let data;
   let user = data?.user;
   let activeTab = "step2";
   let isLoading = true;
