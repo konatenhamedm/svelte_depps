@@ -123,7 +123,7 @@
         currentImage = imageUrl;
         isDialogOpen = true;
     }
-
+/* ddd */
     function closeDialog() {
         isDialogOpen = false;
     }
