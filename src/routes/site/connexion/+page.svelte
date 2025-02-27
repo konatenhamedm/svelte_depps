@@ -111,8 +111,8 @@
                 id="login_customers"
               >
                 {#if authenticating}
-                  <div class="grid grid-cols-2">
-                    <div>
+                  <div class="grid grid-cols-3">
+                    <div class="col-span-1">
                       <Spinner />
                     </div>
                     <div>SE CONNECTER</div>
