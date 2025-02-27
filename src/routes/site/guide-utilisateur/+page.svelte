@@ -1,119 +1,125 @@
-<script>
+<script lang="ts">
     import Slide from "$components/Slide.svelte";
     import Footer from "$components/Footer.svelte";
-
-    let files = [
-        { name: "Nom du rapport_Q1.csv", size: "15 MB", progress: 100 },
-        { name: "Nom du rapport_Q2.csv", size: "15 MB", progress: 80 },
-        { name: "Nom du rapport_Q3.csv", size: "15 MB", progress: 40 },
-    ];
+    import { faEye, faDownload, faFile, faChevronLeft, faChevronRight } from '@fortawesome/free-solid-svg-icons';
+    import Fa from "svelte-fa";
 
     export let data;
     let user = data?.user;
 
-    let uploading = true;
-    function attachFiles() {
-        uploading = false;
+    type Document = {
+        id: number,
+        libelle: string,
+        path: string,
+    };
+
+    const documents: Document[] = [
+        {
+            id: 1,
+            libelle: 'Contrat de service',
+            path: 'https://example.com/doc1.pdf'
+        },
+        {
+            id: 2,
+            libelle: 'Facture client',
+            path: 'https://example.com/doc2.pdf'
+        },
+        {
+            id: 3,
+            libelle: 'Rapport annuel',
+            path: 'https://example.com/doc3.pdf'
+        },
+        // Ajoutez plus de documents ici pour tester la pagination
+    ];
+
+    let currentPage = 1;
+    const itemsPerPage = 2; // Nombre de documents par page
+
+    // Calculer les documents à afficher pour la page courante
+    $: paginatedDocuments = documents.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
+
+    // Calculer le nombre total de pages
+    $: totalPages = Math.ceil(documents.length / itemsPerPage);
+
+    function handleView(doc: Document) {
+        window.open(doc.path, '_blank');
     }
 
-    function removeFile(index) {
-        files = files.filter((_, i) => i !== index);
+    function handleDownload(doc: Document) {
+        const link = document.createElement('a');
+        link.href = doc.path;
+        link.download = doc.libelle;
+        link.click();
     }
 
-    let fileInput;
-
-    function triggerFileInput() {
-        fileInput.click();
+    function nextPage() {
+        if (currentPage < totalPages) {
+            currentPage += 1;
+        }
     }
 
-    function handleFileUpload(event) {
-        const newFiles = Array.from(event.target.files).map(file => ({
-            name: file.name,
-            size: (file.size / (1024 * 1024)).toFixed(2) + " MB",
-            progress: 0
-        }));
-        files = [...files, ...newFiles];
-    }
-
-    function handleDrop(event) {
-        event.preventDefault();
-        const droppedFiles = Array.from(event.dataTransfer.files).map(file => ({
-            name: file.name,
-            size: (file.size / (1024 * 1024)).toFixed(2) + " MB",
-            progress: 0
-        }));
-        files = [...files, ...droppedFiles];
-    }
-
-    function allowDrop(event) {
-        event.preventDefault();
+    function prevPage() {
+        if (currentPage > 1) {
+            currentPage -= 1;
+        }
     }
 </script>
 
 <div id="guide-user">
     <Slide user={user} />
-    <div class="max-w-[100rem] mx-auto bg-white shadow-lg rounded-lg p-6 main-div">
-        <h2 class="text-lg font-semibold">Télécharger et joindre des fichiers</h2>
-        <p class="text-sm text-gray-500">Formats pris en charge : csv, xls, xlsx, pdf</p>
-
-        <!-- Zone de glisser-déposer -->
-        <div
-                class="border-2 border-dashed border-gray-300 rounded-lg mt-4 p-6 flex flex-col items-center text-center cursor-pointer"
-                on:click={triggerFileInput}
-                on:dragover={allowDrop}
-                on:drop={handleDrop}
-        >
-            <input
-                    type="file"
-                    accept=".csv,.xls,.xlsx,.pdf"
-                    multiple
-                    bind:this={fileInput}
-                    class="hidden"
-                    on:change={handleFileUpload}
-            />
-
-            <div class="w-16 h-16 flex items-center justify-center bg-gradient-to-r from-[#52c8e9] to-[#7158be] rounded-full">
-                <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 4v12m0 0l3-3m-3 3l-3-3m12 5a2 2 0 01-2 2H6a2 2 0 01-2-2v-6a2 2 0 012-2h1m10 0h1a2 2 0 012 2v6"></path>
-                </svg>
+    <div class="w-[55%] mx-auto bg-white rounded-lg shadow-lg main-div">
+        <div class="p-6">
+            <h1 class="text-2xl font-bold text-gray-800 mb-6">Liste des documents</h1>
+            <div class="divide-y divide-gray-200">
+                {#each paginatedDocuments as doc, i}
+                    <div class="flex items-center justify-between p-4 hover:bg-gray-50 transition-colors {i % 2 === 1 ? 'bg-gray-50' : 'bg-white'}">
+                        <div class="flex items-start gap-4">
+                            <div class="pt-1">
+                                <Fa icon={faFile} class="text-blue-500 text-xl" />
+                            </div>
+                            <div class="flex flex-col">
+                                <span class="text-md font-semibold text-gray-900">{doc.libelle}</span>
+                                <span class="text-xs text-gray-500">{doc.path}</span>
+                            </div>
+                        </div>
+                        <div class="flex items-center gap-3">
+                            <button
+                                    class="flex items-center view-button gap-2 px-4 py-2 text-sm text-gray-700  hover:text-blue-600 hover:bg-blue-50 rounded-md transition-all border border-gray-200"
+                                    on:click={() => handleView(doc)}
+                            >
+                                <Fa icon={faEye} class="text-sm" />
+                                <span>Voir</span>
+                            </button>
+                            <button
+                                    class="flex items-center gap-2 px-4 py-2 text-sm text-white bg-blue-600 hover:bg-blue-700 rounded-md transition-all"
+                                    on:click={() => handleDownload(doc)}
+                            >
+                                <Fa icon={faDownload} class="text-sm" />
+                                <span>Télécharger</span>
+                            </button>
+                        </div>
+                    </div>
+                {/each}
             </div>
-            <p class="mt-2 text-[#4b9bd8] font-medium">Cliquez pour télécharger ou faites glisser et déposez</p>
-            <p class="text-xs text-gray-400">Taille maximale du fichier : 50 MB.</p>
-        </div>
-
-        <!-- Liste des fichiers -->
-        <div class="mt-4 space-y-3">
-            {#each files as file, index}
-                <div class="flex items-center justify-between bg-gray-100 p-3 rounded-lg">
-                    <div class="flex items-center space-x-3">
-                        <div class="w-10 h-10 flex items-center justify-center bg-green-100 rounded-full">
-                            <svg class="w-6 h-6 text-green-600" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" d="M4 8h16M4 12h16m-7 4h7"></path>
-                            </svg>
-                        </div>
-                        <div>
-                            <p class="text-sm font-medium">{file.name}</p>
-                            <p class="text-xs text-gray-500">{file.size}</p>
-                        </div>
-                    </div>
-                    <div class="flex items-center space-x-2">
-                        <div class="w-24 bg-gray-200 h-2 rounded-full overflow-hidden">
-                            <div class="bg-gradient-to-r from-[#52c8e9] to-[#7158be] h-full" style="width: {file.progress}%"></div>
-                        </div>
-                        <button on:click={() => removeFile(index)} class="text-red-500 hover:text-red-700">
-                            ✕
-                        </button>
-                    </div>
-                </div>
-            {/each}
-        </div>
-
-        <!-- Boutons -->
-        <div class="flex justify-end mt-6 space-x-3">
-            <button class="px-4 py-2 text-gray-600 border border-gray-300 rounded-lg bg-black hover:bg-gray-100">Annuler</button>
-            <button on:click={attachFiles} class="px-4 py-2 text-white rounded-lg bg-[#4b9bd8] hover:bg-blue-600">
-                Joindre les fichiers
-            </button>
+            <div class="flex justify-between items-center mt-6">
+                <button
+                        class="flex items-center gap-2 px-4 py-2 text-sm text-gray-700 hover:text-blue-600 hover:bg-blue-50 rounded-md transition-all border border-gray-200"
+                        on:click={prevPage}
+                        disabled={currentPage === 1}
+                >
+                    <Fa icon={faChevronLeft} class="text-sm" />
+                    <span>Précédent</span>
+                </button>
+                <span class="text-sm text-gray-700">Page {currentPage} sur {totalPages}</span>
+                <button
+                        class="flex items-center gap-2 px-4 py-2 text-sm text-gray-700 hover:text-blue-600 hover:bg-blue-50 rounded-md transition-all border border-gray-200"
+                        on:click={nextPage}
+                        disabled={currentPage === totalPages}
+                >
+                    <span>Suivant</span>
+                    <Fa icon={faChevronRight} class="text-sm" />
+                </button>
+            </div>
         </div>
     </div>
     <Footer />
@@ -122,6 +128,11 @@
 <style>
     .main-div {
         margin-top: 170px;
-        margin-bottom: 130px;
+        margin-bottom: 150px;
+        border: 1px solid #e5e7eb;
+    }
+
+    .view-button{
+        background: #6e5dc1 !important;
     }
 </style>

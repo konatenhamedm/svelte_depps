@@ -28,8 +28,8 @@
     { icon: 'fas fa-bell', text: 'Alertes', link: 'alerte' },
     { icon: 'fas fa-comments', text: 'MyDEPPS chat', link: 'chatbox' },
     { icon: 'fas fa-book', text: 'profil', link: 'profil' },
-    { icon: 'fas fa-file-pdf', text: "Guide utilisateur (PDF)", link: "/_files/GUIDE-D'UTILISATION.pdf" },
-    { icon: 'fas fa-users', text: 'Forum', link: '#' }
+    { icon: 'fas fa-file-pdf', text: "Guide utilisateur (PDF)", link: "guide-utilisateur" },
+    { icon: 'fas fa-users', text: 'Forum', link: 'forum' }
   ];
   }else{
      cards = [
@@ -37,8 +37,8 @@
     { icon: 'fas fa-bell', text: 'Alertes', link: 'alerte' },
     { icon: 'fas fa-comments', text: 'MyDEPPS chat', link: 'chatbox' },
     { icon: 'fas fa-book', text: 'profil', link: 'profil' },
-    { icon: 'fas fa-file-pdf', text: "Guide utilisateur (PDF)", link: "/_files/GUIDE-D'UTILISATION.pdf" },
-    { icon: 'fas fa-users', text: 'Forum', link: '#' }
+    { icon: 'fas fa-file-pdf', text: "Guide utilisateur (PDF)", link: "guide-utilisateur" },
+    { icon: 'fas fa-users', text: 'Forum', link: 'forum' }
   ];
   }
  
