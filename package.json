@@ -34,11 +34,13 @@
     "vite": "^5.4.11"
   },
   "dependencies": {
+    "@fortawesome/free-solid-svg-icons": "^6.7.2",
     "axios": "^1.7.9",
     "cookie": "^1.0.2",
     "flowbite-svelte": "^0.47.4",
     "flowbite-svelte-icons": "^2.0.2",
     "highcharts": "^11.4.8",
+    "svelte-fa": "^4.0.3",
     "svelte-icons": "^2.1.0"
   }
 }
