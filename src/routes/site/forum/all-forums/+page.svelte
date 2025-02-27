@@ -116,14 +116,14 @@
 <div>
     <Header {user} />
     <Slide {user} />
-    <main class="container mx-auto px-4 py-8 main-div">
+    <main class=" mx-auto px-4 py-8 main-div">
         <!-- En-tête du forum -->
         <header class="bg-white py-6 px-4 shadow-sm">
             <h1 class="text-4xl font-bold text-forum-purple">Discussion Forum</h1>
         </header>
 
         <!-- Conteneur principal du forum -->
-        <div class="mt-8 flex gap-8">
+        <div class="mt-1 flex gap-2">
             <!-- Liste des sujets -->
             <div class="w-1/2 bg-white rounded-lg shadow-md overflow-hidden">
                 <div class="bg-forum-purple text-white rounded-t-lg py-4 px-6">
@@ -193,6 +193,20 @@
                         </div>
                     </div>
                 </div>
+            {:else}
+
+            <div class="w-1/2 bg-white rounded-lg shadow-md overflow-hidden">
+                <div class="bg-forum-purple text-white rounded-t-lg py-4 px-6">
+                    <h2 class="text-xl font-semibold"></h2>
+                </div>
+
+                <div class="p-6">
+                    <!-- Liste des commentaires -->
+                   
+
+                  
+                </div>
+            </div>
             {/if}
         </div>
     </main>
@@ -201,11 +215,11 @@
 
 <style>
     .main-div {
-        margin-top: 170px;
-        margin-bottom: 150px;
+        margin-top: 30px;
+        margin-bottom: 80px;
         border: 1px solid #e5e7eb;
-        background: white;
+        background: transparent;
         border-radius: 10px;
-        padding: 30px;
+        padding: 20rem 226px 10rem !important;
     }
 </style>

@@ -3,6 +3,7 @@
     import Footer from "$components/Footer.svelte";
     import { faEye, faDownload, faFile, faChevronLeft, faChevronRight } from '@fortawesome/free-solid-svg-icons';
     import Fa from "svelte-fa";
+  import Modal from "$components/Modal.svelte";
 
     export let data;
     let user = data?.user;
@@ -63,12 +64,25 @@
             currentPage -= 1;
         }
     }
-</script>
 
+    let isModalOpen = false;
+  let pdfUrl = '/memoire_yves_amangoua_m2_main.pdf';
+
+  function openModal() {
+    isModalOpen = true;
+  }
+
+  function closeModal() {
+    isModalOpen = false;
+  }
+
+</script>
+<Slide user={user} />
+<main style="padding-top: 200px" class="pb-20">
+    <section class="iletisim-form-alani">
 <div id="guide-user">
-    <Slide user={user} />
     <div class="w-[55%] mx-auto bg-white rounded-lg shadow-lg main-div">
-        <div class="p-6">
+        <div class="p-1">
             <h1 class="text-2xl font-bold text-gray-800 mb-6">Liste des documents</h1>
             <div class="divide-y divide-gray-200">
                 {#each paginatedDocuments as doc, i}
@@ -85,14 +99,14 @@
                         <div class="flex items-center gap-3">
                             <button
                                     class="flex items-center view-button gap-2 px-4 py-2 text-sm text-gray-700  hover:text-blue-600 hover:bg-blue-50 rounded-md transition-all border border-gray-200"
-                                    on:click={() => handleView(doc)}
+                                    on:click={() => openModal()}
                             >
                                 <Fa icon={faEye} class="text-sm" />
                                 <span>Voir</span>
                             </button>
                             <button
                                     class="flex items-center gap-2 px-4 py-2 text-sm text-white bg-blue-600 hover:bg-blue-700 rounded-md transition-all"
-                                    on:click={() => handleDownload(doc)}
+                                    on:click={() => openModal()}
                             >
                                 <Fa icon={faDownload} class="text-sm" />
                                 <span>Télécharger</span>
@@ -103,7 +117,7 @@
             </div>
             <div class="flex justify-between items-center mt-6">
                 <button
-                        class="flex items-center gap-2 px-4 py-2 text-sm text-gray-700 hover:text-blue-600 hover:bg-blue-50 rounded-md transition-all border border-gray-200"
+                        class="flex items-center gap-2 px-4 py-2 text-sm text-gray-700 hover:text-blue-600 hover:bg-blue-50 rounded-md transition-all border border-gray-200" style="color: black !important;"
                         on:click={prevPage}
                         disabled={currentPage === 1}
                 >
@@ -112,7 +126,7 @@
                 </button>
                 <span class="text-sm text-gray-700">Page {currentPage} sur {totalPages}</span>
                 <button
-                        class="flex items-center gap-2 px-4 py-2 text-sm text-gray-700 hover:text-blue-600 hover:bg-blue-50 rounded-md transition-all border border-gray-200"
+                        class="flex items-center gap-2 px-4 py-2 text-sm text-gray-700 hover:text-blue-600 hover:bg-blue-50 rounded-md transition-all border border-gray-200" style="color: black !important;"
                         on:click={nextPage}
                         disabled={currentPage === totalPages}
                 >
@@ -124,10 +138,17 @@
     </div>
     <Footer />
 </div>
+</section>
+</main>
 
+<Modal
+  isOpen={isModalOpen}
+  pdfUrl={pdfUrl}
+  onClose={closeModal}
+/>
 <style>
     .main-div {
-        margin-top: 170px;
+        margin-top: 100px;
         margin-bottom: 150px;
         border: 1px solid #e5e7eb;
     }

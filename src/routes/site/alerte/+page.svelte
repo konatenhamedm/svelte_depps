@@ -130,96 +130,101 @@
 </script>
 
 <Slide user={user} />
-<section class="main-content p-6">
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <!-- Formulaire -->
-        <div class="bg-white p-6 rounded-lg shadow-md col-span-1">
-            <h4 class="text-xl font-semibold mb-4">{isEditMode ? "Modifier" : "Ajouter"} une alerte</h4>
 
-            <div class="mb-4">
-                <label class="block text-sm font-medium text-gray-700">Destinataire</label>
-                <select
-                        class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring focus:ring-blue-200"
-                        bind:value={alerte.destinataire}
-                >
-                    {#each recipients as recipient}
-                        <option value={recipient.id}>{recipient.libelle}</option>
-                    {/each}
-                </select>
+<main style="padding-top: 200px" class="pb-20">
+    <section class="iletisim-form-alani">
+        <div class="tabl p-6">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <!-- Formulaire -->
+                <div class="bg-white p-6 rounded-lg shadow-md col-span-1">
+                    <h4 class="text-xl font-semibold mb-4">{isEditMode ? "Modifier" : "Ajouter"} une alerte</h4>
+
+                    <div class="mb-4">
+                        <label class="block text-sm font-medium text-gray-700">Destinataire</label>
+                        <select
+                                class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring focus:ring-blue-200"
+                                bind:value={alerte.destinataire}
+                        >
+                            {#each recipients as recipient}
+                                <option value={recipient.id}>{recipient.libelle}</option>
+                            {/each}
+                        </select>
+                    </div>
+
+                    <div class="mb-4">
+                        <label class="block text-sm font-medium text-gray-700">Objet</label>
+                        <Input
+                                type="text"
+                                bind:value={alerte.objet}
+                                class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring focus:ring-blue-200"
+                        />
+                    </div>
+
+
+                    <div class="mb-4">
+                        <label class="block text-sm font-medium text-gray-700">Message</label>
+                        <textarea
+                                bind:value={alerte.message}
+                                class="w-full p-2 border border-gray-300 rounded-md focus:ring focus:ring-blue-200"
+                                rows="4"
+                        ></textarea>
+                    </div>
+
+                    <Button on:click={saveAlerte} class="w-full bg-blue-600 hover:bg-blue-700 text-white">
+                        {isEditMode ? "Modifier" : "Ajouter"}
+                    </Button>
+                </div>
+
+                <!-- Tableau -->
+                <div class="bg-white p-6 rounded-lg shadow-md col-span-2">
+                    <div class="flex justify-between items-center mb-4">
+                        <h4 class="text-xl font-semibold text-gray-800">Liste des alertes</h4>
+                    </div>
+
+                    <div class="mb-4">
+                        <Input placeholder="Rechercher..." type="text" bind:value={searchQuery} class="w-full input-search" />
+                    </div>
+
+                    <Table class="border border-gray-300">
+                        <TableHead class="bg-gray-100 border-b">
+                            {#each ["Destinataire", "Objet", "Message", "Action"] as title}
+                                <TableHeadCell class="px-4 py-2">{title}</TableHeadCell>
+                            {/each}
+                        </TableHead>
+                        <TableBody>
+                            {#if loading && main_data.length === 0}
+                                <TableBodyRow>
+                                    <TableBodyCell colspan={4} class="text-center py-4">Chargement...</TableBodyCell>
+                                </TableBodyRow>
+                            {:else if main_data.length === 0}
+                                <TableBodyRow>
+                                    <TableBodyCell colspan={4} class="text-center py-4">Aucune alerte trouvée</TableBodyCell>
+                                </TableBodyRow>
+                            {:else}
+                                {#each main_data as item}
+                                    <TableBodyRow class="text-sm">
+                                        <TableBodyCell class="px-4 py-2 table-cell">{item?.destinateur?.libelle}</TableBodyCell>
+                                        <TableBodyCell class="px-4 py-2 table-cell">{item.objet}</TableBodyCell>
+                                        <TableBodyCell class="px-4 py-2 table-cell">{item.message}</TableBodyCell>
+                                        <TableBodyCell class="px-2 py-2 table-cell">
+                                            <button on:click={() => editAlerte(item)} class="text-blue-500 mr-2">
+                                                ✏️
+                                            </button>
+                                            <button on:click={() => deleteAlerte(item.id)} class="text-red-500">
+                                                🗑️
+                                            </button>
+                                        </TableBodyCell>
+                                    </TableBodyRow>
+                                {/each}
+                            {/if}
+                        </TableBody>
+                    </Table>
+                </div>
             </div>
-
-            <div class="mb-4">
-                <label class="block text-sm font-medium text-gray-700">Objet</label>
-                <Input
-                        type="text"
-                        bind:value={alerte.objet}
-                        class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring focus:ring-blue-200"
-                />
-            </div>
-
-
-            <div class="mb-4">
-                <label class="block text-sm font-medium text-gray-700">Message</label>
-                <textarea
-                        bind:value={alerte.message}
-                        class="w-full p-2 border border-gray-300 rounded-md focus:ring focus:ring-blue-200"
-                        rows="4"
-                ></textarea>
-            </div>
-
-            <Button on:click={saveAlerte} class="w-full bg-blue-600 hover:bg-blue-700 text-white">
-                {isEditMode ? "Modifier" : "Ajouter"}
-            </Button>
         </div>
-
-        <!-- Tableau -->
-        <div class="bg-white p-6 rounded-lg shadow-md col-span-2">
-            <div class="flex justify-between items-center mb-4">
-                <h4 class="text-xl font-semibold text-gray-800">Liste des alertes</h4>
-            </div>
-
-            <div class="mb-4">
-                <Input placeholder="Rechercher..." type="text" bind:value={searchQuery} class="w-full input-search" />
-            </div>
-
-            <Table class="border border-gray-300">
-                <TableHead class="bg-gray-100 border-b">
-                    {#each ["Destinataire", "Objet", "Message", "Action"] as title}
-                        <TableHeadCell class="px-4 py-2">{title}</TableHeadCell>
-                    {/each}
-                </TableHead>
-                <TableBody>
-                    {#if loading && main_data.length === 0}
-                        <TableBodyRow>
-                            <TableBodyCell colspan={4} class="text-center py-4">Chargement...</TableBodyCell>
-                        </TableBodyRow>
-                    {:else if main_data.length === 0}
-                        <TableBodyRow>
-                            <TableBodyCell colspan={4} class="text-center py-4">Aucune alerte trouvée</TableBodyCell>
-                        </TableBodyRow>
-                    {:else}
-                        {#each main_data as item}
-                            <TableBodyRow class="text-sm">
-                                <TableBodyCell class="px-4 py-2 table-cell">{item?.destinateur?.libelle}</TableBodyCell>
-                                <TableBodyCell class="px-4 py-2 table-cell">{item.objet}</TableBodyCell>
-                                <TableBodyCell class="px-4 py-2 table-cell">{item.message}</TableBodyCell>
-                                <TableBodyCell class="px-2 py-2 table-cell">
-                                    <button on:click={() => editAlerte(item)} class="text-blue-500 mr-2">
-                                        ✏️
-                                    </button>
-                                    <button on:click={() => deleteAlerte(item.id)} class="text-red-500">
-                                        🗑️
-                                    </button>
-                                </TableBodyCell>
-                            </TableBodyRow>
-                        {/each}
-                    {/if}
-                </TableBody>
-            </Table>
-        </div>
-    </div>
-</section>
-
+   <!--  <br><br> -->
+    </section>
+</main>
 <!-- Modal de confirmation -->
 <!--<Modal bind:open={showDeleteModal} title="Confirmation">
     <p>Voulez-vous vraiment supprimer cette alerte ?</p>

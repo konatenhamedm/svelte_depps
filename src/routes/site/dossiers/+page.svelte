@@ -218,12 +218,18 @@
 <Header {user} />
 <Slide {user} />
 {#if isLoading}
+<main style="padding-top: -10px" class="pb-0">
+  <section class="iletisim-form-alani">
   <SkeletonLoader {activeTab} />
+</section>
+</main>
 {:else}
+<main style="padding-top: -10px" class="pb-0">
+  <section class="iletisim-form-alani">
   <div class="w-full mx-auto p-4 content-sec">
     <!-- Tabs Navigation -->
     <div class="mb-4 border-b border-gray-200">
-      <ul class="flex flex-wrap -mb-px text-sm font-medium text-center">
+      <ul class="flex flex-wrap -mb-px text-sm font-medium text-center border border-gray-200 bg-white">
         <li class="mr-2">
           <button
             class="inline-block p-4 btn-tabs {activeTab === 'step2'
@@ -268,7 +274,7 @@
     </div>
 
     <!-- Tab Contents -->
-    <div class="mt-6">
+    <div class="mt-1">
       <!-- Step 2: Informations Personnelles -->
       {#if activeTab === "step2"}
         <div class="bg-white p-6 rounded-lg shadow-md">
@@ -766,10 +772,18 @@
       </button>
     </div>
   </div>
+  
+</section>
+</main>
 {/if}
 <Footer></Footer>
 
 <style>
+  .iletisim-form-alani {
+    padding: 20rem 226px 10rem !important;
+   
+    background-color: transparent !important;
+}
   .content-sec {
     margin-top: 160px;
   }

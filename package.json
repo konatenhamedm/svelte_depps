@@ -40,6 +40,7 @@
     "flowbite-svelte": "^0.47.4",
     "flowbite-svelte-icons": "^2.0.2",
     "highcharts": "^11.4.8",
+    "pdfjs-dist": "^4.10.38",
     "svelte-fa": "^4.0.3",
     "svelte-icons": "^2.1.0"
   }

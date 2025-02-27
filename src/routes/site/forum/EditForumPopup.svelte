@@ -22,7 +22,7 @@
 
 {#if showPopup}
     <div class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
-        <div class="bg-white p-6 rounded-lg shadow-lg w-96">
+        <div class="bg-white p-6 rounded-lg shadow-lg w-[43em] forum-con">
             <h2 class="text-xl font-bold mb-4">Modifier le forum</h2>
             <form on:submit={handleSubmit}>
                 <div class="mb-4">
