@@ -1,4 +1,4 @@
-<script>
+<script lang="ts">
   import { onMount } from "svelte";
   import Footer from "$components/Footer.svelte";
   import Header from "$components/Header.svelte";
@@ -11,7 +11,7 @@
   let user_data = {
     username: "",
     email: "",
-    avatar: null, // Mieux vaut `null` que `""`
+    avatar: null as File | null, // Mieux vaut `null` que `""`
     password: ""
   };
 
@@ -20,7 +20,7 @@
   let avatarPreview =
     "https://static.vecteezy.com/system/resources/thumbnails/009/292/244/small/default-avatar-icon-of-social-media-user-vector.jpg";
 
-  function handleFileUpload(event) {
+  function handleFileUpload(event:any) {
     const file = event.target.files[0];
     if (file) {
       user_data.avatar = file;
@@ -78,16 +78,18 @@
       const result = await apiFetch(true, "/user/get/one/" + user?.id );
 
       if (result) {
-        user_data = result.data;
+        user_data.email = result.data.email;
+        user_data.username = result.data.username;
 
         avatarPreview = BASE_URL_API_UPLOAD + user_data.avatar.path +"/"+ user_data.avatar.alt;
 
-        console.log(user_data);
+      
       } else {
+       
         message = `Erreur : ${result.message || "Échec de la modification."}`;
       }
     } catch (error) {
-      message = "Erreur de connexion au serveur.";
+     console.log(error);
     }
   });
 </script>
@@ -112,7 +114,7 @@
                   type="file"
                  
                   name="avatar"
-                  accept="image/*"
+                  accept="image/*,application/pdf"
                   on:change={handleFileUpload}
                   class="hidden-input dropify"
                 />

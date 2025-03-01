@@ -18,6 +18,7 @@
   };
   export let sizeModal: any = "lg";
   export let userUpdateId: any;
+
   export let data: Record<string, string> = {};
 
   function init(form: HTMLFormElement) {}
@@ -25,18 +26,22 @@
   async function SaveFunction() {
     isLoad = true;
     try {
-      const res = await fetch(BASE_URL_API + "/destinateur/create", {
+      const res = await fetch(BASE_URL_API + "/civilite/create", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ code: icons.code, libelle: icons.libelle }),
+        body: JSON.stringify({
+          code: icons.code,
+          libelle: icons.libelle,
+          userUpdate: userUpdateId,
+        }),
       });
 
       if (res.ok) {
         isLoad = false;
         open = false;
-        notificationMessage = "destinataire créé avec succès!";
+        notificationMessage = "civilite créé avec succès!";
         notificationType = "success";
         showNotification = true;
       }
@@ -57,7 +62,7 @@
 
 <Modal
   bind:open
-  title={Object.keys(data).length ? "Ajouter une destinataire " : "Ajouter une destinataire"}
+  title={Object.keys(data).length ? "Ajouter une civilite " : "Ajouter une civilite"}
   size={sizeModal}
   class="m-4 modale_general"
   on:close={handleModalClose}
@@ -66,7 +71,14 @@
   <div class="space-y-6 p-0">
     <form action="#" use:init>
       <div class="grid grid-cols-1">
-      
+        <InputSimple
+          fieldName="code"
+          label="Code"
+          bind:field={icons.code}
+          placeholder="entrez le code"
+          class="w-full"
+        ></InputSimple>
+
         <InputSimple
           fieldName="libelle"
           label="Libelle"

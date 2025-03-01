@@ -50,7 +50,7 @@
   async function fetchData() {
     loading = true; // Active le spinner de chargement
     try {
-      const res = await apiFetch(true, "/civilite/");
+      const res = await apiFetch(true, "/destinateur");
       console.log(res);
       if (res) {
         main_data = res.data as Permission[];
@@ -73,7 +73,7 @@
 
   $: filteredData = main_data.filter((item) => {
     return (
-      item.code.toLowerCase().includes(searchQuery.toLowerCase()) ||
+     
       item.libelle.toLowerCase().includes(searchQuery.toLowerCase())
     );
   });
@@ -127,23 +127,23 @@
 </script>
 
 <Entete
-  libelle="Gestion des civilités"
+  libelle="Gestion des destinataires"
   parent="Parametres"
-  descr="Liste des civilités"
+  descr="Liste des destinataires"
 />
 <section class="content">
   <div class="row">
     <div class="col-12">
       <div class="box">
         <div class="box-header with-border flex justify-between items-center">
-          <h4 class="box-title text-xl font-medium">Liste des civilités</h4>
+          <h4 class="box-title text-xl font-medium">Liste des destinataires</h4>
 
           <div>
             <a
               class="py-[5px] px-3 waves-effect waves-light btn btn-info mb-5"
               on:click={() => ((current_data = {}), (openAdd = true))}
             >
-              + Nouvelle icône
+              + Nouvelle destinataire
             </a>
           </div>
         </div>
@@ -164,7 +164,7 @@
               <TableHead
                 class="border-y border-gray-200 bg-gray-100 dark:border-gray-700"
               >
-                {#each ["code", "libelle", "Action"] as title}
+                {#each ["libelle", "Action"] as title}
                   <TableHeadCell class="ps-4 font-normal border border-gray-300"
                     >{title}</TableHeadCell
                   >
@@ -212,9 +212,7 @@
                 {:else}
                   {#each paginatedProducts as item}
                     <TableBodyRow class="text-base border border-gray-300">
-                      <TableBodyCell class="p-4 border border-gray-300"
-                        >{item.code}</TableBodyCell
-                      >
+                     
                       <TableBodyCell class="p-4 border border-gray-300"
                         >{item.libelle}</TableBodyCell
                       >

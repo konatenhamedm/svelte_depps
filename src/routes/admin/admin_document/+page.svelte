@@ -19,7 +19,7 @@
   import Pagination from "../../../components/_includes/Pagination.svelte";
   // Importer le store pageSize
   import { get } from "svelte/store";
-  import type { Permission, User } from "../../../types";
+  import type {  Permission, User } from "../../../types";
   import { apiFetch } from "$lib/api";
   import { pageSize } from "../../../store"; // Importer le store pageSize
   import { onMount } from "svelte";
@@ -29,8 +29,11 @@
   import Delete from "./Delete.svelte";
   import { getAuthCookie } from "$lib/auth";
   import DropdownMenu from "$components/DropdownMenu.svelte";
+  import DropdownMenuDoc from "$components/DropdownMenuDoc.svelte";
+  import Doc from "./DocShow.svelte";
+  import DocShow from "./DocShow.svelte";
 
-  let main_data: Permission[] = [];
+  let main_data: Doc[] = [];
   let searchQuery = ""; // Pour la recherche par texte
   let selectedService: any = ""; // Pour filtrer par service
   let selectedStatus: any = ""; // Pour filtrer par status
@@ -41,6 +44,7 @@
   let openDelete: boolean = false;
   let openEdit: boolean = false;
   let openAdd: boolean = false;
+  let afficheDoc: boolean = false;
   let openShow: boolean = false;
   let current_data: any = {};
 
@@ -50,10 +54,11 @@
   async function fetchData() {
     loading = true; // Active le spinner de chargement
     try {
-      const res = await apiFetch(true, "/civilite/");
+      const res = await apiFetch(true, "/adminDocument/");
 
       if (res) {
-        main_data = res.data as Permission[];
+        main_data = res.data as Doc[];
+        console.log(main_data);
       } else {
         console.error(
           "Erreur lors de la récupération des données:",
@@ -73,7 +78,7 @@
 
   $: filteredData = main_data.filter((item) => {
     return (
-      item.code.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      
       item.libelle.toLowerCase().includes(searchQuery.toLowerCase())
     );
   });
@@ -111,7 +116,7 @@
   }
 
   // Rafraîchir les données après fermeture des modales
-  $: if (!openAdd || !openEdit || !openDelete) {
+  $: if (!openAdd || !openEdit || !openDelete ) {
     refreshDataIfNeeded();
   }
     // Fonction de callback pour gérer les actions
@@ -123,28 +128,30 @@
       openEdit = true;
     } else if (action === "delete") {
       openDelete = true;
+    }else if(action === "doc"){
+      afficheDoc = true
     }
   };
 </script>
 
 <Entete
-  libelle="Gestion des civilités"
+  libelle="Gestion des documents"
   parent="Parametres"
-  descr="Liste des civilités"
+  descr="Liste des documents"
 />
 <section class="content">
   <div class="row">
     <div class="col-12">
       <div class="box">
         <div class="box-header with-border flex justify-between items-center">
-          <h4 class="box-title text-xl font-medium">Liste des civilités</h4>
+          <h4 class="box-title text-xl font-medium">Liste des documents</h4>
 
           <div>
             <a
               class="py-[5px] px-3 waves-effect waves-light btn btn-info mb-5"
               on:click={() => ((current_data = {}), (openAdd = true))}
             >
-              + Nouvelle civilite
+              + Nouvelle document
             </a>
           </div>
         </div>
@@ -165,7 +172,7 @@
               <TableHead
                 class="border-y border-gray-200 bg-gray-100 dark:border-gray-700"
               >
-                {#each ["code", "libelle", "Action"] as title}
+                {#each [ "libelle", "Path","Action"] as title}
                   <TableHeadCell class="ps-4 font-normal border border-gray-300"
                     >{title}</TableHeadCell
                   >
@@ -214,17 +221,18 @@
                   {#each paginatedProducts as item}
                     <TableBodyRow class="text-base border border-gray-300">
                       <TableBodyCell class="p-4 border border-gray-300"
-                        >{item.code}</TableBodyCell
+                      >{item.libelle}</TableBodyCell
                       >
+                      
                       <TableBodyCell class="p-4 border border-gray-300"
-                        >{item.libelle}</TableBodyCell
+                        >{item.path.alt}</TableBodyCell
                       >
-
                       <!--  <TableBodyCell class="p-4 border border-gray-300">{item.sous_menu.libelle}</TableBodyCell>
                                    -->
                      
                         <TableBodyCell class="p-2 w-8 border border-gray-300">
-                        <DropdownMenu {item} onAction={handleAction} />
+                        <DropdownMenuDoc {item} onAction={handleAction} />
+           
                       </TableBodyCell>
                     </TableBodyRow>
                   {/each}
@@ -280,4 +288,5 @@
   userUpdateId={user?.id}
 />
 <Show bind:open={openShow} data={current_data} sizeModal="xl" />
+<DocShow bind:open={afficheDoc} data={current_data} sizeModal="xl" />
 <Delete bind:open={openDelete} data={current_data} />

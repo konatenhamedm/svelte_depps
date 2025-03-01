@@ -1,19 +1,22 @@
 <script lang="ts">
 	import InputSimple from "$components/inputs/InputSimple.svelte";
+  import { BASE_URL_API_UPLOAD } from "$lib/api";
 	import { Button, Input, Label, Modal, Textarea } from "flowbite-svelte";
 	export let open: boolean = false;
 	export let sizeModal: any = "lg";
 	export let data: Record<string, string> = {};
-	let code = "";	let libelle = "";
+	let path = "";
+	let libelle = "";
 
 	function init(form: HTMLFormElement) {
+		path = BASE_URL_API_UPLOAD + data?.path.path + "/" + data?.path.alt;
 		libelle = data.libelle || "";
 	}
 </script>
 
 <Modal
 	bind:open
-	title={Object.keys(data).length ? "Détails type personne" : "Détails type personne"}
+	title={Object.keys(data).length ? "Détails icon" : "Détails icon"}
 	size={sizeModal}
 	class="m-4 modale_general"
 >
@@ -21,12 +24,18 @@
 	<div class="space-y-6 p-0">
 		<form action="#" use:init>
 			<div class="grid grid-cols-1 gap-6">
-			
 				<InputSimple
 					fieldName="libelle"
 					label="Libelle"
 					field={libelle}
 					placeholder="entrez le libelle"
+					disabled={true}
+				/>
+				<InputSimple
+					fieldName="code"
+					label="code"
+					field={path}
+					placeholder="entrez l'url"
 					disabled={true}
 				/>
 			</div>

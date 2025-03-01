@@ -202,6 +202,14 @@ export interface Permission {
   libelle: string;
   code: string;
 }
+export interface Doc {
+  id: number;
+  libelle: string;
+  path: {
+    alt:string,
+    path:string
+  };
+}
 
 export interface UserAdmin {
   id: number;

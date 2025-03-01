@@ -52,8 +52,8 @@
   <Modal
     bind:open
     title={Object.keys(data).length
-      ? "Modification de l'pays"
-      : "Modification de l'pays"}
+      ? "Modification de type personne"
+      : "Modification de type personne"}
     size={sizeModal}
     class="m-4 modale_general"
     on:close={handleModalClose}

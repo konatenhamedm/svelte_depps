@@ -15,7 +15,7 @@
 
 <Modal
 	bind:open
-	title={Object.keys(data).length ? "Détails icon" : "Détails icon"}
+	title={Object.keys(data).length ? "Détails destinataire" : "Détails destinataire"}
 	size={sizeModal}
 	class="m-4 modale_general"
 >
@@ -23,13 +23,7 @@
 	<div class="space-y-6 p-0">
 		<form action="#" use:init>
 			<div class="grid grid-cols-1 gap-6">
-				<InputSimple
-					fieldName="code"
-					label="code"
-					field={code}
-					placeholder="entrez l'url"
-					disabled={true}
-				/>
+				
 				<InputSimple
 					fieldName="libelle"
 					label="Libelle"

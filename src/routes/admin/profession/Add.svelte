@@ -4,10 +4,13 @@
   import { Button, Input, Label, Modal, Textarea } from "flowbite-svelte";
   import Notification from "$components/_includes/Notification.svelte";
   import InputTextArea from "$components/inputs/InputTextArea.svelte";
+  import InputSelect from "$components/inputs/InputSelect.svelte";
+  import { onMount } from "svelte";
 
   let showNotification = false;
   let notificationMessage = "";
   let notificationType = "info";
+  let typeProfessions : any = []; // Assume that this will be populated with cities
 
   export let open: boolean = false;
   let isLoad = false;
@@ -15,28 +18,40 @@
   let icons: any = {
     code: "",
     libelle: "",
+    typeProfession: "",
   };
   export let sizeModal: any = "lg";
   export let userUpdateId: any;
+
   export let data: Record<string, string> = {};
 
   function init(form: HTMLFormElement) {}
 
   async function SaveFunction() {
+
+    console.log({
+          typeProfession: icons.typeProfession,
+          libelle: icons.libelle,
+          userUpdate: userUpdateId,
+        })
     isLoad = true;
     try {
-      const res = await fetch(BASE_URL_API + "/destinateur/create", {
+      const res = await fetch(BASE_URL_API + "/profession/create", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ code: icons.code, libelle: icons.libelle }),
+        body: JSON.stringify({
+          typeProfession: icons.typeProfession,
+          libelle: icons.libelle,
+          userUpdate: userUpdateId,
+        }),
       });
 
       if (res.ok) {
         isLoad = false;
         open = false;
-        notificationMessage = "destinataire créé avec succès!";
+        notificationMessage = "profession créé avec succès!";
         notificationType = "success";
         showNotification = true;
       }
@@ -53,11 +68,25 @@
       event.preventDefault(); // Prevent modal from closing if loading
     }
   }
+
+  async function getTypeProfession() {
+        try {
+            const res = await fetch(BASE_URL_API + "/typeProfession");
+            const data = await res.json();
+            typeProfessions = data.data
+        } catch (error) {
+            console.error("Error fetching villes:", error);
+        }
+    }
+
+    onMount(async () => {
+        await getTypeProfession();
+    })
 </script>
 
 <Modal
   bind:open
-  title={Object.keys(data).length ? "Ajouter une destinataire " : "Ajouter une destinataire"}
+  title={Object.keys(data).length ? "Ajouter une  profession " : "Ajouter une  profession"}
   size={sizeModal}
   class="m-4 modale_general"
   on:close={handleModalClose}
@@ -66,7 +95,8 @@
   <div class="space-y-6 p-0">
     <form action="#" use:init>
       <div class="grid grid-cols-1">
-      
+     
+
         <InputSimple
           fieldName="libelle"
           label="Libelle"
@@ -74,6 +104,17 @@
           placeholder="entrez le libelle"
           class="w-full"
         ></InputSimple>
+      </div>
+
+      <div class="grid grid-cols-1 gap-6">
+        
+        <InputSelect 
+        label="Type profession"
+        bind:selectedId={icons.typeProfession}
+        datas={typeProfessions}
+        id="typePersonne"
+    />
+       
       </div>
     </form>
   </div>

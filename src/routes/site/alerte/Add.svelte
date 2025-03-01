@@ -1,130 +1,126 @@
 <script lang="ts">
-    import InputSimple from "$components/inputs/InputSimple.svelte";
-    import { Button, Label, Modal } from "flowbite-svelte";
-    import InputTextArea from "$components/inputs/InputTextArea.svelte";
+  import { apiFetch, BASE_URL_API, BASE_URL_API_V2 } from "$lib/api";
+  import { onMount } from "svelte";
 
+  export let showPopup = false;
+  export let closePopup: any;
 
+  export let data;
+  let user = data?.user;
+  let recipients: any = [];
 
-    export let open: boolean =false;
-    export let data: Record<string, string> = {};
-    export let sizeModal: string = "xl";
-    export let userUpdateId: string;
+  let loading = false;
 
-    let isLoad = false;
+  async function handleSubmit(event:any) {
+    const formData = new FormData(event.target);
 
-    let alerte: any = {
-        destinataire: "Adminisration DEPPS",
-        objet: "",
-        message: "",
+    const newForum = {
+      destinateur: formData.get("destinateur"),
+      message: formData.get("message"),
+      objet: formData.get("objet"),
+      user: user.id,
+      userUpdate: user.id
     };
 
-    const recipients = [
-        "Adminisration DEPPS",
-        "controlleur",
-        "Etablissement de santé",
-        "Professionnel de santé"
-    ];
+    loading = true;
+    try {
+      /* const url = "https://depps.leadagro.net/api/alerte/create"; */
 
-    function init(form: HTMLFormElement) {}
-
-    async function SaveFunction() {
-        isLoad = true;
-        try {
-            const res = await fetch("https://depps.leadagro.net/api/alerte/create", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify({
-                    destinataire: alerte.destinataire,
-                    objet: alerte.objet,
-                    message: alerte.message,
-                    userUpdate: userUpdateId,
-                }),
-            });
-
-            if (res.ok) {
-                isLoad = false;
-                open = false;
-
-            }
-        } catch (error) {
-            console.error("Error saving:", error);
+      await apiFetch(true, "/alerte/create", "POST", newForum).then((res) => {
+        if (res) {
+          loading = false;
+          closePopup();
         }
+      });
+    } catch (error) {
+      console.error("Erreur lors de l'enregistrement:", error);
+      loading = false;
+      closePopup();
+    } finally {
+      loading = false;
     }
+  }
 
-    function handleModalClose(event: Event) {
-        if (isLoad) {
-            event.preventDefault(); // Prevent modal from closing if loading
-        }
+  async function getDestinataire() {
+    try {
+      const response = await fetch(BASE_URL_API + "/destinateur");
+      if (!response.ok) {
+        throw new Error("Échec de la récupération des destinataires");
+      }
+      const data = await response.json();
+      recipients = data.data;
+      console.log("content recipient", recipients);
+    } catch (error) {
+      console.error("Erreur:", error);
     }
+  }
+
+  onMount(() => {
+    getDestinataire();
+  });
 </script>
 
-<p>État de openAdd: {open ? 'Ouvert' : 'Fermé'}</p>
-
-<Modal
-        bind:open
-        title="Ajouter une alerte"
-        size={sizeModal}
-        class="m-4 modale_general"
-        on:close={handleModalClose}
->
-    <div class="space-y-6 p-0">
-        <form action="#" use:init>
-            <div class="grid grid-cols-1">
-                <div class="mb-4">
-                    <Label for="destinataire">Destinataire</Label>
-                    <select
-                            id="destinataire"
-                            class="w-full px-3 py-2 border border-gray-300 rounded-md"
-                            bind:value={alerte.destinataire}
-                    >
-                        {#each recipients as recipient}
-                            <option value={recipient}>{recipient}</option>
-                        {/each}
-                    </select>
-                </div>
-
-                <InputSimple
-                        fieldName="objet"
-                        label="Objet"
-                        bind:field={alerte.objet}
-                        placeholder="Entrez l'objet"
-                        class="w-full"
-                />
-
-                <InputTextArea
-                        fieldName="message"
-                        label="Message"
-                        bind:field={alerte.message}
-                        placeholder="Entrez le message"
-                        class="w-full"
-                />
-            </div>
-        </form>
-    </div>
-
-    <div slot="footer" class="w-full">
-        <div class="flex justify-end">
-            {#if isLoad}
-                <Button disabled={true} color="blue" style="background-color: blue;" type="submit">
-                    <div class="flex flex-row gap-2">
-                        <div class="w-3 h-3 rounded-full bg-white animate-bounce [animation-delay:.7s]"></div>
-                        <div class="w-3 h-3 rounded-full bg-white animate-bounce [animation-delay:.3s]"></div>
-                        <div class="w-3 h-3 rounded-full bg-white animate-bounce [animation-delay:.7s]"></div>
-                    </div>
-                </Button>
-            {:else}
-                <button
-                        style="background-color: #55a1ff;"
-                        type="button"
-                        class="bg-[#55a1ff] text-white px-4 py-2 rounded-md shadow-sm hover:bg-[#008020]"
-                        on:click={SaveFunction}
-                >
-                    Enregistrer
-                </button>
-            {/if}
+{#if showPopup}
+  <div
+    class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center"
+  >
+    <div class="bg-white p-6 rounded-lg shadow-lg w-[43em] forum-con">
+      <h2 class="text-xl font-bold mb-4">Ajouter un nouveau forum</h2>
+      <form on:submit={handleSubmit}>
+        <div class="mb-4">
+          <label class="block text-gray-700 mb-2">Objet</label>
+          <input
+            type="text"
+            name="objet"
+            class="w-full px-3 py-2 border rounded"
+            required
+          />
         </div>
+        <div class="mb-4">
+          <label class="block text-gray-700 mb-2">Message</label>
+          <textarea
+            name="message"
+            class="w-full px-3 py-2 border rounded"
+            required
+          ></textarea>
+        </div>
+        <div class="mb-4">
+          <label class="block text-gray-700 mb-2">Destinateur</label>
+          <select
+            class="w-full px-3 py-2 border rounded"
+            name="destinateur"
+          >
+            {#each recipients as recipient}
+              <option value={recipient.id}>{recipient.libelle}</option>
+            {/each}
+          </select>
+          <!-- <select name="status" class="w-full px-3 py-2 border rounded">
+                        <option value="Actif">Actif</option>
+                        <option value="Inactif">Inactif</option>
+                    </select> -->
+        </div>
+        <div class="flex justify-end">
+          <button
+            type="button"
+            on:click={closePopup}
+            class="bg-gray-500 text-white px-4 py-2 rounded mr-2 hover:bg-gray-600"
+          >
+            Annuler
+          </button>
+          <button
+            type="submit"
+            class="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600"
+          >
+            Ajouter
+          </button>
+        </div>
+      </form>
     </div>
-</Modal>
+  </div>
+{/if}
 
+<style>
+  .forum-con {
+    margin-top: 140px;
+  }
+</style>

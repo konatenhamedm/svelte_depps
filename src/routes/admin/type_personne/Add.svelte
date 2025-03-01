@@ -60,7 +60,7 @@
   
   <Modal
     bind:open
-    title={Object.keys(data).length ? "Ajouter une icone " : "Ajouter une icone"}
+    title={Object.keys(data).length ? "Ajouter un type personne " : "Ajouter un type personne"}
     size={sizeModal}
     class="m-4 modale_general"
     on:close={handleModalClose}

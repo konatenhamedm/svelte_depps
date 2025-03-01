@@ -50,7 +50,7 @@
   async function fetchData() {
     loading = true; // Active le spinner de chargement
     try {
-      const res = await apiFetch(true, "/civilite/");
+      const res = await apiFetch(true, "/profession/");
 
       if (res) {
         main_data = res.data as Permission[];
@@ -128,23 +128,23 @@
 </script>
 
 <Entete
-  libelle="Gestion des civilités"
+  libelle="Gestion des professions"
   parent="Parametres"
-  descr="Liste des civilités"
+  descr="Liste des professions"
 />
 <section class="content">
   <div class="row">
     <div class="col-12">
       <div class="box">
         <div class="box-header with-border flex justify-between items-center">
-          <h4 class="box-title text-xl font-medium">Liste des civilités</h4>
+          <h4 class="box-title text-xl font-medium">Liste des types profession</h4>
 
           <div>
             <a
               class="py-[5px] px-3 waves-effect waves-light btn btn-info mb-5"
               on:click={() => ((current_data = {}), (openAdd = true))}
             >
-              + Nouvelle civilite
+              + Nouvelle profession
             </a>
           </div>
         </div>

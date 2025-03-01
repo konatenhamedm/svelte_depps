@@ -1,63 +1,80 @@
 <script lang="ts">
+  import Spinner from "$components/_skeletons/Spinner.svelte";
   import InputSimple from "$components/inputs/InputSimple.svelte";
   import { BASE_URL_API } from "$lib/api";
   import { Button, Input, Label, Modal, Textarea } from "flowbite-svelte";
-  import Notification from "$components/_includes/Notification.svelte";
   import InputTextArea from "$components/inputs/InputTextArea.svelte";
+  import InputSelect from "$components/inputs/InputSelect.svelte";
+  import { onMount } from "svelte";
 
-  let showNotification = false;
-  let notificationMessage = "";
-  let notificationType = "info";
-
-  export let open: boolean = false;
+  export let open: boolean = false; // modal control
   let isLoad = false;
+  let typeProfession: any = "";
+  let libelle: string = "";
+  let typeProfessions : any = [];
 
-  let icons: any = {
-    code: "",
-    libelle: "",
-  };
   export let sizeModal: any = "lg";
   export let userUpdateId: any;
+
   export let data: Record<string, string> = {};
 
-  function init(form: HTMLFormElement) {}
+  // Initialize form data with the provided record
+  function init(form: HTMLFormElement) {
+    typeProfession = data?.typeProfession?.id;
+    libelle = data?.libelle;
+  }
 
   async function SaveFunction() {
     isLoad = true;
+
     try {
-      const res = await fetch(BASE_URL_API + "/destinateur/create", {
+      const res = await fetch(BASE_URL_API + "/profession/update/" + data?.id, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ code: icons.code, libelle: icons.libelle }),
+        body: JSON.stringify({
+          typeProfession: typeProfession,
+          libelle: libelle,
+          userUpdate: userUpdateId,
+        }),
       });
 
       if (res.ok) {
         isLoad = false;
-        open = false;
-        notificationMessage = "destinataire créé avec succès!";
-        notificationType = "success";
-        showNotification = true;
+        open = false; // Close the modal
       }
     } catch (error) {
-      notificationMessage = "Une erreur crée lors de l enregistrement";
-      notificationType = "error";
-      showNotification = true;
       console.error("Error saving:", error);
     }
   }
 
   function handleModalClose(event: Event) {
     if (isLoad) {
-      event.preventDefault(); // Prevent modal from closing if loading
+      event.preventDefault();
     }
   }
+
+  async function getTypeProfession() {
+        try {
+            const res = await fetch(BASE_URL_API + "/typeProfession");
+            const data = await res.json();
+            typeProfessions = data.data
+        } catch (error) {
+            console.error("Error fetching villes:", error);
+        }
+    }
+
+    onMount(async () => {
+        await getTypeProfession();
+    })
 </script>
 
 <Modal
   bind:open
-  title={Object.keys(data).length ? "Ajouter une destinataire " : "Ajouter une destinataire"}
+  title={Object.keys(data).length
+    ? "Modification  profession"
+    : "Modification  profession"}
   size={sizeModal}
   class="m-4 modale_general"
   on:close={handleModalClose}
@@ -66,14 +83,26 @@
   <div class="space-y-6 p-0">
     <form action="#" use:init>
       <div class="grid grid-cols-1">
-      
-        <InputSimple
+        <div class="grid grid-cols-1">
+       
+          <InputSimple
           fieldName="libelle"
           label="Libelle"
-          bind:field={icons.libelle}
+          bind:field={libelle}
           placeholder="entrez le libelle"
           class="w-full"
         ></InputSimple>
+      </div>
+
+      <div class="grid grid-cols-1 gap-6">
+        
+        <InputSelect
+        label="Type profession"
+        bind:selectedId={typeProfession}
+        datas={typeProfessions}
+        id="typePersonne"
+    />
+        </div>
       </div>
     </form>
   </div>
@@ -85,7 +114,7 @@
         <Button
           disabled={true}
           color="blue"
-          style="background-color: blue;"
+          style="background-color: #55a1ff;"
           type="submit"
         >
           <div class="flex flex-row gap-2">
@@ -102,22 +131,14 @@
         </Button>
       {:else}
         <button
-          style="background-color: #55a1ff;"
           type="button"
+          style="background-color: #55a1ff;"
           class="bg-[#55a1ff] text-white px-4 py-2 rounded-md shadow-sm hover:bg-[#008020]"
           on:click={SaveFunction}
         >
-          Enregistrer
+          Modifier
         </button>
       {/if}
     </div>
   </div>
 </Modal>
-
-{#if showNotification}
-  <Notification
-    message={notificationMessage}
-    type={notificationType}
-    duration={5000}
-  />
-{/if}

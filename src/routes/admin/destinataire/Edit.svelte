@@ -25,7 +25,7 @@
     isLoad = true;
 
     try {
-      const res = await fetch(BASE_URL_API + "/civilite/update/" + data?.id, {
+      const res = await fetch(BASE_URL_API + "/destinateur/update/" + data?.id, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -52,8 +52,8 @@
 <Modal
   bind:open
   title={Object.keys(data).length
-    ? "Modification de l'icon"
-    : "Modification de l'icon"}
+    ? "Modification destinataire"
+    : "Modification destinataire"}
   size={sizeModal}
   class="m-4 modale_general"
   on:close={handleModalClose}
@@ -63,13 +63,7 @@
     <form action="#" use:init>
       <div class="grid grid-cols-1">
         <div class="grid grid-cols-1">
-          <InputSimple
-            fieldName="code"
-            label="Code"
-            bind:field={code}
-            placeholder="entrez le code"
-            class="w-full"
-          ></InputSimple>
+          
           <InputSimple
             fieldName="libelle"
             label="Libelle"

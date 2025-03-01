@@ -1,288 +1,282 @@
 <script lang="ts">
-    import {
-        Button,
-        Input,
-        Table,
-        TableBody,
-        TableBodyCell,
-        TableBodyRow,
-        TableHead,
-        TableHeadCell,
-        Modal
-    } from "flowbite-svelte";
+  import Header from "$components/Header.svelte";
+  import Slide from "$components/Slide.svelte";
+  import Footer from "$components/Footer.svelte";
+  import { onMount } from "svelte";
+  import { apiFetch } from "$lib/api";
+  import Add from "./Add.svelte";
+  import Edit from "./Edit.svelte";
 
-    import { onMount } from "svelte";
-    import { apiFetch } from "$lib/api";
-    import Slide from "$components/Slide.svelte";
-    import Footer from "$components/Footer.svelte";
+  let forums: any[] = [];
 
-    export let data;
-    let user = data?.user;
-    let main_data: any[] = [];
-    let searchQuery = "";
-    let loading = false;
-    let isEditMode = false;
-    let current_data: any = {};
+  export let data;
+  let user = data?.user;
 
-    let alerte = {
-        destinataire: "Adminisration DEPPS",
-        objet: "",
-        message: "",
-    };
+  let currentPage = 1;
+  const itemsPerPage = 5;
+  let showAddPopup = false;
+  let showEditPopup = false;
+  let selectedForum = null;
+  let loading = false;
 
-    let recipients : any = [];
-
-    async function getDestinataire() {
-        try {
-            const response = await fetch('https://depps.leadagro.net/api/destinateur/');
-            if (!response.ok) {
-                throw new Error('Échec de la récupération des destinataires');
-            }
-            const data = await response.json();
-            recipients = data.data;
-            console.log("content recipient", recipients);
-        } catch (error) {
-            console.error('Erreur:', error);
-        }
+  async function fetchData(userId: number) {
+    loading = true;
+    try {
+      const res = await apiFetch(true, `/alerte/get/all/${userId}`);
+      if (res) {
+        forums = res.data;
+        console.log("content main_data", forums);
+      } else {
+        console.error("Erreur de récupération:", res.statusText);
+      }
+    } catch (error) {
+      console.error("Erreur API:", error);
+    } finally {
+      loading = false;
     }
+  }
 
-    async function fetchData(userId:number) {
-        loading = true;
-        try {
-            const res = await apiFetch(true,`/alerte/get/all/${userId}`);
-            if (res) {
-                main_data = res.data;
-                console.log("content main_data",main_data)
-            } else {
-                console.error("Erreur de récupération:", res.statusText);
-            }
-        } catch (error) {
-            console.error("Erreur API:", error);
-        } finally {
-            loading = false;
-        }
+  onMount(async() => {
+    await fetchData(user?.id);
+  });
+
+  // Calcul des forums paginés
+  $: paginatedForums = forums.slice(
+    (currentPage - 1) * itemsPerPage,
+    currentPage * itemsPerPage
+  );
+
+  // Calcul du nombre total de pages
+  $: totalPages = Math.ceil(forums.length / itemsPerPage);
+
+  // Fonction pour changer de page
+  function goToPage(page) {
+    if (page >= 1 && page <= totalPages) {
+      currentPage = page;
     }
+  }
 
-    onMount(() => {
-        fetchData(user.id);
-        getDestinataire();
+  // Fonctions pour gérer les popups
+  function openAddPopup() {
+    showAddPopup = true;
+  }
 
-    });
+  function closeAddPopup() {
+    showAddPopup = false;
+  }
 
-    async function saveAlerte() {
-        loading = true;
-        try {
-            const url = isEditMode
-                ? `https://depps.leadagro.net/api/alerte/update/${current_data.id}`
-                : "https://depps.leadagro.net/api/alerte/create";
+  function openEditPopup(forum) {
+    selectedForum = forum;
+    showEditPopup = true;
+  }
 
-            const method = isEditMode ? "PUT" : "POST";
+  function closeEditPopup() {
+    showEditPopup = false;
+    selectedForum = null;
+  }
 
-            const res = await fetch(url, {
-                method,
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({
-                    user: data.user.id,
-                    destinateur: alerte.destinataire,
-                    objet: alerte.objet,
-                    message: alerte.message,
-                    userUpdate: data.user.id
-                }),
-            });
-            if (res.ok) {
-                resetForm();
-                await fetchData(user.id);
-            }
-        } catch (error) {
-            console.error("Erreur lors de l'enregistrement:", error);
-        } finally {
-            loading = false;
-        }
-    }
+  function addForum(newForum) {
+    forums = [...forums, { ...newForum, id: forums.length + 1 }];
+  }
 
-    function resetForm() {
-        alerte = { destinataire: "Adminisration DEPPS", objet: "", message: "" };
-        isEditMode = false;
-        current_data = {};
-    }
+  function updateForum(updatedForum) {
+    forums = forums.map((f) => (f.id === updatedForum.id ? updatedForum : f));
+  }
 
-    function editAlerte(item) {
-        alerte = { ...item };
-        current_data = item;
-        isEditMode = true;
+  $: if (showAddPopup == false || showEditPopup == false) {
+     fetchData(user?.id);
+  }
 
-        alerte.destinataire = item?.destinateur?.id || '';
-    }
 
-    async function deleteAlerte(alertId:number) {
-        loading = true;
-        try {
-            const res = await apiFetch(true,`/alerte/delete/${alertId}`, "DELETE")
-            if (res.ok) {
-                await fetchData(user.id);
-            }
-        } catch (error) {
-            console.error("Erreur suppression:", error);
-        } finally {
-            loading = false;
-        }
-    }
 </script>
 
-<Slide user={user} />
-
+<Header {user} />
+<Slide {user} />
 <main style="padding-top: 200px" class="pb-20">
-    <section class="iletisim-form-alani">
-        <div class="tabl p-6">
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                <!-- Formulaire -->
-                <div class="bg-white p-6 rounded-lg shadow-md col-span-1">
-                    <h4 class="text-xl font-semibold mb-4">{isEditMode ? "Modifier" : "Ajouter"} une alerte</h4>
-
-                    <div class="mb-4">
-                        <label class="block text-sm font-medium text-gray-700">Destinataire</label>
-                        <select
-                                class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring focus:ring-blue-200"
-                                bind:value={alerte.destinataire}
-                        >
-                            {#each recipients as recipient}
-                                <option value={recipient.id}>{recipient.libelle}</option>
-                            {/each}
-                        </select>
-                    </div>
-
-                    <div class="mb-4">
-                        <label class="block text-sm font-medium text-gray-700">Objet</label>
-                        <Input
-                                type="text"
-                                bind:value={alerte.objet}
-                                class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring focus:ring-blue-200"
-                        />
-                    </div>
-
-
-                    <div class="mb-4">
-                        <label class="block text-sm font-medium text-gray-700">Message</label>
-                        <textarea
-                                bind:value={alerte.message}
-                                class="w-full p-2 border border-gray-300 rounded-md focus:ring focus:ring-blue-200"
-                                rows="4"
-                        ></textarea>
-                    </div>
-
-                    <Button on:click={saveAlerte} class="w-full bg-blue-600 hover:bg-blue-700 text-white">
-                        {isEditMode ? "Modifier" : "Ajouter"}
-                    </Button>
-                </div>
-
-                <!-- Tableau -->
-                <div class="bg-white p-6 rounded-lg shadow-md col-span-2">
-                    <div class="flex justify-between items-center mb-4">
-                        <h4 class="text-xl font-semibold text-gray-800">Liste des alertes</h4>
-                    </div>
-
-                    <div class="mb-4">
-                        <Input placeholder="Rechercher..." type="text" bind:value={searchQuery} class="w-full input-search" />
-                    </div>
-
-                    <Table class="border border-gray-300">
-                        <TableHead class="bg-gray-100 border-b">
-                            {#each ["Destinataire", "Objet", "Message", "Action"] as title}
-                                <TableHeadCell class="px-4 py-2">{title}</TableHeadCell>
-                            {/each}
-                        </TableHead>
-                        <TableBody>
-                            {#if loading && main_data.length === 0}
-                                <TableBodyRow>
-                                    <TableBodyCell colspan={4} class="text-center py-4">Chargement...</TableBodyCell>
-                                </TableBodyRow>
-                            {:else if main_data.length === 0}
-                                <TableBodyRow>
-                                    <TableBodyCell colspan={4} class="text-center py-4">Aucune alerte trouvée</TableBodyCell>
-                                </TableBodyRow>
-                            {:else}
-                                {#each main_data as item}
-                                    <TableBodyRow class="text-sm">
-                                        <TableBodyCell class="px-4 py-2 table-cell">{item?.destinateur?.libelle}</TableBodyCell>
-                                        <TableBodyCell class="px-4 py-2 table-cell">{item.objet}</TableBodyCell>
-                                        <TableBodyCell class="px-4 py-2 table-cell">{item.message}</TableBodyCell>
-                                        <TableBodyCell class="px-2 py-2 table-cell">
-                                            <button on:click={() => editAlerte(item)} class="text-blue-500 mr-2">
-                                                ✏️
-                                            </button>
-                                            <button on:click={() => deleteAlerte(item.id)} class="text-red-500">
-                                                🗑️
-                                            </button>
-                                        </TableBodyCell>
-                                    </TableBodyRow>
-                                {/each}
-                            {/if}
-                        </TableBody>
-                    </Table>
-                </div>
-            </div>
+  <section class="iletisim-form-alani">
+    <div id="">
+      <div class="container mx-auto p-4 main-div">
+        <!-- Boutons en haut du tableau -->
+        <div class="flex justify-between mb-4">
+          <div></div>
+          <button
+            on:click={openAddPopup}
+            class="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600"
+          >
+            Ajouter
+          </button>
         </div>
-   <!--  <br><br> -->
-    </section>
-</main>
-<!-- Modal de confirmation -->
-<!--<Modal bind:open={showDeleteModal} title="Confirmation">
-    <p>Voulez-vous vraiment supprimer cette alerte ?</p>
-    <div class="flex justify-end space-x-4 mt-4">
-        <Button on:click={() => (showDeleteModal = false)} class="bg-gray-500 text-white">Annuler</Button>
-        <Button on:click={deleteAlerte} class="bg-red-600 text-white">Supprimer</Button>
-    </div>
-</Modal>-->
 
-<Footer />
+        <!-- Tableau -->
+        <table
+          class="min-w-full bg-white border border-gray-200 border-collapse"
+        >
+          <thead>
+            <tr class="bg-gray-100">
+              <th class="border border-gray-300 py-2 px-4 border-b text-center w-1"
+                >N</th
+              >
+              <th class="border border-gray-300 py-2 px-4 border-b text-center"
+                >Destinataire</th
+              >
+              <th class="border border-gray-300 py-2 px-4 border-b text-center"
+                >Objet</th
+              >
+              <th class="border border-gray-300 py-2 px-4 border-b text-center"
+                >Message</th
+              >
+              <th
+                class="border border-gray-300 py-2 px-4 border-b text-center"
+                style="width: 50px;">Actions</th
+              >
+            </tr>
+          </thead>
+          <tbody>
+            {#each paginatedForums as forum, index}
+              <tr class="hover:bg-gray-50">
+                <td
+                  class="border border-gray-300 py-2 px-4 border-b text-center"
+                  >{index + 1}</td
+                >
+                <td
+                  class="border border-gray-300 py-2 px-4 border-b text-center"
+                  >{forum?.destinateur?.libelle}</td
+                >
+                <td
+                  class="border border-gray-300 py-2 px-4 border-b text-center"
+                >
+                {forum.objet}
+                  
+                </td>
+                <td
+                  class="border border-gray-300 py-2 px-4 border-b text-center"
+                  >{forum.message}</td
+                >
+                <td
+                  class="border border-gray-300 py-2 px-4 border-b text-center"
+                >
+                  <!-- Bouton Modifier -->
+                  <button
+                    on:click={() => openEditPopup(forum)}
+                    class="text-blue-500 hover:text-blue-700 mr-2"
+                    style="color: blue !important;"
+                  >
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      class="h-5 w-5"
+                      viewBox="0 0 20 20"
+                      fill="currentColor"
+                    >
+                      <path
+                        d="M13.586 3.586a2 2 0 112.828 2.828l-.793.793-2.828-2.828.793-.793zM11.379 5.793L3 14.172V17h2.828l8.38-8.379-2.83-2.828z"
+                      />
+                    </svg>
+                  </button>
+
+                  <!-- Bouton Supprimer -->
+                  <button
+                    on:click={() => handleDelete(forum)}
+                    class="text-red-500 hover:text-red-700"
+                    style="color: red !important;"
+                  >
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      class="h-5 w-5"
+                      viewBox="0 0 20 20"
+                      fill="currentColor"
+                    >
+                      <path
+                        fill-rule="evenodd"
+                        d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z"
+                        clip-rule="evenodd"
+                      />
+                    </svg>
+                  </button>
+                </td>
+              </tr>
+            {/each}
+          </tbody>
+        </table>
+
+        <!-- Pagination avec icônes -->
+        <div class="flex justify-end items-center mt-4">
+          <button
+            on:click={() => goToPage(currentPage - 1)}
+            disabled={currentPage === 1}
+            class="bg-gray-300 px-3 py-2 rounded hover:bg-gray-400 disabled:opacity-50"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              class="h-5 w-5"
+              viewBox="0 0 20 20"
+              fill="currentColor"
+            >
+              <path
+                fill-rule="evenodd"
+                d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z"
+                clip-rule="evenodd"
+              />
+            </svg>
+          </button>
+
+          <span class="mx-4 text-gray-700">{currentPage}</span>
+
+          <button
+            on:click={() => goToPage(currentPage + 1)}
+            disabled={currentPage === totalPages}
+            class="bg-gray-300 px-3 py-2 rounded hover:bg-gray-400 disabled:opacity-50"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              class="h-5 w-5"
+              viewBox="0 0 20 20"
+              fill="currentColor"
+            >
+              <path
+                fill-rule="evenodd"
+                d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z"
+                clip-rule="evenodd"
+              />
+            </svg>
+          </button>
+        </div>
+
+        <!-- Popup d'ajout -->
+        <Add
+          {data}
+          bind:showPopup={showAddPopup}
+          closePopup={closeAddPopup}
+          on:submit={addForum}
+        />
+
+        <!-- Popup d'édition -->
+        {#if selectedForum}
+          <Edit
+            {data}
+            bind:showPopup={showEditPopup}
+            closePopup={closeEditPopup}
+            forum={selectedForum}
+            on:submit={updateForum}
+          />
+        {/if}
+      </div>
+      <Footer></Footer>
+    </div>
+  </section>
+</main>
 
 <style>
+  .iletisim-form-alani {
+    padding: 20rem 226px 10rem !important;
 
-    .main-content label {
-        font-size: 15px;
-        margin-bottom: 10px;
-    }
-    .main-content {
-        margin-top: 135px;
-    }
-
-    h4 {
-        font-size: 2rem;
-        margin-bottom: 20px;
-    }
-
-    .main-content input {
-        height: 32px;
-    }
-
-    .input-search {
-        height: 28px !important;
-        width: 30%;
-    }
-
-    .table-cell {
-        font-size: 1.2rem;
-    }
-
-    label {
-        font-size: 1rem;
-    }
-
-    button {
-        font-size: 1.1rem;
-    }
-
-    table td {
-        font-size: 15px;
-    }
-
-    table th {
-        font-size: 12px;
-    }
-
-    table td button {
-        font-size: 18px !important;
-    }
-
-
+    background-color: #fff;
+  }
+  .main-div {
+    margin-top: -10px;
+    margin-bottom: 150px;
+    border: 1px solid #e5e7eb;
+    background: white;
+    border-radius: 10px;
+    padding: -10px 0px 0px 0px;
+  }
 </style>

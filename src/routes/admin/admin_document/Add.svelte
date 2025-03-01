@@ -13,30 +13,40 @@
   let isLoad = false;
 
   let icons: any = {
-    code: "",
-    libelle: "",
+    path: null as File | null,
+    libelle: ""
   };
   export let sizeModal: any = "lg";
   export let userUpdateId: any;
+
   export let data: Record<string, string> = {};
 
   function init(form: HTMLFormElement) {}
 
   async function SaveFunction() {
+    const formData = new FormData();
+    formData.append("libelle", icons.libelle);
+    formData.append("userUpdate", userUpdateId);
+
+   
+    if (icons.path instanceof File) {
+      // Vérifie que c'est bien un fichier
+      formData.append("path", icons.path);
+    }
+    console.log(formData)
+
     isLoad = true;
     try {
-      const res = await fetch(BASE_URL_API + "/destinateur/create", {
+      const res = await fetch(BASE_URL_API + "/adminDocument/create", {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ code: icons.code, libelle: icons.libelle }),
+       
+        body: formData
       });
 
       if (res.ok) {
         isLoad = false;
         open = false;
-        notificationMessage = "destinataire créé avec succès!";
+        notificationMessage = "document créé avec succès!";
         notificationType = "success";
         showNotification = true;
       }
@@ -44,7 +54,7 @@
       notificationMessage = "Une erreur crée lors de l enregistrement";
       notificationType = "error";
       showNotification = true;
-      console.error("Error saving:", error);
+      console.error("Error saving:", error);  
     }
   }
 
@@ -53,11 +63,23 @@
       event.preventDefault(); // Prevent modal from closing if loading
     }
   }
+
+  let avatarPreview: any = "";
+
+  function handleFileUpload(event: any) {
+    const file = event.target.files[0];
+    if (file) {
+      icons.path = file;
+      avatarPreview = URL.createObjectURL(file);
+    }
+  }
 </script>
 
 <Modal
   bind:open
-  title={Object.keys(data).length ? "Ajouter une destinataire " : "Ajouter une destinataire"}
+  title={Object.keys(data).length
+    ? "Ajouter un document "
+    : "Ajouter un document"}
   size={sizeModal}
   class="m-4 modale_general"
   on:close={handleModalClose}
@@ -65,8 +87,7 @@
   <!-- Modal body -->
   <div class="space-y-6 p-0">
     <form action="#" use:init>
-      <div class="grid grid-cols-1">
-      
+      <div class="grid grid-cols-1 mb-4">
         <InputSimple
           fieldName="libelle"
           label="Libelle"
@@ -74,6 +95,19 @@
           placeholder="entrez le libelle"
           class="w-full"
         ></InputSimple>
+      </div>
+      <div class="grid grid-cols-1">
+        <Label class="col-span-6 space-y-1 sm:col-span-3">
+          <span>Document</span>
+          <Input 
+            type="file"
+            name="document"
+            on:change={handleFileUpload}
+            class="border outline-none form-input font-normal rounded block w-full border-gray-200 text-sm focus:border-gray-300 focus:ring-0 bg-white"
+            placeholder="Document"
+          />
+        </Label>
+        <p>{avatarPreview}</p>
       </div>
     </form>
   </div>

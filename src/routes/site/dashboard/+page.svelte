@@ -161,110 +161,67 @@
           crossorigin="anonymous"
           referrerpolicy="no-referrer"
   />
-
-  <section class="hakkimizda-bolumu-anasayfa1">
+  <section class="hakkimizda-bolumu-anasayfa1 py-5">
     <div class="container">
-      <div
-              class="tablo--1-ve-2 masqueur à effet de révélation d'image de projet wow animated"
-              style="visibility: visible;"
-      >
-        <div class="row">
-          <div class="col-md-8">
-            <h1
-                    style="font-size: 3.5rem;text-transform: none;"
-                    class="h2-baslik-anasayfa-ozel h-yazi-margin-kucuk"
-            >
+      <div class="tablo--1-ve-2 masqueur effet-revelation wow animated" style="visibility: visible;">
+        <div class="row align-items-center">
+          <div class="col-lg-8 col-md-12 text-center text-lg-start">
+            <h1 class="h2-baslik-anasayfa-ozel h-yazi-margin-kucuk fw-bold">
               Bienvenue sur la<br />
-              plateforme MyDEPPS <br />
+              plateforme MyDEPPS
             </h1>
           </div>
-          <div
-                  class="col-md-4 row"
-                  style="box-shadow: 8px 8px 6px #bababa;padding: 8px;border: 1px solid #bababa6b;border-radius: 10px;"
-          >
-            <div class="col-md-8">
-              <h4
-                      class="h2-baslik-anasayfa-ozel h-yazi-margin-kucuk"
-                      style="margin: 0px !important;margin-top:10px !important"
-              >
-                {user?.username}
-              </h4>
-              <p style="font-size:20px">
-                {#if user?.type == "PROFESSIONNEL"}
+          <div class="col-lg-4 col-md-8 mx-auto p-3 shadow-sm border rounded bg-light">
+            <div class="d-flex align-items-center">
+              <div class="flex-grow-1">
+                <h4 class="h2-baslik-anasayfa-ozel h-yazi-margin-kucuk my-2">
+                  {user?.username}
+                </h4>
+                <p class="fs-5 text-secondary">
+                  {#if user?.type == "PROFESSIONNEL"}
                   PROFESSIONNEL DE SANTE
-                {:else}
+                  {:else}
                   ETABLISSEMENT DE SANTE
-                {/if}
-              </p>
-            </div>
-            <div class="col-4">
-              {#if user?.avatar != null}
-                <div
-                        style="width: 100px;height: 100px;border-radius:50%;background-image:url({BASE_URL_API_UPLOAD +
-                    user?.avatar});background-size:cover"
-                ></div>
-              {:else}
-                <div
-                        style="width: 100px;height: 100px;border-radius:50%;background-image:url('https://static.vecteezy.com/system/resources/thumbnails/009/292/244/small/default-avatar-icon-of-social-media-user-vector.jpg');background-size:cover"
-                ></div>
-              {/if}
+                  {/if}
+                </p>
+              </div>
+              <div class="ms-3">
+                <div class="avatar rounded-circle shadow-sm"
+                  style="width: 80px; height: 80px; background-size: cover; background-position: center;
+                  background-image: url({user?.avatar ? BASE_URL_API_UPLOAD + user?.avatar : 'https://static.vecteezy.com/system/resources/thumbnails/009/292/244/small/default-avatar-icon-of-social-media-user-vector.jpg'});">
+                </div>
+              </div>
             </div>
           </div>
         </div>
+  
         <br />
-        <!-- <div class="alert alert-danger" style="font-size:18px">
-          Bienvenue! Veuillez payer votre adhésion pour activer votre compte! <b
-            ><u><a href="paiements" style="color:#58151c">Cliquez ici</a></u></b
-          >
-        </div> -->
-        <!-- <div class="alert alert-info" style="font-size:18px">
-                  <i>Vous avez obtenu un avis favorable d'inscription au registre de la profession Pharmacie.<br>Veuillez vous rendre à la DEPPS pour le retrait de votre autorisation d'exercice</i>
-              </div> -->
-        <br />
+  
         <div class="row g-4">
           {#each cards as { icon, text, link }}
-            <div class="col-md-4 col-sm-6 ">
-              <a href={link} class="text-decoration-none">
-                <div class="card card-custom hover:bg-blue-100 hover:text-white">
-                  <i class={icon}></i>
-                  <div class="card-text">{text}</div>
-                </div>
-              </a>
-            </div>
+          <div class="col-lg-4 col-md-6 col-sm-12">
+            <a href={link} class="text-decoration-none">
+              <div class="card card-custom hover:bg-blue-100 hover:text-white">
+                <i class={icon}></i>
+                <div class="card-text">{text}</div>
+              </div>
+            </a>
+          </div>
           {/each}
         </div>
-
       </div>
     </div>
   </section>
-
+  
   <style>
-    .footerss p {
-      display: flex;
-      flex-wrap: wrap;
-      justify-content: start !important;
-      align-items: start !important;
+    /* Conteneurs adaptatifs */
+    .container {
+      max-width: 1200px;
     }
-    h2.h2-baslik-footer.h-yazi-margin-kucuk,
-    .footer__list,
-    .footer__sosyal {
-      display: flex;
-      flex-wrap: wrap;
-      justify-content: start !important;
-      align-items: start !important;
-    }
-
-
-
-
-
-    .card-custom:hover {
-
-      transform: scale(1.05);  /* Effet de zoom léger */
-    }
-
+  
+    /* Cartes adaptatives */
     .card-custom {
-      transition: background-color 0.3s ease, transform 0.3s ease;
+      transition: transform 0.3s ease, background-color 0.3s ease;
       display: flex;
       flex-direction: column;
       align-items: center;
@@ -274,25 +231,51 @@
       border-radius: 10px;
       border: 1px solid blue;
       box-shadow: 3px 3px 10px rgba(0, 0, 0, 0.2);
-      overflow: hidden; /* Empêche le contenu de dépasser */
-      height: 200px; /* Ajuste la hauteur pour un meilleur rendu */
+      height: 200px;
     }
-
+  
+    .card-custom:hover {
+      transform: scale(1.05);
+    }
+  
     .card-custom i {
-      font-size: 5rem; /* Agrandit les icônes */
+      font-size: 4rem;
       margin-bottom: 10px;
     }
-
+  
     .card-custom .card-text {
       font-size: 1.2rem;
       font-weight: bold;
-      white-space: nowrap; /* Empêche le texte de se casser */
-      overflow: hidden; /* Empêche le texte de déborder */
-      text-overflow: ellipsis; /* Ajoute des "..." si le texte est trop long */
+      text-overflow: ellipsis;
       max-width: 100%;
+      overflow: hidden;
+      white-space: nowrap;
     }
-
+  
+    /* Avatar */
+    .avatar {
+      width: 80px;
+      height: 80px;
+      border-radius: 50%;
+    }
+  
+    /* Responsive ajustements */
+    @media (max-width: 768px) {
+      .h2-baslik-anasayfa-ozel {
+        font-size: 2.5rem;
+      }
+  
+      .card-custom {
+        height: auto;
+        padding: 15px;
+      }
+  
+      .card-custom i {
+        font-size: 3rem;
+      }
+    }
   </style>
+  
   <Footer />
 </div>
 

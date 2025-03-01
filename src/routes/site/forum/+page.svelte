@@ -257,6 +257,6 @@
     border: 1px solid #e5e7eb;
     background: white;
     border-radius: 10px;
-    padding: 50px;
+    padding: -10px 0px 0px 0px;
   }
 </style>

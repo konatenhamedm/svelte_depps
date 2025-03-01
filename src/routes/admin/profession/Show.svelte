@@ -4,16 +4,18 @@
 	export let open: boolean = false;
 	export let sizeModal: any = "lg";
 	export let data: Record<string, string> = {};
-	let code = "";	let libelle = "";
+	let code = "";
+	let libelle = "";
 
 	function init(form: HTMLFormElement) {
+		code = data.code || "";
 		libelle = data.libelle || "";
 	}
 </script>
 
 <Modal
 	bind:open
-	title={Object.keys(data).length ? "Détails type personne" : "Détails type personne"}
+	title={Object.keys(data).length ? "Détails  profession" : "Détails  profession"}
 	size={sizeModal}
 	class="m-4 modale_general"
 >
@@ -21,7 +23,13 @@
 	<div class="space-y-6 p-0">
 		<form action="#" use:init>
 			<div class="grid grid-cols-1 gap-6">
-			
+				<InputSimple
+					fieldName="code"
+					label="code"
+					field={code}
+					placeholder="entrez l'url"
+					disabled={true}
+				/>
 				<InputSimple
 					fieldName="libelle"
 					label="Libelle"
