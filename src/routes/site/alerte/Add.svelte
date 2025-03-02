@@ -107,12 +107,31 @@
           >
             Annuler
           </button>
+          {#if loading}
+          <button
+            type="submit"
+            class="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600"
+          >
+            <div class="flex flex-row gap-2">
+              <div
+                class="w-3 h-3 rounded-full bg-white animate-bounce [animation-delay:.7s]"
+              ></div>
+              <div
+                class="w-3 h-3 rounded-full bg-white animate-bounce [animation-delay:.3s]"
+              ></div>
+              <div
+                class="w-3 h-3 rounded-full bg-white animate-bounce [animation-delay:.7s]"
+              ></div>
+            </div>
+          </button>
+        {:else}
           <button
             type="submit"
             class="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600"
           >
             Ajouter
           </button>
+        {/if}
         </div>
       </form>
     </div>

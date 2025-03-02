@@ -11,7 +11,7 @@
 
         try {
             // Example POST request (replace with your actual API call)
-            const res = await fetch(BASE_URL_API +`/civilite/delete/`+data?.id, {
+            const res = await fetch(BASE_URL_API +`/typeDocument/delete/`+data?.id, {
                 method: 'DELETE',
                /*  headers: {
                     'Content-Type': 'application/json'

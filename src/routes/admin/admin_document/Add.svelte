@@ -21,7 +21,11 @@
 
   export let data: Record<string, string> = {};
 
-  function init(form: HTMLFormElement) {}
+  function init(form: HTMLFormElement) {
+    icons.libelle = "";
+    icons.path = null;
+    avatarPreview = "";
+  }
 
   async function SaveFunction() {
     const formData = new FormData();

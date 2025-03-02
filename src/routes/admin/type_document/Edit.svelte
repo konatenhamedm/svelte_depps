@@ -4,11 +4,15 @@
   import { BASE_URL_API } from "$lib/api";
   import { Button, Input, Label, Modal, Textarea } from "flowbite-svelte";
   import InputTextArea from "$components/inputs/InputTextArea.svelte";
+  import { onMount } from "svelte";
+  import InputSelect from "$components/inputs/InputSelect.svelte";
 
   export let open: boolean = false; // modal control
   let isLoad = false;
-  let code: string = "";
+  let nombre: string = "";
   let libelle: string = "";
+  let typePersonne: any = "";
+  let typePersonnes : any = []; // Assume that this will be populated with cities
 
   export let sizeModal: any = "lg";
   export let userUpdateId: any;
@@ -17,22 +21,24 @@
 
   // Initialize form data with the provided record
   function init(form: HTMLFormElement) {
-    code = data?.code;
+    nombre = data?.nombre;
     libelle = data?.libelle;
+    typePersonne = data?.typePersonne.id;
   }
 
   async function SaveFunction() {
     isLoad = true;
 
     try {
-      const res = await fetch(BASE_URL_API + "/civilite/update/" + data?.id, {
+      const res = await fetch(BASE_URL_API + "/typeDocument/update/" + data?.id, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          code: code,
+          nombre: nombre,
           libelle: libelle,
+          typePersonne: typePersonne,
           userUpdate: userUpdateId,
         }),
       });
@@ -43,6 +49,8 @@
       }
     } catch (error) {
       console.error("Error saving:", error);
+      isLoad = false;
+
     }
   }
 
@@ -51,13 +59,27 @@
       event.preventDefault();
     }
   }
+
+  async function getTypePersonne() {
+        try {
+            const res = await fetch(BASE_URL_API + "/typePersonne");
+            const data = await res.json();
+            typePersonnes = data.data
+        } catch (error) {
+            console.error("Error fetching villes:", error);
+        }
+    }
+
+    onMount(async () => {
+        await getTypePersonne();
+    })
 </script>
 
 <Modal
   bind:open
   title={Object.keys(data).length
-    ? "Modification de l'icon"
-    : "Modification de l'icon"}
+    ? "Modification de type document"
+    : "Modification de type document"}
   size={sizeModal}
   class="m-4 modale_general"
   on:close={handleModalClose}
@@ -65,23 +87,33 @@
   <!-- Modal body -->
   <div class="space-y-6 p-0">
     <form action="#" use:init>
-      <div class="grid grid-cols-1">
-        <div class="grid grid-cols-1">
-          <InputSimple
-            fieldName="code"
-            label="Code"
-            bind:field={code}
-            placeholder="entrez le code"
-            class="w-full"
-          ></InputSimple>
-          <InputSimple
-            fieldName="libelle"
-            label="Libelle"
-            bind:field={libelle}
-            placeholder="entrez le libelle"
-            class="w-full"
-          ></InputSimple>
-        </div>
+      <div class="grid grid-cols-1 gap-4 mb-4">
+       
+
+        <InputSimple
+          fieldName="libelle"
+          label="Libelle"
+          bind:field={libelle}
+          placeholder="entrez le libelle"
+          class="w-full"
+        ></InputSimple>
+         <InputSimple
+          fieldName="nombre"
+          label="Nombre"
+          bind:field={nombre}
+          placeholder="entrez le nombre"
+          class="w-full"
+        ></InputSimple>
+      </div>
+      <div class="grid grid-cols-1 gap-6">
+        
+        <InputSelect
+        label="Type personne"
+        bind:selectedId={typePersonne}
+        datas={typePersonnes}
+        id="typePersonne"
+    />
+       
       </div>
     </form>
   </div>

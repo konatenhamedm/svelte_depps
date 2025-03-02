@@ -19,7 +19,7 @@
   import Pagination from "../../../components/_includes/Pagination.svelte";
   // Importer le store pageSize
   import { get } from "svelte/store";
-  import type { Permission, User } from "../../../types";
+  import type { Permission, TypeDocument, User } from "../../../types";
   import { apiFetch } from "$lib/api";
   import { pageSize } from "../../../store"; // Importer le store pageSize
   import { onMount } from "svelte";
@@ -30,7 +30,7 @@
   import { getAuthCookie } from "$lib/auth";
   import DropdownMenu from "$components/DropdownMenu.svelte";
 
-  let main_data: Permission[] = [];
+  let main_data: TypeDocument[] = [];
   let searchQuery = ""; // Pour la recherche par texte
   let selectedService: any = ""; // Pour filtrer par service
   let selectedStatus: any = ""; // Pour filtrer par status
@@ -50,10 +50,12 @@
   async function fetchData() {
     loading = true; // Active le spinner de chargement
     try {
-      const res = await apiFetch(true, "/civilite/");
+      const res = await apiFetch(true, "/typeDocument/");
 
       if (res) {
-        main_data = res.data as Permission[];
+        main_data = res.data as TypeDocument[];
+        console.log(main_data);
+     
       } else {
         console.error(
           "Erreur lors de la récupération des données:",
@@ -69,13 +71,11 @@
 
   onMount(async () => {
     await fetchData();
+  
   });
 
   $: filteredData = main_data.filter((item) => {
-    return (
-      item.code.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      item.libelle.toLowerCase().includes(searchQuery.toLowerCase())
-    );
+    return item.libelle.toLowerCase().includes(searchQuery.toLowerCase());
   });
 
   // $: totalPages = Math.ceil(filteredData.length / get(pageSize)) pageSize se trouve store.ts;
@@ -114,7 +114,7 @@
   $: if (!openAdd || !openEdit || !openDelete) {
     refreshDataIfNeeded();
   }
-    // Fonction de callback pour gérer les actions
+  // Fonction de callback pour gérer les actions
   const handleAction = (action: any, item: any) => {
     current_data = item;
     if (action === "view") {
@@ -128,23 +128,25 @@
 </script>
 
 <Entete
-  libelle="Gestion des civilités"
+  libelle="Gestion des types document"
   parent="Parametres"
-  descr="Liste des civilités"
+  descr="Liste des types document"
 />
 <section class="content">
   <div class="row">
     <div class="col-12">
       <div class="box">
         <div class="box-header with-border flex justify-between items-center">
-          <h4 class="box-title text-xl font-medium">Liste des civilités</h4>
+          <h4 class="box-title text-xl font-medium">
+            Liste des types document
+          </h4>
 
           <div>
             <a
               class="py-[5px] px-3 waves-effect waves-light btn btn-info mb-5"
               on:click={() => ((current_data = {}), (openAdd = true))}
             >
-              + Nouvelle civilite
+              + Nouvelle type document
             </a>
           </div>
         </div>
@@ -165,7 +167,7 @@
               <TableHead
                 class="border-y border-gray-200 bg-gray-100 dark:border-gray-700"
               >
-                {#each ["code", "libelle", "Action"] as title}
+                {#each ["nombre", "libelle", "Type persoone", "Action"] as title}
                   <TableHeadCell class="ps-4 font-normal border border-gray-300"
                     >{title}</TableHeadCell
                   >
@@ -214,16 +216,19 @@
                   {#each paginatedProducts as item}
                     <TableBodyRow class="text-base border border-gray-300">
                       <TableBodyCell class="p-4 border border-gray-300"
-                        >{item.code}</TableBodyCell
+                        >{item.nombre}</TableBodyCell
                       >
                       <TableBodyCell class="p-4 border border-gray-300"
                         >{item.libelle}</TableBodyCell
                       >
+                      <TableBodyCell class="p-4 border border-gray-300"
+                        >{item.typePersonne.libelle }</TableBodyCell
+                      >
 
                       <!--  <TableBodyCell class="p-4 border border-gray-300">{item.sous_menu.libelle}</TableBodyCell>
                                    -->
-                     
-                        <TableBodyCell class="p-2 w-8 border border-gray-300">
+
+                      <TableBodyCell class="p-2 w-8 border border-gray-300">
                         <DropdownMenu {item} onAction={handleAction} />
                       </TableBodyCell>
                     </TableBodyRow>

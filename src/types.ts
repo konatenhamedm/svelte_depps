@@ -197,6 +197,15 @@ export interface Icon {
   description: string;
 }
 
+export interface TypeDocument {
+  id: number;
+  libelle: string;
+  nombre: number;
+  typePersonne:{
+    id: number;
+    libelle: string;
+  }
+}
 export interface Permission {
   id: number;
   libelle: string;

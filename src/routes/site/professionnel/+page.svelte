@@ -16,7 +16,7 @@
   import Spinner from "$components/_skeletons/Spinner.svelte";
   import { goto } from "$app/navigation";
 
-  const professions = getProfessions();
+
 
   export let data; // Récupérer les données du layout
   let user = data?.user;
@@ -571,12 +571,23 @@
     }
   }
 
+  let professions: any[] = [];
+
+  async function getAllProfessions() {
+   await apiFetch(true, "/typeProfession").then((response) => {
+     if (response.code === 200) {
+       professions = response.data;
+     }
+   });
+  }
+
   onMount(async () => {
     fetchData();
+    getAllProfessions();
   });
   onMount(() => {
-    //localStorage.clear(); // Nettoyer les données du localStorage
-    localStorage.setItem("reference", "");
+    /* localStorage.clear(); // Nettoyer les données du localStorage
+    localStorage.setItem("reference", ""); */
     const savedStep = localStorage.getItem("step");
     if (savedStep) {
       step = parseInt(savedStep);
@@ -840,7 +851,7 @@
                   {#each professions as professionGP}
                     <div class="form__grup mb-4">
                       <label class="form_label font-bold block mb-2">
-                        <big>{professionGP.title}</big>
+                        <big>{professionGP.libelle}</big>
                       </label>
           
                       {#each professionGP.professions as profession}
@@ -852,10 +863,10 @@
                             class="cursor-pointer"
                             id={profession.id}
                             name="rd_profession"
-                            checked={profession.title == formData.profession}
-                            on:change={() => (formData.profession = profession.title)}
+                            checked={profession.libelle == formData.profession}
+                            on:change={() => (formData.profession = profession.libelle)}
                           />
-                          <label for={profession.id} class="cursor-pointer">{profession.title}</label>
+                          <label for={profession.id} class="cursor-pointer">{profession.libelle}</label>
                         </div>
                       {/each}
                     </div>

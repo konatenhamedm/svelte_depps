@@ -28,6 +28,7 @@
   import Show from "./Show.svelte";
   import Delete from "./Delete.svelte";
   import { getAuthCookie } from "$lib/auth";
+  import DropdownMenu from "$components/DropdownMenu.svelte";
 
   let main_data: sMenu[] = [];
   let searchQuery = ""; // Pour la recherche par texte
@@ -44,7 +45,7 @@
   let current_data: any = {};
 
   export let data; // Les données retournées par `load()`
-  let user = data.user; 
+  let user = data.user;
 
   async function fetchData() {
     loading = true; // Active le spinner de chargement
@@ -110,7 +111,7 @@
   $: if (!openAdd || !openEdit || !openDelete) {
     refreshDataIfNeeded();
   }
-   const handleAction = (action: any, item: any) => {
+  const handleAction = (action: any, item: any) => {
     current_data = item;
     if (action === "view") {
       openShow = true;
@@ -214,12 +215,10 @@
 
                       <!--  <TableBodyCell class="p-4 border border-gray-300">{item.sous_menu.libelle}</TableBodyCell>
                                    -->
-                   
-<TableBodyCell class="p-2 w-8 border border-gray-300">
+
+                      <TableBodyCell class="p-2 w-8 border border-gray-300">
                         <DropdownMenu {item} onAction={handleAction} />
                       </TableBodyCell>
-                    
-
                     </TableBodyRow>
                   {/each}
                 {/if}

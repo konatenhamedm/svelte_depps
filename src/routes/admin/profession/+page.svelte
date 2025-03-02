@@ -54,6 +54,7 @@
 
       if (res) {
         main_data = res.data as Permission[];
+        loading = false; // Active le spinner de chargement
       } else {
         console.error(
           "Erreur lors de la récupération des données:",
@@ -114,7 +115,7 @@
   $: if (!openAdd || !openEdit || !openDelete) {
     refreshDataIfNeeded();
   }
-    // Fonction de callback pour gérer les actions
+  // Fonction de callback pour gérer les actions
   const handleAction = (action: any, item: any) => {
     current_data = item;
     if (action === "view") {
@@ -137,7 +138,9 @@
     <div class="col-12">
       <div class="box">
         <div class="box-header with-border flex justify-between items-center">
-          <h4 class="box-title text-xl font-medium">Liste des types profession</h4>
+          <h4 class="box-title text-xl font-medium">
+            Liste des types profession
+          </h4>
 
           <div>
             <a
@@ -222,8 +225,8 @@
 
                       <!--  <TableBodyCell class="p-4 border border-gray-300">{item.sous_menu.libelle}</TableBodyCell>
                                    -->
-                     
-                        <TableBodyCell class="p-2 w-8 border border-gray-300">
+
+                      <TableBodyCell class="p-2 w-8 border border-gray-300">
                         <DropdownMenu {item} onAction={handleAction} />
                       </TableBodyCell>
                     </TableBodyRow>

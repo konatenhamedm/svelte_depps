@@ -45,7 +45,7 @@
     cv: "",
 
     // Organization informations
-    appartenirOrganisation: false,
+    appartenirOrganisation: "",
     organisationNom: "",
     organisationNumero: "",
     organisationAnnee: ""
@@ -163,13 +163,10 @@
           cv: apiData.cv || "",
 
           // Organisation
-          appartenirOrganisation:
-            apiData.appartenirOrganisation !== null
-              ? apiData.appartenirOrganisation
-              : false,
-          organisationNom: apiData.organisationNom || "",
-          organisationNumero: apiData.organisationNumero || "",
-          organisationAnnee: apiData.organisationAnnee || ""
+          appartenirOrganisation: apiData.appartenirOrganisation ,
+          organisationNom: apiData.organisations[0].nom || "",
+          organisationNumero: apiData.organisations[0].numero || "",
+          organisationAnnee: apiData.organisations[0].annee || ""
         };
 
         console.log("Données chargées:", formData);
@@ -218,7 +215,7 @@
 <Header {user} />
 <Slide {user} />
 {#if isLoading}
-<main style="padding-top: -10px" class="pb-0">
+<main style="padding-top: 10px" class="pb-0">
   <section class="iletisim-form-alani">
   <SkeletonLoader {activeTab} />
 </section>
@@ -689,8 +686,10 @@
                   <input
                     type="radio"
                     bind:group={formData.appartenirOrganisation}
-                    value={true}
+                    value="oui"
+                    disabled
                     class="form-radio text-blue-600"
+                    checked={formData.appartenirOrganisation === 'oui'}
                   />
                   <span class="ml-2">Oui</span>
                 </label>
@@ -698,15 +697,18 @@
                   <input
                     type="radio"
                     bind:group={formData.appartenirOrganisation}
-                    value={false}
+                    value="non"
+                    disabled
                     class="form-radio text-blue-600"
+                    checked={formData.appartenirOrganisation === 'non'}
                   />
                   <span class="ml-2">Non</span>
                 </label>
               </div>
+              
             </div>
 
-            {#if formData.appartenirOrganisation}
+            {#if formData.appartenirOrganisation == "oui"}
               <div class="space-y-2">
                 <label class="block text-sm font-medium text-gray-700"
                   >Nom de l'organisation</label

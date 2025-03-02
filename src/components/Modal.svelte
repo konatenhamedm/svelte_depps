@@ -1,6 +1,6 @@
 <script>
     export let isOpen = false;
-    export let pdfUrl = '';  // URL du PDF
+    export let pdfUrl = 'https://depps.leadagro.net/uploads/media_deeps/document-01cv_professionnel_gris_simple_20241007_221431_00001.pdf';  // URL du PDF
     export let onClose = () => {};
   </script>
   

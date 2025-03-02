@@ -36,7 +36,7 @@
     }
   }
 
-  onMount(async() => {
+  onMount(async () => {
     await fetchData(user?.id);
   });
 
@@ -84,10 +84,8 @@
   }
 
   $: if (showAddPopup == false || showEditPopup == false) {
-     fetchData(user?.id);
+    fetchData(user?.id);
   }
-
-
 </script>
 
 <Header {user} />
@@ -113,7 +111,8 @@
         >
           <thead>
             <tr class="bg-gray-100">
-              <th class="border border-gray-300 py-2 px-4 border-b text-center w-1"
+              <th
+                class="border border-gray-300 py-2 px-4 border-b text-center w-1"
                 >N</th
               >
               <th class="border border-gray-300 py-2 px-4 border-b text-center"
@@ -132,69 +131,104 @@
             </tr>
           </thead>
           <tbody>
-            {#each paginatedForums as forum, index}
-              <tr class="hover:bg-gray-50">
-                <td
-                  class="border border-gray-300 py-2 px-4 border-b text-center"
-                  >{index + 1}</td
-                >
-                <td
-                  class="border border-gray-300 py-2 px-4 border-b text-center"
-                  >{forum?.destinateur?.libelle}</td
-                >
-                <td
-                  class="border border-gray-300 py-2 px-4 border-b text-center"
-                >
-                {forum.objet}
-                  
-                </td>
-                <td
-                  class="border border-gray-300 py-2 px-4 border-b text-center"
-                  >{forum.message}</td
-                >
-                <td
-                  class="border border-gray-300 py-2 px-4 border-b text-center"
-                >
-                  <!-- Bouton Modifier -->
-                  <button
-                    on:click={() => openEditPopup(forum)}
-                    class="text-blue-500 hover:text-blue-700 mr-2"
-                    style="color: blue !important;"
-                  >
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      class="h-5 w-5"
-                      viewBox="0 0 20 20"
-                      fill="currentColor"
-                    >
-                      <path
-                        d="M13.586 3.586a2 2 0 112.828 2.828l-.793.793-2.828-2.828.793-.793zM11.379 5.793L3 14.172V17h2.828l8.38-8.379-2.83-2.828z"
-                      />
-                    </svg>
-                  </button>
-
-                  <!-- Bouton Supprimer -->
-                  <button
-                    on:click={() => handleDelete(forum)}
-                    class="text-red-500 hover:text-red-700"
-                    style="color: red !important;"
-                  >
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      class="h-5 w-5"
-                      viewBox="0 0 20 20"
-                      fill="currentColor"
-                    >
-                      <path
-                        fill-rule="evenodd"
-                        d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z"
-                        clip-rule="evenodd"
-                      />
-                    </svg>
-                  </button>
+            {#if loading && paginatedForums.length === 0}
+              <tr
+                class="hover:bg-gray-50 text-center items-center p-4 text-gray-500 border border-gray-300"
+              >
+                <td colspan="5" class="text-center p-4 text-gray-500">
+                  <div class="flex flex-row gap-2 items-center justify-center">
+                    <div
+                      class="w-4 h-4 rounded-full bg-blue-600 animate-bounce"
+                    ></div>
+                    <div
+                      class="w-4 h-4 rounded-full bg-blue-600 animate-bounce"
+                    ></div>
+                    <div
+                      class="w-4 h-4 rounded-full bg-blue-600 animate-bounce"
+                    ></div>
+                  </div>
                 </td>
               </tr>
-            {/each}
+            {:else if paginatedForums.length === 0}
+              <tr
+                class="hover:bg-gray-50 text-center items-center p-4 text-gray-500 border border-gray-300"
+              >
+                <td colspan="5" class="text-center p-4 text-gray-500">
+                  <div class="flex flex-row items-center justify-center">
+                    <div class="grid grid-cols-1">
+                      <img
+                        src="/search_notfound.svg"
+                        alt="Aucun résultat trouvé"
+                      /><br />
+                      <h1 class="text-2xl font-bold">Aucun résultat</h1>
+                    </div>
+                  </div>
+                </td>
+              </tr>
+            {:else}
+              {#each paginatedForums as forum, index}
+                <tr class="hover:bg-gray-50">
+                  <td
+                    class="border border-gray-300 py-2 px-4 border-b text-center"
+                    >{index + 1}</td
+                  >
+                  <td
+                    class="border border-gray-300 py-2 px-4 border-b text-center"
+                    >{forum?.destinateur?.libelle}</td
+                  >
+                  <td
+                    class="border border-gray-300 py-2 px-4 border-b text-center"
+                  >
+                    {forum.objet}
+                  </td>
+                  <td
+                    class="border border-gray-300 py-2 px-4 border-b text-center"
+                    >{forum.message}</td
+                  >
+                  <td
+                    class="border border-gray-300 py-2 px-4 border-b text-center"
+                  >
+                    <!-- Bouton Modifier -->
+                    <button
+                      on:click={() => openEditPopup(forum)}
+                      class="text-blue-500 hover:text-blue-700 mr-2"
+                      style="color: blue !important;"
+                    >
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        class="h-5 w-5"
+                        viewBox="0 0 20 20"
+                        fill="currentColor"
+                      >
+                        <path
+                          d="M13.586 3.586a2 2 0 112.828 2.828l-.793.793-2.828-2.828.793-.793zM11.379 5.793L3 14.172V17h2.828l8.38-8.379-2.83-2.828z"
+                        />
+                      </svg>
+                    </button>
+
+                    <!-- Bouton Supprimer -->
+                    <button
+                      on:click={() => handleDelete(forum)}
+                      class="text-red-500 hover:text-red-700"
+                      style="color: red !important;"
+                    >
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        class="h-5 w-5"
+                        viewBox="0 0 20 20"
+                        fill="currentColor"
+                      >
+                        <path
+                          fill-rule="evenodd"
+                          d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z"
+                          clip-rule="evenodd"
+                        />
+                      </svg>
+                    </button>
+                  </td>
+                </tr>
+              {/each}
+            {/if}
           </tbody>
         </table>
 

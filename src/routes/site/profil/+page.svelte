@@ -81,16 +81,16 @@
         user_data.email = result.data.email;
         user_data.username = result.data.username;
 
-        avatarPreview = BASE_URL_API_UPLOAD + user_data.avatar.path +"/"+ user_data.avatar.alt;
-
-      
+        
+        
       } else {
-       
+        
         message = `Erreur : ${result.message || "Échec de la modification."}`;
       }
     } catch (error) {
-     console.log(error);
+      console.log(error);
     }
+    avatarPreview =user?.avatar ? BASE_URL_API_UPLOAD + user?.avatar : 'https://static.vecteezy.com/system/resources/thumbnails/009/292/244/small/default-avatar-icon-of-social-media-user-vector.jpg';
   });
 </script>
 
