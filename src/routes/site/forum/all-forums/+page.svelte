@@ -89,7 +89,8 @@
     <Header {user} />
     <Slide {user} />
     
-    <main class="mx-auto px-4 py-8 main-div" style="padding-top: 200px">
+    <main class="mx-auto px-8 py-8 main-div" style="padding-top: 200px">
+       
         <header class="bg-white py-6 px-4 shadow-sm pb-2">
             <h1 class="text-4xl font-bold text-forum-purple">Discussion Forum</h1>
         </header>
@@ -183,6 +184,7 @@
             </div>
             {/if}
         </div>
+
     </main>
     
     <Footer />
@@ -195,7 +197,7 @@
         border: 1px solid #e5e7eb;
         background: transparent;
         border-radius: 10px;
-        padding: 2rem;
+        padding: 20rem 316px 10rem !important;
     }
 
     .selected {

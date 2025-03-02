@@ -90,7 +90,7 @@
 
 <Header {user} />
 <Slide {user} />
-<main style="padding-top: 200px" class="pb-20">
+<main class="mx-auto px-8 py-8 main-div" style="padding-top: 200px">
   <section class="iletisim-form-alani">
     <div id="">
       <div class="container mx-auto p-4 main-div">
@@ -297,22 +297,22 @@
           />
         {/if}
       </div>
-      <Footer></Footer>
     </div>
   </section>
 </main>
+<Footer></Footer>
 
 <style>
   .iletisim-form-alani {
     padding: 20rem 226px 10rem !important;
 
-    background-color: #fff;
+    background-color: transparent !important;
   }
   .main-div {
-    margin-top: -10px;
-    margin-bottom: 150px;
+    margin-top: 10px;
+    margin-bottom: 100px;
     border: 1px solid #e5e7eb;
-    background: white;
+    background: transparent;
     border-radius: 10px;
     padding: -10px 0px 0px 0px;
   }

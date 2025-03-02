@@ -88,15 +88,19 @@
   }
 </script>
 
+
+
+
 <Header {user} />
 <Slide {user} />
-<main style="padding-top: 200px" class="pb-20">
-  <section class="iletisim-form-alani">
+
+<main class="mx-auto px-8 py-8 main-div" style="">
+  <!-- <section class="iletisim-form-alani"> -->
     <div id="">
-      <div class="container mx-auto p-4 main-div">
+      <div class="container mx-auto p-4 ">
         <!-- Boutons en haut du tableau -->
         <div class="flex justify-between mb-4">
-          <div></div>
+          <div> <p class="text-2xl font-semibold text-gray-800">Liste des alertes</p></div>
           <button
             on:click={openAddPopup}
             class="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600"
@@ -156,6 +160,7 @@
                 <td colspan="5" class="text-center p-4 text-gray-500">
                   <div class="flex flex-row items-center justify-center">
                     <div class="grid grid-cols-1">
+                     
                       <img
                         src="/search_notfound.svg"
                         alt="Aucun résultat trouvé"
@@ -294,10 +299,10 @@
           />
         {/if}
       </div>
-      <Footer></Footer>
     </div>
-  </section>
-</main>
+    <!--  </section> -->
+  </main>
+  <Footer></Footer>
 
 <style>
   .iletisim-form-alani {
@@ -309,8 +314,8 @@
     margin-top: -10px;
     margin-bottom: 150px;
     border: 1px solid #e5e7eb;
-    background: white;
+    background: transparent;
     border-radius: 10px;
-    padding: -10px 0px 0px 0px;
+    padding: 20rem 316px 10rem !important;
   }
 </style>

@@ -94,10 +94,10 @@
 </script>
 
 <Slide {user} />
-<main style="padding-top: 200px" class="pb-20">
+<main class="mx-auto px-8 py-8 main-div" style="padding-top: 200px">
   <section class="iletisim-form-alani">
     <div id="guide-user">
-      <div class="w-[55%] mx-auto bg-white rounded-lg shadow-lg main-div">
+      <div class="mx-auto bg-white rounded-lg shadow-lg main-div">
         <div class="p-1">
           <h1 class="text-2xl font-bold text-gray-800 mb-6">
             Liste des documents
@@ -144,8 +144,8 @@
                     </div>
                   </div>
                   <div class="flex items-center gap-3">
-                    <button
-                      class="flex items-center view-button gap-2 px-4 py-2 text-md text-gray-700 hover:text-blue-600 hover:bg-blue-50 rounded-md transition-all border border-gray-200"
+                    <button style="color: black !important;"
+                      class="flex items-center view-button gap-2 px-4 py-2 text-md  hover:text-blue-600 hover:bg-blue-50 rounded-md transition-all border border-gray-200"
                       on:click={() =>
                         openModal(
                           BASE_URL_API_UPLOAD +
@@ -187,21 +187,25 @@
           </div>
         </div>
       </div>
-      <Footer />
     </div>
   </section>
 </main>
+<Footer />
 
 <Modal isOpen={isModalOpen} {pdfUrl} onClose={closeModal} />
 
 <style>
-  .main-div {
-    margin-top: 100px;
-    margin-bottom: 150px;
-    border: 1px solid #e5e7eb;
-  }
+    .iletisim-form-alani {
+    padding: 20rem 226px 0rem !important;
 
-  .view-button {
-    background: #6e5dc1 !important;
+    background-color: transparent !important;
+  }
+  .main-div {
+    margin-top: 10px;
+    margin-bottom: 100px;
+    border: 1px solid #e5e7eb;
+    background: transparent;
+    border-radius: 10px;
+    padding: -10px 0px 0px 0px;
   }
 </style>
