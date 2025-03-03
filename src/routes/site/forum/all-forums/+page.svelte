@@ -36,13 +36,13 @@
             const result = await response.json();
 
             if (result.code === 200 && Array.isArray(result.data)) {
-                topics = result.data.map(forum => ({
+                topics = result.data.map((forum: any) => ({
                     id: forum.id,
                     title: forum.titre,
                     author: "Anonyme", // L'API ne fournit pas d'auteur pour le topic
                     date: "Récemment", // À adapter si l'API fournit une date
-                    avatarUrl: forum.avis.length > 0 ? `https://depps.leadagro.net/${forum.avis[0].user.avatar.path}/${forum.avis[0].user.avatar.alt}` : "https://randomuser.me/api/portraits/men/1.jpg",
-                    comments: forum.avis.map(avis => ({
+                    avatarUrl: forum.length > 0 ? `https://depps.leadagro.net/${forum.avis[0].user.avatar.path}/${forum.avis[0].user.avatar.alt}` : "https://randomuser.me/api/portraits/men/1.jpg",
+                    comments: forum.avis.map((avis: any) => ({
                         author: avis.user.username,
                         date: "Il y a peu", // Modifier selon les besoins
                         content: avis.contenu,
