@@ -586,8 +586,8 @@
     getAllProfessions();
   });
   onMount(() => {
-     localStorage.clear(); // Nettoyer les données du localStorage
-    localStorage.setItem("reference", ""); 
+    /* localStorage.clear(); // Nettoyer les données du localStorage
+    localStorage.setItem("reference", ""); */
     const savedStep = localStorage.getItem("step");
     if (savedStep) {
       step = parseInt(savedStep);
