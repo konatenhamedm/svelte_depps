@@ -65,7 +65,6 @@
     async function addComment() {
         if (selectedTopic && newComment.trim() !== "") {
             try {
-                // Envoi de l'avis à l'API
                 const response = await fetch("https://depps.leadagro.net/api/avis/create", {
                     method: "POST",
                     headers: {
@@ -81,15 +80,9 @@
                 const result = await response.json();
 
                 if (result.code === 200) {
-                    // Mise à jour des commentaires localement après l'ajout réussi
-                    selectedTopic.comments.push({
-                        author: user.name,
-                        date: "Just now", // Date à adapter si nécessaire
-                        content: newComment,
-                        avatarUrl: BASE_URL_API_UPLOAD+`${result.user.avatar.path}/${result.user.avatar.alt}`
-
-                    });
                     newComment = "";
+                    await fetchForums(); // Recharge les forums pour voir les nouveaux commentaires
+                    selectedTopic = topics.find(topic => topic.id === selectedTopic?.id) || null;
                 } else {
                     console.error("Erreur lors de l'ajout du commentaire:", result.message);
                 }
@@ -98,6 +91,8 @@
             }
         }
     }
+
+
 
     onMount(() =>{
         fetchForums();
