@@ -41,7 +41,7 @@
                     title: forum.titre,
                     author: "Anonyme", // L'API ne fournit pas d'auteur pour le topic
                     date: "Récemment", // À adapter si l'API fournit une date
-                    avatarUrl: forum.length > 0 ? `https://depps.leadagro.net/${forum.avis[0].user.avatar.path}/${forum.avis[0].user.avatar.alt}` : "https://randomuser.me/api/portraits/men/1.jpg",
+                    avatarUrl: forum.user.avatar  ? `${BASE_URL_API_UPLOAD}${forum.user.avatar.path}/${forum.user.avatar.alt}` : "https://randomuser.me/api/portraits/men/1.jpg",
                     comments: forum.avis.map((avis: any) => ({
                         author: avis.user.username,
                         date: "Il y a peu", // Modifier selon les besoins
