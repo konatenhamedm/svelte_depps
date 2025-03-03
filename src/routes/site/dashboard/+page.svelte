@@ -44,14 +44,14 @@
  
 </script>
 
-<div
+<!-- <div
         id="pointer-ring"
         style="border-color: rgb(82, 200, 233); padding: 25px; transform: translate(203px, 610px);"
 ></div>
 <div
         id="pointer-dot"
         style="border-color: rgb(113, 88, 190); transform: translate(228px, 635px);"
-></div>
+></div> -->
 <div id="">
   <Header user={user} />
   <Slide user={user} />
