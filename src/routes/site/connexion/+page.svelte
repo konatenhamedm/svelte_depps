@@ -60,7 +60,13 @@
 <div id="">
   <Header {user} />
   <Slide {user} />
-  <main style="padding-top:200px">
+  <section class="text-center pb-0" style="padding-top:142px">
+    <h2 class="h2-baslik-anasayfa-ozel h-yazi-margin-kucuk">Connexion</h2>
+    <!-- <p class="text-center paragraf">
+      Veuillez renseigner vos informations afin de procéder à l'inscription
+    </p> -->
+  </section>
+  <main style="padding-top:250px">
     <!--İletişim Form Alanı-->
     <section class="iletisim-form-alani">
       <div class="tablo">
@@ -68,7 +74,7 @@
           class="tablo--1-ve-2 masqueur à effet de révélation d'image de projet wow animated"
           style="visibility: visible;"
         >
-          <h2 class="h2-baslik-anasayfa-ozel h-yazi-margin-kucuk">Connexion</h2>
+          
           <form
             on:submit|preventDefault={handleSubmit}
             class="form login_customerh"

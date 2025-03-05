@@ -79,7 +79,7 @@
       <form on:submit={handleSubmit}>
         <div class="mb-4">
           <label class="block text-gray-700 mb-2">Objet</label>
-          <input
+          <input disabled
             type="text"
             name="objet"
             value={forum.objet}
@@ -89,7 +89,7 @@
         </div>
         <div class="mb-4">
           <label class="block text-gray-700 mb-2">Message</label>
-          <textarea
+          <textarea disabled
             name="message"
             class="w-full px-3 py-2 border rounded"
             required>{forum.message}</textarea
@@ -102,7 +102,7 @@
                         <option value="Inactif" selected={forum.status === 'Inactif'}>Inactif</option>
                     </select> -->
 
-          <select class="w-full px-3 py-2 border rounded" name="destinateur">
+          <select  disabled class="w-full px-3 py-2 border rounded" name="destinateur">
             {#each recipients as recipient}
               <option
                 value={recipient.id}
@@ -121,7 +121,7 @@
             Annuler
           </button>
           {#if loading}
-            <button
+         <!--    <button
               type="submit"
               class="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600"
             >
@@ -143,7 +143,7 @@
               class="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600"
             >
               Modifier
-            </button>
+            </button> -->
           {/if}
         </div>
       </form>

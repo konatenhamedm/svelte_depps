@@ -6,6 +6,7 @@
   import { apiFetch } from "$lib/api";
   import Add from "./Add.svelte";
   import Edit from "./Edit.svelte";
+  import { EyeOutline } from "flowbite-svelte-icons";
 
   let forums: any[] = [];
 
@@ -16,7 +17,7 @@
   const itemsPerPage = 5;
   let showAddPopup = false;
   let showEditPopup = false;
-  let selectedForum = null;
+  let selectedForum :any = null;
   let loading = false;
 
   async function fetchData(userId: number) {
@@ -50,7 +51,7 @@
   $: totalPages = Math.ceil(forums.length / itemsPerPage);
 
   // Fonction pour changer de page
-  function goToPage(page) {
+  function goToPage(page:any) {
     if (page >= 1 && page <= totalPages) {
       currentPage = page;
     }
@@ -65,7 +66,7 @@
     showAddPopup = false;
   }
 
-  function openEditPopup(forum) {
+  function openEditPopup(forum:any) {
     selectedForum = forum;
     showEditPopup = true;
   }
@@ -75,11 +76,11 @@
     selectedForum = null;
   }
 
-  function addForum(newForum) {
+  function addForum(newForum:any) {
     forums = [...forums, { ...newForum, id: forums.length + 1 }];
   }
 
-  function updateForum(updatedForum) {
+  function updateForum(updatedForum:any) {
     forums = forums.map((f) => (f.id === updatedForum.id ? updatedForum : f));
   }
 
@@ -100,10 +101,10 @@
       <div class="container mx-auto p-4 ">
         <!-- Boutons en haut du tableau -->
         <div class="flex justify-between mb-4">
-          <div> <p class="text-2xl font-semibold text-gray-800">Liste des alertes</p></div>
+          <div> <p class="text-3xl font-semibold text-gray-800">Liste des alertes</p></div>
           <button
             on:click={openAddPopup}
-            class="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600"
+            class="bg-blue-400 text-white px-4 py-2 rounded hover:bg-blue-400"
           >
             Ajouter
           </button>
@@ -199,37 +200,10 @@
                       class="text-blue-500 hover:text-blue-700 mr-2"
                       style="color: blue !important;"
                     >
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        class="h-5 w-5"
-                        viewBox="0 0 20 20"
-                        fill="currentColor"
-                      >
-                        <path
-                          d="M13.586 3.586a2 2 0 112.828 2.828l-.793.793-2.828-2.828.793-.793zM11.379 5.793L3 14.172V17h2.828l8.38-8.379-2.83-2.828z"
-                        />
-                      </svg>
+                    <EyeOutline size="md" class="mr-2" />
                     </button>
 
-                    <!-- Bouton Supprimer -->
-                    <button
-                      on:click={() => handleDelete(forum)}
-                      class="text-red-500 hover:text-red-700"
-                      style="color: red !important;"
-                    >
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        class="h-5 w-5"
-                        viewBox="0 0 20 20"
-                        fill="currentColor"
-                      >
-                        <path
-                          fill-rule="evenodd"
-                          d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z"
-                          clip-rule="evenodd"
-                        />
-                      </svg>
-                    </button>
+                    
                   </td>
                 </tr>
               {/each}
@@ -242,7 +216,7 @@
           <button
             on:click={() => goToPage(currentPage - 1)}
             disabled={currentPage === 1}
-            class="bg-gray-300 px-3 py-2 rounded hover:bg-gray-400 disabled:opacity-50"
+            class="bg-blue-500 px-3 py-2 text-white rounded hover:bg-blue-500 disabled:opacity-50"
           >
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -258,12 +232,12 @@
             </svg>
           </button>
 
-          <span class="mx-4 text-gray-700">{currentPage}</span>
+          <span class="mx-4 text-black">{currentPage}</span>
 
           <button
             on:click={() => goToPage(currentPage + 1)}
             disabled={currentPage === totalPages}
-            class="bg-gray-300 px-3 py-2 rounded hover:bg-gray-400 disabled:opacity-50"
+            class="bg-blue-500 px-3 py-2 rounded hover:bg-blue-500 text-white disabled:opacity-50"
           >
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -312,10 +286,12 @@
   }
   .main-div {
     margin-top: -10px;
-    margin-bottom: 150px;
+    margin-bottom: 100px;
     border: 1px solid #e5e7eb;
     background: transparent;
     border-radius: 10px;
     padding: 20rem 316px 10rem !important;
   }
+
+ 
 </style>

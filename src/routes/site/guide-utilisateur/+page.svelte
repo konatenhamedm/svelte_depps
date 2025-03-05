@@ -98,8 +98,8 @@
   <section class="iletisim-form-alani">
     <div id="guide-user">
       <div class="mx-auto bg-white rounded-lg shadow-lg main-div">
-        <div class="p-1">
-          <h1 class="text-2xl font-bold text-gray-800 mb-6">
+        <div class="p-1 bg-white" >
+          <h1 class="text-3xl font-bold text-gray-800 mb-6">
             Liste des documents
           </h1>
           <div class="divide-y divide-gray-200">
@@ -135,17 +135,17 @@
                       <span class="text-3xl  font-semibold text-gray-900"
                         >{doc.libelle}</span
                       >
-                      <span class="text-xs text-gray-500">
+                      <!-- <span class="text-xs text-gray-500">
                         {BASE_URL_API_UPLOAD +
                           doc.path.path +
                           "/" +
                           doc.path.alt}
-                      </span>
+                      </span> -->
                     </div>
                   </div>
                   <div class="flex items-center gap-3">
-                    <button style="color: black !important;"
-                      class="flex items-center view-button gap-2 px-4 py-2 text-md  hover:text-blue-600 hover:bg-blue-50 rounded-md transition-all border border-gray-200"
+                    <button style="color: white !important;"
+                      class="flex items-center view-button gap-2 px-4 py-2 text-3xl bg-blue-400  hover:text-white hover:blue-400 rounded-md transition-all border border-gray-200"
                       on:click={() =>
                         openModal(
                           BASE_URL_API_UPLOAD +
@@ -201,7 +201,7 @@
     background-color: transparent !important;
   }
   .main-div {
-    margin-top: 10px;
+    margin-top: -10px;
     margin-bottom: 100px;
     border: 1px solid #e5e7eb;
     background: transparent;

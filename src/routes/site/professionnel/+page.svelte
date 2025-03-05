@@ -585,7 +585,7 @@
     getAllProfessions();
   });
   onMount(() => {
-   
+    /* localStorage.setItem('reference', ''); */
     //localStorage.setItem("reference", "DEPPS250304234714045");
 
     const savedStep = localStorage.getItem("step");
@@ -621,11 +621,11 @@
     localStorage.setItem("timestamp", Date.now().toString());
 
     // Programmer un clear automatique après 1 heure
-    /* setTimeout(() => {
+    setTimeout(() => {
       console.log("Effacement automatique après 1 heure !");
       localStorage.clear();
       localStorage.setItem("reference", "");
-    }, EXPIRATION_TIME); */
+    }, EXPIRATION_TIME);
   });
 
   // Sauvegarder les données du formulaire dans localStorage à chaque modification

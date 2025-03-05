@@ -6,13 +6,37 @@
   import { apiFetch, BASE_URL_API, BASE_URL_API_UPLOAD } from "$lib/api";
   import Spinner from "$components/_skeletons/Spinner.svelte";
   export let data; // Les données retournées par `load()`
+
+  
+import { goto } from '$app/navigation';
+
+async function logout() {
+    await fetch('/auth/logout', { method: 'POST' });
+    goto('/site/connexion'); // Redirection après déconnexion
+}
   let user = data.user;
+
+  let showModal = false;
+
+  function confirmUpdate() {
+    showModal = true;
+  }
+
+  function cancelUpdate() {
+    showModal = false;
+  }
+
+  async function proceedUpdate() {
+    showModal = false;
+    await updateUser();
+  }
 
   let user_data = {
     username: "",
     email: "",
     avatar: null as File | null, // Mieux vaut `null` que `""`
-    password: ""
+    password: "",
+    newPassword: ""
   };
 
   let message = "";
@@ -20,7 +44,7 @@
   let avatarPreview =
     "https://static.vecteezy.com/system/resources/thumbnails/009/292/244/small/default-avatar-icon-of-social-media-user-vector.jpg";
 
-  function handleFileUpload(event:any) {
+  function handleFileUpload(event: any) {
     const file = event.target.files[0];
     if (file) {
       user_data.avatar = file;
@@ -34,6 +58,7 @@
     formData.append("username", user_data.username);
     formData.append("email", user_data.email);
     formData.append("password", user_data.password);
+    formData.append("newPassword", user_data.newPassword);
 
     if (user_data.avatar instanceof File) {
       // Vérifie que c'est bien un fichier
@@ -43,12 +68,12 @@
     formData.append("userUpdate", user?.id);
 
     try {
-      fetch(BASE_URL_API + "/user/profil/update/"+user?.id, {
+      fetch(BASE_URL_API + "/user/profil/update/" + user?.id, {
         method: "POST",
         body: formData
       })
         .then((response) => response.json())
-        .then((result) => {
+        .then(async (result) => {
           authenticating = false;
           if (result.errors && Object.keys(result.errors).length > 0) {
             authenticating = false;
@@ -56,12 +81,13 @@
 
             cpte = cpte + 1;
           } else {
-            message = "Modification réussie !";
+            message = "Votre enregistrement a bien été modifié avec succès!";
+             await logout();
           }
 
           setTimeout(() => {
-          message = ""; // Efface le message après 3 secondes
-        }, 3000);
+            message = ""; // Efface le message après 3 secondes
+          }, 8000);
         })
         .catch((error) => {
           message = "Erreur : Échec de la modification.";
@@ -75,22 +101,22 @@
 
   onMount(async () => {
     try {
-      const result = await apiFetch(true, "/user/get/one/" + user?.id );
+      const result = await apiFetch(true, "/user/get/one/" + user?.id);
 
       if (result) {
         user_data.email = result.data.email;
         user_data.username = result.data.username;
 
-        
-        
+    
       } else {
-        
         message = `Erreur : ${result.message || "Échec de la modification."}`;
       }
     } catch (error) {
       console.log(error);
     }
-    avatarPreview =user?.avatar ? BASE_URL_API_UPLOAD + user?.avatar : 'https://static.vecteezy.com/system/resources/thumbnails/009/292/244/small/default-avatar-icon-of-social-media-user-vector.jpg';
+    avatarPreview = user?.avatar
+      ? BASE_URL_API_UPLOAD + user?.avatar
+      : "https://static.vecteezy.com/system/resources/thumbnails/009/292/244/small/default-avatar-icon-of-social-media-user-vector.jpg";
   });
 </script>
 
@@ -105,36 +131,44 @@
           Informations & Accès
         </h2>
         <form
-          on:submit|preventDefault={updateUser}
+        on:submit|preventDefault={confirmUpdate}
           class="form update_customer"
         >
           <div>
             <div class="dropify-wrapper">
-                <input
-                  type="file"
-                 
-                  name="avatar"
-                  accept="image/*,application/pdf"
-                  on:change={handleFileUpload}
-                  class="hidden-input dropify"
-                />
-                <img
-                  src={avatarPreview}
-                  alt="Avatar"
-                  class="dropify-preview"
-                />
-              </div>
+              <input
+                type="file"
+                name="avatar"
+                accept="image/*,application/pdf"
+                on:change={handleFileUpload}
+                class="hidden-input dropify"
+              />
+              <img src={avatarPreview} alt="Avatar" class="dropify-preview" />
+            </div>
           </div>
           <br /><br />
 
-          <div class="tablos flex grid grid-cols-2">
+          <div class="tablos flex grid grid-cols-1">
             <!--  <div> -->
             <div class="form__grup">
               <label class="form__label">Nom utilisateur</label>
               <input
+                disabled
                 type="text"
                 class="form__input"
                 bind:value={user_data.email}
+                placeholder="Nom utilisateur"
+              />
+            </div>
+          </div>
+          <div class="tablos flex grid grid-cols-2">
+            <!--  <div> -->
+            <div class="form__grup">
+              <label class="form__label">Ancien mot de passe</label>
+              <input
+                type="text"
+                class="form__input"
+                bind:value={user_data.password}
                 placeholder="Nom utilisateur"
               />
             </div>
@@ -145,7 +179,7 @@
                 <input
                   type="password"
                   class="form__input"
-                  bind:value={user_data.password}
+                  bind:value={user_data.newPassword}
                   placeholder="Mot de passe"
                 />
               </div>
@@ -170,8 +204,8 @@
               {/if}
             </button>
 
-            <br>
-            <br>
+            <br />
+            <br />
 
             {#if message !== "" && cpte > 0}
               <div
@@ -183,7 +217,7 @@
               </div>
             {:else if message !== ""}
               <div
-                class="bg-red-100 border border-green-400 text-green-400 px-4 py-3 rounded relative"
+                class="bg-red-100 border border-gray-400 text-black px-4 py-3 rounded relative"
                 role="alert"
               >
                 <strong class="font-bold">Success!</strong>
@@ -206,8 +240,56 @@
 </main>
 
 <Footer />
+{#if showModal}
+  <div class="modal-overlay">
+    <div class="modal-content">
+      <h2>Confirmation</h2><br>
+      <p><strong>Êtes-vous sûr de vouloir modifier vos informations car vous serez deconnecté apres la modification ?</strong> </p>
+      <div class="modal-buttons">
+        <button class="buton buton--kirmizi" on:click={proceedUpdate}>Oui, Modifier</button>
+        <button class="buton buton--gris" on:click={cancelUpdate}>Annuler</button>
+      </div>
+    </div>
+  </div>
+{/if}
+
 
 <style>
+  .modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.modal-content {
+  background: white;
+  padding: 20px;
+  border-radius: 8px;
+  text-align: center;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+}
+
+.modal-buttons {
+  margin-top: 20px;
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+}
+
+.buton--gris {
+  background: gray;
+  color: white;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
   .form__grup {
     margin-bottom: 15px;
   }
