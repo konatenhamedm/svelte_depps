@@ -75,11 +75,11 @@
 			<div class="col-span-2"></div>
 			<div class="flex justify-end">
 				<Button
-					color="alternative"
-					style="background-color: red !important; color: white;"
-					on:click={() => (open = false)}
-					type="submit">{"Fermer"}</Button
-				>
+          color="alternative"
+          style="background-color: gray !important; color: white;"
+          on:click={() => (open = false)}
+          type="submit">{"Fermer"}</Button
+        >
 			</div>
 		</div>
 	</div>

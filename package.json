@@ -40,8 +40,11 @@
     "flowbite-svelte": "^0.47.4",
     "flowbite-svelte-icons": "^2.0.2",
     "highcharts": "^11.4.8",
+    "jspdf": "^3.0.0",
+    "jspdf-autotable": "^5.0.2",
     "pdfjs-dist": "^4.10.38",
     "svelte-fa": "^4.0.3",
+    "svelte-google-maps": "^0.2.0",
     "svelte-icons": "^2.1.0"
   }
 }

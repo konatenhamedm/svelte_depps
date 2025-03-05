@@ -54,23 +54,23 @@
 
   {#if isOpen}
     <div class="menu-dropdown">
-      <button class="menu-item hover:bg-green-100 hover:text-green-800"
-        on:click={() => onAction('view', item)}>
+      <button class="menu-item hover:text-white"
+        on:click={() => {onAction('view', item); isOpen = false;}}>
         <EyeOutline size="sm" class="mr-2" /> Voir
       </button>
       
-      <button class="menu-item hover:bg-blue-100 hover:text-blue-800"
-        on:click={() => onAction('edit', item)}>
+      <button class="menu-item  hover:text-white"
+        on:click={() => {onAction('edit', item); isOpen = false;}}>
         <EditOutline size="sm" class="mr-2" /> Modifier
       </button>
       
-      <button class="menu-item hover:bg-red-100 hover:text-red-800"
-        on:click={() => onAction('delete', item)}>
+      <button class="menu-item  hover:text-white"
+        on:click={() => {onAction('delete', item); isOpen = false;}}>
         <TrashBinSolid size="sm" class="mr-2" /> Supprimer
       </button>
 
-      <button class="menu-item hover:bg-red-100 hover:text-red-800"
-        on:click={() => onAction('doc', item)}>
+      <button class="menu-item  hover:text-white"
+        on:click={() => {onAction('download', item); isOpen = false;}}>
         <EyeOutline size="sm" class="mr-2" />  Télecharger
       </button>
     </div>

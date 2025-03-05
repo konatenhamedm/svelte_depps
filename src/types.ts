@@ -448,7 +448,7 @@ export interface professionnel {
   personne: {
     nom: string;
     prenoms: string;
-    phone: string;
+    number: string;
     email: string;
     type: string;
     status: string;

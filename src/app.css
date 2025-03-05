@@ -36,10 +36,14 @@ body{
 }
 
 .modale_general > div:first-child {
-  background: black !important;
+  background: rgb(79 157 217) !important;
 }
 .modale_general > div:first-child  h3 ,button {
   color: white !important;
+}
+
+.text-gray-700 {
+  color:white !important;
 }
 
 .modale_general > div:first-child button:hover {

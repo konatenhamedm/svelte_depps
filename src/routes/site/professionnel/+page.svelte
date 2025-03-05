@@ -15,8 +15,7 @@
   import { getProfessions } from "$lib/constants";
   import Spinner from "$components/_skeletons/Spinner.svelte";
   import { goto } from "$app/navigation";
-
-
+  import Modal from "./Modal.svelte";
 
   export let data; // Récupérer les données du layout
   let user = data?.user;
@@ -574,11 +573,11 @@
   let professions: any[] = [];
 
   async function getAllProfessions() {
-   await apiFetch(true, "/typeProfession").then((response) => {
-     if (response.code === 200) {
-       professions = response.data;
-     }
-   });
+    await apiFetch(true, "/typeProfession").then((response) => {
+      if (response.code === 200) {
+        professions = response.data;
+      }
+    });
   }
 
   onMount(async () => {
@@ -586,8 +585,9 @@
     getAllProfessions();
   });
   onMount(() => {
-    /* localStorage.clear(); // Nettoyer les données du localStorage
-    localStorage.setItem("reference", ""); */
+   
+    //localStorage.setItem("reference", "DEPPS250304234714045");
+
     const savedStep = localStorage.getItem("step");
     if (savedStep) {
       step = parseInt(savedStep);
@@ -608,12 +608,42 @@
     }
 
     console.log("fileNames:", localStorage.getItem("reference"));
+
+    const EXPIRATION_TIME = 60 * 60 * 1000; // 1 heure en millisecondes
+    const lastSaved = localStorage.getItem("timestamp");
+
+    if (lastSaved && Date.now() - parseInt(lastSaved) > EXPIRATION_TIME) {
+      localStorage.clear();
+      localStorage.setItem("reference", "");
+    }
+
+    // Mettre à jour le timestamp
+    localStorage.setItem("timestamp", Date.now().toString());
+
+    // Programmer un clear automatique après 1 heure
+    /* setTimeout(() => {
+      console.log("Effacement automatique après 1 heure !");
+      localStorage.clear();
+      localStorage.setItem("reference", "");
+    }, EXPIRATION_TIME); */
   });
 
   // Sauvegarder les données du formulaire dans localStorage à chaque modification
   function updateField(field: any, value: any) {
     formData[field] = value;
     localStorage.setItem("formData", JSON.stringify(formData));
+  } 
+
+  let isModalOpen = false;
+  let pdfUrl = "";
+
+  function openModal(url:any) {
+    pdfUrl = url; // ✅ Met à jour la variable réactive
+    isModalOpen = true;
+  }
+
+  function closeModal() {
+    isModalOpen = false;
   }
 </script>
 
@@ -625,11 +655,11 @@
   id="pointer-dot"
   style="border-color: rgb(113, 88, 190); transform: translate(333px, 673px);"
 ></div> -->
-<div id="">
+<!-- <div id="" class="mb-10"> -->
   <Header {user} />
   <Slide {user} />
-  <section class="text-center pb-20" style="padding-top:150px">
-    <h2 class="h2-baslik-anasayfa-ozel pb-10 text-uppercase">
+  <section class="text-center pb-0" style="padding-top:142px">
+    <h2 class="h2-baslik-anasayfa-ozel pb-1 text-uppercase">
       Inscription en tant que professionnel de santé
     </h2>
     <p class="text-center paragraf">
@@ -639,7 +669,7 @@
 
   <main style="padding-top:200px">
     <!--İletişim Form Alanı-->
-    <section class="iletisim-form-alani pt-20">
+    <section class="iletisim-form-alani pt-0">
       <div class="tablo">
         <div class="" style="visibility: visible;">
           <form
@@ -649,18 +679,18 @@
           >
             <!-- Étape 1 -->
             {#if step === 1}
-              <h2 class="text-xl font-semibold mb-4 text-center md:text-left">
+              <h2 class="text-3xl font-semibold mb-4 text-center md:text-left">
                 Informations de connexion (étape 1/6)
               </h2>
               <div class="w-full mb-4">
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                  <div class="flex flex-col">
-                    <label class="text-sm font-medium">E-mail *</label>
-                    <input
+                  <div class="flex flex-col form__group">
+                    <label class="text-3xl font-medium mb-1">E-mail *</label>
+                    <input required
                       on:input={saveFormState}
                       on:input={(e) => updateField("email", e.target.value)}
                       type="email"
-                      class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      class="form__input w-full"
                       bind:value={formData.email}
                       placeholder="E-mail"
                     />
@@ -669,13 +699,13 @@
                     {/if}
                   </div>
 
-                  <div class="flex flex-col">
-                    <label class="text-sm font-medium">Mot de passe *</label>
+                  <div class="flex flex-col form__group">
+                    <label class="text-3xl font-medium mb-1">Mot de passe *</label>
                     <input
                       on:input={saveFormState}
                       on:input={(e) => updateField("password", e.target.value)}
                       type="password"
-                      class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      class="form__input w-full px-3 "
                       bind:value={formData.password}
                       placeholder="Mot de passe"
                     />
@@ -684,8 +714,8 @@
                     {/if}
                   </div>
 
-                  <div class="flex flex-col">
-                    <label class="text-sm font-medium"
+                  <div class="flex flex-col form__group">
+                    <label class="text-3xl font-medium mb-1"
                       >Confirmer le mot de passe *</label
                     >
                     <input
@@ -693,7 +723,7 @@
                       on:input={(e) =>
                         updateField("confirmPassword", e.target.value)}
                       type="password"
-                      class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      class="w-full form__input"
                       bind:value={formData.confirmPassword}
                       placeholder="Confirmer le mot de passe"
                     />
@@ -709,18 +739,18 @@
 
             <!-- Étape 2 -->
             {#if step === 2}
-              <h2 class="text-xl font-semibold mb-4 text-center sm:text-left">
+              <h2 class="text-3xl font-semibold mb-4 text-center md:text-left">
                 Informations personnelles (étape 2/6)
               </h2>
               <div
                 class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 mb-4"
               >
                 <!-- Genre -->
-                <div>
-                  <label class="block text-sm font-medium mb-1">Genre *</label>
+                <div class="form__group">
+                  <label class="block text-3xl font-medium mb-1">Genre *</label>
                   <select
                     bind:value={formData.genre}
-                    class="w-full border rounded p-2"
+                    class="w-full form__input"
                   >
                     <option value="">Veuillez sélectionner une option</option>
                     {#each values.genre as genre}
@@ -733,13 +763,13 @@
                 </div>
 
                 <!-- Civilité -->
-                <div>
-                  <label class="block text-sm font-medium mb-1"
+                <div class="form__group">
+                  <label class="block text-3xl font-medium mb-1"
                     >Civilité *</label
                   >
                   <select
                     bind:value={formData.civilite}
-                    class="w-full border rounded p-2"
+                    class="w-full form__input"
                   >
                     <option value="">Veuillez sélectionner une option</option>
                     {#each values.civilite as civilite}
@@ -752,12 +782,12 @@
                 </div>
 
                 <!-- Nom -->
-                <div>
-                  <label class="block text-sm font-medium mb-1">Nom *</label>
+                <div class="form__group">
+                  <label class="block text-3xl font-medium mb-1">Nom *</label>
                   <input
                     type="text"
                     bind:value={formData.nom}
-                    class="w-full border rounded p-2"
+                    class="w-full form__input"
                     placeholder="Nom"
                   />
                   {#if errors.nom}<p class="text-red-500 text-sm">
@@ -767,13 +797,14 @@
 
                 <!-- Autres champs similaires -->
                 {#each [{ key: "prenoms", label: "Prénoms" }, { key: "nationate", label: "Nationalité" }, { key: "dateNaissance", label: "Date de naissance", type: "date" }, { key: "numero", label: "Numéro" }, { key: "address", label: "Adresse" }, { key: "lieuResidence", label: "Lieu de résidence" }, { key: "diplome", label: "Diplôme" }, { key: "dateDiplome", label: "Date d'obtention du diplôme", type: "date" }, { key: "lieuDiplome", label: "Lieu d'obtention du diplôme" }] as field}
-                  
-                {#if field.key === "nationate" }
-                <div>
-                  <label class="block text-sm font-medium mb-1">Nationalité *</label>
-                  <select
+                  {#if field.key === "nationate"}
+                    <div class="form__group">
+                      <label class="block text-3xl font-medium mb-1"
+                        >Nationalité *</label
+                      >
+                      <select
                         on:change={saveFormState}
-                        class="w-full border rounded p-2"
+                        class="w-full form__input"
                         name=""
                         id=""
                         bind:value={formData.nationate}
@@ -790,38 +821,35 @@
                         {/each}
                       </select>
                       {#if errors[field.key]}<p class="text-red-500 text-sm">
-                        {errors[field.key]}
-                      </p>{/if}
-                </div>
-                {:else}
-                <div>
-                    <label class="block text-sm font-medium mb-1"
-                      >{field.label} *</label
-                    >
-                    <input
-                      type={field.type || "text"}
-                      bind:value={formData[field.key]}
-                      class="w-full border rounded p-2"
-                      placeholder={field.label}
-                    />
-                    {#if errors[field.key]}<p class="text-red-500 text-sm">
-                        {errors[field.key]}
-                      </p>{/if}
-                  </div>
-                {/if}
-
-
-                 
+                          {errors[field.key]}
+                        </p>{/if}
+                    </div>
+                  {:else}
+                    <div class="form__group">
+                      <label class="block text-3xl font-medium mb-1"
+                        >{field.label} *</label
+                      >
+                      <input
+                        type={field.type || "text"}
+                        bind:value={formData[field.key]}
+                        class="w-full form__input"
+                        placeholder={field.label}
+                      />
+                      {#if errors[field.key]}<p class="text-red-500 text-sm">
+                          {errors[field.key]}
+                        </p>{/if}
+                    </div>
+                  {/if}
                 {/each}
 
                 <!-- Situation matrimoniale -->
-                <div>
-                  <label class="block text-sm font-medium mb-1"
+                <div class="form__group">
+                  <label class="block text-3xl font-medium mb-1"
                     >Situation matrimoniale *</label
                   >
                   <select
                     bind:value={formData.situation}
-                    class="w-full border rounded p-2"
+                    class="w-full form__input"
                   >
                     <option value="">Veuillez sélectionner une option</option>
                     <option value="Célibataire">Célibataire</option>
@@ -838,159 +866,194 @@
 
             <!-- Étape 3 -->
             {#if step === 3}
-            <h2 class="text-xl md:text-2xl font-bold my-4 text-center md:text-left">
-              Informations professionnelles (étape 3/6)
-            </h2>
-          
-            <div class="bg-white p-6 rounded-lg shadow-md mb-4">
-              <div class="mb-4">
-                {#if errors.profession}
-                  <p class="text-red-500 text-sm">{errors.profession}</p>
-                {/if}
-                <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-                  {#each professions as professionGP}
-                    <div class="form__grup mb-4">
-                      <label class="form_label font-bold block mb-2">
-                        <big>{professionGP.libelle}</big>
-                      </label>
-          
-                      {#each professionGP.professions as profession}
-                        <div class="flex items-center space-x-2">
-                          <input
-                            on:input={saveFormState}
-                            on:input={(e: any) => updateField("profession", e.target.value)}
-                            type="radio"
-                            class="cursor-pointer"
-                            id={profession.id}
-                            name="rd_profession"
-                            checked={profession.libelle == formData.profession}
-                            on:change={() => (formData.profession = profession.libelle)}
-                          />
-                          <label for={profession.id} class="cursor-pointer">{profession.libelle}</label>
-                        </div>
+              <h2
+                class="text-3xl md:text-2xl font-bold my-4 text-center md:text-left"
+              >
+                Informations professionnelles (étape 3/6)
+              </h2>
+
+              <div class="bg-white p-6 rounded-lg shadow-md mb-4">
+                <div class="mb-4">
+                  {#if errors.profession}
+                    <p class="text-red-500 text-sm">{errors.profession}</p>
+                  {/if}
+                  <div
+                    class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6"
+                  >
+                    {#each professions as professionGP}
+                      <div class="form__grup mb-4">
+                        <label class="form_label font-bold block mb-2">
+                          <big>{professionGP.libelle}</big>
+                        </label>
+
+                        {#each professionGP.professions as profession}
+                          <div class="flex items-center space-x-2">
+                            <input
+                              on:input={saveFormState}
+                              on:input={(e: any) =>
+                                updateField("profession", e.target.value)}
+                              type="radio"
+                              class="cursor-pointer"
+                              id={profession.id}
+                              name="rd_profession"
+                              checked={profession.libelle ==
+                                formData.profession}
+                              on:change={() =>
+                                (formData.profession = profession.libelle)}
+                            />
+                            <label for={profession.id} class="cursor-pointer"
+                              >{profession.libelle}</label
+                            >
+                          </div>
+                        {/each}
+                      </div>
+                    {/each}
+                  </div>
+                </div>
+
+                <div
+                  class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6"
+                >
+                  <div class="form__grup">
+                    <label class="form_label block mb-2"
+                      >Situation professionnelle *</label
+                    >
+                    <input
+                      on:input={saveFormState}
+                      on:input={(e: any) =>
+                        updateField("situationPro", e.target.value)}
+                      type="text"
+                      class="form__input w-full form__input"
+                      bind:value={formData.situationPro}
+                      placeholder="Situation Professionnelle"
+                    />
+                    {#if errors.situationPro}
+                      <p class="text-red-500 text-sm">{errors.situationPro}</p>
+                    {/if}
+                  </div>
+
+                  <div class="form__grup">
+                    <label class="form_label block mb-2">Spécialité *</label>
+                    <select
+                      on:change={saveFormState}
+                      class="form__input w-full form__input"
+                      bind:value={formData.specialite}
+                    >
+                      <option value="" selected={!formData.specialite}
+                        >Veuillez sélectionner une option</option
+                      >
+                      {#each values.specialite as specialite}
+                        <option
+                          value={specialite.id}
+                          selected={formData.specialite === specialite.id}
+                        >
+                          {specialite.libelle}
+                        </option>
                       {/each}
-                    </div>
-                  {/each}
+                    </select>
+                    {#if errors.specialite}
+                      <p class="text-red-500 text-sm">{errors.specialite}</p>
+                    {/if}
+                  </div>
+
+                  <div class="form__grup">
+                    <label class="form_label block mb-2"
+                      >Email professionnel *</label
+                    >
+                    <input
+                      on:input={saveFormState}
+                      on:input={(e: any) =>
+                        updateField("emailPro", e.target.value)}
+                      type="email"
+                      class="form__input w-full form__input"
+                      bind:value={formData.emailPro}
+                      placeholder="Email professionnel"
+                    />
+                    {#if errors.emailPro}
+                      <p class="text-red-500 text-sm">{errors.emailPro}</p>
+                    {/if}
+                  </div>
+
+                  <div class="form__grup">
+                    <label class="form_label block mb-2"
+                      >Contact professionnel *</label
+                    >
+                    <input
+                      on:input={saveFormState}
+                      on:input={(e: any) =>
+                        updateField("contactPro", e.target.value)}
+                      type="text"
+                      class="form__input w-full form__input"
+                      bind:value={formData.contactPro}
+                      placeholder="Contact professionnel"
+                    />
+                    {#if errors.contactPro}
+                      <p class="text-red-500 text-sm">{errors.contactPro}</p>
+                    {/if}
+                  </div>
+
+                  <div class="form__grup">
+                    <label class="form_label block mb-2"
+                      >Structure d'exercice professionnel *</label
+                    >
+                    <input
+                      on:input={saveFormState}
+                      on:input={(e: any) =>
+                        updateField("professionnel", e.target.value)}
+                      type="text"
+                      class="form__input w-full form__input"
+                      bind:value={formData.professionnel}
+                      placeholder="Structure d'exercice professionnel"
+                    />
+                    {#if errors.professionnel}
+                      <p class="text-red-500 text-sm">{errors.professionnel}</p>
+                    {/if}
+                  </div>
+
+                  <div class="form__grup">
+                    <label class="form_label block mb-2">Ville *</label>
+                    <select
+                      on:change={saveFormState}
+                      class="form__input w-full form__input"
+                      bind:value={formData.ville}
+                    >
+                      <option value="" selected={!formData.ville}
+                        >Veuillez sélectionner une option</option
+                      >
+                      {#each values.ville as ville}
+                        <option
+                          value={ville.code}
+                          selected={formData.ville === ville.code}
+                        >
+                          {ville.libelle}
+                        </option>
+                      {/each}
+                    </select>
+                    {#if errors.ville}
+                      <p class="text-red-500 text-sm">{errors.ville}</p>
+                    {/if}
+                  </div>
+
+                  <div class="form__grup">
+                    <label class="form_label block mb-2"
+                      >Date de premier emploi *</label
+                    >
+                    <input
+                      on:input={saveFormState}
+                      on:input={(e: any) =>
+                        updateField("dateEmploi", e.target.value)}
+                      type="date"
+                      class="form__input w-full form__input"
+                      bind:value={formData.dateEmploi}
+                      placeholder="Date de premier emploi"
+                    />
+                    {#if errors.dateEmploi}
+                      <p class="text-red-500 text-sm">{errors.dateEmploi}</p>
+                    {/if}
+                  </div>
                 </div>
               </div>
-          
-              <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-                <div class="form__grup">
-                  <label class="form_label block mb-2">Situation professionnelle *</label>
-                  <input
-                    on:input={saveFormState}
-                    on:input={(e: any) => updateField("situationPro", e.target.value)}
-                    type="text"
-                    class="form__input w-full border rounded p-2"
-                    bind:value={formData.situationPro}
-                    placeholder="Situation Professionnelle"
-                  />
-                  {#if errors.situationPro}
-                    <p class="text-red-500 text-sm">{errors.situationPro}</p>
-                  {/if}
-                </div>
-          
-                <div class="form__grup">
-                  <label class="form_label block mb-2">Spécialité *</label>
-                  <select
-                    on:change={saveFormState}
-                    class="form__input w-full border rounded p-2"
-                    bind:value={formData.specialite}
-                  >
-                    <option value="" selected={!formData.specialite}>Veuillez sélectionner une option</option>
-                    {#each values.specialite as specialite}
-                      <option value={specialite.id} selected={formData.specialite === specialite.id}>
-                        {specialite.libelle}
-                      </option>
-                    {/each}
-                  </select>
-                  {#if errors.specialite}
-                    <p class="text-red-500 text-sm">{errors.specialite}</p>
-                  {/if}
-                </div>
-          
-                <div class="form__grup">
-                  <label class="form_label block mb-2">Email professionnel *</label>
-                  <input
-                    on:input={saveFormState}
-                    on:input={(e: any) => updateField("emailPro", e.target.value)}
-                    type="email"
-                    class="form__input w-full border rounded p-2"
-                    bind:value={formData.emailPro}
-                    placeholder="Email professionnel"
-                  />
-                  {#if errors.emailPro}
-                    <p class="text-red-500 text-sm">{errors.emailPro}</p>
-                  {/if}
-                </div>
-          
-                <div class="form__grup">
-                  <label class="form_label block mb-2">Contact professionnel *</label>
-                  <input
-                    on:input={saveFormState}
-                    on:input={(e: any) => updateField("contactPro", e.target.value)}
-                    type="text"
-                    class="form__input w-full border rounded p-2"
-                    bind:value={formData.contactPro}
-                    placeholder="Contact professionnel"
-                  />
-                  {#if errors.contactPro}
-                    <p class="text-red-500 text-sm">{errors.contactPro}</p>
-                  {/if}
-                </div>
-          
-                <div class="form__grup">
-                  <label class="form_label block mb-2">Structure d'exercice professionnel *</label>
-                  <input
-                    on:input={saveFormState}
-                    on:input={(e: any) => updateField("professionnel", e.target.value)}
-                    type="text"
-                    class="form__input w-full border rounded p-2"
-                    bind:value={formData.professionnel}
-                    placeholder="Structure d'exercice professionnel"
-                  />
-                  {#if errors.professionnel}
-                    <p class="text-red-500 text-sm">{errors.professionnel}</p>
-                  {/if}
-                </div>
-          
-                <div class="form__grup">
-                  <label class="form_label block mb-2">Ville *</label>
-                  <select
-                    on:change={saveFormState}
-                    class="form__input w-full border rounded p-2"
-                    bind:value={formData.ville}
-                  >
-                    <option value="" selected={!formData.ville}>Veuillez sélectionner une option</option>
-                    {#each values.ville as ville}
-                      <option value={ville.code} selected={formData.ville === ville.code}>
-                        {ville.libelle}
-                      </option>
-                    {/each}
-                  </select>
-                  {#if errors.ville}
-                    <p class="text-red-500 text-sm">{errors.ville}</p>
-                  {/if}
-                </div>
-          
-                <div class="form__grup">
-                  <label class="form_label block mb-2">Date de premier emploi *</label>
-                  <input
-                    on:input={saveFormState}
-                    on:input={(e: any) => updateField("dateEmploi", e.target.value)}
-                    type="date"
-                    class="form__input w-full border rounded p-2"
-                    bind:value={formData.dateEmploi}
-                    placeholder="Date de premier emploi"
-                  />
-                  {#if errors.dateEmploi}
-                    <p class="text-red-500 text-sm">{errors.dateEmploi}</p>
-                  {/if}
-                </div>
-              </div>
-            </div>
             {/if}
-          
 
             <!-- Étape 4 -->
             {#if step === 4}
@@ -1008,7 +1071,9 @@
              {/if} -->
               <div class="tablo">
                 <div class="tablo--1h-ve-2">
-                  <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 gap-6">
+                  <div
+                    class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 gap-6"
+                  >
                     {#each ["photo", "cni", "casier", "diplomeFile", "certificat", "cv"] as fieldName}
                       <div class="form__grup">
                         <label class="form_label"
@@ -1039,7 +1104,9 @@
               </h2>
               <div class="tablo">
                 <div class="tablo--1h-ve-2">
-                  <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 gap-6">
+                  <div
+                    class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 gap-6"
+                  >
                     <div class="form__grup">
                       <label class="form_label"
                         >Appartenez vous à une organisation ?</label
@@ -1126,12 +1193,13 @@
             <!-- Étape 6 : Paiement -->
             {#if step === 6}
               <h2 class="h2-baslik-anasayfa-ozel h-yazi-margin-kucuk">
-                VEUILLEZ PROCéDER AU PAIEMENT
+                {#if isPaiementDone == false} VEUILLEZ PROCéDER AU PAIEMENT {/if}
+                {#if isPaiementDone == true} INFORMATIONS SUR LE  PAIEMENT {/if}
               </h2>
               <div class="tablo">
                 <div class="tablo--1h-ve-2">
                   <!--   on:click={clickPaiement} -->
-                  <div class="grid grid-cols-1 gap-20 flex justify-center">
+                  <div class="grid grid-cols-1 gap-6 flex justify-center">
                     <div class="">
                       {#if isPaiementDone == false}
                         <p>
@@ -1142,9 +1210,12 @@
                       {/if}
                       {#if isPaiementDone == true}
                         <p>
-                          Votre inscription à été effectué avec success,veillez
-                          vous connecter.
-                        </p>
+                          Votre inscription à été effectué avec success,vous pouvez imprimer le recu de paiement <a href="javascript:void(0);" class="text-blue-500"  on:click={() =>
+                            openModal("dddd"
+                            )}>ICI</a>
+
+                        </p><br>
+                        <p>Veillez vous connecter avec vos identifiants en cliquant sur le bouton ci-dessous</p>
                         <br />
                       {/if}
 
@@ -1158,7 +1229,7 @@
             <!-- Boutons de navigation -->
             <div class="form__grup">
               {#if step > 1}
-                <button
+                <button hidden={ isPaiementDone == true}
                   disabled={authenticating == true || isPaiementDone == true}
                   type="button"
                   class="buton buton--kirmizi"
@@ -1206,34 +1277,7 @@
                     Connectez vous
                   </button>
                 {/if}
-                <!--  {#if isPaiementDone}
-                  <button
-                    type="submit"
-                    on:click={submitForm}
-                    class="buton buton--kirmizi bg-green-500"
-                  >
-                    {#if authenticating_submit}
-                      <div class="grid grid-cols-2">
-                        <div>
-                          <Spinner />
-                        </div>
-                        <div>Finaliser l'inscription</div>
-                      </div>
-                    {:else}
-                      Finaliser l'inscription
-                    {/if}
-                  </button>
-                {/if} -->
-
-                <!-- disabled={!isPaiementDone} -->
-                <!--   <button
-                    type="submit"
-                    on:click={submitForm}
-                    class="buton buton--kirmizi"
-                    disabled={!isPaiementDone}
-                  >
-                    VALIDER
-                  </button> -->
+               
               {/if}
 
               <br />
@@ -1253,8 +1297,19 @@
       </div>
     </section>
   </main>
+  <Modal isOpen={isModalOpen} {pdfUrl} onClose={closeModal} />
 
   <style>
+   /*  .iletisim-form-alani {
+    padding: 10rem 261px 10rem !important;
+    
+} */
+
+.iletisim-form-alani {
+    padding: 4rem 294px 5rem !important;
+    margin-top: -20vh !important;
+    background-color: #fff;
+}
     button:disabled {
       opacity: 0.5;
       cursor: not-allowed;
@@ -1312,5 +1367,5 @@
       duration: 2;
     }
   </style>
-  <Footer />
-</div>
+<!-- </div> -->
+<Footer />

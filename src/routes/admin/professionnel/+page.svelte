@@ -62,6 +62,8 @@
             const res = await apiFetch(true, "/professionnel/");
             if (res) {
                 main_data = res.data as professionnel[];
+
+                console.log(main_data);
             } else {
                 console.error(
                     "Erreur lors de la récupération des données:",
@@ -262,7 +264,7 @@
                           >{item.personne.prenoms}</TableBodyCell
                         >
                         <TableBodyCell class="p-4 border border-gray-300"
-                          >{item.phone}</TableBodyCell
+                          >{item.personne.number}</TableBodyCell
                         >
                         <TableBodyCell class="p-4 border border-gray-300"
                           >{item.email}</TableBodyCell

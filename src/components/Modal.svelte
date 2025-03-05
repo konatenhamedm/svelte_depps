@@ -18,7 +18,6 @@
       </div>
     </div>
   {/if}
-  
   <style>
     .modal {
       position: fixed;
@@ -32,7 +31,7 @@
       align-items: center;
     }
     .modal-content {
-      background-color: rgb(7, 7, 7);
+      background-color: white;
       padding: 20px;
       border-radius: 8px;
       width: 90%;
@@ -42,6 +41,7 @@
     .close-btn {
       position: absolute;
       top: -13px;
+      color: black !important;
       right: 10px;
       background-color: transparent;
       border: none;
@@ -55,4 +55,3 @@
       margin-top: 20px;
     }
   </style>
-  

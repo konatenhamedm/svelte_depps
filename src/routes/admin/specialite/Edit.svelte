@@ -55,8 +55,8 @@
 <Modal
   bind:open
   title={Object.keys(data).length
-    ? "Modification de l'icon"
-    : "Modification de l'icon"}
+    ? "Modification spécialite"
+    : "Modification spécialite"}
   size={sizeModal}
   class="m-4 modale_general"
   on:close={handleModalClose}

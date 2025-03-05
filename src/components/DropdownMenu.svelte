@@ -44,7 +44,7 @@
   <!-- Bouton déclencheur -->
   <button
     bind:this={buttonRef}
-    class="p-2 hover:bg-gray-200 rounded-full transition-colors list-none cursor-pointer"
+    class="p-2  rounded-full transition-colors list-none cursor-pointer"
     on:click={toggleMenu}
   >
     <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -54,18 +54,18 @@
 
   {#if isOpen}
     <div class="menu-dropdown">
-      <button class="menu-item hover:bg-green-100 hover:text-green-800"
-        on:click={() => onAction('view', item)}>
+      <button class="menu-item  hover:text-white"
+        on:click={() => {onAction('view', item); isOpen = false;}}>
         <EyeOutline size="sm" class="mr-2" /> Voir
       </button>
       
-      <button class="menu-item hover:bg-blue-100 hover:text-blue-800"
-        on:click={() => onAction('edit', item)}>
+      <button class="menu-item  hover:text-white"
+        on:click={() => {onAction('edit', item); isOpen = false;}}>
         <EditOutline size="sm" class="mr-2" /> Modifier
       </button>
       
-      <button class="menu-item hover:bg-red-100 hover:text-red-800"
-        on:click={() => onAction('delete', item)}>
+      <button class="menu-item  hover:text-white"
+        on:click={() => {onAction('delete', item); isOpen = false;}}>
         <TrashBinSolid size="sm" class="mr-2" /> Supprimer
       </button>
     </div>

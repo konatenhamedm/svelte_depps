@@ -82,8 +82,8 @@
 <Modal
   bind:open
   title={Object.keys(data).length
-    ? "Ajouter un document "
-    : "Ajouter un document"}
+    ? "Ajouter une documentation "
+    : "Ajouter une documentation"}
   size={sizeModal}
   class="m-4 modale_general"
   on:close={handleModalClose}

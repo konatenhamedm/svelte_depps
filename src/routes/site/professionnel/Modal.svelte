@@ -1,0 +1,126 @@
+<script>
+  import jsPDF from 'jspdf';
+
+  export let isOpen = false;
+  export let pdfUrl = "";
+  export let onClose = () => {};
+
+  const receiptData = {
+    logo: 'https://mydepps.pages.dev/_files/logo-depps.png', // URL du logo
+    title: 'Reçu de Paiement - Renouvellement',
+    date: '04 novembre 2024 à 16:39:59',
+    name: 'Kra Rita',
+    paymentMethod: 'OMCIV2',
+    residence: 'XX',
+    phone: '0564924282',
+    receiptNumber: '1730738267',
+    amount: '10000 XOF',
+    footerText: 'Ce document ne tient pas lieu d’autorisation d’exercice',
+  };
+
+  function generatePDF() {
+    const doc = new jsPDF();
+
+    // Centrer le logo
+    const imgWidth = 30;
+    const imgHeight = 30;
+    const pageWidth = 210;
+    const logoX = (pageWidth - imgWidth) / 2; // Position X centrée
+    doc.addImage(receiptData.logo, 'PNG', logoX, 10, imgWidth, imgHeight);
+
+    // Ajouter le titre centré sous le logo
+    doc.setFontSize(16);
+    doc.setFont('helvetica', 'bold');
+    doc.text(receiptData.title, 105, 50, { align: 'center' });
+
+    // Ajouter les informations du reçu
+    doc.setFontSize(12);
+    doc.setFont('helvetica', 'bold');
+    
+    const startX = 10;
+    const startY = 60;
+    const lineHeight = 10;
+
+    const fields = [
+      { label: "Date d'édition:", value: receiptData.date },
+      { label: "Nom complet:", value: receiptData.name },
+      { label: "Mode de paiement:", value: receiptData.paymentMethod },
+      { label: "Lieu de résidence:", value: receiptData.residence },
+      { label: "Numéro de téléphone:", value: receiptData.phone },
+      { label: "Numéro du reçu de paiement:", value: `N° ${receiptData.receiptNumber}` },
+      { label: "Paiement:", value: `${receiptData.amount}` }
+    ];
+
+    let yPos = startY;
+    fields.forEach(({ label, value }) => {
+      doc.text(label, startX, yPos);
+      doc.setFont('helvetica', 'normal');
+      doc.text(value, startX + 50, yPos);
+      doc.setFont('helvetica', 'bold');
+      doc.line(startX, yPos + 2, 200, yPos + 2); // Ligne de séparation
+      yPos += lineHeight;
+    });
+
+    // Ajouter le texte en bas du reçu
+    doc.setFontSize(10);
+    doc.setFont('helvetica', 'italic');
+    doc.text(receiptData.footerText, 105, yPos + 10, { align: 'center' });
+
+    // Convertir en URL pour affichage
+    const pdfBlob = doc.output('blob');
+    pdfUrl = URL.createObjectURL(pdfBlob);
+  }
+
+  $: if (isOpen) {
+    generatePDF();
+  }
+</script>
+
+{#if isOpen}
+  <div class="modal">
+    <div class="modal-content">
+      <button class="close-btn" on:click={onClose}>Fermer</button>
+      
+      <div class="pdf-viewer">
+        {#if pdfUrl}
+          <iframe src={pdfUrl} title="Aperçu du PDF" width="100%" height="700px" type="application/pdf"></iframe>
+        {/if}
+      </div>
+    </div>
+  </div>
+{/if}
+
+<style>
+  .modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  .modal-content {
+    background-color: white;
+    padding: 20px;
+    border-radius: 8px;
+    width: 90%;
+    max-width: 900px;
+    position: relative;
+  }
+  .close-btn {
+    position: absolute;
+    top: -13px;
+    right: 10px;
+    color:black !important;
+    background-color: transparent;
+    border: none;
+    font-size: 18px;
+    cursor: pointer;
+  }
+  .pdf-viewer {
+    margin-top: 20px;
+  }
+</style>

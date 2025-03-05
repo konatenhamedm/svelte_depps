@@ -62,10 +62,10 @@
             <div class="absolute inset-0 bg-gradient-to-r from-gradient-start to-gradient-end opacity-10"></div>
             <div class="max-w-[118rem] mx-auto px-4 sm:px-6 lg:px-8 py-24 pt-[180px] relative">
                 <div class="text-center">
-                    <h1 class="text-5xl md:text-6xl font-bold text-gray-900  mb-6">
+                    <h1 class="text-5xl md:text-6xl font-bold   mb-6">
                         Au Service de Votre Santé
                     </h1>
-                    <p class="text-xl text-gray-600 max-w-3xl mx-auto text-center">
+                    <p class="text-xl  paragraf max-w-3xl mx-auto text-center">
                         Notre centre médical allie expertise médicale et technologies de pointe pour offrir des soins d'excellence à nos patients.
                     </p>
                 </div>
@@ -78,8 +78,8 @@
                 <div class="grid grid-cols-2 md:grid-cols-4 gap-8">
                     {#each stats as stat}
                         <div class="text-center">
-                            <div class="text-4xl font-bold text-primary mb-2">{stat.number}</div>
-                            <div class="text-gray-600">{stat.label}</div>
+                            <div class=" font-bold text-primary mb-2">{stat.number}</div>
+                            <div class=" paragraf">{stat.label}</div>
                         </div>
                     {/each}
                 </div>
@@ -91,11 +91,11 @@
             <div class="max-w-[118rem] mx-auto px-4 sm:px-6 lg:px-8">
                 <div class="grid md:grid-cols-2 gap-12 items-center">
                     <div>
-                        <h2 class="text-4xl font-bold text-gray-900 mb-6">Notre Histoire</h2>
-                        <p class="text-gray-600 mb-6">
+                        <h2 class=" font-bold  mb-6">Notre Histoire</h2>
+                        <p class=" paragraf mb-6">
                             Fondé en 2020 par une équipe de médecins visionnaires, notre centre médical est né de la volonté d'allier excellence médicale et innovation technologique pour améliorer la prise en charge des patients.
                         </p>
-                        <p class="text-gray-600 mb-6">
+                        <p class=" paragraf mb-6">
                             Notre engagement constant envers la qualité des soins et la formation continue de notre personnel nous permet d'offrir une médecine de pointe, humaine et accessible.
                         </p>
                         <div class="h-1 w-20 bg-gradient-to-r from-gradient-start to-gradient-end rounded-full"></div>
@@ -111,13 +111,13 @@
         <!-- Nos Valeurs Section -->
         <div class="bg-white py-24">
             <div class="max-w-[118rem] mx-auto px-4 sm:px-6 lg:px-8">
-                <h2 class="text-4xl font-bold text-center mb-16">Nos Valeurs</h2>
+                <h2 class=" font-bold text-center mb-16">Nos Valeurs</h2>
                 <div class="grid md:grid-cols-4 gap-8">
                     {#each values as value}
                         <div class="text-center content-value">
-                            <div class="text-4xl mb-4">{value.icon}</div>
+                            <div class=" mb-4">{value.icon}</div>
                             <h3 class="text-xl font-semibold mb-4">{value.title}</h3>
-                            <p class="text-gray-600">{value.description}</p>
+                            <p class=" paragraf">{value.description}</p>
                         </div>
                     {/each}
                 </div>
@@ -127,7 +127,7 @@
         <!-- Team Section -->
         <div class="bg-gray-50 py-24">
             <div class="max-w-[118rem] mx-auto px-4 sm:px-6 lg:px-8">
-                <h2 class="text-4xl font-bold text-center mb-16">Notre Équipe Médicale</h2>
+                <h2 class=" font-bold text-center mb-16">Notre Équipe Médicale</h2>
                 <div class="grid md:grid-cols-3 gap-12">
                     {#each team as member}
                         <div class="text-center member">
@@ -139,7 +139,7 @@
                                 />
                             </div>
                             <h3 class="text-xl font-semibold mb-2">{member.name}</h3>
-                            <p class="text-gray-600">{member.role}</p>
+                            <p class=" paragraf">{member.role}</p>
                         </div>
                     {/each}
                 </div>
@@ -149,7 +149,7 @@
         <!-- Engagement Section -->
         <div class="bg-gradient-to-r from-gradient-start to-gradient-end py-24 text-white">
             <div class="max-w-[118rem] mx-auto px-4 sm:px-6 lg:px-8 text-center">
-                <h2 class="text-4xl font-bold mb-8">Notre Engagement</h2>
+                <h2 class=" font-bold mb-8">Notre Engagement</h2>
                 <p class="text-xl opacity-90 max-w-3xl mx-auto text-center">
                     Chaque jour, notre équipe s'engage à fournir des soins d'excellence, à rester à la pointe de l'innovation médicale et à placer le bien-être de nos patients au cœur de nos priorités.
                 </p>

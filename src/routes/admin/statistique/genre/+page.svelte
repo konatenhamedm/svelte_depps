@@ -12,11 +12,11 @@
   
   import Entete from "../../../../components/_includes/Entete.svelte";
   import Pagination from "../../../../components/_includes/Pagination.svelte";
-  // Importer le store pageSize
+  // Importer le store pageSizeAutre
   import { get } from "svelte/store";
   import type { Permission, sMenu, Stats, User } from "../../../../types";
   import { apiFetch } from "$lib/api";
-  import { pageSize } from "../../../../store"; // Importer le store pageSize
+  import { pageSizeAutre } from "../../../../store"; // Importer le store pageSizeAutre
   import { onMount } from "svelte";
   import { getAuthCookie } from "$lib/auth";
   import Donut from "$components/statistiques/Donut.svelte";
@@ -66,20 +66,20 @@
   });
 
   
-  // $: totalPages = Math.ceil(filteredData.length / get(pageSize)) pageSize se trouve store.ts;
-  $: totalPages = Math.max(1, Math.ceil(filteredData.length / get(pageSize)));
+  // $: totalPages = Math.ceil(filteredData.length / get(pageSizeAutre)) pageSizeAutre se trouve store.ts;
+  $: totalPages = Math.max(1, Math.ceil(filteredData.length / get(pageSizeAutre)));
 
-  //$: paginatedProducts = filteredData.slice((currentPage - 1) * get(pageSize), currentPage * get(pageSize));
+  //$: paginatedProducts = filteredData.slice((currentPage - 1) * get(pageSizeAutre), currentPage * get(pageSizeAutre));
   $: paginatedProducts =
     filteredData.length > 0
       ? filteredData.slice(
-          (currentPage - 1) * get(pageSize),
-          currentPage * get(pageSize)
+          (currentPage - 1) * get(pageSizeAutre),
+          currentPage * get(pageSizeAutre)
         )
       : [];
 
   $: startRange = currentPage;
-  $: endRange = Math.min(currentPage + get(pageSize), totalPages);
+  $: endRange = Math.min(currentPage + get(pageSizeAutre), totalPages);
 
   function handlePageChange(event: CustomEvent) {
     currentPage = event.detail;

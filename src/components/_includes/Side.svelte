@@ -32,7 +32,7 @@
 							<path d="M27,18c-4.963,0-9,4.037-9,9s4.037,9,9,9s9-4.037,9-9S31.963,18,27,18z M27,34c-3.859,0-7-3.141-7-7s3.141-7,7-7   s7,3.141,7,7S30.859,34,27,34z"/>
 						</g>
 						</svg>
-				<span>Géneral</span>
+				<span>paramètre géneral</span>
 				<span class="pull-right-container">
 				 <i class="fa fa-angle-right pull-right"></i>
 				</span>
@@ -86,7 +86,7 @@
 							<path d="M27,18c-4.963,0-9,4.037-9,9s4.037,9,9,9s9-4.037,9-9S31.963,18,27,18z M27,34c-3.859,0-7-3.141-7-7s3.141-7,7-7   s7,3.141,7,7S30.859,34,27,34z"/>
 						</g>
 						</svg>
-				<span>Documents admininistratifs</span>
+				<span>Documentation</span>
 				<span class="pull-right-container">
 				
 				</span>

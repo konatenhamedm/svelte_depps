@@ -151,10 +151,10 @@
       </div>
       <div class="grid grid-cols-1 gap-6">
         <InputSelect 
-        label="Icon"
+        label="Type utilisateur"
         bind:selectedId={admin.typeUser}
         datas={typeUser}
-        id="icon"
+        id="typeUser"
     />
        
       </div>

@@ -54,9 +54,9 @@
 
   {#if isOpen}
     <div class="menu-dropdown">
-      <button class="menu-item hover:bg-green-100 hover:text-green-800"
-        on:click={() => onAction('view', item)}>
-        <EyeOutline size="sm" class="mr-2" /> Voir
+      <button class="menu-item  hover:text-white"
+        on:click={() => {onAction('view', item); isOpen = false;}}>
+        <EyeOutline size="sm" class="mr-2" /> Traiter
       </button>
      
     </div>

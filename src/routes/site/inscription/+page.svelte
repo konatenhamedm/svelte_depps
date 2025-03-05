@@ -8,11 +8,13 @@
 </script>
 
 
-
+<!-- 
     <div id="pointer-ring" style="border-color: rgb(82, 200, 233); padding: 25px; transform: translate(513.646px, 430.56px);"></div><div id="pointer-dot" style="border-color: rgb(113, 88, 190); transform: translate(494px, 261px);">
 
 
-    </div><div id="">
+    </div> -->
+    
+    <div id="">
      
         <Header user={user} />
         <Slide user={user} />

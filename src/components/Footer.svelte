@@ -1,7 +1,8 @@
 <footer class="footer">
     <!--footer menu-->           
     <div class="tablo">
-        <div class="ozel">
+        <div class="">
+        <!-- <div class="ozel"> -->
             <div class="tablo--1-ve-3">
                 <h2 class="h2-baslik-footer h-yazi-margin-kucuk"> CONTACTS </h2> 
                 <div class="footerss">

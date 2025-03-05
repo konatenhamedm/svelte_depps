@@ -34,7 +34,7 @@
   let phone: string = "";
   let password: string = "";
   let email: string = "";
-  let typeUser: string = "";
+  let typeUser: any = "";
   let userUpdate: string = "";
 
   export let sizeModal: any = "lg";
@@ -151,10 +151,10 @@
           class="w-full"
         />
         <InputSelect 
-        label="Icon"
+        label="Type utilisateur"
         bind:selectedId={typeUser}
         datas={typeUsers}
-        id="icon"
+        id="typeUser"
     />
       </div>
     </form>
