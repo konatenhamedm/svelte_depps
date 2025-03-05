@@ -123,11 +123,11 @@
 
             <!-- Map Section -->
             <div class="mt-24 grid grid-cols-1 md:grid-cols-1 gap-12">
-                <div class="bg-gray-200 rounded-lg h-80">
+               <!--  <div class="bg-gray-200 rounded-lg h-80">
 
                     <GoogleMap apiKey="AIzaSyDvlpPz-3nRwnzYQHvKXtnF_kApD9yR8IE" latitude={5.345317} longitude={-4.024429} zoom={14} />
 
-                </div>
+                </div> -->
                <!--  <div>
                     <h2 class="text-2xl font-semibold mb-6">Notre emplacement</h2>
                     <h3 class="text-3xl font-bold mb-8">Connecter proche et lointain</h3>
