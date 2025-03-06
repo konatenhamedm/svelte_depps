@@ -1,9 +1,9 @@
 <script lang="ts" >
   import "../app.css";
   import { page } from '$app/stores';
-  import Header from "../components/_includes/Header..svelte";
   import Side from "../components/_includes/Side.svelte";
   import Footer from "../components/_includes/Footer.svelte";
+  import Header from "$components/_includes/Header.svelte";
  
 
   let { children,data } = $props();
