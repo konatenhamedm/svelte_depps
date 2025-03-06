@@ -586,7 +586,7 @@
   });
   onMount(() => {
     /* localStorage.setItem('reference', ''); */
-    localStorage.setItem("reference", "DEPPS250304234714045");
+    /* localStorage.setItem("reference", "DEPPS250304234714045"); */
 
     const savedStep = localStorage.getItem("step");
     if (savedStep) {

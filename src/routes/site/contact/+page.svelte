@@ -26,7 +26,7 @@
             <div class="grid grid-cols-1 md:grid-cols-2 gap-12">
                 <!-- Left Column -->
                 <div>
-                    <h1 class="text-4xl font-bold  mb-6">Contactez-nous</h1>
+                    <h1 class="text-4xl font-bold  mb-6 h2-baslik-anasayfa-ozel_autre">Contactez-nous</h1>
                     <p class="paragraf mb-8">
                         Envoyez-nous un e-mail, appelez-nous ou remplissez le formulaire pour savoir comment Snappy peut résoudre vos problèmes de messagerie.
                     </p>
@@ -34,12 +34,12 @@
                     <div class="space-y-4">
                         <p class="text-primary">info@snappy.io</p>
                         <p class="text-primary">321-221-231</p>
-                        <p class="font-medium">Support client</p>
+                        <p class="font-medium h2-baslik-anasayfa-ozel_autre">Support client</p>
                     </div>
 
                     <div class="mt-12 grid grid-cols-3 gap-8">
                         <div>
-                            <h3 class="font-medium mb-2">Support client</h3>
+                            <h3 class="font-medium mb-2 ">Support client</h3>
                             <p class="text-md   paragraf">Notre équipe de support est disponible 24h/24 et 7j/7 pour répondre à toutes vos préoccupations ou questions.</p>
                         </div>
                         <div>
@@ -55,7 +55,7 @@
 
                 <!-- Right Column - Contact Form -->
                 <div class="bg-white rounded-2xl shadow-lg p-8">
-                    <h2 class="text-2xl font-semibold mb-6">Prenez contact</h2>
+                    <h2 class="text-2xl font-semibold mb-6 h2-baslik-anasayfa-ozel_autre">Prenez contact</h2>
                     <p class="  paragraf mb-8">Vous pouvez nous joindre à tout moment</p>
 
                     <form class="space-y-6">
@@ -188,3 +188,19 @@
     </main>
     <Footer/>
 </div>
+<style>
+    .text-center.content-value p {
+      text-align: center;
+      font-size: 14px;
+    }
+    .h2-baslik-anasayfa-ozel_autre {
+      font-size: 1.5rem;
+      font-weight: 900;
+      text-transform: uppercase;
+  
+      background-image: linear-gradient(to right, #4b9bd8, #7158be);
+      -webkit-background-clip: text;
+      color: transparent;
+      letter-spacing: 0.1rem;
+    }
+  </style>
