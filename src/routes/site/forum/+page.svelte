@@ -65,7 +65,7 @@
     showAddPopup = false;
   }
 
-  function openEditPopup(forum:any) {
+  function openEditPopup(forum) {
     selectedForum = forum;
     showEditPopup = true;
   }
@@ -75,11 +75,11 @@
     selectedForum = null;
   }
 
-  function addForum(newForum:any) {
+  function addForum(newForum) {
     forums = [...forums, { ...newForum, id: forums.length + 1 }];
   }
 
-  function updateForum(updatedForum:any) {
+  function updateForum(updatedForum) {
     forums = forums.map((f) => (f.id === updatedForum.id ? updatedForum : f));
   }
 
@@ -104,7 +104,7 @@
           </a>
           <button
             on:click={openAddPopup}
-            class="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600"
+            class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-500"
           >
             Ajouter
           </button>
@@ -240,7 +240,7 @@
           <button
             on:click={() => goToPage(currentPage - 1)}
             disabled={currentPage === 1}
-            class="bg-gray-300 px-3 py-2 rounded hover:bg-gray-400 disabled:opacity-50"
+            class="bg-blue-500 px-3 py-2 text-white rounded hover:bg-blue-500 disabled:opacity-50"
           >
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -256,12 +256,12 @@
             </svg>
           </button>
 
-          <span class="mx-4 text-gray-700">{currentPage}</span>
+          <span class="mx-4 text-black">{currentPage}</span>
 
           <button
             on:click={() => goToPage(currentPage + 1)}
             disabled={currentPage === totalPages}
-            class="bg-gray-300 px-3 py-2 rounded hover:bg-gray-400 disabled:opacity-50"
+            class="bg-blue-500 px-3 py-2 rounded hover:bg-blue-500 text-white disabled:opacity-50"
           >
             <svg
               xmlns="http://www.w3.org/2000/svg"

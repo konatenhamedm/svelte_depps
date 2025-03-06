@@ -796,7 +796,7 @@
                 </div>
 
                 <!-- Autres champs similaires -->
-                {#each [{ key: "prenoms", label: "Prénoms" }, { key: "nationate", label: "Nationalité" }, { key: "dateNaissance", label: "Date de naissance", type: "date" }, { key: "numero", label: "Numéro" }, { key: "address", label: "Adresse" }, { key: "lieuResidence", label: "Lieu de résidence" }, { key: "diplome", label: "Diplôme" }, { key: "dateDiplome", label: "Date d'obtention du diplôme", type: "date" }, { key: "lieuDiplome", label: "Lieu d'obtention du diplôme" }] as field}
+                {#each [{ key: "prenoms", label: "Prénoms" }, { key: "nationate", label: "Nationalité" }, { key: "dateNaissance", label: "Date de naissance", type: "date" }, { key: "numero", label: "Numéro" }, { key: "address", label: "Adresse" }, { key: "lieuResidence", label: "Lieu de résidence" }, { key: "diplome", label: "Diplôme" }, { key: "dateDiplome", label: "Date obtention  diplôme", type: "date" }, { key: "lieuDiplome", label: "Lieu obtention  diplôme" }] as field}
                   {#if field.key === "nationate"}
                     <div class="form__group">
                       <label class="block text-3xl font-medium mb-1"
@@ -881,7 +881,7 @@
                     class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6"
                   >
                     {#each professions as professionGP}
-                      <div class="form__grup mb-4">
+                      <div class="form__group mb-4">
                         <label class="form_label font-bold block mb-2">
                           <big>{professionGP.libelle}</big>
                         </label>
@@ -912,9 +912,9 @@
                 </div>
 
                 <div
-                  class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6"
+                  class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-12"
                 >
-                  <div class="form__grup">
+                  <div class="form__group">
                     <label class="form_label block mb-2"
                       >Situation professionnelle *</label
                     >
@@ -923,7 +923,7 @@
                       on:input={(e: any) =>
                         updateField("situationPro", e.target.value)}
                       type="text"
-                      class="form__input w-full form__input"
+                      class="form__input w-full "
                       bind:value={formData.situationPro}
                       placeholder="Situation Professionnelle"
                     />
@@ -932,11 +932,11 @@
                     {/if}
                   </div>
 
-                  <div class="form__grup">
+                  <div class="form__group">
                     <label class="form_label block mb-2">Spécialité *</label>
                     <select
                       on:change={saveFormState}
-                      class="form__input w-full form__input"
+                      class="form__input w-full "
                       bind:value={formData.specialite}
                     >
                       <option value="" selected={!formData.specialite}
@@ -956,7 +956,7 @@
                     {/if}
                   </div>
 
-                  <div class="form__grup">
+                  <div class="form__group">
                     <label class="form_label block mb-2"
                       >Email professionnel *</label
                     >
@@ -965,7 +965,7 @@
                       on:input={(e: any) =>
                         updateField("emailPro", e.target.value)}
                       type="email"
-                      class="form__input w-full form__input"
+                      class="form__input w-full "
                       bind:value={formData.emailPro}
                       placeholder="Email professionnel"
                     />
@@ -974,7 +974,7 @@
                     {/if}
                   </div>
 
-                  <div class="form__grup">
+                  <div class="form__group">
                     <label class="form_label block mb-2"
                       >Contact professionnel *</label
                     >
@@ -992,9 +992,9 @@
                     {/if}
                   </div>
 
-                  <div class="form__grup">
+                  <div class="form__group">
                     <label class="form_label block mb-2"
-                      >Structure d'exercice professionnel *</label
+                      >Structure exercice professionnel *</label
                     >
                     <input
                       on:input={saveFormState}
@@ -1010,7 +1010,7 @@
                     {/if}
                   </div>
 
-                  <div class="form__grup">
+                  <div class="form__group">
                     <label class="form_label block mb-2">Ville *</label>
                     <select
                       on:change={saveFormState}
@@ -1034,7 +1034,7 @@
                     {/if}
                   </div>
 
-                  <div class="form__grup">
+                  <div class="form__group">
                     <label class="form_label block mb-2"
                       >Date de premier emploi *</label
                     >
@@ -1075,7 +1075,7 @@
                     class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 gap-6"
                   >
                     {#each ["photo", "cni", "casier", "diplomeFile", "certificat", "cv"] as fieldName}
-                      <div class="form__grup">
+                      <div class="form__group">
                         <label class="form_label"
                           >{fieldName.toUpperCase()}</label
                         >
@@ -1107,7 +1107,7 @@
                   <div
                     class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 gap-6"
                   >
-                    <div class="form__grup">
+                    <div class="form__group">
                       <label class="form_label"
                         >Appartenez vous à une organisation ?</label
                       >
@@ -1134,7 +1134,7 @@
                     </div>
 
                     {#if formData.appartenirOrganisation}
-                      <div class="form__grup">
+                      <div class="form__group">
                         <label class="form_label">Nom de l'organisation *</label
                         >
                         <input
@@ -1151,7 +1151,7 @@
                           </p>{/if}
                       </div>
 
-                      <div class="form__grup">
+                      <div class="form__group">
                         <label class="form_label"
                           >Numero de l'organisation *</label
                         >
@@ -1169,7 +1169,7 @@
                           </p>{/if}
                       </div>
 
-                      <div class="form__grup">
+                      <div class="form__group">
                         <label class="form_label">Année *</label>
                         <input
                           on:input={saveFormState}
@@ -1227,7 +1227,7 @@
             {/if}
 
             <!-- Boutons de navigation -->
-            <div class="form__grup">
+            <div class="form__group">
               {#if step > 1}
                 <button hidden={ isPaiementDone == true}
                   disabled={authenticating == true || isPaiementDone == true}
@@ -1306,7 +1306,7 @@
 } */
 
 .iletisim-form-alani {
-    padding: 4rem 294px 5rem !important;
+    padding: 4rem 235px 5rem !important;
     margin-top: -20vh !important;
     background-color: #fff;
 }
@@ -1342,7 +1342,7 @@
       flex-wrap: wrap;
     }
 
-    .form__grup {
+    .form__group {
       flex: 1; /* Permet aux champs de prendre la même largeur */
       min-width: 250px; /* Empêche les champs d'être trop petits */
     }

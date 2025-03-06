@@ -127,24 +127,25 @@
         <!-- Team Section -->
         <div class="bg-gray-50 py-24">
             <div class="max-w-[118rem] mx-auto px-4 sm:px-6 lg:px-8">
-                <h2 class=" font-bold text-center mb-16">Notre Équipe Médicale</h2>
+                <h2 class="font-bold text-center mb-16">Notre Équipe Médicale</h2>
                 <div class="grid md:grid-cols-3 gap-12">
                     {#each team as member}
-                        <div class="text-center member">
-                            <div class="mb-6">
-                                <img
-                                        src={member.image}
-                                        alt={member.name}
-                                        class="w-48 h-48 rounded-full mx-auto object-cover border-4 border-white shadow-lg"
-                                />
+                        <div class="member flex flex-col items-center">
+                            <img
+                                src={member.image}
+                                alt={member.name}
+                                class="w-48 h-48 rounded-full mx-auto object-cover border-4 border-white shadow-lg"
+                            />
+                            <div class="text-center mt-2">
+                                <h3 class="text-xl font-semibold">{member.name}</h3>
+                                <p class="paragraf">{member.role}</p>
                             </div>
-                            <h3 class="text-xl font-semibold mb-2">{member.name}</h3>
-                            <p class=" paragraf">{member.role}</p>
                         </div>
                     {/each}
                 </div>
             </div>
         </div>
+        
 
         <!-- Engagement Section -->
         <div class="bg-gradient-to-r from-gradient-start to-gradient-end py-24 text-white">

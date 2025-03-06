@@ -112,9 +112,14 @@
 <div id="chatbox">
     <Slide user={user} />
 
-    <section class="chatbox-container w-100">
-        <div class="chatbox">
+    <section class="mx-auto px-8 py-8 main-div">
+        <header class="bg-white py-6 px-4 shadow-sm pb-2">
+            <h1 class="text-4xl font-bold text-forum-purple">Liste des conversations</h1>
+          </header>
+      
+        <div class="chatbox flex space-x-2 pt-2">
             <!-- Liste des utilisateurs -->
+             
             <div class="user-list">
                 <h2>Utilisateurs</h2>
                 {#if loading}
@@ -161,18 +166,7 @@
 </div>
 
 <style>
-    #chatbox {
-        display: flex;
-        flex-direction: column;
-        height: 100vh;
-    }
-
-    .chatbox-container {
-        display: flex;
-        width: 100%;
-        background-color: #f7f7f7;
-        padding-top: 95px;
-    }
+    
 
     .chatbox {
         display: flex;
@@ -211,25 +205,17 @@
         background-color: #ddd;
     }
 
-    .chatbox-container {
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        width: 100%;
-        background-color: #f7f7f7;
-        padding-top: 95px;
-    }
-
+    
     .chatbox {
-        margin-top: 50px;
+        margin-top: 10px;
         display: flex;
-        width: 70%;
-        max-width: 900px;
-        height: 70vh;
+       
+        
+        /* height: 70vh; */
         background: white;
         border-radius: 10px;
         box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-        margin-bottom: 50px;
+        margin-bottom: 10px;
     }
 
     .chat-container {
@@ -332,4 +318,18 @@
         font-size: 1.2rem;
         color: #888;
     }
+
+    .main-div {
+    margin-top: 30px;
+    margin-bottom: 40px;
+    border: 1px solid #e5e7eb;
+    background: transparent;
+    border-radius: 10px;
+    padding: 10rem 232px 0rem !important;
+  }
+
+  .selected {
+    background-color: #3498db;
+    color: white;
+  }
 </style>

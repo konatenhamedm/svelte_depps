@@ -21,7 +21,7 @@
 
 <div id="">
     <Slide user={user}/>
-    <main class="min-h-screen bg-gray-50">
+    <main class="flex ">
         <div class="max-w-[134rem] mx-auto px-4 sm:px-6 lg:px-8 pt-[150px]">
             <div class="grid grid-cols-1 md:grid-cols-2 gap-12">
                 <!-- Left Column -->
