@@ -1,11 +1,15 @@
 <script>
+  import { apiFetch } from '$lib/api';
+  import { formatDate } from '$lib/dateUtils';
   import jsPDF from 'jspdf';
+  import { onMount } from 'svelte';
 
   export let isOpen = false;
   export let pdfUrl = "";
+  let pdfUrlAffiche ="";
   export let onClose = () => {};
 
-  const receiptData = {
+  let receiptData = {
     logo: 'https://mydepps.pages.dev/_files/logo-depps.png', // URL du logo
     title: 'Reçu de Paiement - Renouvellement',
     date: '04 novembre 2024 à 16:39:59',
@@ -47,7 +51,7 @@
       { label: "Mode de paiement:", value: receiptData.paymentMethod },
       { label: "Lieu de résidence:", value: receiptData.residence },
       { label: "Numéro de téléphone:", value: receiptData.phone },
-      { label: "Numéro du reçu de paiement:", value: `N° ${receiptData.receiptNumber}` },
+      { label: "Réference paiement:", value: `N° ${receiptData.receiptNumber}` },
       { label: "Paiement:", value: `${receiptData.amount}` }
     ];
 
@@ -68,12 +72,37 @@
 
     // Convertir en URL pour affichage
     const pdfBlob = doc.output('blob');
-    pdfUrl = URL.createObjectURL(pdfBlob);
+    pdfUrlAffiche = URL.createObjectURL(pdfBlob);
   }
 
   $: if (isOpen) {
     generatePDF();
   }
+
+  async function getTransactionInfos() {
+    await apiFetch(true, "/paiement/info/transaction/DEPPS250304234714045").then((response) => {
+      if (response.code === 200) {
+        receiptData.amount = response.data.montant;
+        receiptData.paymentMethod = response.data.channel;
+        receiptData.receiptNumber = response.data.reference;
+       /*  receiptData.date = response.data.montant; 
+    
+    residence: 'XX',
+    phone: '0564924282',
+ 
+ 
+       */
+        receiptData.name = response.data.typeUser == "professionnel" ? response.data.user.personne.nom + " "+ response.data.user.personne.prenoms : response.data.user.personne.nomEntreprise  ;
+        receiptData.phone = response.data.typeUser == "professionnel" ? response.data.user.personne.number  : response.data.user.personne.contactEntreprise  ;
+        receiptData.date = formatDate( response.data.createdAt);
+      }
+    });
+  }
+
+  onMount(async () => {
+  
+    getTransactionInfos();
+  });
 </script>
 
 {#if isOpen}
@@ -82,8 +111,8 @@
       <button class="close-btn" on:click={onClose}>Fermer</button>
       
       <div class="pdf-viewer">
-        {#if pdfUrl}
-          <iframe src={pdfUrl} title="Aperçu du PDF" width="100%" height="700px" type="application/pdf"></iframe>
+        {#if pdfUrlAffiche}
+          <iframe src={pdfUrlAffiche} title="Aperçu du PDF" width="100%" height="700px" type="application/pdf"></iframe>
         {/if}
       </div>
     </div>

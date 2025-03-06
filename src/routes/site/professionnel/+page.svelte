@@ -586,7 +586,7 @@
   });
   onMount(() => {
     /* localStorage.setItem('reference', ''); */
-    //localStorage.setItem("reference", "DEPPS250304234714045");
+    localStorage.setItem("reference", "DEPPS250304234714045");
 
     const savedStep = localStorage.getItem("step");
     if (savedStep) {
@@ -1211,7 +1211,7 @@
                       {#if isPaiementDone == true}
                         <p>
                           Votre inscription à été effectué avec success,vous pouvez imprimer le recu de paiement <a href="javascript:void(0);" class="text-blue-500"  on:click={() =>
-                            openModal("dddd"
+                            openModal(localStorage.getItem("reference")
                             )}>ICI</a>
 
                         </p><br>
