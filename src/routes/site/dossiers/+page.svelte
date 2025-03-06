@@ -226,7 +226,7 @@
   <div class="w-full mx-auto p-4 content-sec">
     <!-- Tabs Navigation -->
     <div class="mb-4 border-b border-gray-200">
-      <ul class="flex flex-wrap -mb-px text-sm font-medium text-center border border-gray-200 bg-white">
+      <ul class="flex flex-wrap -mb-px text-3xl font-medium text-center border border-gray-200 bg-white">
         <li class="mr-2">
           <button
             class="inline-block p-4 btn-tabs {activeTab === 'step2'
@@ -277,12 +277,12 @@
         <div class="bg-white p-6 rounded-lg shadow-md">
           <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div class="space-y-2">
-              <label class="block text-sm font-medium text-gray-700"
+              <label class="block text-3xl font-medium text-black"
                 >Genre</label
               >
               <select
                 bind:value={formData.genre}
-                class="w-full p-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                class="w-full form__input"
               >
                 <option value="">Sélectionner un genre</option>
                 {#each genres as genre}
@@ -292,12 +292,12 @@
             </div>
 
             <div class="space-y-2">
-              <label class="block text-sm font-medium text-gray-700"
+              <label class="block text-3xl font-medium text-black"
                 >Civilité</label
               >
               <select
                 bind:value={formData.civilite}
-                class="w-full p-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                class="w-full form__input"
               >
                 <option value="">Sélectionner une civilité</option>
                 {#each civilites as civilite}
@@ -307,71 +307,71 @@
             </div>
 
             <div class="space-y-2">
-              <label class="block text-sm font-medium text-gray-700">Nom</label>
+              <label class="block text-3xl font-medium text-black">Nom</label>
               <input
                 type="text"
                 bind:value={formData.nom}
-                class="w-full p-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                class="w-full form__input"
               />
             </div>
 
             <div class="space-y-2">
-              <label class="block text-sm font-medium text-gray-700"
+              <label class="block text-3xl font-medium text-black"
                 >Prénoms</label
               >
               <input
                 type="text"
                 bind:value={formData.prenoms}
-                class="w-full p-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                class="w-full form__input"
               />
             </div>
 
             <div class="space-y-2">
-              <label class="block text-sm font-medium text-gray-700"
+              <label class="block text-3xl font-medium text-black"
                 >Date de Naissance</label
               >
               <input
                 type="date"
                 bind:value={formData.dateNaissance}
-                class="w-full p-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                class="w-full form__input"
               />
             </div>
 
             <div class="space-y-2">
-              <label class="block text-sm font-medium text-gray-700"
+              <label class="block text-3xl font-medium text-black"
                 >Numéro</label
               >
               <input
                 type="text"
                 bind:value={formData.numero}
-                class="w-full p-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                class="w-full form__input"
               />
             </div>
 
             <div class="space-y-2">
-              <label class="block text-sm font-medium text-gray-700"
+              <label class="block text-3xl font-medium text-black"
                 >Adresse</label
               >
               <input
                 type="text"
                 bind:value={formData.address}
-                class="w-full p-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                class="w-full form__input"
               />
             </div>
 
             <div class="space-y-2">
-              <label class="block text-sm font-medium text-gray-700"
+              <label class="block text-3xl font-medium text-black"
                 >Lieu de Résidence</label
               >
               <input
                 type="text"
                 bind:value={formData.lieuResidence}
-                class="w-full p-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                class="w-full form__input"
               />
             </div>
 
-            <div class="space-y-2">
-              <label class="block text-sm font-medium text-gray-700"
+            <div class="space-y-2 form__group">
+              <label class="block text-3xl font-medium text-black"
                 >Situation Matrimoniale</label
               >
 
@@ -379,8 +379,7 @@
               <select
             
               class="form__input"
-              name=""
-              id=""
+            
               bind:value={formData.situation}
             >
               <option value="" selected={!formData.situation}
@@ -411,35 +410,35 @@
             </div>
 
             <div class="space-y-2">
-              <label class="block text-sm font-medium text-gray-700"
+              <label class="block text-3xl font-medium text-black"
                 >Diplôme</label
               >
               <input
                 type="text"
                 bind:value={formData.diplome}
-                class="w-full p-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                class="w-full form__input"
               />
             </div>
 
             <div class="space-y-2">
-              <label class="block text-sm font-medium text-gray-700"
+              <label class="block text-3xl font-medium text-black"
                 >Date d'obtention du diplôme</label
               >
               <input
                 type="date"
                 bind:value={formData.dateDiplome}
-                class="w-full p-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                class="w-full form__input"
               />
             </div>
 
             <div class="space-y-2">
-              <label class="block text-sm font-medium text-gray-700"
+              <label class="block text-3xl font-medium text-black"
                 >Lieu d'obtention du diplôme</label
               >
               <input
                 type="text"
                 bind:value={formData.lieuDiplome}
-                class="w-full p-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                class="w-full form__input"
               />
             </div>
           </div>
@@ -451,34 +450,34 @@
         <div class="bg-white p-6 rounded-lg shadow-md">
           <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div class="space-y-2">
-              <label class="block text-sm font-medium text-gray-700"
+              <label class="block text-3xl font-medium text-black"
                 >Profession</label
               >
               <input
                 type="text"
                 bind:value={formData.profession}
-                class="w-full p-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                class="w-full form__input"
               />
             </div>
 
             <div class="space-y-2">
-              <label class="block text-sm font-medium text-gray-700"
+              <label class="block text-3xl font-medium text-black"
                 >Situation Professionnelle</label
               >
               <input
                 type="text"
                 bind:value={formData.situationPro}
-                class="w-full p-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                class="w-full form__input"
               />
             </div>
 
             <div class="space-y-2">
-              <label class="block text-sm font-medium text-gray-700"
+              <label class="block text-3xl font-medium text-black"
                 >Spécialité</label
               >
               <select
                 bind:value={formData.specialite}
-                class="w-full p-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                class="w-full form__input"
               >
                 <option value="">Sélectionner une spécialité</option>
                 {#each specialites as specialite}
@@ -488,45 +487,45 @@
             </div>
 
             <div class="space-y-2">
-              <label class="block text-sm font-medium text-gray-700"
+              <label class="block text-3xl font-medium text-black"
                 >Email Professionnel</label
               >
               <input
                 type="email"
                 bind:value={formData.emailPro}
-                class="w-full p-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                class="w-full form__input"
               />
             </div>
 
             <div class="space-y-2">
-              <label class="block text-sm font-medium text-gray-700"
+              <label class="block text-3xl font-medium text-black"
                 >Contact Professionnel</label
               >
               <input
                 type="text"
                 bind:value={formData.contactPro}
-                class="w-full p-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                class="w-full form__input"
               />
             </div>
 
             <div class="space-y-2">
-              <label class="block text-sm font-medium text-gray-700"
+              <label class="block text-3xl font-medium text-black"
                 >Professionnel</label
               >
               <input
                 type="text"
                 bind:value={formData.professionnel}
-                class="w-full p-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                class="w-full form__input"
               />
             </div>
 
             <div class="space-y-2">
-              <label class="block text-sm font-medium text-gray-700"
+              <label class="block text-3xl font-medium text-black"
                 >Ville d'exercice</label
               >
               <select
                 bind:value={formData.ville}
-                class="w-full p-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                class="w-full form__input"
               >
                 <option value="">Sélectionner une ville</option>
                 {#each villes as ville}
@@ -536,13 +535,13 @@
             </div>
 
             <div class="space-y-2">
-              <label class="block text-sm font-medium text-gray-700"
+              <label class="block text-3xl font-medium text-black"
                 >Date d'emploi</label
               >
               <input
                 type="date"
                 bind:value={formData.dateEmploi}
-                class="w-full p-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                class="w-full form__input"
               />
             </div>
           </div>
@@ -554,12 +553,12 @@
         <div class="bg-white p-6 rounded-lg shadow-md">
           <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div class="space-y-2">
-              <label class="block text-sm font-medium text-gray-700"
+              <label class="block text-3xl font-medium text-black"
                 >Photo</label
               >
               {#if formData.photo && formData.photo.url}
                 <div class="flex items-center mb-2">
-                  <span class="text-sm text-gray-500 mr-2"
+                  <span class="text-3xl text-gray-500 mr-2"
                     >Fichier actuel : {formData.photo.alt}</span
                   >
                   {#if formData.photo.url === "pdf"}
@@ -580,15 +579,15 @@
                 type="file"
                 accept="image/*"
                 on:change={(e) => (formData.photo = e.target.files[0])}
-                class="w-full p-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                class="w-full form__input"
               />
             </div>
 
             <div class="space-y-2">
-              <label class="block text-sm font-medium text-gray-700">CNI</label>
+              <label class="block text-3xl font-medium text-black">CNI</label>
               {#if formData.cni && formData.cni.url}
                 <div class="flex items-center mb-2">
-                  <span class="text-sm text-gray-500"
+                  <span class="text-3xl text-gray-500"
                     >Fichier actuel : {formData.cni.alt}</span
                   >
                 </div>
@@ -596,17 +595,17 @@
               <input
                 type="file"
                 on:change={(e) => (formData.cni = e.target.files[0])}
-                class="w-full p-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                class="w-full form__input"
               />
             </div>
 
             <div class="space-y-2">
-              <label class="block text-sm font-medium text-gray-700"
+              <label class="block text-3xl font-medium text-black"
                 >Casier judiciaire</label
               >
               {#if formData.casier && formData.casier.url}
                 <div class="flex items-center mb-2">
-                  <span class="text-sm text-gray-500"
+                  <span class="text-3xl text-gray-500"
                     >Fichier actuel : {formData.casier.alt}</span
                   >
                 </div>
@@ -614,17 +613,17 @@
               <input
                 type="file"
                 on:change={(e) => (formData.casier = e.target.files[0])}
-                class="w-full p-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                class="w-full form__input"
               />
             </div>
 
             <div class="space-y-2">
-              <label class="block text-sm font-medium text-gray-700"
+              <label class="block text-3xl font-medium text-black"
                 >Diplôme</label
               >
               {#if formData.diplomeFile && formData.diplomeFile.url}
                 <div class="flex items-center mb-2">
-                  <span class="text-sm text-gray-500"
+                  <span class="text-3xl text-gray-500"
                     >Fichier actuel : {formData.diplomeFile.alt}</span
                   >
                 </div>
@@ -632,17 +631,17 @@
               <input
                 type="file"
                 on:change={(e) => (formData.diplomeFile = e.target.files[0])}
-                class="w-full p-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                class="w-full form__input"
               />
             </div>
 
             <div class="space-y-2">
-              <label class="block text-sm font-medium text-gray-700"
+              <label class="block text-3xl font-medium text-black"
                 >Certificat</label
               >
               {#if formData.certificat && formData.certificat.url}
                 <div class="flex items-center mb-2">
-                  <span class="text-sm text-gray-500"
+                  <span class="text-3xl text-gray-500"
                     >Fichier actuel : {formData.certificat.alt}</span
                   >
                 </div>
@@ -650,15 +649,15 @@
               <input
                 type="file"
                 on:change={(e) => (formData.certificat = e.target.files[0])}
-                class="w-full p-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                class="w-full form__input"
               />
             </div>
 
             <div class="space-y-2">
-              <label class="block text-sm font-medium text-gray-700">CV</label>
+              <label class="block text-3xl font-medium text-black">CV</label>
               {#if formData.cv && formData.cv.url}
                 <div class="flex items-center mb-2">
-                  <span class="text-sm text-gray-500"
+                  <span class="text-3xl text-gray-500"
                     >Fichier actuel : {formData.cv.alt}</span
                   >
                 </div>
@@ -666,7 +665,7 @@
               <input
                 type="file"
                 on:change={(e) => (formData.cv = e.target.files[0])}
-                class="w-full p-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                class="w-full form__input"
               />
             </div>
           </div>
@@ -678,7 +677,7 @@
         <div class="bg-white p-6 rounded-lg shadow-md">
           <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div class="col-span-2 space-y-2">
-              <label class="block text-sm font-medium text-gray-700"
+              <label class="block text-3xl font-medium text-black"
                 >Appartenir à une organisation ?</label
               >
               <div class="flex space-x-4">
@@ -710,35 +709,35 @@
 
             {#if formData.appartenirOrganisation == "oui"}
               <div class="space-y-2">
-                <label class="block text-sm font-medium text-gray-700"
+                <label class="block text-3xl font-medium text-black"
                   >Nom de l'organisation</label
                 >
                 <input
                   type="text"
                   bind:value={formData.organisationNom}
-                  class="w-full p-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                  class="w-full form__input"
                 />
               </div>
 
               <div class="space-y-2">
-                <label class="block text-sm font-medium text-gray-700"
+                <label class="block text-3xl font-medium text-black"
                   >Numéro de l'organisation</label
                 >
                 <input
                   type="text"
                   bind:value={formData.organisationNumero}
-                  class="w-full p-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                  class="w-full form__input"
                 />
               </div>
 
               <div class="space-y-2">
-                <label class="block text-sm font-medium text-gray-700"
+                <label class="block text-3xl font-medium text-black"
                   >Année d'adhésion</label
                 >
                 <input
                   type="number"
                   bind:value={formData.organisationAnnee}
-                  class="w-full p-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                  class="w-full form__input"
                 />
               </div>
             {/if}
