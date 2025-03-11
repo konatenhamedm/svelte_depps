@@ -896,10 +896,10 @@
                               class="cursor-pointer"
                               id={profession.id}
                               name="rd_profession"
-                              checked={profession.libelle ==
+                              checked={profession.code ==
                                 formData.profession}
                               on:change={() =>
-                                (formData.profession = profession.libelle)}
+                                (formData.profession = profession.code)}
                             />
                             <label for={profession.id} class="cursor-pointer"
                               >{profession.libelle}</label
