@@ -81,7 +81,7 @@
                     <input
                       id="Password"
                       bind:value={password}
-                      class="border-1 rounded w-full py-3 px-3 leading-tight border-gray-300  focus:outline-none focus:border-indigo-700 focus:bg-white text-gray-700 pr-16 font-mono js-password"
+                      class="border-1 rounded w-full py-3 px-3 leading-tight border-gray-300  focus:outline-none focus:border-indigo-700 focus:bg-white text-black pr-16 font-mono js-password"
                       type="text"
                       placeholder="Entrez votre mot de passe"
                     />
@@ -89,7 +89,7 @@
                     <input
                       id="Password"
                       bind:value={password}
-                      class="border-1 rounded w-full py-3 px-3 leading-tight border-gray-300 focus:outline-none focus:border-indigo-700 focus:bg-white text-gray-700 pr-16 font-mono js-password"
+                      class="border-1 rounded w-full py-3 px-3 leading-tight border-gray-300 focus:outline-none focus:border-indigo-700 focus:bg-white text-black pr-16 font-mono js-password"
                       type="password"
                       placeholder="Entrez votre mot de passe"
                     />

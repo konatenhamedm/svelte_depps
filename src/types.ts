@@ -130,6 +130,7 @@ export interface Pays {
 export interface Specialite {
   id: string;
   libelle: string;
+  paiement: boolean;
 }
 
 export interface Menu {
@@ -143,6 +144,7 @@ export interface sMenu {
   id: number;
   libelle: string;
 }
+
 export interface StatsDashboard {
   countEtablissement: number;
   countProfessionnel: number;

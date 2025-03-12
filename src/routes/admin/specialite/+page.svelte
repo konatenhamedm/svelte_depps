@@ -19,7 +19,7 @@
   import Pagination from "../../../components/_includes/Pagination.svelte";
   // Importer le store pageSize
   import { get } from "svelte/store";
-  import type { Permission, sMenu, User } from "../../../types";
+  import type { Permission, sMenu, Specialite, User } from "../../../types";
   import { apiFetch } from "$lib/api";
   import { pageSize } from "../../../store"; // Importer le store pageSize
   import { onMount } from "svelte";
@@ -33,7 +33,7 @@
   export let data; // Les données retournées par `load()`
   let user = data.user;
 
-  let main_data: sMenu[] = [];
+  let main_data: Specialite[] = [];
   let searchQuery = ""; // Pour la recherche par texte
   let selectedService: any = ""; // Pour filtrer par service
   let selectedStatus: any = ""; // Pour filtrer par status
@@ -50,10 +50,10 @@
   async function fetchData() {
     loading = true; // Active le spinner de chargement
     try {
-      const res = await apiFetch(true, "/specialite/");
+      const res = await apiFetch(false, "/specialite/");
       console.log("LOLLLLLLLL", res);
       if (res) {
-        main_data = res.data as sMenu[];
+        main_data = res.data as Specialite[];
       } else {
         console.error(
           "Erreur lors de la récupération des données:",
@@ -136,14 +136,14 @@
     <div class="col-12">
       <div class="box">
         <div class="box-header with-border flex justify-between items-center">
-          <h4 class="box-title text-xl font-medium">Liste des civilités</h4>
+          <h4 class="box-title text-xl font-medium">Liste des spécialités</h4>
 
           <div>
             <a
               class="py-[5px] px-3 waves-effect waves-light btn btn-info mb-5"
               on:click={() => ((current_data = {}), (openAdd = true))}
             >
-              + Nouvelle icône
+              + Nouvelle spécialité
             </a>
           </div>
         </div>
@@ -164,7 +164,7 @@
               <TableHead
                 class="border-y border-gray-200 bg-gray-100 dark:border-gray-700"
               >
-                {#each ["libelle", "Action"] as title}
+                {#each ["libelle","Paiement", "Action"] as title}
                   <TableHeadCell class="ps-4 font-normal border border-gray-300"
                     >{title}</TableHeadCell
                   >
@@ -214,6 +214,9 @@
                     <TableBodyRow class="text-base border border-gray-300">
                       <TableBodyCell class="p-4 border border-gray-300"
                         >{item.libelle}</TableBodyCell
+                      >
+                      <TableBodyCell class="p-4 border border-gray-300"
+                        >{item.paiement == true ? "Oui" : "Non"}</TableBodyCell
                       >
 
                       <!--  <TableBodyCell class="p-4 border border-gray-300">{item.sous_menu.libelle}</TableBodyCell>
