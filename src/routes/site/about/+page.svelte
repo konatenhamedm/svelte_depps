@@ -1,6 +1,7 @@
 <script lang="ts">
   import Footer from "$components/Footer.svelte";
   import Slide from "$components/Slide.svelte";
+  import Header from "$components/Header.svelte";
   export let data;
   let user = data.user;
 
@@ -61,6 +62,7 @@
 </script>
 
 <div id="">
+  <Header {user} />
   <Slide {user} />
   <main class="min-h-screen bg-gray-50">
     <!-- Hero Section -->

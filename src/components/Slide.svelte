@@ -4,7 +4,7 @@
   import cookie from "cookie";
   import type { User } from "../types";
   import { logoutKIte } from "$lib/auth";
- 
+
 
   export let user:User[] =  [];
 
@@ -12,7 +12,17 @@
     await fetch('/auth/logout', { method: 'POST' });
     goto('/'); // Redirection après déconnexion
 }
-  
+
+  let hasNotifications = false;
+  let notificationCount = 0;
+
+  /*async function checkNotifications() {
+    const response = await fetch('/api/notifications');
+    const data = await response.json();
+    hasNotifications = data.hasNotifications;
+    notificationCount = data.notificationCount;
+  }*/
+
 
 
 </script>
@@ -30,31 +40,36 @@
       </div>
 
       <div class="main-menu">
-      
         <ul>
-          {#if user }
+          {#if user}
             <li><a href="/site/dashboard">Dashboard</a></li>
           {/if}
 
-          <li><a href="/">Accueil </a></li>
+          <li><a href="/">Accueil</a></li>
           <li><a href="/site/about">A propos</a></li>
           <li><a href="#">E-DEPPS</a></li>
           <li><a href="/site/contact">Contactez-nous</a></li>
 
-          {#if user  }
+          {#if user}
+            <!-- Icône de notification -->
+            <li class="relative mr-4">
+              <a href="/site/notification" class="text-blue-500 hover:text-blue-700">
+                <i class="fas fa-bell text-3xl"></i>
+                {#if hasNotifications}
+                  <span class="absolute top-0 right-0 inline-flex items-center justify-center px-2 py-1 text-xs font-bold leading-none text-red-100 bg-red-600 rounded-full transform -translate-y-1/2 translate-x-1/2">{notificationCount}</span>
+                {/if}
+              </a>
+            </li>
 
-         
-            
-          <li style="border: 4px solid red;padding: 5px 17px;border-radius: 32px;" on:click={logoutKIte()}><a href="javascript:void(0)" on:click={logout} >Déconnexion</a></li>
+            <!-- Bouton de déconnexion -->
+            <li style="border: 4px solid red; padding: 5px 17px; border-radius: 32px;" on:click={logoutKIte()}>
+              <a href="javascript:void(0)" on:click={logout}>Déconnexion</a>
+            </li>
           {:else}
-            <li
-              style="border: 4px solid #ff9c09;padding: 5px 17px;border-radius: 32px;"
-            >
+            <li style="border: 4px solid #ff9c09; padding: 5px 17px; border-radius: 32px;">
               <a href="/site/inscription">Inscription</a>
             </li>
-            <li
-              style="border: 4px solid #4a9d2d;padding: 5px 17px;border-radius: 32px;"
-            >
+            <li style="border: 4px solid #4a9d2d; padding: 5px 17px; border-radius: 32px;">
               <a href="/site/connexion">Connexion</a>
             </li>
           {/if}
