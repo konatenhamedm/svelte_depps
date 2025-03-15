@@ -18,11 +18,20 @@
   import Modal from "./Modal.svelte";
   import { P } from "flowbite-svelte";
 
-  export let data; // Récupérer les données du layout
+  export let data;
   let user = data?.user;
   let paiementStatus: boolean;
+  let showPassword = false;
+
+  function validateEmail(email: string): boolean {
+    const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return regex.test(email);
+  }
+
+  $: emailError = formData.email && !validateEmail(formData.email) ? "Veuillez entrer un email valide" : "";
 
   let step = 1;
+
   let formData = {
     email: "",
     password: "",
@@ -135,7 +144,7 @@
       errors.dateNaissance = formData.dateNaissance
         ? ""
         : "Veuillez choisir une date de naissance";
-      errors.numero = formData.numero ? "" : "Le numero est requis";
+      errors.numero = formData.numero && formData.numero.length === 10 ? "" : "Le numero est requis";
       errors.address = formData.address ? "" : "Le adresse est requise";
       errors.lieuResidence = formData.lieuResidence
         ? ""
@@ -778,7 +787,7 @@
           <!-- Étape 1 -->
           {#if step === 1}
             <h2 class="text-3xl font-semibold mb-4 text-center md:text-left">
-              Informations de connexion (étape 1/6)
+              Informations de rapport (étape 1/6)
             </h2>
             <div class="w-full mb-4">
               <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
@@ -793,25 +802,38 @@
                     bind:value={formData.email}
                     placeholder="E-mail"
                   />
-                  {#if errors.email}
-                    <p class="text-red-500 text-sm">{errors.email}</p>
+                  {#if emailError}
+                    <p class="text-red-500 text-sm">{emailError}</p>
                   {/if}
                 </div>
 
-                <div class="flex flex-col form__group">
-                  <label class="text-3xl font-medium mb-1">Mot de passe *</label
-                  >
-                  <input
-                    on:input={saveFormState}
-                    on:input={(e) => updateField("password", e.target.value)}
-                    type="password"
-                    class="form__input w-full px-3"
+                <div class="flex flex-col form__group relative">
+                  <label class="text-3xl font-medium mb-1">Mot de passe *</label>
+
+                  <div class="flex items-center">
+                    <input
+                            on:input={saveFormState}
+                            on:input={(e) => updateField("password", e.target.value)}
+                            type={showPassword ? "text" : "password"}
+                            class="form__input w-full px-3 pr-10"
                     bind:value={formData.password}
                     placeholder="Mot de passe"
-                  />
-                  {#if errors.password}
-                    <p class="text-red-500 text-sm">{errors.password}</p>
-                  {/if}
+                    />
+                    {#if errors.password}
+                      <p class="text-red-500 text-sm">{errors.password}</p>
+                    {/if}
+                    <button
+                            type="button"
+                            on:click={() => (showPassword = !showPassword)}
+                            class="absolute right-3 text-gray-500"
+                    >
+                    {#if showPassword}
+                      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-eye-off"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"></path><line x1="1" y1="1" x2="23" y2="23"></line></svg>
+                    {:else}
+                      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-eye"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>
+                    {/if}
+                    </button>
+                  </div>
                 </div>
 
                 <div class="flex flex-col form__group">
@@ -1155,15 +1177,7 @@
             <h2 class="h2-baslik-anasayfa-ozel h-yazi-margin-kucuk">
               Informations médiatiques (étape 4/6)
             </h2>
-            <!-- {#if messagefile !== ""}
-               <div
-                 class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative"
-                 role="alert"
-               >
-                 <strong class="font-bold">Oups erreur!</strong>
-                 <span class="block sm:inline">{messagefile}</span>
-               </div>
-             {/if} -->
+
             <div class="tablo">
               <div class="tablo--1h-ve-2">
                 <div
@@ -1503,5 +1517,16 @@
   .bouncingImage:hover {
     scale: 1.1;
     duration: 2;
+  }
+
+  button.ml-2.s-98Y-TDGwojhe {
+    position: relative !important;
+    right: 70px !important;
+  }
+
+  svg.feather.feather-eye.s-98Y-TDGwojhe {
+    position: relative !important;
+    right: 50px !important;
+    color: gray !important;
   }
 </style>

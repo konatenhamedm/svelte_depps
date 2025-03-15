@@ -6,6 +6,7 @@
   import { apiFetch, BASE_URL_API, BASE_URL_API_V2 } from "$lib/api";
   import SkeletonLoader from "$components/_skeletons/SkeletonLoader.svelte";
   import Spinner from "$components/_skeletons/Spinner.svelte";
+  import {goto} from "$app/navigation";
 
   export let data;
   let user = data?.user;
@@ -214,6 +215,7 @@
 
 <Header {user} />
 <Slide {user} />
+
 {#if isLoading}
 <main style="padding-top: 10px" class="pb-0">
   <section class="iletisim-form-alani">

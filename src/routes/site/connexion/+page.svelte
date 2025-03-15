@@ -31,14 +31,13 @@
 
       if (success.token != null) {
         window.location.href = "/site/dashboard";
-        /* goto(`http://localhost:5173/site/dashboard`); */
       } else {
         message = "Veuillez vérifier vos identifiants";
         notificationMessage = "Veuillez vérifier vos identifiants";
         showNotification = true;
 
         setTimeout(() => {
-          message = ""; // Efface le message après 3 secondes
+          message = "";
         }, 3000);
       }
       authenticating = false;
@@ -49,72 +48,71 @@
   }
 </script>
 
-<!-- <div
-  id="pointer-ring"
-  style="border-color: rgb(82, 200, 233); padding: 25px; transform: translate(308px, 648px);"
-></div>
-<div
-  id="pointer-dot"
-  style="border-color: rgb(113, 88, 190); transform: translate(333px, 673px);"
-></div> -->
 <div id="">
   <Header {user} />
   <Slide {user} />
   <section class="text-center pb-0" style="padding-top:142px">
     <h2 class="h2-baslik-anasayfa-ozel h-yazi-margin-kucuk">Connexion</h2>
-    <!-- <p class="text-center paragraf">
-      Veuillez renseigner vos informations afin de procéder à l'inscription
-    </p> -->
+
   </section>
   <main style="padding-top:250px">
-    <!--İletişim Form Alanı-->
     <section class="iletisim-form-alani">
       <div class="tablo">
         <div
-          class="tablo--1-ve-2 masqueur à effet de révélation d'image de projet wow animated"
-          style="visibility: visible;"
+                class="tablo--1-ve-2 masqueur à effet de révélation d'image de projet wow animated"
+                style="visibility: visible;"
         >
-          
           <form
-            on:submit|preventDefault={handleSubmit}
-            class="form login_customerh"
+                  on:submit|preventDefault={handleSubmit}
+                  class="form login_customerh"
           >
-            <!--   <input
-              name="token"
-              value="2ab526b357c8673cc0d716c6898de772e274bc93412f7c60044d360d7d4a497e43fcd594a96add98"
-              type="hidden"
-            /> -->
             <div class="form__grup">
               <label for="email" class="form_label">E-mail</label>
               <input
-                type="text"
-                bind:value={username}
-                class="form__input"
-                style="width:100%"
-                placeholder="E-mail"
-                id="txt_isim"
-                name="login"
+                      type="text"
+                      bind:value={username}
+                      class="form__input"
+                      style="width:100%"
+                      placeholder="E-mail"
+                      id="txt_isim"
+                      name="login"
               />
             </div>
-            <div class="form__grup">
+            <div class="form__grup relative">
               <label for="password" class="form_label">Mot de passe</label>
               <input
-                type="password"
-                bind:value={password}
-                class="form__input"
-                style="width:100%"
-                placeholder="Mot de passe"
-                id="txt_eposta"
-                name="password"
+                      type={showPassword ? 'text' : 'password'}
+                      bind:value={password}
+                      class="form__input w-full"
+                      placeholder="Mot de passe"
+                      id="txt_eposta"
+                      name="password"
               />
+              <button
+                      type="button"
+                      on:click={() => showPassword = !showPassword}
+                      class="absolute inset-y-0 right-0 pr-3 flex items-center text-sm leading-5"
+              >
+                {#if showPassword}
+                  <!-- Icône "œil barré" -->
+                  <svg class="h-7 w-7 mt-8 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l3.59 3.59m0 0A9.953 9.953 0 0112 5c4.478 0 8.268 2.943 9.543 7a10.025 10.025 0 01-4.132 5.411m0 0l-3.59-3.59" />
+                  </svg>
+                {:else}
+                  <!-- Icône "œil" -->
+                  <svg class="h-7 w-7 mt-8 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                  </svg>
+                {/if}
+              </button>
             </div>
-            <!--<div class="g-recaptcha" data-sitekey="6LfdUvcUAAAAAOtLHGqdBIbmdxkTAidF5rRxPtGd"></div><br>-->
             <div class="form__grup">
               <br />
               <button
-                class="buton buton--kirmizi"
-                style="width:100%"
-                id="login_customers"
+                      class="buton buton--kirmizi"
+                      style="width:100%"
+                      id="login_customers"
               >
                 {#if authenticating}
                   <div class="grid grid-cols-3">
@@ -132,8 +130,8 @@
 
             {#if authenticating == false && message !== ""}
               <div
-                class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative"
-                role="alert"
+                      class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative"
+                      role="alert"
               >
                 <strong class="font-bold">Oups erreur!</strong>
                 <span class="block sm:inline">{message}</span>
@@ -181,5 +179,9 @@
     to {
       transform: rotate(360deg);
     }
+  }
+
+  svg.h-5.w-5.text-gray-500.s-P4zVNG06VzHr {
+    margin-top: 25px !important;
   }
 </style>
