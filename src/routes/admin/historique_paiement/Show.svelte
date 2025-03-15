@@ -2,6 +2,8 @@
     import InputCheck from "$components/inputs/InputCheck.svelte";
     import InputSimple from "$components/inputs/InputSimple.svelte";
     import { Button, Modal } from "flowbite-svelte";
+ 
+  import { formatDate } from "$lib/dateUtils";
 
     export let open: boolean = false;
     export let sizeModal: string = "lg";
@@ -44,17 +46,23 @@
         <form>
             <div class="grid grid-cols-2 gap-6">
                 <div class="space-y-6">
+                    {#if user.typeUser == "PROFESSIONNEL"}
+
+                    <InputSimple fieldName="username" label="Nom et prénoms utilisateur" field={user.personne.nom + " " + user.personne.prenoms} disabled={true} />
+                    {:else}
                     <InputSimple fieldName="username" label="Nom utilisateur" field={user.username} disabled={true} />
+
+                    {/if}
                     <InputSimple fieldName="email" label="Email" field={user.email} disabled={true} />
                     <InputSimple fieldName="typeUser" label="Type d'utilisateur" field={user.typeUser} disabled={true} />
-                    <InputSimple fieldName="payement" label="Paiement" field={user.payement} disabled={true} />
+                    <InputSimple fieldName="createdAt" label="Date de création" field={formatDate(createdAt)} disabled={true} />
                 </div>
                 <div class="space-y-6">
                     <InputSimple fieldName="montant" label="Montant" field={montant} disabled={true} />
                     <InputSimple fieldName="reference" label="Référence" field={reference} disabled={true} />
                     <InputSimple fieldName="channel" label="Canal" field={channel} disabled={true} />
-                    <InputSimple fieldName="state" label="État" field={state} disabled={true} />
-                    <InputSimple fieldName="createdAt" label="Date de création" field={createdAt} disabled={true} />
+                    <InputSimple fieldName="state" label="État" field={state == "1" ? "Paement éffectué" : "Paiement échoué"} disabled={true} />
+                    
                 </div>
             </div>
         </form>

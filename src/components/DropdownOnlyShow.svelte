@@ -4,8 +4,6 @@
 
   export let item;
   export let onAction;
-
-  
   let isOpen = false;
   let menuPosition = { top: "0px", left: "0px" };
   let buttonRef;
@@ -46,7 +44,7 @@
   <!-- Bouton déclencheur -->
   <button
     bind:this={buttonRef}
-    class="p-2  rounded-full transition-colors list-none cursor-pointer"
+    class="p-2 hover:bg-gray-200 rounded-full transition-colors list-none cursor-pointer"
     on:click={toggleMenu}
   >
     <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -60,16 +58,7 @@
         on:click={() => {onAction('view', item); isOpen = false;}}>
         <EyeOutline size="sm" class="mr-2" /> Voir
       </button>
-      
-      <button class="menu-item  hover:text-white"
-        on:click={() => {onAction('edit', item); isOpen = false;}}>
-        <EditOutline size="sm" class="mr-2" /> Modifier
-      </button>
-      
-      <button class="menu-item  hover:text-white"
-        on:click={() => {onAction('delete', item); isOpen = false;}}>
-        <TrashBinSolid size="sm" class="mr-2" /> Supprimer
-      </button>
+     
     </div>
   {/if}
 </div>

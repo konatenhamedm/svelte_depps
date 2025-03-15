@@ -8,12 +8,22 @@
     <div class="modal">
       <div class="modal-content">
         <button class="close-btn" on:click={onClose}>Fermer</button>
+        {#if pdfUrl.includes('.pdf') }
         <div class="pdf-viewer">
           <!-- Afficher le PDF avec un iframe -->
           <iframe src={pdfUrl} width="100%" height="700px" type="application/pdf">
             Ce navigateur ne prend pas en charge l'affichage de PDF.
           </iframe>
         </div>
+        {:else }
+        <div class="flex items-center justify-center min-h-[50rem]">
+          <img src={pdfUrl} alt="Image" class="max-w-full max-h-[50rem]" />
+        </div>
+        
+      
+        {/if}
+        
+       
        <!--  <button class="download-btn" on:click={() => window.location.href = pdfUrl}>Télécharger</button> -->
       </div>
     </div>

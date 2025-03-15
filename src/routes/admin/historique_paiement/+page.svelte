@@ -29,6 +29,9 @@
   import Delete from "./Delete.svelte";
   import { formatDate } from "$lib/dateUtils";
   import { formatAmount } from "$lib/formatAmount";
+  import DropdownMenuShow from "$components/DropdownMenuShow.svelte";
+  import DropdownMenu from "$components/DropdownMenu.svelte";
+  import DropdownOnlyShow from "$components/DropdownOnlyShow.svelte";
 
   export let data; // Les données retournées par `load()`
   let user = data.user;
@@ -51,7 +54,7 @@
     loading = true; // Active le spinner de chargement
     try {
       const res = await apiFetch(true, "/paiement/historique");
-    console.log(res);
+      console.log(res);
       if (res) {
         main_data = res.data as Transaction[];
       } else {
@@ -72,11 +75,7 @@
   });
 
   $: filteredData = main_data.filter((item) => {
-    return (
-      item.reference.toLowerCase().includes(searchQuery.toLowerCase()) 
-      
-     
-    );
+    return item.reference.toLowerCase().includes(searchQuery.toLowerCase());
   });
 
   // $: totalPages = Math.ceil(filteredData.length / get(pageSize)) pageSize se trouve store.ts;
@@ -110,6 +109,17 @@
   async function refreshDataIfNeeded() {
     await fetchData();
   }
+
+  const handleAction = (action: any, item: any) => {
+    current_data = item;
+    if (action === "view") {
+      openShow = true;
+    } else if (action === "edit") {
+      openEdit = false;
+    } else if (action === "delete") {
+      openDelete = false;
+    }
+  };
 
   // Rafraîchir les données après fermeture des modales
   $: if (!openAdd || !openEdit || !openDelete) {
@@ -148,7 +158,7 @@
               <TableHead
                 class="border-y border-gray-200 bg-gray-100 dark:border-gray-700"
               >
-                {#each ["Reference", "type", "email", "Montant", "Date","Action"] as title}
+                {#each ["Reference", "type", "email", "Montant", "Date", "Action"] as title}
                   <TableHeadCell class="ps-4 font-normal border border-gray-300"
                     >{title}</TableHeadCell
                   >
@@ -200,57 +210,33 @@
                         >{item.reference}</TableBodyCell
                       >
                       <TableBodyCell class="p-4 border border-gray-300"
-                        >{item.user.typeUser}</TableBodyCell
+                        >{item.type}</TableBodyCell
                       >
                       <!-- <TableBodyCell class="p-4 border border-gray-300"
                         >{item.user.username}</TableBodyCell
                       > -->
-                     <!--  <TableBodyCell class="p-4 border border-gray-300"
+                      <!--  <TableBodyCell class="p-4 border border-gray-300"
                         >{item.numero}</TableBodyCell
                       > -->
                       <TableBodyCell class="p-4 border border-gray-300"
                         >{item.user.email}</TableBodyCell
                       >
-                      <TableBodyCell class="p-4 border border-gray-300 justify-end text-right"
-                        >{formatAmount(parseInt(item.montant, 10))}</TableBodyCell
+                      <TableBodyCell
+                        class="p-4 border border-gray-300 justify-end text-right"
+                        >{formatAmount(
+                          parseInt(item.montant, 10)
+                        )}</TableBodyCell
                       >
                       <TableBodyCell class="p-4 border border-gray-300"
                         >{formatDate(item.createdAt)}</TableBodyCell
                       >
                       <!--  <TableBodyCell class="p-4 border border-gray-300">{item.sous_menu.libelle}</TableBodyCell>
                                    -->
-                      
 
-
-<TableBodyCell class="p-2 w-8 border border-gray-300">
-  <!-- Utilisation de <details> pour gérer l'ouverture/fermeture au clic -->
-  <details class="relative">
-    <!-- <summary> est cliquable et n'affiche pas le marqueur par défaut grâce à "list-none" -->
-    <summary class="p-1 hover:bg-gray-100 rounded-full transition-colors list-none cursor-pointer">
-      <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 5v.01M12 12v.01M12 19v.01M12 6a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2z" />
-      </svg>
-    </summary>
-
-    <!-- Contenu du menu dropdown, affiché lorsque <details> est ouvert -->
-    <div class="absolute right-0 mt-1 w-32 bg-black border border-gray-200 rounded-md shadow-lg">
-      <div class="py-1">
-        <!-- Bouton Voir -->
-        <button 
-          class="w-full flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-green-800 hover:text-green-800"
-
-           on:click={() => (current_data = item, openShow = true)}
-        >
-          <!-- Vous pouvez remplacer cette icône par celle de votre choix -->
-          <EyeOutline size="sm" class="mr-2" />
-          Voir
-        </button>
-        <!-- Bouton Supprimer -->
-       
-      </div>
-    </div>
-  </details>
-</TableBodyCell>
+                      <TableBodyCell class="p-2 w-8 border border-gray-300">
+                        <!-- Utilisation de <details> pour gérer l'ouverture/fermeture au clic -->
+                          <DropdownOnlyShow {item} onAction={handleAction} />
+                      </TableBodyCell>
                     </TableBodyRow>
                   {/each}
                 {/if}
@@ -294,19 +280,3 @@
 <!-- Modales -->
 <Show bind:open={openShow} data={current_data} sizeModal="xl" />
 <Delete bind:open={openDelete} data={current_data} />
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

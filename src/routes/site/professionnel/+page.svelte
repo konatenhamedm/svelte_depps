@@ -22,13 +22,41 @@
   let user = data?.user;
   let paiementStatus: boolean;
   let showPassword = false;
+  let showPasswordConfirm = false;
 
   function validateEmail(email: string): boolean {
-    const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    const regex = /\S+@\S+\.\S+/;
+
     return regex.test(email);
   }
 
-  $: emailError = formData.email && !validateEmail(formData.email) ? "Veuillez entrer un email valide" : "";
+  let isValid = true;
+  let isValidContact = true;
+
+function validatePhone() {
+  const regex = /^(07|01|05)\d{8}$/;
+   isValid = regex.test(formData.numero);
+
+   console.log(isValid);
+}
+function validateContactPro() {
+  const regex = /^(07|01|05)\d{8}$/; // Préfixe + 7 chiffres = 10 chiffres max
+  isValidContact = regex.test(formData.contactPro);
+
+  console.log(isValidContact);
+}
+
+  $: emailError =
+    formData.email && !validateEmail(formData.email)
+      ? "Veuillez entrer un email valide"
+      : "";
+  $: emailProError =
+    formData.emailPro && !validateEmail(formData.emailPro)
+      ? "Veuillez entrer un email valide"
+      : "";
+
+
+      
 
   let step = 1;
 
@@ -63,7 +91,7 @@
     diplomeFile: "",
     certificat: "",
     cv: "",
-    appartenirOrganisation: false,
+    appartenirOrganisation: "",
     organisationNom: "",
     organisationNumero: "",
     organisationAnnee: ""
@@ -109,7 +137,7 @@
     cv: "",
 
     // Organization informations
-    appartenirOrganisation: false,
+    appartenirOrganisation: "",
     organisationNom: "",
     organisationNumero: "",
     organisationAnnee: ""
@@ -128,7 +156,11 @@
           ? ""
           : "Les mots de passe ne correspondent pas";
 
-      valid = !errors.password && !errors.confirmPassword && !errors.email;
+      valid =
+        !errors.password &&
+        !errors.confirmPassword &&
+        !errors.email &&
+        !emailError;
     }
 
     if (step === 2) {
@@ -144,7 +176,10 @@
       errors.dateNaissance = formData.dateNaissance
         ? ""
         : "Veuillez choisir une date de naissance";
-      errors.numero = formData.numero && formData.numero.length === 10 ? "" : "Le numero est requis";
+      errors.numero =
+        formData.numero 
+          ? ""
+          : "Le numero est requis";
       errors.address = formData.address ? "" : "Le adresse est requise";
       errors.lieuResidence = formData.lieuResidence
         ? ""
@@ -173,7 +208,8 @@
         !errors.diplome &&
         !errors.dateDiplome &&
         !errors.lieuDiplome &&
-        !errors.situation;
+        !errors.situation &&
+        isValid;
     }
 
     if (step === 3) {
@@ -208,7 +244,11 @@
         !errors.contactPro &&
         !errors.professionnel &&
         !errors.ville &&
-        !errors.dateEmploi;
+        !errors.dateEmploi &&
+        !emailProError &&
+        isValidContact
+        
+        ;
     }
     if (step === 4) {
       errors.photo = formData.photo ? "" : "La photo est requise";
@@ -230,7 +270,7 @@
     }
 
     if (step === 5) {
-      if (formData.appartenirOrganisation) {
+      if (formData.appartenirOrganisation == "oui") {
         errors.organisationNom = formData.organisationNom
           ? ""
           : "Le nom de l'organisation est requis";
@@ -270,28 +310,27 @@
 
   let selectedFiles = {};
 
-  function updateFormData(fieldName: any, file: any) {
+  function updateFormData(fieldName:any, file:any) {
     if (file) {
-      // Lire le fichier en Base64 pour le stocker dans localStorage
       const reader = new FileReader();
       reader.readAsDataURL(file);
       reader.onload = () => {
-        // Ajouter le fichier à selectedFiles
         selectedFiles = {
           ...selectedFiles,
           [fieldName]: { name: file.name, data: reader.result }
         };
 
-        // Stocker dans le localStorage
         localStorage.setItem("selectedFiles", JSON.stringify(selectedFiles));
 
-        // Mettre à jour les noms de fichiers affichés
-        fileNames = { ...fileNames, [fieldName]: file.name };
+        fileNames = { 
+          ...fileNames, 
+          [fieldName]: { name: file.name, url: reader.result } 
+        };
       };
     }
   }
 
-  function handleFileChange(event, fieldName) {
+  function handleFileChange(event:any, fieldName:any) {
     const file = event.target.files[0] || null;
     updateFormData(fieldName, file);
   }
@@ -315,14 +354,24 @@
     }
   }
 
+  
+
   // ✅ Vérifier si on revient après un paiements
   onMount(() => {
     /*  localStorage.clear(); */
-
+console.log("gggg",formData.appartenirOrganisation);
     const urlParams = new URLSearchParams(window.location.search);
     if (urlParams.has("return")) {
       restoreFormState();
     }
+
+    const storedFiles = JSON.parse(localStorage.getItem("selectedFiles")) || {};
+    selectedFiles = storedFiles;
+
+    fileNames = Object.keys(storedFiles).reduce((acc, key) => {
+      acc[key] = { name: storedFiles[key].name, url: storedFiles[key].data };
+      return acc;
+    }, {});
   });
 
   // Lire la valeur de `step` depuis localStorage, sinon initialiser à 1
@@ -558,6 +607,7 @@
         if (result) {
           goto("/site/connexion");
           localStorage.clear(); // Nettoyer les données du localStorage
+          localStorage.setItem("reference", "");
         }
       })
       .catch((error) => {
@@ -611,7 +661,7 @@
   $: if (formData.specialite) {
     console.log("PALMER", formData.specialite);
 
-    checkPaiementStatus(2).then((resultat) => {
+    checkPaiementStatus(formData.specialite).then((resultat) => {
       paiementStatus = resultat;
 
       console.log("PALMER", resultat);
@@ -808,39 +858,128 @@
                 </div>
 
                 <div class="flex flex-col form__group relative">
-                  <label class="text-3xl font-medium mb-1">Mot de passe *</label>
+                  <label class="text-3xl font-medium mb-1">Mot de passe *</label
+                  >
 
                   <div class="flex items-center">
                     <input
-                            on:input={saveFormState}
-                            on:input={(e) => updateField("password", e.target.value)}
-                            type={showPassword ? "text" : "password"}
-                            class="form__input w-full px-3 pr-10"
-                    bind:value={formData.password}
-                    placeholder="Mot de passe"
+                      on:input={saveFormState}
+                      on:input={(e) => updateField("password", e.target.value)}
+                      type={showPassword ? "text" : "password"}
+                      class="form__input w-full px-3 pr-10"
+                      bind:value={formData.password}
+                      placeholder="Mot de passe"
                     />
-                    {#if errors.password}
-                      <p class="text-red-500 text-sm">{errors.password}</p>
-                    {/if}
+
                     <button
-                            type="button"
-                            on:click={() => (showPassword = !showPassword)}
-                            class="absolute right-3 text-gray-500"
+                      type="button"
+                      on:click={() => (showPassword = !showPassword)}
+                      class="absolute right-3 text-black"
+                      style="color:black !important"
                     >
-                    {#if showPassword}
-                      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-eye-off"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"></path><line x1="1" y1="1" x2="23" y2="23"></line></svg>
-                    {:else}
-                      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-eye"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>
-                    {/if}
+                      {#if showPassword}
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          width="24"
+                          height="24"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="currentColor"
+                          stroke-width="2"
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                          class="feather feather-eye-off"
+                          ><path
+                            d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"
+                          ></path><line x1="1" y1="1" x2="23" y2="23"
+                          ></line></svg
+                        >
+                      {:else}
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          width="24"
+                          height="24"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="currentColor"
+                          stroke-width="2"
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                          class="feather feather-eye"
+                          ><path
+                            d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"
+                          ></path><circle cx="12" cy="12" r="3"></circle></svg
+                        >
+                      {/if}
                     </button>
                   </div>
+                  {#if errors.password}
+                    <p class="text-red-500 text-sm">{errors.password}</p>
+                  {/if}
                 </div>
-
-                <div class="flex flex-col form__group">
+                <div class="flex flex-col form__group relative">
                   <label class="text-3xl font-medium mb-1"
                     >Confirmer le mot de passe *</label
                   >
-                  <input
+                  <div class="flex items-center">
+                    <input
+                      on:input={saveFormState}
+                      on:input={(e) =>
+                        updateField("confirmPassword", e.target.value)}
+                      type={showPasswordConfirm ? "text" : "password"}
+                      class="form__input w-full px-3 pr-10"
+                      bind:value={formData.confirmPassword}
+                      placeholder="Mot de passe"
+                    />
+
+                    <button
+                      type="button"
+                      on:click={() =>
+                        (showPasswordConfirm = !showPasswordConfirm)}
+                      class="absolute right-3 text-black"
+                      style="color:black !important"
+                    >
+                      {#if showPasswordConfirm}
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          width="24"
+                          height="24"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="currentColor"
+                          stroke-width="2"
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                          class="feather feather-eye-off"
+                          ><path
+                            d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"
+                          ></path><line x1="1" y1="1" x2="23" y2="23"
+                          ></line></svg
+                        >
+                      {:else}
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          width="24"
+                          height="24"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="currentColor"
+                          stroke-width="2"
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                          class="feather feather-eye"
+                          ><path
+                            d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"
+                          ></path><circle cx="12" cy="12" r="3"></circle></svg
+                        >
+                      {/if}
+                    </button>
+                  </div>
+                  {#if errors.confirmPassword}
+                    <p class="text-red-500 text-sm">{errors.confirmPassword}</p>
+                  {/if}
+
+                  <!-- <input
                     on:input={saveFormState}
                     on:input={(e) =>
                       updateField("confirmPassword", e.target.value)}
@@ -853,7 +992,7 @@
                     <p class="text-red-500 text-sm">
                       {errors.confirmPassword}
                     </p>
-                  {/if}
+                  {/if} -->
                 </div>
               </div>
             </div>
@@ -870,7 +1009,11 @@
               <!-- Genre -->
               <div class="form__group">
                 <label class="block text-3xl font-medium mb-1">Genre *</label>
-                <select bind:value={formData.genre} class="w-full form__input">
+                <select
+                  bind:value={formData.genre}
+                  class="w-full form__input"
+                  on:input={saveFormState}
+                >
                   <option value="">Veuillez sélectionner une option</option>
                   {#each values.genre as genre}
                     <option value={genre.id}>{genre.libelle}</option>
@@ -886,6 +1029,7 @@
                 <label class="block text-3xl font-medium mb-1">Civilité *</label
                 >
                 <select
+                  on:input={saveFormState}
                   bind:value={formData.civilite}
                   class="w-full form__input"
                 >
@@ -947,15 +1091,31 @@
                     <label class="block text-3xl font-medium mb-1"
                       >{field.label} *</label
                     >
-                    <input
-                      type={field.type || "text"}
-                      bind:value={formData[field.key]}
-                      class="w-full form__input"
-                      placeholder={field.label}
-                    />
+                    {#if field.type === "date"}
+                      <input
+                        type="date"
+                        bind:value={formData[field.key]}
+                        class="w-full form__input"
+                        placeholder={field.label}
+                        on:change={saveFormState}
+                      />
+                    {:else}
+                      <input
+                        type={field.type || "text"}
+                        bind:value={formData[field.key]}
+                        class="w-full form__input"
+                        placeholder={field.label}
+                        on:input={saveFormState}
+                        on:input={(e) =>{if (field.key === "numero") validatePhone()}} 
+                      />
+                    {/if}
                     {#if errors[field.key]}<p class="text-red-500 text-sm">
                         {errors[field.key]}
                       </p>{/if}
+
+                      {#if !isValid && field.key === "numero"}
+                      <p style="color: red;" class="text-red-500 text-sm">Numéro invalide. Il doit commencer par 07, 01 ou 05 et contenir 10 chiffres.</p>
+                    {/if}
                   </div>
                 {/if}
               {/each}
@@ -967,6 +1127,7 @@
                 >
                 <select
                   bind:value={formData.situation}
+                  on:change={saveFormState}
                   class="w-full form__input"
                 >
                   <option value="">Veuillez sélectionner une option</option>
@@ -992,11 +1153,9 @@
 
             <div class="bg-white p-6 rounded-lg shadow-md mb-4">
               <div class="mb-4">
-                {#if errors.profession}
-                  <p class="text-red-500 text-sm">{errors.profession}</p>
-                {/if}
+               
                 <div
-                  class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6"
+                  class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 gap-6"
                 >
                   {#each professions as professionGP}
                     <div class="form__group mb-4">
@@ -1026,10 +1185,13 @@
                     </div>
                   {/each}
                 </div>
+                {#if errors.profession}
+                <p class="text-red-500 text-sm">{errors.profession}</p>
+              {/if}
               </div>
 
               <div
-                class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-12"
+                class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 gap-12"
               >
                 <div class="form__group">
                   <label class="form_label block mb-2"
@@ -1089,6 +1251,9 @@
                   {#if errors.emailPro}
                     <p class="text-red-500 text-sm">{errors.emailPro}</p>
                   {/if}
+                  {#if emailProError && formData.emailPro}
+                    <p class="text-red-500 text-sm">{emailProError}</p>
+                  {/if}
                 </div>
 
                 <div class="form__group">
@@ -1096,6 +1261,7 @@
                     >Contact professionnel *</label
                   >
                   <input
+                  on:input={validateContactPro} 
                     on:input={saveFormState}
                     on:input={(e: any) =>
                       updateField("contactPro", e.target.value)}
@@ -1107,6 +1273,9 @@
                   {#if errors.contactPro}
                     <p class="text-red-500 text-sm">{errors.contactPro}</p>
                   {/if}
+                  {#if !isValidContact && formData.contactPro}
+                  <p style="color: red;" class="text-red-500 text-sm">Numéro invalide. Il doit commencer par 07, 01 ou 05 et contenir 10 chiffres.</p>
+                {/if}
                 </div>
 
                 <div class="form__group">
@@ -1156,7 +1325,7 @@
                     >Date de premier emploi *</label
                   >
                   <input
-                    on:input={saveFormState}
+                    on:change={saveFormState}
                     on:input={(e: any) =>
                       updateField("dateEmploi", e.target.value)}
                     type="date"
@@ -1183,23 +1352,22 @@
                 <div
                   class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 gap-6"
                 >
-                  {#each ["photo", "cni", "casier", "diplomeFile", "certificat", "cv"] as fieldName}
-                    <div class="form__group">
-                      <label class="form_label">{fieldName.toUpperCase()}</label
-                      >
-                      <input
-                        type="file"
-                        class="form__input"
-                        on:change={(e) => handleFileChange(e, fieldName)}
-                      />
-                      {#if fileNames[fieldName]}
-                        <p>{fileNames[fieldName]}</p>
-                      {/if}
-                      {#if errors[fieldName]}
-                        <p class="error">{errors[fieldName]}</p>
-                      {/if}
-                    </div>
-                  {/each}
+                {#each ["photo", "cni", "casier", "diplomeFile", "certificat", "cv"] as fieldName}
+                <div class="form__group">
+                  <label class="form_label">{fieldName.toUpperCase()}</label>
+                  <input 
+                    type="file"
+                    class="form__input"
+                    on:change={(e) => handleFileChange(e, fieldName)}
+                  />
+                  {#if fileNames[fieldName]}
+                    <p>
+                      {fileNames[fieldName].name} 
+                      <a href="{fileNames[fieldName].url}" download="{fileNames[fieldName].name}" class="download-link">📥 Télécharger</a>
+                    </p>
+                  {/if}
+                </div>
+              {/each}
                 </div>
               </div>
             </div>
@@ -1215,32 +1383,27 @@
                 <div
                   class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 gap-6"
                 >
-                  <div class="form__group">
-                    <label class="form_label"
-                      >Appartenez vous à une organisation ?</label
-                    >
-                    <select
-                      on:change={saveFormState}
-                      class="form__input"
-                      name=""
-                      id=""
-                      bind:value={formData.appartenirOrganisation}
-                    >
-                      <option
-                        value={false}
-                        selected={!formData.appartenirOrganisation}>Non</option
-                      >
-                      <option
-                        value={true}
-                        selected={formData.appartenirOrganisation}>Oui</option
-                      >
-                    </select>
-                    {#if errors.appartenirOrganisation}<p class="error">
-                        {errors.appartenirOrganisation}
-                      </p>{/if}
-                  </div>
+                <div class="form__group">
+                  <label class="form_label">Appartenez-vous à une organisation ?</label>
+                  <select
+                    on:change={saveFormState}
+                    on:change={(e: any) =>
+                          updateField("appartenirOrganisation", e.target.value)}
+                    class="form__input"
+                   
+                    bind:value={formData.appartenirOrganisation}
+                  >
+                    <option value="non" selected={formData.appartenirOrganisation === 'non'}>Non</option>
+                    <option value="oui" selected={formData.appartenirOrganisation === 'oui'}>Oui</option>
+                  </select>
+                  {#if errors.appartenirOrganisation}
+                    <p class="error">{errors.appartenirOrganisation}</p>
+                  {/if}
+                </div>
+                
+                
 
-                  {#if formData.appartenirOrganisation}
+                  {#if formData.appartenirOrganisation == "oui"}
                     <div class="form__group">
                       <label class="form_label">Nom de l'organisation *</label>
                       <input
@@ -1299,59 +1462,56 @@
           <!-- Étape 6 : Paiement -->
           {#if step === 6}
             <h2 class="h2-baslik-anasayfa-ozel h-yazi-margin-kucuk">
-              
-              {#if !paiementStatus }
-              VEUILLEZ VALIDER POUR FINALISER VOTRE INSCRIPTION
-
-              {:else }
-              {#if isPaiementDone == false}
-              VEUILLEZ PROCéDER AU PAIEMENT
-            {/if}
-            {#if isPaiementDone == true}
-              INFORMATIONS SUR LE PAIEMENT
-            {/if}
-              {/if }
-              
-             
+              {#if !paiementStatus}
+                VEUILLEZ VALIDER POUR FINALISER VOTRE INSCRIPTION
+              {:else}
+                {#if isPaiementDone == false}
+                  VEUILLEZ PROCéDER AU PAIEMENT
+                {/if}
+                {#if isPaiementDone == true}
+                  INFORMATIONS SUR LE PAIEMENT
+                {/if}
+              {/if}
             </h2>
             <div class="tablo">
               <div class="tablo--1h-ve-2">
                 <!--   on:click={clickPaiement} -->
-                <div class="grid grid-cols-1 gap-6 flex justify-center">
+                <div class="grid grid-cols-1 gap-6  justify-center">
                   <div class="">
-                    {#if !paiementStatus }
-                    <p>
-                      Vous pouvez soumettre le formulaire afin de finaliser votre inscription.
-                    </p>
-                    <br />
-                    {:else }
-                    {#if isPaiementDone == false}
-                    <p>
-                      Veillez vous rendre sur le site de votre banque et
-                      effectuer le paiement.
-                    </p>
-                    <br />
-                  {/if}
-                  {#if isPaiementDone == true}
-                    <p>
-                      Votre inscription à été effectué avec success,vous
-                      pouvez imprimer le recu de paiement <a
-                        href="javascript:void(0);"
-                        class="text-blue-500"
-                        on:click={() =>
-                          openModal(localStorage.getItem("reference"))}>ICI</a
-                      >
-                    </p>
-                    <br />
-                    <p>
-                      Veillez vous connecter avec vos identifiants en cliquant
-                      sur le bouton ci-dessous
-                    </p>
-                    <br />
-                  {/if}
-
+                    {#if !paiementStatus}
+                      <p>
+                        Vous pouvez soumettre le formulaire afin de finaliser
+                        votre inscription.
+                      </p>
+                      <br />
+                    {:else}
+                      {#if isPaiementDone == false}
+                        <p>
+                          Veillez vous rendre sur le site de votre banque et
+                          effectuer le paiement.
+                        </p>
+                        <br />
+                      {/if}
+                      {#if isPaiementDone == true}
+                        <p>
+                          Votre inscription à été effectué avec success,vous
+                          pouvez imprimer le recu de paiement <a
+                            href="javascript:void(0);"
+                            class="text-blue-500"
+                            on:click={() =>
+                              openModal(localStorage.getItem("reference"))}
+                            >ICI</a
+                          >
+                        </p>
+                        <br />
+                        <p>
+                          Veillez vous connecter avec vos identifiants en
+                          cliquant sur le bouton ci-dessous
+                        </p>
+                        <br />
+                      {/if}
                     {/if}
-                   
+
                     <br />
                   </div>
                 </div>
@@ -1384,7 +1544,7 @@
                 on:click={nextStep}>SUIVANT →</button
               >
             {:else}
-              {#if isPaiementDone == false && paiementStatus }
+              {#if isPaiementDone == false && paiementStatus}
                 <button
                   type="button"
                   on:click={clickPaiement}
@@ -1528,5 +1688,12 @@
     position: relative !important;
     right: 50px !important;
     color: gray !important;
+  }
+
+  .download-link {
+    margin-left: 10px;
+    color: blue;
+    text-decoration: underline;
+    cursor: pointer;
   }
 </style>

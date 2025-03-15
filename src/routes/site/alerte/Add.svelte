@@ -68,8 +68,8 @@
       <h2 class="text-xl font-bold mb-4">Ajouter un nouveau forum</h2>
       <form on:submit={handleSubmit}>
         <div class="mb-4">
-          <label class="block text-gray-700 mb-2">Objet</label>
-          <input
+          <label class="block text-black mb-2">Objet</label>
+          <input placeholder="Entrez l'objet"
             type="text"
             name="objet"
             class="w-full px-3 py-2 border rounded"
@@ -77,15 +77,15 @@
           />
         </div>
         <div class="mb-4">
-          <label class="block text-gray-700 mb-2">Message</label>
-          <textarea
+          <label class="block text-black mb-2">Message</label>
+          <textarea placeholder="Entrez le message"
             name="message"
             class="w-full px-3 py-2 border rounded"
             required
           ></textarea>
         </div>
         <div class="mb-4">
-          <label class="block text-gray-700 mb-2">Destinateur</label>
+          <label class="block text-black mb-2">Destinateur</label>
           <select
             class="w-full px-3 py-2 border rounded"
             name="destinateur"

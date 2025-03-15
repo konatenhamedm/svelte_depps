@@ -78,8 +78,8 @@
       <h2 class="text-xl font-bold mb-4">Modifier le forum</h2>
       <form on:submit={handleSubmit}>
         <div class="mb-4">
-          <label class="block text-gray-700 mb-2">Objet</label>
-          <input disabled
+          <label class="block text-black mb-2">Objet</label>
+          <input disabled placeholder="entrez l'objet"
             type="text"
             name="objet"
             value={forum.objet}
@@ -88,21 +88,21 @@
           />
         </div>
         <div class="mb-4">
-          <label class="block text-gray-700 mb-2">Message</label>
-          <textarea disabled
+          <label class="block text-black mb-2">Message</label>
+          <textarea disabled placeholder="entrez le message"
             name="message"
             class="w-full px-3 py-2 border rounded"
             required>{forum.message}</textarea
           >
         </div>
         <div class="mb-4">
-          <label class="block text-gray-700 mb-2">Destinateur</label>
+          <label class="block text-black mb-2">Destinateur</label>
           <!--  <select name="destinateur" class="w-full px-3 py-2 border rounded">
                         <option value="Actif" selected={forum.status === 'Actif'}>Actif</option>
                         <option value="Inactif" selected={forum.status === 'Inactif'}>Inactif</option>
                     </select> -->
 
-          <select  disabled class="w-full px-3 py-2 border rounded" name="destinateur">
+          <select  disabled class="w-full px-3 py-2 border rounded" name="destinateur" >
             {#each recipients as recipient}
               <option
                 value={recipient.id}

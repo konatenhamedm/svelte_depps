@@ -3,10 +3,12 @@
   import Slide from "$components/Slide.svelte";
   import Header from "$components/Header.svelte";
   import Footer from "$components/Footer.svelte";
-  import { apiFetch, BASE_URL_API, BASE_URL_API_V2 } from "$lib/api";
+  import { apiFetch, BASE_URL_API, BASE_URL_API_UPLOAD, BASE_URL_API_V2 } from "$lib/api";
   import SkeletonLoader from "$components/_skeletons/SkeletonLoader.svelte";
   import Spinner from "$components/_skeletons/Spinner.svelte";
-  import {goto} from "$app/navigation";
+  import { goto } from "$app/navigation";
+  import DocShow from "./DocShow.svelte";
+  import Modal from "$components/Modal.svelte";
 
   export let data;
   let user = data?.user;
@@ -57,6 +59,9 @@
   let civilites: any = [];
   let villes: any = [];
 
+  let openShow: boolean = false;
+  let current_data: any = {};
+
   const situations = ["Célibataire", "Marié(e)", "Divorcé(e)", "Veuf(ve)"];
   const situationsPro = ["Salarié", "Indépendant", "Sans emploi", "Étudiant"];
   let authenticating = false;
@@ -86,7 +91,7 @@
         }
       }
 
-      console.log(formData.situation)
+      console.log(formData.situation);
 
       const userId = user?.personneId;
       formDataToSend.append("userUpdate", userId);
@@ -164,7 +169,7 @@
           cv: apiData.cv || "",
 
           // Organisation
-          appartenirOrganisation: apiData.appartenirOrganisation ,
+          appartenirOrganisation: apiData.appartenirOrganisation,
           organisationNom: apiData.organisations[0].nom || "",
           organisationNumero: apiData.organisations[0].numero || "",
           organisationAnnee: apiData.organisations[0].annee || ""
@@ -205,6 +210,18 @@
     }
   }
 
+  let isModalOpen = false;
+  let pdfUrl = "";
+
+  function openModal(url:any) {
+    pdfUrl = url; // ✅ Met à jour la variable réactive
+    isModalOpen = true;
+  }
+
+  function closeModal() {
+    isModalOpen = false;
+  }
+
   onMount(async () => {
     isLoading = true;
     await loadReferenceData();
@@ -217,576 +234,494 @@
 <Slide {user} />
 
 {#if isLoading}
-<main style="padding-top: 10px" class="pb-0">
-  <section class="iletisim-form-alani">
-  <SkeletonLoader {activeTab} />
-</section>
-</main>
+  <main style="padding-top: 10px" class="pb-0">
+    <section class="iletisim-form-alani">
+      <SkeletonLoader {activeTab} />
+    </section>
+  </main>
 {:else}
-<main style="padding-top: -10px" class="pb-0">
-  <section class="iletisim-form-alani">
-  <div class="w-full mx-auto p-4 content-sec">
-    <!-- Tabs Navigation -->
-    <div class="mb-4 border-b border-gray-200">
-      <ul class="flex flex-wrap -mb-px text-3xl font-medium text-center border border-gray-200 bg-white">
-        <li class="mr-2">
-          <button
-            class="inline-block p-4 btn-tabs {activeTab === 'step2'
-              ? 'text-blue-600 border-b-2 border-blue-600'
-              : 'hover:text-gray-600 hover:border-gray-300'}"
-            on:click={() => (activeTab = "step2")}
+  <main style="padding-top: -10px" class="pb-0">
+    <section class="iletisim-form-alani">
+      <div class="w-full mx-auto p-4 content-sec">
+        <!-- Tabs Navigation -->
+        <div class="mb-4 border-b border-gray-200">
+          <ul
+            class="flex flex-wrap -mb-px text-3xl font-medium text-center border border-gray-200 bg-white"
           >
-            Informations de Base
-          </button>
-        </li>
-        <li class="mr-2">
-          <button
-            class="inline-block p-4 btn-tabs {activeTab === 'step3'
-              ? 'text-blue-600 border-b-2 border-blue-600'
-              : 'hover:text-gray-600 hover:border-gray-300'}"
-            on:click={() => (activeTab = "step3")}
-          >
-            Informations Professionnelles
-          </button>
-        </li>
-        <li class="mr-2">
-          <button
-            class="inline-block p-4 btn-tabs {activeTab === 'step4'
-              ? 'text-blue-600 border-b-2 border-blue-600'
-              : 'hover:text-gray-600 hover:border-gray-300'}"
-            on:click={() => (activeTab = "step4")}
-          >
-            Documents
-          </button>
-        </li>
-        <li class="mr-2">
-          <button
-            class="inline-block btn-tabs p-4 {activeTab === 'step5'
-              ? 'text-blue-600 border-b-2 border-blue-600'
-              : 'hover:text-gray-600 hover:border-gray-300'}"
-            on:click={() => (activeTab = "step5")}
-          >
-            Organisation
-          </button>
-        </li>
-      </ul>
-    </div>
-
-    <!-- Tab Contents -->
-    <div class="mt-1">
-      <!-- Step 2: Informations Personnelles -->
-      {#if activeTab === "step2"}
-        <div class="bg-white p-6 rounded-lg shadow-md">
-          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div class="space-y-2">
-              <label class="block text-3xl font-medium text-black"
-                >Genre</label
+            <li class="mr-2">
+              <button
+                class="inline-block p-4 btn-tabs {activeTab === 'step2'
+                  ? 'text-blue-600 border-b-2 border-blue-600'
+                  : 'hover:text-gray-600 hover:border-gray-300'}"
+                on:click={() => (activeTab = "step2")}
               >
-              <select
-                bind:value={formData.genre}
-                class="w-full form__input"
+                Informations de Base
+              </button>
+            </li>
+            <li class="mr-2">
+              <button
+                class="inline-block p-4 btn-tabs {activeTab === 'step3'
+                  ? 'text-blue-600 border-b-2 border-blue-600'
+                  : 'hover:text-gray-600 hover:border-gray-300'}"
+                on:click={() => (activeTab = "step3")}
               >
-                <option value="">Sélectionner un genre</option>
-                {#each genres as genre}
-                  <option value={genre.id}>{genre.libelle}</option>
-                {/each}
-              </select>
-            </div>
-
-            <div class="space-y-2">
-              <label class="block text-3xl font-medium text-black"
-                >Civilité</label
+                Informations Professionnelles
+              </button>
+            </li>
+            <li class="mr-2">
+              <button
+                class="inline-block p-4 btn-tabs {activeTab === 'step4'
+                  ? 'text-blue-600 border-b-2 border-blue-600'
+                  : 'hover:text-gray-600 hover:border-gray-300'}"
+                on:click={() => (activeTab = "step4")}
               >
-              <select
-                bind:value={formData.civilite}
-                class="w-full form__input"
+                Documents
+              </button>
+            </li>
+            <li class="mr-2">
+              <button
+                class="inline-block btn-tabs p-4 {activeTab === 'step5'
+                  ? 'text-blue-600 border-b-2 border-blue-600'
+                  : 'hover:text-gray-600 hover:border-gray-300'}"
+                on:click={() => (activeTab = "step5")}
               >
-                <option value="">Sélectionner une civilité</option>
-                {#each civilites as civilite}
-                  <option value={civilite.id}>{civilite.libelle}</option>
-                {/each}
-              </select>
-            </div>
-
-            <div class="space-y-2">
-              <label class="block text-3xl font-medium text-black">Nom</label>
-              <input
-                type="text"
-                bind:value={formData.nom}
-                class="w-full form__input"
-              />
-            </div>
-
-            <div class="space-y-2">
-              <label class="block text-3xl font-medium text-black"
-                >Prénoms</label
-              >
-              <input
-                type="text"
-                bind:value={formData.prenoms}
-                class="w-full form__input"
-              />
-            </div>
-
-            <div class="space-y-2">
-              <label class="block text-3xl font-medium text-black"
-                >Date de Naissance</label
-              >
-              <input
-                type="date"
-                bind:value={formData.dateNaissance}
-                class="w-full form__input"
-              />
-            </div>
-
-            <div class="space-y-2">
-              <label class="block text-3xl font-medium text-black"
-                >Numéro</label
-              >
-              <input
-                type="text"
-                bind:value={formData.numero}
-                class="w-full form__input"
-              />
-            </div>
-
-            <div class="space-y-2">
-              <label class="block text-3xl font-medium text-black"
-                >Adresse</label
-              >
-              <input
-                type="text"
-                bind:value={formData.address}
-                class="w-full form__input"
-              />
-            </div>
-
-            <div class="space-y-2">
-              <label class="block text-3xl font-medium text-black"
-                >Lieu de Résidence</label
-              >
-              <input
-                type="text"
-                bind:value={formData.lieuResidence}
-                class="w-full form__input"
-              />
-            </div>
-
-            <div class="space-y-2 form__group">
-              <label class="block text-3xl font-medium text-black"
-                >Situation Matrimoniale</label
-              >
-
-
-              <select
-            
-              class="form__input"
-            
-              bind:value={formData.situation}
-            >
-              <option value="" selected={!formData.situation}
-                >Veuillez sélectionner une option</option
-              >
-
-              <option
-                value="Célibataire"
-                selected={formData.situation === "Célibataire"}
-                >Célibataire</option
-              >
-              <option
-                value="Marié(e)"
-                selected={formData.situation === "Marié(e)"}
-                >Marié(e)</option
-              >
-              <option
-                value="Divorcé(e)"
-                selected={formData.situation === "Divorcé(e)"}
-                >Divorcé(e)</option
-              >
-              <option
-                value="Veuf (Veuve)"
-                selected={formData.situation === "Veuf (Veuve)"}
-                >Veuf (Veuve)</option
-              >
-            </select>
-            </div>
-
-            <div class="space-y-2">
-              <label class="block text-3xl font-medium text-black"
-                >Diplôme</label
-              >
-              <input
-                type="text"
-                bind:value={formData.diplome}
-                class="w-full form__input"
-              />
-            </div>
-
-            <div class="space-y-2">
-              <label class="block text-3xl font-medium text-black"
-                >Date d'obtention du diplôme</label
-              >
-              <input
-                type="date"
-                bind:value={formData.dateDiplome}
-                class="w-full form__input"
-              />
-            </div>
-
-            <div class="space-y-2">
-              <label class="block text-3xl font-medium text-black"
-                >Lieu d'obtention du diplôme</label
-              >
-              <input
-                type="text"
-                bind:value={formData.lieuDiplome}
-                class="w-full form__input"
-              />
-            </div>
-          </div>
+                Organisation
+              </button>
+            </li>
+          </ul>
         </div>
-      {/if}
 
-      <!-- Step 3: Informations Professionnelles -->
-      {#if activeTab === "step3"}
-        <div class="bg-white p-6 rounded-lg shadow-md">
-          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div class="space-y-2">
-              <label class="block text-3xl font-medium text-black"
-                >Profession</label
-              >
-              <input
-                type="text"
-                bind:value={formData.profession}
-                class="w-full form__input"
-              />
-            </div>
-
-            <div class="space-y-2">
-              <label class="block text-3xl font-medium text-black"
-                >Situation Professionnelle</label
-              >
-              <input
-                type="text"
-                bind:value={formData.situationPro}
-                class="w-full form__input"
-              />
-            </div>
-
-            <div class="space-y-2">
-              <label class="block text-3xl font-medium text-black"
-                >Spécialité</label
-              >
-              <select
-                bind:value={formData.specialite}
-                class="w-full form__input"
-              >
-                <option value="">Sélectionner une spécialité</option>
-                {#each specialites as specialite}
-                  <option value={specialite.id}>{specialite.libelle}</option>
-                {/each}
-              </select>
-            </div>
-
-            <div class="space-y-2">
-              <label class="block text-3xl font-medium text-black"
-                >Email Professionnel</label
-              >
-              <input
-                type="email"
-                bind:value={formData.emailPro}
-                class="w-full form__input"
-              />
-            </div>
-
-            <div class="space-y-2">
-              <label class="block text-3xl font-medium text-black"
-                >Contact Professionnel</label
-              >
-              <input
-                type="text"
-                bind:value={formData.contactPro}
-                class="w-full form__input"
-              />
-            </div>
-
-            <div class="space-y-2">
-              <label class="block text-3xl font-medium text-black"
-                >Professionnel</label
-              >
-              <input
-                type="text"
-                bind:value={formData.professionnel}
-                class="w-full form__input"
-              />
-            </div>
-
-            <div class="space-y-2">
-              <label class="block text-3xl font-medium text-black"
-                >Ville d'exercice</label
-              >
-              <select
-                bind:value={formData.ville}
-                class="w-full form__input"
-              >
-                <option value="">Sélectionner une ville</option>
-                {#each villes as ville}
-                  <option value={ville.id}>{ville.libelle}</option>
-                {/each}
-              </select>
-            </div>
-
-            <div class="space-y-2">
-              <label class="block text-3xl font-medium text-black"
-                >Date d'emploi</label
-              >
-              <input
-                type="date"
-                bind:value={formData.dateEmploi}
-                class="w-full form__input"
-              />
-            </div>
-          </div>
-        </div>
-      {/if}
-
-      <!-- Step 4: Documents -->
-      {#if activeTab === "step4"}
-        <div class="bg-white p-6 rounded-lg shadow-md">
-          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div class="space-y-2">
-              <label class="block text-3xl font-medium text-black"
-                >Photo</label
-              >
-              {#if formData.photo && formData.photo.url}
-                <div class="flex items-center mb-2">
-                  <span class="text-3xl text-gray-500 mr-2"
-                    >Fichier actuel : {formData.photo.alt}</span
+        <!-- Tab Contents -->
+        <div class="mt-1">
+          <!-- Step 2: Informations Personnelles -->
+          {#if activeTab === "step2"}
+            <div class="bg-white p-6 rounded-lg shadow-md">
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div class="space-y-2">
+                  <label class="block text-3xl font-medium text-black"
+                    >Genre</label
                   >
-                  {#if formData.photo.url === "pdf"}
-                    <span
-                      class="px-2 py-1 bg-gray-100 text-gray-800 text-xs rounded"
-                      >PDF</span
+                  <select
+                    bind:value={formData.genre}
+                    class="w-full form__input"
+                  >
+                    <option value="">Sélectionner un genre</option>
+                    {#each genres as genre}
+                      <option value={genre.id}>{genre.libelle}</option>
+                    {/each}
+                  </select>
+                </div>
+
+                <div class="space-y-2">
+                  <label class="block text-3xl font-medium text-black"
+                    >Civilité</label
+                  >
+                  <select
+                    bind:value={formData.civilite}
+                    class="w-full form__input"
+                  >
+                    <option value="">Sélectionner une civilité</option>
+                    {#each civilites as civilite}
+                      <option value={civilite.id}>{civilite.libelle}</option>
+                    {/each}
+                  </select>
+                </div>
+
+                <div class="space-y-2">
+                  <label class="block text-3xl font-medium text-black"
+                    >Nom</label
+                  >
+                  <input
+                    type="text"
+                    bind:value={formData.nom}
+                    class="w-full form__input"
+                  />
+                </div>
+
+                <div class="space-y-2">
+                  <label class="block text-3xl font-medium text-black"
+                    >Prénoms</label
+                  >
+                  <input
+                    type="text"
+                    bind:value={formData.prenoms}
+                    class="w-full form__input"
+                  />
+                </div>
+
+                <div class="space-y-2">
+                  <label class="block text-3xl font-medium text-black"
+                    >Date de Naissance</label
+                  >
+                  <input
+                    type="date"
+                    bind:value={formData.dateNaissance}
+                    class="w-full form__input"
+                  />
+                </div>
+
+                <div class="space-y-2">
+                  <label class="block text-3xl font-medium text-black"
+                    >Numéro</label
+                  >
+                  <input
+                    type="text"
+                    bind:value={formData.numero}
+                    class="w-full form__input"
+                  />
+                </div>
+
+                <div class="space-y-2">
+                  <label class="block text-3xl font-medium text-black"
+                    >Adresse</label
+                  >
+                  <input
+                    type="text"
+                    bind:value={formData.address}
+                    class="w-full form__input"
+                  />
+                </div>
+
+                <div class="space-y-2">
+                  <label class="block text-3xl font-medium text-black"
+                    >Lieu de Résidence</label
+                  >
+                  <input
+                    type="text"
+                    bind:value={formData.lieuResidence}
+                    class="w-full form__input"
+                  />
+                </div>
+
+                <div class="space-y-2 form__group">
+                  <label class="block text-3xl font-medium text-black"
+                    >Situation Matrimoniale</label
+                  >
+
+                  <select class="form__input" bind:value={formData.situation}>
+                    <option value="" selected={!formData.situation}
+                      >Veuillez sélectionner une option</option
                     >
-                  {:else}
-                    <img
-                      src={formData.photo.path + "/" + formData.photo.alt}
-                      alt="Photo"
-                      class="h-16 w-16 object-cover rounded"
+
+                    <option
+                      value="Célibataire"
+                      selected={formData.situation === "Célibataire"}
+                      >Célibataire</option
+                    >
+                    <option
+                      value="Marié(e)"
+                      selected={formData.situation === "Marié(e)"}
+                      >Marié(e)</option
+                    >
+                    <option
+                      value="Divorcé(e)"
+                      selected={formData.situation === "Divorcé(e)"}
+                      >Divorcé(e)</option
+                    >
+                    <option
+                      value="Veuf (Veuve)"
+                      selected={formData.situation === "Veuf (Veuve)"}
+                      >Veuf (Veuve)</option
+                    >
+                  </select>
+                </div>
+
+                <div class="space-y-2">
+                  <label class="block text-3xl font-medium text-black"
+                    >Diplôme</label
+                  >
+                  <input
+                    type="text"
+                    bind:value={formData.diplome}
+                    class="w-full form__input"
+                  />
+                </div>
+
+                <div class="space-y-2">
+                  <label class="block text-3xl font-medium text-black"
+                    >Date d'obtention du diplôme</label
+                  >
+                  <input
+                    type="date"
+                    bind:value={formData.dateDiplome}
+                    class="w-full form__input"
+                  />
+                </div>
+
+                <div class="space-y-2">
+                  <label class="block text-3xl font-medium text-black"
+                    >Lieu d'obtention du diplôme</label
+                  >
+                  <input
+                    type="text"
+                    bind:value={formData.lieuDiplome}
+                    class="w-full form__input"
+                  />
+                </div>
+              </div>
+            </div>
+          {/if}
+
+          <!-- Step 3: Informations Professionnelles -->
+          {#if activeTab === "step3"}
+            <div class="bg-white p-6 rounded-lg shadow-md">
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div class="space-y-2">
+                  <label class="block text-3xl font-medium text-black"
+                    >Profession</label
+                  >
+                  <input
+                    type="text"
+                    bind:value={formData.profession}
+                    class="w-full form__input"
+                  />
+                </div>
+
+                <div class="space-y-2">
+                  <label class="block text-3xl font-medium text-black"
+                    >Situation Professionnelle</label
+                  >
+                  <input
+                    type="text"
+                    bind:value={formData.situationPro}
+                    class="w-full form__input"
+                  />
+                </div>
+
+                <div class="space-y-2">
+                  <label class="block text-3xl font-medium text-black"
+                    >Spécialité</label
+                  >
+                  <select
+                    bind:value={formData.specialite}
+                    class="w-full form__input"
+                  >
+                    <option value="">Sélectionner une spécialité</option>
+                    {#each specialites as specialite}
+                      <option value={specialite.id}>{specialite.libelle}</option
+                      >
+                    {/each}
+                  </select>
+                </div>
+
+                <div class="space-y-2">
+                  <label class="block text-3xl font-medium text-black"
+                    >Email Professionnel</label
+                  >
+                  <input
+                    type="email"
+                    bind:value={formData.emailPro}
+                    class="w-full form__input"
+                  />
+                </div>
+
+                <div class="space-y-2">
+                  <label class="block text-3xl font-medium text-black"
+                    >Contact Professionnel</label
+                  >
+                  <input
+                    type="text"
+                    bind:value={formData.contactPro}
+                    class="w-full form__input"
+                  />
+                </div>
+
+                <div class="space-y-2">
+                  <label class="block text-3xl font-medium text-black"
+                    >Professionnel</label
+                  >
+                  <input
+                    type="text"
+                    bind:value={formData.professionnel}
+                    class="w-full form__input"
+                  />
+                </div>
+
+                <div class="space-y-2">
+                  <label class="block text-3xl font-medium text-black"
+                    >Ville d'exercice</label
+                  >
+                  <select
+                    bind:value={formData.ville}
+                    class="w-full form__input"
+                  >
+                    <option value="">Sélectionner une ville</option>
+                    {#each villes as ville}
+                      <option value={ville.id}>{ville.libelle}</option>
+                    {/each}
+                  </select>
+                </div>
+
+                <div class="space-y-2">
+                  <label class="block text-3xl font-medium text-black"
+                    >Date d'emploi</label
+                  >
+                  <input
+                    type="date"
+                    bind:value={formData.dateEmploi}
+                    class="w-full form__input"
+                  />
+                </div>
+              </div>
+            </div>
+          {/if}
+
+          <!-- Step 4: Documents -->
+          {#if activeTab === "step4"}
+            <div class="bg-white p-6 rounded-lg shadow-md">
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                {#each ["photo", "cni", "casier", "diplomeFile", "certificat", "cv"] as field}
+                  <div class="space-y-2">
+                    <label class="block text-3xl font-medium text-black">
+                      {field.toUpperCase()}
+                    </label>
+
+                    {#if formData[field] && formData[field].url}
+                      <div class="flex items-center mb-2">
+                        <span class="text-3xl text-gray-500">
+                          Fichier actuel : {formData[field].alt}
+                        </span>
+                        <a   on:click={() =>
+                          openModal(
+                            BASE_URL_API_UPLOAD +
+                              formData[field].path +
+                              "/" +
+                              formData[field].alt
+                          )}
+                          href="javascript:void(0)"
+                          download="document"
+                          target="_blank"
+                          class="ml-4 text-blue-600 hover:underline"
+                        >
+                          Télécharger
+                        </a>
+                      </div>
+                    {/if}
+
+                    <input
+                      type="file"
+                      on:change={(e) => (formData[field] = e.target.files[0])}
+                      class="w-full form__input"
                     />
-                  {/if}
-                </div>
-              {/if}
-              <input
-                type="file"
-                accept="image/*"
-                on:change={(e) => (formData.photo = e.target.files[0])}
-                class="w-full form__input"
-              />
+                  </div>
+                {/each}
+              </div>
             </div>
+          {/if}
 
-            <div class="space-y-2">
-              <label class="block text-3xl font-medium text-black">CNI</label>
-              {#if formData.cni && formData.cni.url}
-                <div class="flex items-center mb-2">
-                  <span class="text-3xl text-gray-500"
-                    >Fichier actuel : {formData.cni.alt}</span
+          <!-- Step 5: Organisation -->
+          {#if activeTab === "step5"}
+            <div class="bg-white p-6 rounded-lg shadow-md">
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div class="col-span-2 space-y-2">
+                  <label class="block text-3xl font-medium text-black"
+                    >Appartenir à une organisation ?</label
                   >
+                  <div class="flex space-x-4">
+                    <label class="inline-flex items-center">
+                      <input
+                        type="radio"
+                        bind:group={formData.appartenirOrganisation}
+                        value="oui"
+                        disabled
+                        class="form-radio text-blue-600"
+                        checked={formData.appartenirOrganisation === "oui"}
+                      />
+                      <span class="ml-2">Oui</span>
+                    </label>
+                    <label class="inline-flex items-center">
+                      <input
+                        type="radio"
+                        bind:group={formData.appartenirOrganisation}
+                        value="non"
+                        disabled
+                        class="form-radio text-blue-600"
+                        checked={formData.appartenirOrganisation === "non"}
+                      />
+                      <span class="ml-2">Non</span>
+                    </label>
+                  </div>
                 </div>
-              {/if}
-              <input
-                type="file"
-                on:change={(e) => (formData.cni = e.target.files[0])}
-                class="w-full form__input"
-              />
-            </div>
 
-            <div class="space-y-2">
-              <label class="block text-3xl font-medium text-black"
-                >Casier judiciaire</label
-              >
-              {#if formData.casier && formData.casier.url}
-                <div class="flex items-center mb-2">
-                  <span class="text-3xl text-gray-500"
-                    >Fichier actuel : {formData.casier.alt}</span
-                  >
-                </div>
-              {/if}
-              <input
-                type="file"
-                on:change={(e) => (formData.casier = e.target.files[0])}
-                class="w-full form__input"
-              />
-            </div>
+                {#if formData.appartenirOrganisation == "oui"}
+                  <div class="space-y-2">
+                    <label class="block text-3xl font-medium text-black"
+                      >Nom de l'organisation</label
+                    >
+                    <input
+                      type="text"
+                      bind:value={formData.organisationNom}
+                      class="w-full form__input"
+                    />
+                  </div>
 
-            <div class="space-y-2">
-              <label class="block text-3xl font-medium text-black"
-                >Diplôme</label
-              >
-              {#if formData.diplomeFile && formData.diplomeFile.url}
-                <div class="flex items-center mb-2">
-                  <span class="text-3xl text-gray-500"
-                    >Fichier actuel : {formData.diplomeFile.alt}</span
-                  >
-                </div>
-              {/if}
-              <input
-                type="file"
-                on:change={(e) => (formData.diplomeFile = e.target.files[0])}
-                class="w-full form__input"
-              />
-            </div>
+                  <div class="space-y-2">
+                    <label class="block text-3xl font-medium text-black"
+                      >Numéro de l'organisation</label
+                    >
+                    <input
+                      type="text"
+                      bind:value={formData.organisationNumero}
+                      class="w-full form__input"
+                    />
+                  </div>
 
-            <div class="space-y-2">
-              <label class="block text-3xl font-medium text-black"
-                >Certificat</label
-              >
-              {#if formData.certificat && formData.certificat.url}
-                <div class="flex items-center mb-2">
-                  <span class="text-3xl text-gray-500"
-                    >Fichier actuel : {formData.certificat.alt}</span
-                  >
-                </div>
-              {/if}
-              <input
-                type="file"
-                on:change={(e) => (formData.certificat = e.target.files[0])}
-                class="w-full form__input"
-              />
+                  <div class="space-y-2">
+                    <label class="block text-3xl font-medium text-black"
+                      >Année d'adhésion</label
+                    >
+                    <input
+                      type="number"
+                      bind:value={formData.organisationAnnee}
+                      class="w-full form__input"
+                    />
+                  </div>
+                {/if}
+              </div>
             </div>
-
-            <div class="space-y-2">
-              <label class="block text-3xl font-medium text-black">CV</label>
-              {#if formData.cv && formData.cv.url}
-                <div class="flex items-center mb-2">
-                  <span class="text-3xl text-gray-500"
-                    >Fichier actuel : {formData.cv.alt}</span
-                  >
-                </div>
-              {/if}
-              <input
-                type="file"
-                on:change={(e) => (formData.cv = e.target.files[0])}
-                class="w-full form__input"
-              />
-            </div>
-          </div>
+          {/if}
         </div>
-      {/if}
 
-      <!-- Step 5: Organisation -->
-      {#if activeTab === "step5"}
-        <div class="bg-white p-6 rounded-lg shadow-md">
-          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div class="col-span-2 space-y-2">
-              <label class="block text-3xl font-medium text-black"
-                >Appartenir à une organisation ?</label
-              >
-              <div class="flex space-x-4">
-                <label class="inline-flex items-center">
-                  <input
-                    type="radio"
-                    bind:group={formData.appartenirOrganisation}
-                    value="oui"
-                    disabled
-                    class="form-radio text-blue-600"
-                    checked={formData.appartenirOrganisation === 'oui'}
-                  />
-                  <span class="ml-2">Oui</span>
-                </label>
-                <label class="inline-flex items-center">
-                  <input
-                    type="radio"
-                    bind:group={formData.appartenirOrganisation}
-                    value="non"
-                    disabled
-                    class="form-radio text-blue-600"
-                    checked={formData.appartenirOrganisation === 'non'}
-                  />
-                  <span class="ml-2">Non</span>
-                </label>
-              </div>
-              
-            </div>
-
-            {#if formData.appartenirOrganisation == "oui"}
-              <div class="space-y-2">
-                <label class="block text-3xl font-medium text-black"
-                  >Nom de l'organisation</label
-                >
-                <input
-                  type="text"
-                  bind:value={formData.organisationNom}
-                  class="w-full form__input"
-                />
-              </div>
-
-              <div class="space-y-2">
-                <label class="block text-3xl font-medium text-black"
-                  >Numéro de l'organisation</label
-                >
-                <input
-                  type="text"
-                  bind:value={formData.organisationNumero}
-                  class="w-full form__input"
-                />
-              </div>
-
-              <div class="space-y-2">
-                <label class="block text-3xl font-medium text-black"
-                  >Année d'adhésion</label
-                >
-                <input
-                  type="number"
-                  bind:value={formData.organisationAnnee}
-                  class="w-full form__input"
-                />
-              </div>
-            {/if}
-          </div>
-        </div>
-      {/if}
-    </div>
-
-    <!-- Submit Button -->
-    <div class="mt-6 flex justify-end">
-      <!--   <button
+        <!-- Submit Button -->
+        <div class="mt-6 flex justify-end">
+          <!--   <button
                 on:click={handleSubmit}
                 class="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
         >
             Modifier
         </button> -->
 
-      <button
-        type="button"
-        on:click={handleSubmit}
-        class="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
-      >
-        {#if authenticating}
-          <div class="grid grid-cols-2">
-            <div>
-              <Spinner />
-            </div>
-            <div>Modifier</div>
-          </div>
-        {:else}
-          Modifier
-        {/if}
-      </button>
-    </div>
-  </div>
-  
-</section>
-</main>
+          <button
+            type="button"
+            on:click={handleSubmit}
+            class="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+          >
+            {#if authenticating}
+              <div class="grid grid-cols-2">
+                <div>
+                  <Spinner />
+                </div>
+                <div>Modifier</div>
+              </div>
+            {:else}
+              Modifier
+            {/if}
+          </button>
+        </div>
+      </div>
+    </section>
+  </main>
 {/if}
 <Footer></Footer>
+
+<Modal isOpen={isModalOpen} {pdfUrl} onClose={closeModal} />
 
 <style>
   .iletisim-form-alani {
     padding: 20rem 226px 10rem !important;
-   
+
     background-color: transparent !important;
-}
+  }
   .content-sec {
     margin-top: 160px;
   }

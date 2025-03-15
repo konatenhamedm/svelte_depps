@@ -53,6 +53,7 @@ export interface User {
   status: string;
   payement: string;
   personneId: string;
+  nom?: string;
 }
 
 export interface Civilite {

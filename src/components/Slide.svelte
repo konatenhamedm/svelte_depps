@@ -42,7 +42,7 @@
       <div class="main-menu">
         <ul>
           {#if user}
-            <li><a href="/site/dashboard">Dashboard</a></li>
+            <li><a href="/site/dashboard">Tableau de bord</a></li>
           {/if}
 
           <li><a href="/">Accueil</a></li>

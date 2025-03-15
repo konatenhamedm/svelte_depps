@@ -3,7 +3,7 @@
   import { BASE_URL_API_UPLOAD } from "$lib/api";
   import { Button, Input, Label, Modal, Textarea } from "flowbite-svelte";
   export let open: boolean = false;
-  export let sizeModal: any = "lg";
+  export let sizeModal: any = "md";
   export let data: Record<string, string> = {};
   let code = "";
   let libelle = "";
@@ -27,20 +27,12 @@
   <!-- Modal body -->
   <div class="space-y-6 p-0">
     <form action="#" use:init>
-      {#if pdfUrl.includes('.pdf') }
-        <div class="pdf-viewer">
-          <!-- Afficher le PDF avec un iframe -->
-          <iframe src={pdfUrl} width="100%" height="700px" type="application/pdf">
-            Ce navigateur ne prend pas en charge l'affichage de PDF.
-          </iframe>
-        </div>
-        {:else }
-        <div class="flex items-center justify-center min-h-[50rem]">
-          <img src={pdfUrl} alt="Image" class="max-w-full max-h-[50rem]" />
-        </div>
-        
-      
-        {/if}
+      <div class="pdf-viewer">
+        <!-- Afficher le PDF avec un iframe -->
+        <iframe src={pdfUrl} width="100%" height="700px" type="application/pdf">
+          Ce navigateur ne prend pas en charge l'affichage de PDF.
+        </iframe>
+      </div>
     </form>
   </div>
 
@@ -63,5 +55,6 @@
 <style>
   .pdf-viewer {
     margin-top: 20px;
+    margin: auto;
   }
 </style>

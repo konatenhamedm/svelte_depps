@@ -28,7 +28,7 @@
     { icon: 'fas fa-bell', text: 'Alertes', link: 'alerte' },
     { icon: 'fas fa-comments', text: 'MyDEPPS chat', link: 'chatbox' },
     { icon: 'fas fa-book', text: 'profil', link: 'profil' },
-    { icon: 'fas fa-file-pdf', text: "Guide utilisateur (PDF)", link: "guide-utilisateur" },
+    { icon: 'fas fa-file-pdf', text: "Documentaire", link: "guide-utilisateur" },
     { icon: 'fas fa-users', text: 'Forum', link: 'forum' }
   ];
   }else{
@@ -37,7 +37,7 @@
     { icon: 'fas fa-bell', text: 'Alertes', link: 'alerte' },
     { icon: 'fas fa-comments', text: 'MyDEPPS chat', link: 'chatbox' },
     { icon: 'fas fa-book', text: 'profil', link: 'profil' },
-    { icon: 'fas fa-file-pdf', text: "Guide utilisateur (PDF)", link: "guide-utilisateur" },
+    { icon: 'fas fa-file-pdf', text: "Documentaire", link: "guide-utilisateur" },
     { icon: 'fas fa-users', text: 'Forum', link: 'forum' }
   ];
   }
@@ -175,7 +175,7 @@
             <div class="d-flex align-items-center">
               <div class="flex-grow-1">
                 <h4 class="h2-baslik-anasayfa-ozel h-yazi-margin-kucuk my-2">
-                  {user?.username}
+                  {user?.nom}
                 </h4>
                 <p class="fs-5 text-secondary">
                   {#if user?.type == "PROFESSIONNEL"}
