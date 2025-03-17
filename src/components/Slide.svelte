@@ -31,7 +31,7 @@
   <nav class="navbar hide">
     <div class="inner">
       <div class="logo sticky">
-        <a href="accueil"><img src="/_files/logo-depps.png" alt="Image" /></a>
+        <a href="/"><img src="/_files/logo-depps.png" alt="Image" /></a>
       </div>
       <div class="phone">
         <a href="tel:123456789"

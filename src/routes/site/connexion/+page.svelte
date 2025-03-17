@@ -66,7 +66,9 @@
                   on:submit|preventDefault={handleSubmit}
                   class="form login_customerh"
           >
-            <div class="form__grup">
+
+          <div class=" grid grid-cols-1 gap-4">
+             <div class="form__grup">
               <label for="email" class="form_label">E-mail</label>
               <input
                       type="text"
@@ -107,6 +109,8 @@
                 {/if}
               </button>
             </div>
+          </div>
+           
             <div class="form__grup">
               <br />
               <button

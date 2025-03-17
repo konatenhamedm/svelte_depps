@@ -19,7 +19,7 @@
   import Pagination from "../../../components/_includes/Pagination.svelte";
   // Importer le store pageSize
   import { get } from "svelte/store";
-  import type { Permission, User } from "../../../types";
+  import type { Permission, Profession, User } from "../../../types";
   import { apiFetch } from "$lib/api";
   import { pageSize } from "../../../store"; // Importer le store pageSize
   import { onMount } from "svelte";
@@ -30,7 +30,7 @@
   import { getAuthCookie } from "$lib/auth";
   import DropdownMenu from "$components/DropdownMenu.svelte";
 
-  let main_data: Permission[] = [];
+  let main_data: Profession[] = [];
   let searchQuery = ""; // Pour la recherche par texte
   let selectedService: any = ""; // Pour filtrer par service
   let selectedStatus: any = ""; // Pour filtrer par status
@@ -53,7 +53,7 @@
       const res = await apiFetch(true, "/profession/");
 
       if (res) {
-        main_data = res.data as Permission[];
+        main_data = res.data as Profession[];
         loading = false; // Active le spinner de chargement
       } else {
         console.error(
@@ -139,7 +139,7 @@
       <div class="box">
         <div class="box-header with-border flex justify-between items-center">
           <h4 class="box-title text-xl font-medium">
-            Liste des types profession
+            Liste des  professions
           </h4>
 
           <div>
@@ -168,7 +168,7 @@
               <TableHead
                 class="border-y border-gray-200 bg-gray-100 dark:border-gray-700"
               >
-                {#each ["code", "libelle", "Action"] as title}
+                {#each ["code", "libelle","Montant renouvellement","Montant nouvelle demande", "Action"] as title}
                   <TableHeadCell class="ps-4 font-normal border border-gray-300"
                     >{title}</TableHeadCell
                   >
@@ -221,6 +221,12 @@
                       >
                       <TableBodyCell class="p-4 border border-gray-300"
                         >{item.libelle}</TableBodyCell
+                      >
+                      <TableBodyCell class="p-4 border border-gray-300"
+                        >{item.montantRenouvellement}</TableBodyCell
+                      >
+                      <TableBodyCell class="p-4 border border-gray-300"
+                        >{item.montantNouvelleDemande}</TableBodyCell
                       >
 
                       <!--  <TableBodyCell class="p-4 border border-gray-300">{item.sous_menu.libelle}</TableBodyCell>

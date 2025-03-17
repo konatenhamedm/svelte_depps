@@ -19,6 +19,8 @@
     code: "",
     libelle: "",
     typeProfession: "",
+    montantRenouvellement: "",
+    montantNouvelleDemande: "",
   };
   export let sizeModal: any = "lg";
   export let userUpdateId: any;
@@ -44,6 +46,8 @@
         body: JSON.stringify({
           typeProfession: icons.typeProfession,
           libelle: icons.libelle,
+          montantRenouvellement: icons.montantRenouvellement,
+          montantNouvelleDemande: icons.montantNouvelleDemande,
           userUpdate: userUpdateId,
         }),
       });
@@ -94,7 +98,7 @@
   <!-- Modal body -->
   <div class="space-y-6 p-0">
     <form action="#" use:init>
-      <div class="grid grid-cols-1">
+      <div class="grid grid-cols-1 mb-2">
      
 
         <InputSimple
@@ -106,7 +110,7 @@
         ></InputSimple>
       </div>
 
-      <div class="grid grid-cols-1 gap-6">
+      <div class="grid grid-cols-1 gap-6 mb-2">
         
         <InputSelect 
         label="Type profession"
@@ -115,6 +119,30 @@
         id="typePersonne"
     />
        
+      </div>
+      <div class="grid grid-cols-2 gap-2">
+      <div>
+          <InputSimple
+          fieldName="montantNouvelleDemande"
+          label="Montant nouvelle demande"
+          bind:field={icons.montantNouvelleDemande}
+          placeholder="entrez le montant"
+          class="w-full"
+        ></InputSimple>
+      </div>
+      <div>
+
+        <InputSimple
+        fieldName="montantRenouvellement"
+        label="Montant renouvellement"
+        bind:field={icons.montantRenouvellement}
+        placeholder="entrez le montant"
+        class="w-full"
+      ></InputSimple>
+      </div>
+
+      
+      
       </div>
     </form>
   </div>

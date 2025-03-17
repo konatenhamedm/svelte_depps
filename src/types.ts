@@ -214,6 +214,13 @@ export interface Permission {
   libelle: string;
   code: string;
 }
+export interface Profession {
+  id: number;
+  libelle: string;
+  code: string;
+  montantRenouvellement: string;
+  montantNouvelleDemande: string;
+}
 export interface Doc {
   id: number;
   libelle: string;

@@ -4,6 +4,7 @@
     import { apiFetch } from "$lib/api";
     import { onMount } from "svelte";
     import UserListSkeleton from "$components/_skeletons/userList.svelte";
+  import Header from "$components/Header.svelte";
 
 
     export let data;
@@ -110,6 +111,7 @@
 
 
 <div id="chatbox">
+    <Header user={user} />
     <Slide user={user} />
 
     <section class="mx-auto px-8 py-8 main-div">

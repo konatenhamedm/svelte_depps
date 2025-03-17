@@ -23,7 +23,7 @@
     <div class="side-menu">
       <ul>
         
-        <li><a href="/">Accueiliooo</a></li>
+        <li><a href="/">Accueil</a></li>
         <li><a href="/site/about">A propos</a></li>
         <li><a href="#">E-DEPPS</a></li>
         <li><a href="/site/contact">Contactez-nous</a></li>
@@ -50,7 +50,14 @@
 
 
 <style>
-  .navbar .logo a img {
+  .navbar .main-menu ul li a::before {
+  content: "\f0f3";
+  
+}
+.fa-bell::before {
+  content: "\f0f3" !important;
+}
+ /*  .navbar .logo a img {
     height: 89px;
   }
   .navbar {
@@ -69,6 +76,6 @@
   }
   .navbar .logo {
     margin-left: 54px;
-  }
+  } */
   
 </style>

@@ -113,7 +113,7 @@
 <Header/>
 <Slide/>
 
-<main style="padding-top: 200px" class="pb-10">
+<main class="mx-auto px-8 py-8 main-div" style="padding-top: 200px">
     <div class="max-w-[125rem] mx-auto p-6">
         <div class="bg-white rounded-lg shadow-sm overflow-hidden">
             <!-- Notification Header -->
@@ -197,3 +197,19 @@
 {/if}
 
 <Footer/>
+
+<style>
+    .iletisim-form-alani {
+    padding: 20rem 226px 0rem !important;
+
+    background-color: transparent !important;
+  }
+  .main-div {
+    margin-top: -10px;
+    margin-bottom: 100px;
+    border: 1px solid #e5e7eb;
+    background: transparent;
+    border-radius: 10px;
+    padding: -10px 0px 0px 0px;
+  }
+</style>

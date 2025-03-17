@@ -11,6 +11,8 @@
   let isLoad = false;
   let typeProfession: any = "";
   let libelle: string = "";
+  let montantNouvelleDemande: string = "";
+  let montantRenouvellement: string = "";
   let typeProfessions : any = [];
 
   export let sizeModal: any = "lg";
@@ -22,6 +24,8 @@
   function init(form: HTMLFormElement) {
     typeProfession = data?.typeProfession?.id;
     libelle = data?.libelle;
+    montantRenouvellement = data?.montantRenouvellement;
+    montantNouvelleDemande = data?.montantNouvelleDemande;
   }
 
   async function SaveFunction() {
@@ -36,6 +40,8 @@
         body: JSON.stringify({
           typeProfession: typeProfession,
           libelle: libelle,
+          montantRenouvellement: montantRenouvellement,
+          montantNouvelleDemande: montantNouvelleDemande,
           userUpdate: userUpdateId,
         }),
       });
@@ -82,7 +88,7 @@
   <!-- Modal body -->
   <div class="space-y-6 p-0">
     <form action="#" use:init>
-      <div class="grid grid-cols-1">
+      <div class="grid grid-cols-1 mb-2">
         <div class="grid grid-cols-1">
        
           <InputSimple
@@ -94,7 +100,7 @@
         ></InputSimple>
       </div>
 
-      <div class="grid grid-cols-1 gap-6">
+      <div class="grid grid-cols-1 gap-6 mb-2">
         
         <InputSelect
         label="Type profession"
@@ -104,6 +110,31 @@
     />
         </div>
       </div>
+
+      <div class="grid grid-cols-2 gap-2">
+        <div>
+            <InputSimple
+            fieldName="montantNouvelleDemande"
+            label="Montant nouvelle demande"
+            bind:field={montantNouvelleDemande}
+            placeholder="entrez le montant"
+            class="w-full"
+          ></InputSimple>
+        </div>
+        <div>
+  
+          <InputSimple
+          fieldName="montantRenouvellement"
+          label="Montant renouvellement"
+          bind:field={montantRenouvellement}
+          placeholder="entrez le montant"
+          class="w-full"
+        ></InputSimple>
+        </div>
+  
+        
+        
+        </div>
     </form>
   </div>
 

@@ -31,7 +31,20 @@ export async function handle({ event, resolve }) {
   if (event.url.pathname.startsWith("/site/dashboard") && !user) {
     return redirect(302, "/");
   }
-  if ((event.url.pathname.startsWith("/site/dossier") || event.url.pathname.startsWith("/site/alerte") || event.url.pathname.startsWith("/site/profil")) && !user) {
+  if ((event.url.pathname.startsWith("/site/dossiers") ||
+   event.url.pathname.startsWith("/site/forum") ||
+    event.url.pathname.startsWith("/site/contact")  ||
+     event.url.pathname.startsWith("/site/documents") ||
+      event.url.pathname.startsWith("/site/chatbox") ||
+       event.url.pathname.startsWith("/site/dashboard") ||
+        event.url.pathname.startsWith("/site/notification") ||
+         event.url.pathname.startsWith("/site/paiement") ||
+          event.url.pathname.startsWith("/site/forum/all-forums") ||
+           event.url.pathname.startsWith("/site/about") ||
+            event.url.pathname.startsWith("/site/faq") ||
+     event.url.pathname.startsWith("/site/alerte") ||
+      event.url.pathname.startsWith("/site/profil")) &&
+       !user) {
     return redirect(302, "/");
   }
 /*   if (user && !user.role.includes("ROLE_ADMIN")) {
