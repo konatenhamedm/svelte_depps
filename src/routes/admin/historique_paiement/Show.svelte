@@ -61,7 +61,7 @@
                     <InputSimple fieldName="montant" label="Montant" field={montant} disabled={true} />
                     <InputSimple fieldName="reference" label="Référence" field={reference} disabled={true} />
                     <InputSimple fieldName="channel" label="Canal" field={channel} disabled={true} />
-                    <InputSimple fieldName="state" label="État" field={state == "1" ? "Paement éffectué" : "Paiement échoué"} disabled={true} />
+                    <InputSimple fieldName="state" label="État" field={state == "1" ? "Paiement éffectué" : "Paiement échoué"} disabled={true} />
                     
                 </div>
             </div>

@@ -96,7 +96,7 @@
           >
         </div>
         <div class="mb-4">
-          <label class="block text-black mb-2">Destinateur</label>
+          <label class="block text-black mb-2">Destinataire</label>
           <!--  <select name="destinateur" class="w-full px-3 py-2 border rounded">
                         <option value="Actif" selected={forum.status === 'Actif'}>Actif</option>
                         <option value="Inactif" selected={forum.status === 'Inactif'}>Inactif</option>

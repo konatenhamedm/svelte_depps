@@ -85,7 +85,7 @@
               <input
                       type={showPassword ? 'text' : 'password'}
                       bind:value={password}
-                      class="form__input w-full"
+                      class="form__input w-full" style="width:100%"
                       placeholder="Mot de passe"
                       id="txt_eposta"
                       name="password"

@@ -125,6 +125,31 @@
   $: if (!openAdd || !openEdit || !openDelete) {
     refreshDataIfNeeded();
   }
+
+  function getBgColor(color: number): string {
+        switch (color) {
+            case 1:
+                return "bg-success border-success";
+            case 0:
+                return "bg-danger border-danger";
+            default:
+                return "bg-gray-300";
+        }
+    }
+
+    
+    function getStatus(status: number): string {
+        switch (status) {
+            case 1:
+                return "Paiement effectué";
+            case 0:
+                return "Paiement échoué";
+            default:
+                return "Inconnu";
+        }
+    }
+
+
 </script>
 
 <Entete
@@ -158,7 +183,7 @@
               <TableHead
                 class="border-y border-gray-200 bg-gray-100 dark:border-gray-700"
               >
-                {#each ["Reference", "type", "email", "Montant", "Date", "Action"] as title}
+                {#each ["Reference", "type", "email","Etat paiement", "Montant", "Date", "Action"] as title}
                   <TableHeadCell class="ps-4 font-normal border border-gray-300"
                     >{title}</TableHeadCell
                   >
@@ -220,6 +245,17 @@
                       > -->
                       <TableBodyCell class="p-4 border border-gray-300"
                         >{item.user.email}</TableBodyCell
+                      >
+
+                      <TableBodyCell class="p-4 border border-gray-300"
+                        ><span
+                        class={`py-[0.1875rem] px-[0.8125rem] text-xs rounded-[1.25rem] text-white w-[77px] leading-[1.5] ${getBgColor(item.state)}`}
+                        >{getStatus(
+                            item.state,
+                        )}</span
+                    >
+                        
+                        </TableBodyCell
                       >
                       <TableBodyCell
                         class="p-4 border border-gray-300 justify-end text-right"

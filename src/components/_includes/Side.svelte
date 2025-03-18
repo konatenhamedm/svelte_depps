@@ -10,7 +10,7 @@
 		 <div class="multinav-scroll" style="height: 100%;">    
 			<!-- sidebar menu-->
 			<ul class="sidebar-menu" data-widget="tree">
-			<li class="header fs-10 m-0 text-uppercase">Dashboard</li>
+			<li class="header fs-10 m-0 text-uppercase" style="text-transform: uppercase;">Dashboard</li>
 
 			<li class="path1">
 				<a href="/admin">
@@ -23,7 +23,7 @@
 				
 			</li>
 
-			<li class="header fs-10 m-0 text-uppercase">Parametres</li>
+			<li class="header fs-10 m-0 text-uppercase" style="text-transform: uppercase;">Parametres</li>
 			<li class="treeview">
 				<a href="#">
 					<svg fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-home" height="24" width="24" version="1.1" id="Capa_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 54 54" xml:space="preserve">
@@ -124,7 +124,7 @@
 				
 			</li>
 	
-			<li class="header fs-10 m-0 text-uppercase">Gestion dossiers</li>
+			<li class="header fs-10 m-0 text-uppercase" style="text-transform: uppercase;">Gestion dossiers</li>
 			<li class="path1">
 				<a href="/admin/professionnel">
 					<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-home"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>
@@ -167,13 +167,12 @@
 			</li>
 			
 
-			<li class="header fs-10 m-0 text-uppercase">Gestion des statistiques</li>
+			<li class="header fs-10 m-0 text-uppercase" style="text-transform: uppercase;">Gestion des statistiques</li>
 			<li class="path1">
 				<a href="/admin/statistique/genre">
 					<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-home"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>
 				<span>Civilite</span>
 				<span class="pull-right-container">
-				
 				</span>
 				</a>                  
 				

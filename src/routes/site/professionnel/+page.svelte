@@ -839,7 +839,7 @@ console.log("gggg",formData.appartenirOrganisation);
             <h2 class="text-3xl font-semibold mb-4 text-center md:text-left">
               Informations de rapport (étape 1/6)
             </h2>
-            <div class="w-full mb-4">
+            <div class="w-full mb-4"  style="width:100%">
               <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
                 <div class="flex flex-col form__group">
                   <label class="text-3xl font-medium mb-1">E-mail *</label>
@@ -848,7 +848,7 @@ console.log("gggg",formData.appartenirOrganisation);
                     on:input={saveFormState}
                     on:input={(e) => updateField("email", e.target.value)}
                     type="email"
-                    class="form__input w-full"
+                    class="form__input w-full"  style="width:100%"
                     bind:value={formData.email}
                     placeholder="E-mail"
                   />
@@ -866,7 +866,7 @@ console.log("gggg",formData.appartenirOrganisation);
                       on:input={saveFormState}
                       on:input={(e) => updateField("password", e.target.value)}
                       type={showPassword ? "text" : "password"}
-                      class="form__input w-full px-3 pr-10"
+                      class="form__input w-full px-3 pr-10"  style="width:100%"
                       bind:value={formData.password}
                       placeholder="Mot de passe"
                     />
@@ -1058,7 +1058,7 @@ console.log("gggg",formData.appartenirOrganisation);
               </div>
 
               <!-- Autres champs similaires -->
-              {#each [{ key: "prenoms", label: "Prénoms" }, { key: "nationate", label: "Nationalité" }, { key: "dateNaissance", label: "Date de naissance", type: "date" }, { key: "numero", label: "Numéro" }, { key: "address", label: "Adresse" }, { key: "lieuResidence", label: "Lieu de résidence" }, { key: "diplome", label: "Diplôme" }, { key: "dateDiplome", label: "Date obtention  diplôme", type: "date" }, { key: "lieuDiplome", label: "Lieu obtention  diplôme" }] as field}
+              {#each [{ key: "prenoms", label: "Prénoms" }, { key: "nationate", label: "Nationalité" }, { key: "dateNaissance", label: "Date de naissance", type: "date" }, { key: "numero", label: "Numéro télephone" }, { key: "address", label: "Adresse postal" }, { key: "lieuResidence", label: "Lieu de résidence" }, { key: "diplome", label: "Diplôme" }, { key: "dateDiplome", label: "Date obtention  diplôme", type: "date" }, { key: "lieuDiplome", label: "Lieu obtention  diplôme" }] as field}
                 {#if field.key === "nationate"}
                   <div class="form__group">
                     <label class="block text-3xl font-medium mb-1"

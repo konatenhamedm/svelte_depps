@@ -28,7 +28,7 @@
     { icon: 'fas fa-bell', text: 'Alertes', link: 'alerte' },
     { icon: 'fas fa-comments', text: 'MyDEPPS chat', link: 'chatbox' },
     { icon: 'fas fa-book', text: 'profil', link: 'profil' },
-    { icon: 'fas fa-file-pdf', text: "Documentaire", link: "guide-utilisateur" },
+    { icon: 'fas fa-file-pdf', text: "Documenthèque", link: "guide-utilisateur" },
     { icon: 'fas fa-users', text: 'Forum', link: 'forum' }
   ];
   }else{
@@ -37,7 +37,7 @@
     { icon: 'fas fa-bell', text: 'Alertes', link: 'alerte' },
     { icon: 'fas fa-comments', text: 'MyDEPPS chat', link: 'chatbox' },
     { icon: 'fas fa-book', text: 'profil', link: 'profil' },
-    { icon: 'fas fa-file-pdf', text: "Documentaire", link: "guide-utilisateur" },
+    { icon: 'fas fa-file-pdf', text: "Documenthèque", link: "guide-utilisateur" },
     { icon: 'fas fa-users', text: 'Forum', link: 'forum' }
   ];
   }
