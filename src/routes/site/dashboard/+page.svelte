@@ -12,6 +12,8 @@
     logout();
     window.location.href = "/";
   }
+  let hasNotifications = false;
+  let notificationCount = 0;
 
   export let data;
   let user = data?.user;
@@ -27,7 +29,7 @@
     { icon: 'fas fa-folder-open', text: 'Mise à jour du dossier', link: 'dossiers' },
     { icon: 'fas fa-bell', text: 'Alertes', link: 'alerte' },
     { icon: 'fas fa-comments', text: 'MyDEPPS chat', link: 'chatbox' },
-    { icon: 'fas fa-book', text: 'profil', link: 'profil' },
+    { icon: 'fas fa-book', text: 'Historique paiements', link: 'paiements' },
     { icon: 'fas fa-file-pdf', text: "Documenthèque", link: "guide-utilisateur" },
     { icon: 'fas fa-users', text: 'Forum', link: 'forum' }
   ];
@@ -36,11 +38,37 @@
     { icon: 'fas fa-folder-open', text: 'Mise à jour du dossier', link: 'dossiers_etablissement' },
     { icon: 'fas fa-bell', text: 'Alertes', link: 'alerte' },
     { icon: 'fas fa-comments', text: 'MyDEPPS chat', link: 'chatbox' },
-    { icon: 'fas fa-book', text: 'profil', link: 'profil' },
+    { icon: 'fas fa-book', text: 'Historique paiements', link: 'paiements' },
     { icon: 'fas fa-file-pdf', text: "Documenthèque", link: "guide-utilisateur" },
     { icon: 'fas fa-users', text: 'Forum', link: 'forum' }
   ];
   }
+
+
+  async function fetchData() {
+        try {
+            const response = await fetch(`https://depps.leadagro.net/api/notification/nombre/${user.id}`);
+            if (response.ok) {
+                const result = await response.json();
+                if (result.code === 200 && result.data) {
+                  notificationCount = result.data.length;
+                  
+                } else {
+                    console.error("Erreur dans la réponse de l'API:", result.message);
+                }
+            } else {
+                console.error("Erreur de récupération:", response.statusText);
+            }
+        } catch (error) {
+            console.error("Erreur API:", error);
+        }finally {
+          
+        }
+    }
+
+    onMount(async () => {
+        await fetchData();
+    });
  
 </script>
 
@@ -171,27 +199,46 @@
               plateforme MyDEPPS
             </h1>
           </div>
-          <div class="col-lg-4 col-md-8 mx-auto p-3 shadow-sm border rounded bg-light">
-            <div class="d-flex align-items-center">
-              <div class="flex-grow-1">
-                <h4 class="h2-baslik-anasayfa-ozel h-yazi-margin-kucuk my-2">
-                  {user?.nom}
-                </h4>
-                <p class="fs-5 text-secondary">
-                  {#if user?.type == "PROFESSIONNEL"}
-                  PROFESSIONNEL DE SANTE
-                  {:else}
-                  ETABLISSEMENT DE SANTE
-                  {/if}
-                </p>
-              </div>
-              <div class="ms-3">
-                <div class="avatar rounded-circle shadow-sm"
-                  style="width: 80px; height: 80px; background-size: cover; background-position: center;
-                  background-image: url({user?.avatar ? BASE_URL_API_UPLOAD + user?.avatar : 'https://static.vecteezy.com/system/resources/thumbnails/009/292/244/small/default-avatar-icon-of-social-media-user-vector.jpg'});">
+          
+          <div class="col-lg-4 col-md-8 mx-auto p-3 shadow-sm border rounded bg-light cursor-pointer" on:click={()=>{
+            goto('/site/profil')
+          }}>
+            <div class="grid grid-cols-5">
+            <!--   <li class="relative mr-4"> -->
+              <a href="/site/notification" class="relative text-blue-500 hover:text-blue-700 flex items-center">
+                <i class="fas fa-bell text-5xl"></i>
+                {#if notificationCount > 0}
+                  <span 
+                    class="absolute  inline-flex items-center justify-center px-2 py-1 
+                           text-xs font-bold text-white bg-red-600 rounded-full transform -translate-y-1/2 translate-x-1/2">
+                    {notificationCount}
+                  </span>
+                {/if}
+              </a>
+             <!--  </li> -->
+
+              <div class="d-flex align-items-center col-span-4">
+                <div class="flex-grow-1">
+                  <h4 class="h2-baslik-anasayfa-ozel h-yazi-margin-kucuk my-2">
+                    {user?.nom}
+                  </h4>
+                  <p class="fs-5 text-secondary">
+                    {#if user?.type == "PROFESSIONNEL"}
+                    PROFESSIONNEL DE SANTE
+                    {:else}
+                    ETABLISSEMENT DE SANTE
+                    {/if}
+                  </p>
+                </div>
+                <div class="ms-3">
+                  <div class="avatar rounded-circle shadow-sm"
+                    style="width: 80px; height: 80px; background-size: cover; background-position: center;
+                    background-image: url({user?.avatar ? BASE_URL_API_UPLOAD + user?.avatar : 'https://static.vecteezy.com/system/resources/thumbnails/009/292/244/small/default-avatar-icon-of-social-media-user-vector.jpg'});">
+                  </div>
                 </div>
               </div>
             </div>
+         
           </div>
         </div>
   

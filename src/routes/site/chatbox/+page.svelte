@@ -19,7 +19,8 @@
             const data = await apiFetch(true, "/user");
             users = data.data.map((p) => ({
                 id: p.id,
-                username: p.username,
+                username: p.email,
+                nom: p.typeUser == "PROFESSIONNEL" ? p.personne.nom + " " + p.personne.prenoms : p.typeUser == "ETABLISSEMENT" ? p.email : p.email
             }));
             console.log("data returned", users);
         } catch (error) {
@@ -130,7 +131,7 @@
                     <ul>
                         {#each users as user}
                             <li>
-                                <button class="bg-gradient-to-r from-gradient-start to-gradient-end" on:click={() => selectUser(user)}>{user.username}</button>
+                                <button class="bg-gradient-to-r from-gradient-start to-gradient-end" on:click={() => selectUser(user)}>{user.nom}</button>
                             </li>
                         {/each}
                     </ul>

@@ -59,7 +59,7 @@
               `${forum.user.avatar.path}/${forum.user.avatar.alt}`
             : "https://randomuser.me/api/portraits/men/1.jpg",
           comments: forum.avis.map((avis) => ({
-            author: avis.user.username,
+            author: avis.user.email,
             date: avis.createdAt, // Modifier selon les besoins
             contenu: avis.contenu,
             avatarUrl: avis.user.avatar

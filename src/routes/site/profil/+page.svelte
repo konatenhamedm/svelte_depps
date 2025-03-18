@@ -227,11 +227,11 @@ async function logout() {
 
             <br />
 
-            <a
+         <!--    <a
               href="paiements"
               class="buton buton--kirmizi text-center"
               style="width:100%; background:black">HISTORIQUE DE PAIEMENT</a
-            >
+            > -->
           </div>
         </form>
       </div>

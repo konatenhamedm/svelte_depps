@@ -51,12 +51,12 @@
 <div id="">
   <Header {user} />
   <Slide {user} />
-  <section class="text-center pb-0" style="padding-top:142px">
-    <h2 class="h2-baslik-anasayfa-ozel h-yazi-margin-kucuk">Connexion</h2>
+  <section class="text-center pb-0 " style="padding-top:142px;">
+    <h2 class="h2-baslik-anasayfa-ozel h-yazi-margin-kucuk ">Connexion</h2>
 
   </section>
-  <main style="padding-top:250px">
-    <section class="iletisim-form-alani">
+  <main style="padding-top:250px;padding-bottom:142px;" class="bg-white" >
+    <section class="iletisim-form-alani" style="background-color: white !important">
       <div class="tablo">
         <div
                 class="tablo--1-ve-2 masqueur à effet de révélation d'image de projet wow animated"

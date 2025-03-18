@@ -286,8 +286,8 @@
   }
   .main-div {
     margin-top: -10px;
-    margin-bottom: 100px;
-    border: 1px solid #e5e7eb;
+    margin-bottom: 130px;
+    /* border: 1px solid #e5e7eb; */
     background: transparent;
     border-radius: 10px;
     padding: 20rem 316px 10rem !important;

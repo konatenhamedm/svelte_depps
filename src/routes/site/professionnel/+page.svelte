@@ -32,19 +32,24 @@
 
   let isValid = true;
   let isValidContact = true;
+  let isValidPhoneOrganisation = true;
 
-function validatePhone() {
-  const regex = /^(07|01|05)\d{8}$/;
-   isValid = regex.test(formData.numero);
+  function validatePhone() {
+    const regex = /^(07|01|05)\d{8}$/;
+    isValid = regex.test(formData.numero);
 
-   console.log(isValid);
-}
-function validateContactPro() {
-  const regex = /^(07|01|05)\d{8}$/; // Préfixe + 7 chiffres = 10 chiffres max
-  isValidContact = regex.test(formData.contactPro);
+    console.log(isValid);
+  }
+  function validatePhoneOrganisation() {
+    const regex = /^(07|01|05)\d{8}$/;
+    isValidPhoneOrganisation = regex.test(formData.organisationNumero);
 
-  console.log(isValidContact);
-}
+   
+  }
+  function validateContactPro() {
+    const regex = /^(07|01|05)\d{8}$/; // Préfixe + 7 chiffres = 10 chiffres max
+    isValidContact = regex.test(formData.contactPro);
+  }
 
   $: emailError =
     formData.email && !validateEmail(formData.email)
@@ -54,9 +59,6 @@ function validateContactPro() {
     formData.emailPro && !validateEmail(formData.emailPro)
       ? "Veuillez entrer un email valide"
       : "";
-
-
-      
 
   let step = 1;
 
@@ -177,10 +179,7 @@ function validateContactPro() {
       errors.dateNaissance = formData.dateNaissance
         ? ""
         : "Veuillez choisir une date de naissance";
-      errors.numero =
-        formData.numero 
-          ? ""
-          : "Le numero est requis";
+      errors.numero = formData.numero ? "" : "Le numero est requis";
       errors.address = formData.address ? "" : "Le adresse est requise";
       errors.lieuResidence = formData.lieuResidence
         ? ""
@@ -211,6 +210,8 @@ function validateContactPro() {
         !errors.lieuDiplome &&
         !errors.situation &&
         isValid;
+
+        console.log("FormData:", formData);
     }
 
     if (step === 3) {
@@ -247,9 +248,7 @@ function validateContactPro() {
         !errors.ville &&
         !errors.dateEmploi &&
         !emailProError &&
-        isValidContact
-        
-        ;
+        isValidContact;
     }
     if (step === 4) {
       errors.photo = formData.photo ? "" : "La photo est requise";
@@ -261,13 +260,11 @@ function validateContactPro() {
       errors.certificat = formData.certificat ? "" : "Le certificat est requis";
       errors.cv = formData.cv ? "" : "Le CV est requis";
 
-      valid = true;
-      /*  !errors.photo &&
-        !errors.cni &&
-        !errors.casier &&
-        !errors.diplomeFile &&
-        !errors.certificat &&
-        !errors.cv; */
+      // Vérifie si toutes les valeurs dans errors sont vides (""), donc aucune erreur
+      valid = Object.values(errors).every((error) => error === "");
+
+      console.log("Validation Status:", valid);
+      console.log("FormData:", formData);
     }
 
     if (step === 5) {
@@ -285,7 +282,7 @@ function validateContactPro() {
         valid =
           !errors.organisationNom &&
           !errors.organisationNumero &&
-          !errors.organisationAnnee;
+          !errors.organisationAnnee && isValidPhoneOrganisation;
       }
     }
 
@@ -311,7 +308,34 @@ function validateContactPro() {
 
   let selectedFiles = {};
 
-  function updateFormData(fieldName:any, file:any) {
+  function updateFormData(fieldName: string, file: File | null) {
+    if (!file) return;
+
+    const reader = new FileReader();
+    reader.readAsDataURL(file);
+
+    reader.onload = () => {
+      selectedFiles = {
+        ...selectedFiles,
+        [fieldName]: { name: file.name, data: reader.result }
+      };
+
+      fileNames = {
+        ...fileNames,
+        [fieldName]: { name: file.name, url: reader.result }
+      };
+
+      // 🔥 Mettre à jour `formData` immédiatement
+      formData[fieldName] = file;
+
+      // 🔥 Stocker dans le localStorage
+      localStorage.setItem("selectedFiles", JSON.stringify(selectedFiles));
+
+      console.log("Mise à jour réussie:", formData);
+    };
+  }
+
+  /* function updateFormData(fieldName: any, file: any) {
     if (file) {
       const reader = new FileReader();
       reader.readAsDataURL(file);
@@ -323,17 +347,21 @@ function validateContactPro() {
 
         localStorage.setItem("selectedFiles", JSON.stringify(selectedFiles));
 
-        fileNames = { 
-          ...fileNames, 
-          [fieldName]: { name: file.name, url: reader.result } 
+        fileNames = {
+          ...fileNames,
+          [fieldName]: { name: file.name, url: reader.result }
         };
       };
     }
-  }
+  } */
 
-  function handleFileChange(event:any, fieldName:any) {
+
+  function handleFileChange(event: any, fieldName: string) {
     const file = event.target.files[0] || null;
     updateFormData(fieldName, file);
+
+    console.log("Fichier sélectionné pour", fieldName, ":", file);
+    console.log("État actuel de formData:", formData);
   }
 
   // 🔹 Fonction pour restaurer le formulaire après un retour
@@ -355,12 +383,10 @@ function validateContactPro() {
     }
   }
 
-  
-
   // ✅ Vérifier si on revient après un paiements
   onMount(() => {
     /*  localStorage.clear(); */
-console.log("gggg",formData.appartenirOrganisation);
+    console.log("gggg", formData);
     const urlParams = new URLSearchParams(window.location.search);
     if (urlParams.has("return")) {
       restoreFormState();
@@ -641,12 +667,12 @@ console.log("gggg",formData.appartenirOrganisation);
       return false;
     }
   }
-  async function checkPaiementStatus(professionId: any) {
-    if (!professionId) return false;
+  async function checkPaiementStatus(professionCode: any) {
+    if (!professionCode) return false;
 
     try {
       const res = await fetch(
-        `https://depps.leadagro.net/api/profession/get/status/paiement/${professionId}`
+        `https://depps.leadagro.net/api/profession/get/status/paiement/${professionCode}`
       );
       const data = await res.json();
       return data.data; // Assurez-vous que l'API renvoie un objet avec une clé `valid`
@@ -659,7 +685,6 @@ console.log("gggg",formData.appartenirOrganisation);
     }
   }
 
-  
   async function checkEmail(email: any) {
     if (!email) return false;
 
@@ -677,20 +702,24 @@ console.log("gggg",formData.appartenirOrganisation);
       return false;
     }
   }
-let emailCheck = false;
-  $: if (formData.specialite) {
-    console.log("PALMER", formData.profession);
+  let emailCheck = false;
+  $: if (formData.profession) {
+    console.log("PALMERYYYYYY", formData.profession);
 
     checkPaiementStatus(formData.profession).then((resultat) => {
       paiementStatus = resultat;
 
-      console.log("PALMER", resultat);
+      console.log("PALMERYYYYuuuuu", formData.profession);
     });
   }
 
   $: if (formData.email) {
     checkEmail(formData.email).then((resultat) => {
       emailCheck = resultat;
+
+      if (emailCheck == true) {
+        emailError = "Cet email existe deja";
+      }
 
       console.log("emailCheck", emailCheck);
     });
@@ -867,16 +896,17 @@ let emailCheck = false;
             <h2 class="text-3xl font-semibold mb-4 text-center md:text-left">
               Informations de rapport (étape 1/6)
             </h2>
-            <div class="w-full mb-4"  style="width:100%">
+            <div class="w-full mb-4" style="width:100%">
               <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                <div class="flex flex-col form__group ">
+                <div class="flex flex-col form__group">
                   <label class="text-3xl font-medium mb-1">E-mail *</label>
                   <input
                     required
                     on:input={saveFormState}
                     on:input={(e) => updateField("email", e.target.value)}
                     type="email"
-                    class="form__input w-full"  style="width:100%"
+                    class="form__input w-full"
+                    style="width:100%"
                     bind:value={formData.email}
                     placeholder="E-mail"
                   />
@@ -889,12 +919,13 @@ let emailCheck = false;
                   <label class="text-3xl font-medium mb-1">Mot de passe *</label
                   >
 
-                  <div class="flex  items-center">
+                  <div class="flex items-center">
                     <input
                       on:input={saveFormState}
                       on:input={(e) => updateField("password", e.target.value)}
                       type={showPassword ? "text" : "password"}
-                      class="form__input w-full px-3 pr-10"  style="width:100%"
+                      class="form__input w-full px-3 pr-10"
+                      style="width:100%"
                       bind:value={formData.password}
                       placeholder="Mot de passe"
                     />
@@ -955,7 +986,8 @@ let emailCheck = false;
                       on:input={(e) =>
                         updateField("confirmPassword", e.target.value)}
                       type={showPasswordConfirm ? "text" : "password"}
-                      class="form__input w-full px-3 pr-10" style="width:100%"
+                      class="form__input w-full px-3 pr-10"
+                      style="width:100%"
                       bind:value={formData.confirmPassword}
                       placeholder="Mot de passe"
                     />
@@ -1031,9 +1063,35 @@ let emailCheck = false;
             <h2 class="text-3xl font-semibold mb-4 text-center md:text-left">
               Informations personnelles (étape 2/6)
             </h2>
+
             <div
-              class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 mb-4"
+              class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-4"
             >
+              <!-- Genre -->
+              <div class="form__group">
+                <label class="block text-3xl font-medium mb-1"
+                  >Nationalité *</label
+                >
+                <select
+                  bind:value={formData.nationate}
+                  class="w-full form__input"
+                  on:input={saveFormState}
+                >
+                  <option value="">Veuillez sélectionner une nationalité</option
+                  >
+                  {#each values.nationate as nationate}
+                    <option
+                      value={nationate.id}
+                      selected={formData.nationate === nationate.id}
+                      >{nationate.libelle}</option
+                    >
+                  {/each}
+                </select>
+                {#if errors.genre}<p class="text-red-500 text-sm">
+                    {errors.genre}
+                  </p>{/if}
+              </div>
+
               <!-- Genre -->
               <div class="form__group">
                 <label class="block text-3xl font-medium mb-1">Genre *</label>
@@ -1070,7 +1128,30 @@ let emailCheck = false;
                     {errors.civilite}
                   </p>{/if}
               </div>
-
+              <!-- Situation matrimoniale -->
+              <div class="form__group">
+                <label class="block text-3xl font-medium mb-1"
+                  >Situation matrimoniale *</label
+                >
+                <select
+                  bind:value={formData.situation}
+                  on:change={saveFormState}
+                  class="w-full form__input"
+                >
+                  <option value="">Veuillez sélectionner une option</option>
+                  <option value="Célibataire">Célibataire</option>
+                  <option value="Marié(e)">Marié(e)</option>
+                  <option value="Divorcé(e)">Divorcé(e)</option>
+                  <option value="Veuf (Veuve)">Veuf (Veuve)</option>
+                </select>
+                {#if errors.situation}<p class="text-red-500 text-sm">
+                    {errors.situation}
+                  </p>{/if}
+              </div>
+            </div>
+            <div
+              class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-5 gap-4 mb-4"
+            >
               <!-- Nom -->
               <div class="form__group">
                 <label class="block text-3xl font-medium mb-1">Nom *</label>
@@ -1079,14 +1160,59 @@ let emailCheck = false;
                   bind:value={formData.nom}
                   class="w-full form__input"
                   placeholder="Nom"
+                  on:input={saveFormState}
                 />
                 {#if errors.nom}<p class="text-red-500 text-sm">
                     {errors.nom}
                   </p>{/if}
               </div>
+              <!-- Prenoms -->
+              <div class="form__group col-span-3 pl-3">
+                <label class="block text-3xl font-medium mb-1">Prenoms *</label>
+                <input
+                  type="text"
+                  bind:value={formData.prenoms}
+                  class="w-full form__input"
+                  placeholder="Prenoms"
+                  on:input={saveFormState}
+                />
+                {#if errors.prenoms}<p class="text-red-500 text-sm">
+                    {errors.prenoms}
+                  </p>{/if}
+              </div>
 
+              <div class="form__group">
+                <label class="block text-3xl font-medium mb-1"
+                  >Numéro télephone *</label
+                >
+                <input
+                  type="text"
+                  on:input={saveFormState}
+                  bind:value={formData.numero}
+                  class="w-full form__input"
+                  placeholder="Numero télephone"
+                  on:input={(e) => {
+                    validatePhone();
+                  }}
+                />
+                {#if errors.numero}<p class="text-red-500 text-sm">
+                    {errors.numero}
+                  </p>{/if}
+
+                {#if !isValid}
+                  <p style="color: red;" class="text-red-500 text-sm">
+                    Numéro invalide. Il doit commencer par 07, 01 ou 05 et
+                    contenir 10 chiffres.
+                  </p>
+                {/if}
+              </div>
+            </div>
+
+            <div
+              class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 gap-4 mb-4"
+            >
               <!-- Autres champs similaires -->
-              {#each [{ key: "prenoms", label: "Prénoms" }, { key: "nationate", label: "Nationalité" }, { key: "dateNaissance", label: "Date de naissance", type: "date" }, { key: "numero", label: "Numéro télephone" }, { key: "address", label: "Adresse postal" }, { key: "lieuResidence", label: "Lieu de résidence" }, { key: "diplome", label: "Diplôme" }, { key: "dateDiplome", label: "Date obtention  diplôme", type: "date" }, { key: "lieuDiplome", label: "Lieu obtention  diplôme" }] as field}
+              {#each [{ key: "dateNaissance", label: "Date de naissance", type: "date" }, { key: "address", label: "Adresse postal" }, { key: "lieuResidence", label: "Lieu de résidence" }, { key: "diplome", label: "Diplôme" }, { key: "dateDiplome", label: "Date obtention  diplôme", type: "date" }, { key: "lieuDiplome", label: "Lieu obtention  diplôme" }] as field}
                 {#if field.key === "nationate"}
                   <div class="form__group">
                     <label class="block text-3xl font-medium mb-1"
@@ -1134,40 +1260,24 @@ let emailCheck = false;
                         class="w-full form__input"
                         placeholder={field.label}
                         on:input={saveFormState}
-                        on:input={(e) =>{if (field.key === "numero") validatePhone()}} 
+                        on:input={(e) => {
+                          if (field.key === "numero") validatePhone();
+                        }}
                       />
                     {/if}
                     {#if errors[field.key]}<p class="text-red-500 text-sm">
                         {errors[field.key]}
                       </p>{/if}
 
-                      {#if !isValid && field.key === "numero"}
-                      <p style="color: red;" class="text-red-500 text-sm">Numéro invalide. Il doit commencer par 07, 01 ou 05 et contenir 10 chiffres.</p>
+                    {#if !isValid && field.key === "numero"}
+                      <p style="color: red;" class="text-red-500 text-sm">
+                        Numéro invalide. Il doit commencer par 07, 01 ou 05 et
+                        contenir 10 chiffres.
+                      </p>
                     {/if}
                   </div>
                 {/if}
               {/each}
-
-              <!-- Situation matrimoniale -->
-              <div class="form__group">
-                <label class="block text-3xl font-medium mb-1"
-                  >Situation matrimoniale *</label
-                >
-                <select
-                  bind:value={formData.situation}
-                  on:change={saveFormState}
-                  class="w-full form__input"
-                >
-                  <option value="">Veuillez sélectionner une option</option>
-                  <option value="Célibataire">Célibataire</option>
-                  <option value="Marié(e)">Marié(e)</option>
-                  <option value="Divorcé(e)">Divorcé(e)</option>
-                  <option value="Veuf (Veuve)">Veuf (Veuve)</option>
-                </select>
-                {#if errors.situation}<p class="text-red-500 text-sm">
-                    {errors.situation}
-                  </p>{/if}
-              </div>
             </div>
           {/if}
 
@@ -1181,7 +1291,6 @@ let emailCheck = false;
 
             <div class="bg-white p-6 rounded-lg shadow-md mb-4">
               <div class="mb-4">
-               
                 <div
                   class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 gap-6"
                 >
@@ -1199,7 +1308,7 @@ let emailCheck = false;
                               updateField("profession", e.target.value)}
                             type="radio"
                             class="cursor-pointer"
-                            id={profession.id}
+                            id={profession.code}
                             name="rd_profession"
                             checked={profession.code == formData.profession}
                             on:change={() =>
@@ -1214,8 +1323,8 @@ let emailCheck = false;
                   {/each}
                 </div>
                 {#if errors.profession}
-                <p class="text-red-500 text-sm">{errors.profession}</p>
-              {/if}
+                  <p class="text-red-500 text-sm">{errors.profession}</p>
+                {/if}
               </div>
 
               <div
@@ -1289,7 +1398,7 @@ let emailCheck = false;
                     >Contact professionnel *</label
                   >
                   <input
-                  on:input={validateContactPro} 
+                    on:input={validateContactPro}
                     on:input={saveFormState}
                     on:input={(e: any) =>
                       updateField("contactPro", e.target.value)}
@@ -1302,8 +1411,11 @@ let emailCheck = false;
                     <p class="text-red-500 text-sm">{errors.contactPro}</p>
                   {/if}
                   {#if !isValidContact && formData.contactPro}
-                  <p style="color: red;" class="text-red-500 text-sm">Numéro invalide. Il doit commencer par 07, 01 ou 05 et contenir 10 chiffres.</p>
-                {/if}
+                    <p style="color: red;" class="text-red-500 text-sm">
+                      Numéro invalide. Il doit commencer par 07, 01 ou 05 et
+                      contenir 10 chiffres.
+                    </p>
+                  {/if}
                 </div>
 
                 <div class="form__group">
@@ -1380,22 +1492,31 @@ let emailCheck = false;
                 <div
                   class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 gap-6"
                 >
-                {#each ["photo", "cni", "casier", "diplomeFile", "certificat", "cv"] as fieldName}
-                <div class="form__group">
-                  <label class="form_label">{fieldName.toUpperCase()}</label>
-                  <input 
-                    type="file"
-                    class="form__input"
-                    on:change={(e) => handleFileChange(e, fieldName)}
-                  />
-                  {#if fileNames[fieldName]}
-                    <p>
-                      {fileNames[fieldName].name} 
-                      <a href="{fileNames[fieldName].url}" download="{fileNames[fieldName].name}" class="download-link">📥 Télécharger</a>
-                    </p>
-                  {/if}
-                </div>
-              {/each}
+                  {#each ["photo", "cni", "casier", "diplomeFile", "certificat", "cv"] as fieldName}
+                    <div class="form__group">
+                      <label class="form_label">{fieldName.toUpperCase()}</label
+                      >
+                      <input
+                        type="file"
+                        class="form__input"
+                        on:change={(e) => handleFileChange(e, fieldName)}
+                      />
+                      {#if fileNames[fieldName]}
+                        <p>
+                          {fileNames[fieldName].name}
+                          <a
+                            href={fileNames[fieldName].url}
+                            download={fileNames[fieldName].name}
+                            class="download-link">📥 Télécharger</a
+                          >
+                        </p>
+                      {/if}
+                      {#if errors[fieldName]}
+                        <!-- ✅ Utilisation correcte -->
+                        <p class="text-red-500 text-sm">{errors[fieldName]}</p>
+                      {/if}
+                    </div>
+                  {/each}
                 </div>
               </div>
             </div>
@@ -1409,27 +1530,42 @@ let emailCheck = false;
             <div class="tablo">
               <div class="tablo--1h-ve-2">
                 <div
-                  class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 gap-6"
+                  class="grid grid-cols-1 sm:grid-cols-1 md:grid-cols-1 lg:grid-cols-1 gap-6"
                 >
-                <div class="form__group">
-                  <label class="form_label">Appartenez-vous à une organisation ?</label>
-                  <select
-                    on:change={saveFormState}
-                    on:change={(e: any) =>
-                          updateField("appartenirOrganisation", e.target.value)}
-                    class="form__input"
-                   
-                    bind:value={formData.appartenirOrganisation}
-                  >
-                    <option value="non" selected={formData.appartenirOrganisation === 'non'}>Non</option>
-                    <option value="oui" selected={formData.appartenirOrganisation === 'oui'}>Oui</option>
-                  </select>
-                  {#if errors.appartenirOrganisation}
-                    <p class="error">{errors.appartenirOrganisation}</p>
-                  {/if}
-                </div>
-                
-                
+                  <div class="form__group mb-4">
+                    <label class="form_label mb-4"
+                      >Appartenez-vous à une organisation ?</label
+                    >
+                    <div class="flex items-center space-x-4">
+                      {#each ["oui", "non"] as organisation}
+                        <div class="flex items-center space-x-2">
+                          <input
+                            on:input={saveFormState}
+                            on:input={(e: any) =>
+                              updateField(
+                                "appartenirOrganisation",
+                                e.target.value
+                              )}
+                            type="radio"
+                            class="cursor-pointer"
+                            name="rd_profession"
+                            value={organisation}
+                            id={organisation}
+                            checked={organisation ==
+                              formData.appartenirOrganisation}
+                            on:change={() =>
+                              (formData.appartenirOrganisation = organisation)}
+                          />
+                          <label
+                            for={organisation}
+                            class="cursor-pointer"
+                            style="text-transform: uppercase;"
+                            >{organisation}</label
+                          >
+                        </div>
+                      {/each}
+                    </div>
+                  </div>
 
                   {#if formData.appartenirOrganisation == "oui"}
                     <div class="form__group">
@@ -1448,38 +1584,52 @@ let emailCheck = false;
                         </p>{/if}
                     </div>
 
-                    <div class="form__group">
-                      <label class="form_label"
-                        >Numero de l'organisation *</label
-                      >
-                      <input
-                        on:input={saveFormState}
-                        on:input={(e: any) =>
-                          updateField("organisationNumero", e.target.value)}
-                        type="text"
-                        class="form__input"
-                        bind:value={formData.organisationNumero}
-                        placeholder="Numero de l'organisation"
-                      />
-                      {#if errors.organisationNumero}<p class="error">
-                          {errors.organisationNumero}
-                        </p>{/if}
-                    </div>
+                    <div
+                      class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-2 gap-2"
+                    >
+                      <div class="form__group">
+                        <label class="form_label"
+                          >Numero de l'organisation *</label
+                        >
+                        <input
+                          on:input={saveFormState}
+                          on:input={(e: any) =>
+                            updateField("organisationNumero", e.target.value)}
+                          type="text"
+                          class="form__input"
+                          bind:value={formData.organisationNumero}
+                          placeholder="Numero de l'organisation"
+                          on:input={(e) => {
+                            validatePhoneOrganisation();
+                          }}
+                        />
+                        {#if errors.organisationNumero}<p class="error">
+                            {errors.organisationNumero}
+                          </p>{/if}
 
-                    <div class="form__group">
-                      <label class="form_label">Année *</label>
-                      <input
-                        on:input={saveFormState}
-                        on:input={(e: any) =>
-                          updateField("organisationAnnee", e.target.value)}
-                        type="text"
-                        class="form__input"
-                        bind:value={formData.organisationAnnee}
-                        placeholder="Année"
-                      />
-                      {#if errors.organisationAnnee}<p class="error">
-                          {errors.organisationAnnee}
-                        </p>{/if}
+                          {#if !isValidPhoneOrganisation && formData.organisationNumero}
+                          <p style="color: red;" class="text-red-500 text-sm">
+                            Numéro invalide. Il doit commencer par 07, 01 ou 05 et
+                            contenir 10 chiffres.
+                          </p>
+                        {/if}
+                      </div>
+
+                      <div class="form__group">
+                        <label class="form_label">Année *</label>
+                        <input
+                          on:input={saveFormState}
+                          on:input={(e: any) =>
+                            updateField("organisationAnnee", e.target.value)}
+                          type="text"
+                          class="form__input"
+                          bind:value={formData.organisationAnnee}
+                          placeholder="Année"
+                        />
+                        {#if errors.organisationAnnee}<p class="error">
+                            {errors.organisationAnnee}
+                          </p>{/if}
+                      </div>
                     </div>
                   {/if}
                 </div>
@@ -1504,7 +1654,7 @@ let emailCheck = false;
             <div class="tablo">
               <div class="tablo--1h-ve-2">
                 <!--   on:click={clickPaiement} -->
-                <div class="grid grid-cols-1 gap-6  justify-center">
+                <div class="grid grid-cols-1 gap-6 justify-center">
                   <div class="">
                     {#if !paiementStatus}
                       <p>
