@@ -96,6 +96,11 @@
 
     certificatPath = data.personne.certificat.path || "";
     certificatAlt = data.personne.certificat.alt || "";
+
+    if(data.personne.status == "attente"){
+      valid_endUser.status = "acceptation";
+      valid_endUser.raison = "";
+    }
   }
   let valid_endUser = {
     raison: "",

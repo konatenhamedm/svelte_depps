@@ -123,13 +123,18 @@ async function logout() {
 <Header />
 <Slide />
 
+<section class="text-center pb-0 " style="padding-top:142px;">
+  <h2 class="h2-baslik-anasayfa-ozel h-yazi-margin-kucuk "> Informations & Accès</h2>
+
+</section>
+
 <main style="padding-top: 200px">
   <section class="iletisim-form-alani">
     <div class="tablo">
       <div class="tablo--1-ve-2">
-        <h2 class="h2-baslik-anasayfa-ozel h-yazi-margin-kucuk">
-          Informations & Accès
-        </h2>
+        <!-- <h2 class="h2-baslik-anasayfa-ozel h-yazi-margin-kucuk">
+         
+        </h2> -->
         <form
         on:submit|preventDefault={confirmUpdate}
           class="form update_customer"

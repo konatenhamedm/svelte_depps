@@ -248,40 +248,40 @@
           <ul
             class="flex flex-wrap -mb-px text-3xl font-medium text-center border border-gray-200 bg-white"
           >
-            <li class="mr-2">
+            <li class="mr-[0.5px] border-2 border-r-white ">
               <button
                 class="inline-block p-4 btn-tabs {activeTab === 'step2'
-                  ? 'text-blue-600 border-b-2 border-blue-600'
+                  ? 'text-white-600 border-b-2 border-blue-600 bg-blue-400 '
                   : 'hover:text-gray-600 hover:border-gray-300'}"
                 on:click={() => (activeTab = "step2")}
               >
                 Informations de Base
               </button>
             </li>
-            <li class="mr-2">
+            <li class="mr-[0.5px] border-2 border-r-white">
               <button
                 class="inline-block p-4 btn-tabs {activeTab === 'step3'
-                  ? 'text-blue-600 border-b-2 border-blue-600'
+                  ? 'text-white border-b-2 border-blue-600 bg-blue-400'
                   : 'hover:text-gray-600 hover:border-gray-300'}"
                 on:click={() => (activeTab = "step3")}
               >
                 Informations Professionnelles
               </button>
             </li>
-            <li class="mr-2">
+            <li class="mx-[0.5px] border-2 border-r-white">
               <button
                 class="inline-block p-4 btn-tabs {activeTab === 'step4'
-                  ? 'text-blue-600 border-b-2 border-blue-600'
+                  ? 'text-white border-b-2 border-blue-600 bg-blue-400'
                   : 'hover:text-gray-600 hover:border-gray-300'}"
                 on:click={() => (activeTab = "step4")}
               >
                 Documents
               </button>
             </li>
-            <li class="mr-2">
+            <li class="mx-[0.5px] border-2 border-rl-white">
               <button
                 class="inline-block btn-tabs p-4 {activeTab === 'step5'
-                  ? 'text-blue-600 border-b-2 border-blue-600'
+                  ? 'text-white border-b-2 border-blue-600 bg-blue-400'
                   : 'hover:text-gray-600 hover:border-gray-300'}"
                 on:click={() => (activeTab = "step5")}
               >
@@ -296,7 +296,7 @@
           <!-- Step 2: Informations Personnelles -->
           {#if activeTab === "step2"}
             <div class="bg-white p-6 rounded-lg shadow-md">
-              <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
                 <div class="space-y-2">
                   <label class="block text-3xl font-medium text-black"
                     >Genre</label
@@ -398,7 +398,7 @@
                     >Situation Matrimoniale</label
                   >
 
-                  <select class="form__input" bind:value={formData.situation}>
+                  <select class=" w-full form__input" bind:value={formData.situation}>
                     <option value="" selected={!formData.situation}
                       >Veuillez sélectionner une option</option
                     >
@@ -591,7 +591,7 @@
                           href="javascript:void(0)"
                           download="document"
                           target="_blank"
-                          class="ml-4 text-blue-600 hover:underline"
+                          class="ml-4 text-white hover:underline"
                         >
                           Télécharger
                         </a>
@@ -624,7 +624,7 @@
                         bind:group={formData.appartenirOrganisation}
                         value="oui"
                         disabled
-                        class="form-radio text-blue-600"
+                        class="form-radio text-white"
                         checked={formData.appartenirOrganisation === "oui"}
                       />
                       <span class="ml-2">Oui</span>
@@ -635,7 +635,7 @@
                         bind:group={formData.appartenirOrganisation}
                         value="non"
                         disabled
-                        class="form-radio text-blue-600"
+                        class="form-radio text-white"
                         checked={formData.appartenirOrganisation === "non"}
                       />
                       <span class="ml-2">Non</span>

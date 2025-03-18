@@ -200,9 +200,7 @@
             </h1>
           </div>
           
-          <div class="col-lg-4 col-md-8 mx-auto p-3 shadow-sm border rounded bg-light cursor-pointer" on:click={()=>{
-            goto('/site/profil')
-          }}>
+          <div class="col-lg-4 col-md-8 mx-auto p-3 shadow-sm border rounded bg-light cursor-pointer" >
             <div class="grid grid-cols-5">
             <!--   <li class="relative mr-4"> -->
               <a href="/site/notification" class="relative text-blue-500 hover:text-blue-700 flex items-center">
@@ -217,7 +215,9 @@
               </a>
              <!--  </li> -->
 
-              <div class="d-flex align-items-center col-span-4">
+              <div class="d-flex align-items-center col-span-4" on:click={()=>{
+                goto('/site/profil')
+              }}>
                 <div class="flex-grow-1">
                   <h4 class="h2-baslik-anasayfa-ozel h-yazi-margin-kucuk my-2">
                     {user?.nom}
