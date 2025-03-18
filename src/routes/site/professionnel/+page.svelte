@@ -160,7 +160,8 @@ function validateContactPro() {
         !errors.password &&
         !errors.confirmPassword &&
         !errors.email &&
-        !emailError;
+        !emailError &&
+        !emailCheck;
     }
 
     if (step === 2) {
@@ -640,12 +641,12 @@ console.log("gggg",formData.appartenirOrganisation);
       return false;
     }
   }
-  async function checkPaiementStatus(idSpecialite: any) {
-    if (!idSpecialite) return false;
+  async function checkPaiementStatus(professionId: any) {
+    if (!professionId) return false;
 
     try {
       const res = await fetch(
-        `https://depps.leadagro.net/api/specialite/get/status/paiement/${idSpecialite}`
+        `https://depps.leadagro.net/api/profession/get/status/paiement/${professionId}`
       );
       const data = await res.json();
       return data.data; // Assurez-vous que l'API renvoie un objet avec une clé `valid`
@@ -658,13 +659,40 @@ console.log("gggg",formData.appartenirOrganisation);
     }
   }
 
-  $: if (formData.specialite) {
-    console.log("PALMER", formData.specialite);
+  
+  async function checkEmail(email: any) {
+    if (!email) return false;
 
-    checkPaiementStatus(formData.specialite).then((resultat) => {
+    try {
+      const res = await fetch(
+        `https://depps.leadagro.net/api/user/check/email/existe/${email}`
+      );
+      const data = await res.json();
+      return data.data; // Assurez-vous que l'API renvoie un objet avec une clé `valid`
+    } catch (error) {
+      console.error(
+        "Erreur lors de la vérification de la transaction :",
+        error
+      );
+      return false;
+    }
+  }
+let emailCheck = false;
+  $: if (formData.specialite) {
+    console.log("PALMER", formData.profession);
+
+    checkPaiementStatus(formData.profession).then((resultat) => {
       paiementStatus = resultat;
 
       console.log("PALMER", resultat);
+    });
+  }
+
+  $: if (formData.email) {
+    checkEmail(formData.email).then((resultat) => {
+      emailCheck = resultat;
+
+      console.log("emailCheck", emailCheck);
     });
   }
 
@@ -861,12 +889,12 @@ console.log("gggg",formData.appartenirOrganisation);
                   <label class="text-3xl font-medium mb-1">Mot de passe *</label
                   >
 
-                  <div class="flex items-center">
+                  <div class="flex flex-col items-center">
                     <input
                       on:input={saveFormState}
                       on:input={(e) => updateField("password", e.target.value)}
                       type={showPassword ? "text" : "password"}
-                      class="form__input w-full px-3 pr-10"  style="width:100%"
+                      class="form__input w-full  pr-10"  style="width:100%"
                       bind:value={formData.password}
                       placeholder="Mot de passe"
                     />
