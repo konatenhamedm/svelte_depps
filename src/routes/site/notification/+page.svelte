@@ -1,11 +1,11 @@
-<script>
+<script lang="ts">
     import {onMount} from "svelte";
     import Footer from "$components/Footer.svelte";
     import Header from "$components/Header.svelte";
     import Slide from "$components/Slide.svelte";
     import NotificationSkeleton from "$components/NotificationSkeleton.svelte";
 
-    let notifications = [];
+    let notifications:any = [];
     let notificationsnotRead = [];
     let isLoading = true;
 
@@ -17,11 +17,11 @@
     let user = data?.user;
 
     // État pour gérer la notification sélectionnée et le popup
-    let selectedNotification = null;
+    let selectedNotification:any = null;
     let isPopupOpen = false;
 
     // Fonction pour ouvrir le popup avec la notification sélectionnée
-    function openPopup(notification) {
+    function openPopup(notification:any) {
         selectedNotification = notification;
         isPopupOpen = true;
     }
@@ -113,7 +113,9 @@
 <Header/>
 <Slide/>
 
-<main class="mx-auto px-8 py-8 main-div" style="padding-top: 200px">
+
+
+<main class="mx-auto px-8 py-8 main-divoo"style="padding-top:250px;padding-bottom:142px;">
     <div class="max-w-[125rem] mx-auto p-6">
         <div class="bg-white rounded-lg shadow-sm overflow-hidden">
             <!-- Notification Header -->
