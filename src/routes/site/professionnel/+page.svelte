@@ -93,7 +93,7 @@
     diplomeFile: "",
     certificat: "",
     cv: "",
-    appartenirOrganisation: "",
+    appartenirOrganisation: "non",
     organisationNom: "",
     organisationNumero: "",
     organisationAnnee: ""

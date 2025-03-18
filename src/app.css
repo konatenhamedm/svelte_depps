@@ -34,7 +34,7 @@ body{
 .modale_general > div:first-child {
   background: rgb(79 157 217) !important;
 }
-.modale_general > div:first-child  h3 ,button {
+.modale_general > div:first-child  h3  {
   color: white !important;
 }
 
