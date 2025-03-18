@@ -869,7 +869,7 @@ let emailCheck = false;
             </h2>
             <div class="w-full mb-4"  style="width:100%">
               <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                <div class="flex flex-col form__group">
+                <div class="flex flex-col form__group ">
                   <label class="text-3xl font-medium mb-1">E-mail *</label>
                   <input
                     required
@@ -889,12 +889,12 @@ let emailCheck = false;
                   <label class="text-3xl font-medium mb-1">Mot de passe *</label
                   >
 
-                  <div class="flex flex-col items-center">
+                  <div class="flex  items-center">
                     <input
                       on:input={saveFormState}
                       on:input={(e) => updateField("password", e.target.value)}
                       type={showPassword ? "text" : "password"}
-                      class="form__input w-full  pr-10"  style="width:100%"
+                      class="form__input w-full px-3 pr-10"  style="width:100%"
                       bind:value={formData.password}
                       placeholder="Mot de passe"
                     />
@@ -955,7 +955,7 @@ let emailCheck = false;
                       on:input={(e) =>
                         updateField("confirmPassword", e.target.value)}
                       type={showPasswordConfirm ? "text" : "password"}
-                      class="form__input w-full px-3 pr-10"
+                      class="form__input w-full px-3 pr-10" style="width:100%"
                       bind:value={formData.confirmPassword}
                       placeholder="Mot de passe"
                     />
