@@ -117,7 +117,7 @@
     }
   };
 
-  function formatDateForInput(dateString) {
+  function formatDateForInput(dateString: string) {
     if (!dateString) return "";
     try {
       const date = new Date(dateString);
@@ -133,7 +133,7 @@
       const userId = user?.personneId;
       const response = await apiFetch(true, `/professionnel/get/one/${userId}`);
       console.log("response before condition", response);
-      if (response.code === 200 && response.data) {
+      if (response.data) {
         const apiData = response.data;
         console.log("content api data", apiData);
 
@@ -141,7 +141,7 @@
           genre: apiData.genre ? apiData.genre.id : "",
           civilite: apiData.civilite ? apiData.civilite.id : "",
           nom: apiData.nom || "",
-          prenoms: apiData.prenoms || "",
+           prenoms: apiData.prenoms || "",
           nationalite: apiData.nationalite ? apiData.nationalite.id : "",
           dateNaissance: formatDateForInput(apiData.dateNaissance),
           numero: apiData.number || "",
@@ -169,12 +169,15 @@
           cv: apiData.cv || "",
 
           // Organisation
-          appartenirOrganisation: apiData.appartenirOrganisation,
-          organisationNom: apiData.organisations[0].nom || "",
-          organisationNumero: apiData.organisations[0].numero || "",
-          organisationAnnee: apiData.organisations[0].annee || ""
-        };
+         appartenirOrganisation: apiData.appartenirOrganisation,
 
+       
+          organisationNom: apiData.appartenirOrganisation == "oui" ? apiData.organisations[0].nom || "" : "",
+          organisationNumero: apiData.appartenirOrganisation == "oui" ? apiData.organisations[0].numero || "" :"",
+          organisationAnnee: apiData.appartenirOrganisation == "oui" ? apiData.organisations[0].annee || "" :""
+        };
+        
+        console.log("Données chargées:", apiData.genre.id);
         console.log("Données chargées:", formData);
       } else {
         console.error("Erreur API", response.status);
@@ -303,7 +306,7 @@
                   >
                   <select
                     bind:value={formData.genre}
-                    class="w-full form__input text-black text-black"
+                    class="w-full form__input text-black"
                   >
                     <option value="">Sélectionner un genre</option>
                     {#each genres as genre}
@@ -318,7 +321,7 @@
                   >
                   <select
                     bind:value={formData.civilite}
-                    class="w-full form__input text-black text-black"
+                    class="w-full form__input"
                   >
                     <option value="">Sélectionner une civilité</option>
                     {#each civilites as civilite}
@@ -334,7 +337,7 @@
                   <input
                     type="text"
                     bind:value={formData.nom}
-                    class="w-full form__input text-black"
+                    class="w-full form__input" style="color:black"
                   />
                 </div>
 
@@ -345,7 +348,7 @@
                   <input
                     type="text"
                     bind:value={formData.prenoms}
-                    class="w-full form__input text-black"
+                    class="w-full form__input"
                   />
                 </div>
 
@@ -356,7 +359,7 @@
                   <input
                     type="date"
                     bind:value={formData.dateNaissance}
-                    class="w-full form__input text-black"
+                    class="w-full form__input"
                   />
                 </div>
 
@@ -367,7 +370,7 @@
                   <input
                     type="text"
                     bind:value={formData.numero}
-                    class="w-full form__input text-black"
+                    class="w-full form__input"
                   />
                 </div>
 
@@ -378,7 +381,7 @@
                   <input
                     type="text"
                     bind:value={formData.address}
-                    class="w-full form__input text-black"
+                    class="w-full form__input"
                   />
                 </div>
 
@@ -389,7 +392,7 @@
                   <input
                     type="text"
                     bind:value={formData.lieuResidence}
-                    class="w-full form__input text-black"
+                    class="w-full form__input"
                   />
                 </div>
 
@@ -398,7 +401,7 @@
                     >Situation Matrimoniale</label
                   >
 
-                  <select class=" w-full form__input text-black" bind:value={formData.situation}>
+                  <select class=" w-full form__input" bind:value={formData.situation}>
                     <option value="" selected={!formData.situation}
                       >Veuillez sélectionner une option</option
                     >
@@ -433,7 +436,7 @@
                   <input
                     type="text"
                     bind:value={formData.diplome}
-                    class="w-full form__input text-black"
+                    class="w-full form__input"
                   />
                 </div>
 
@@ -444,7 +447,7 @@
                   <input
                     type="date"
                     bind:value={formData.dateDiplome}
-                    class="w-full form__input text-black"
+                    class="w-full form__input"
                   />
                 </div>
 
@@ -455,7 +458,7 @@
                   <input
                     type="text"
                     bind:value={formData.lieuDiplome}
-                    class="w-full form__input text-black"
+                    class="w-full form__input"
                   />
                 </div>
               </div>
@@ -473,7 +476,7 @@
                   <input
                     type="text"
                     bind:value={formData.profession}
-                    class="w-full form__input text-black"
+                    class="w-full form__input"
                   />
                 </div>
 
@@ -484,7 +487,7 @@
                   <input
                     type="text"
                     bind:value={formData.situationPro}
-                    class="w-full form__input text-black"
+                    class="w-full form__input"
                   />
                 </div>
 
@@ -494,7 +497,7 @@
                   >
                   <select
                     bind:value={formData.specialite}
-                    class="w-full form__input text-black"
+                    class="w-full form__input"
                   >
                     <option value="">Sélectionner une spécialité</option>
                     {#each specialites as specialite}
@@ -511,7 +514,7 @@
                   <input
                     type="email"
                     bind:value={formData.emailPro}
-                    class="w-full form__input text-black"
+                    class="w-full form__input"
                   />
                 </div>
 
@@ -522,7 +525,7 @@
                   <input
                     type="text"
                     bind:value={formData.contactPro}
-                    class="w-full form__input text-black"
+                    class="w-full form__input"
                   />
                 </div>
 
@@ -533,7 +536,7 @@
                   <input
                     type="text"
                     bind:value={formData.professionnel}
-                    class="w-full form__input text-black"
+                    class="w-full form__input"
                   />
                 </div>
 
@@ -543,7 +546,7 @@
                   >
                   <select
                     bind:value={formData.ville}
-                    class="w-full form__input text-black"
+                    class="w-full form__input"
                   >
                     <option value="">Sélectionner une ville</option>
                     {#each villes as ville}
@@ -559,7 +562,7 @@
                   <input
                     type="date"
                     bind:value={formData.dateEmploi}
-                    class="w-full form__input text-black"
+                    class="w-full form__input"
                   />
                 </div>
               </div>
@@ -579,7 +582,7 @@
                     {#if formData[field] && formData[field].url}
                       <div class="flex items-center mb-2">
                         <span class="text-3xl text-gray-500">
-                          Fichier actuel : {formData[field].alt}
+                          Fichier : {formData[field].alt}
                         </span>
                         <a   on:click={() =>
                           openModal(
@@ -590,8 +593,7 @@
                           )}
                           href="javascript:void(0)"
                           download="document"
-                          target="_blank"
-                          class="ml-4 text-white hover:underline"
+                          class="ml-4 text-blue-600 hover:underline"
                         >
                           Télécharger
                         </a>
@@ -601,7 +603,7 @@
                     <input
                       type="file"
                       on:change={(e) => (formData[field] = e.target.files[0])}
-                      class="w-full form__input text-black"
+                      class="w-full form__input"
                     />
                   </div>
                 {/each}
@@ -651,7 +653,7 @@
                     <input
                       type="text"
                       bind:value={formData.organisationNom}
-                      class="w-full form__input text-black"
+                      class="w-full form__input"
                     />
                   </div>
 
@@ -662,7 +664,7 @@
                     <input
                       type="text"
                       bind:value={formData.organisationNumero}
-                      class="w-full form__input text-black"
+                      class="w-full form__input"
                     />
                   </div>
 
@@ -673,7 +675,7 @@
                     <input
                       type="number"
                       bind:value={formData.organisationAnnee}
-                      class="w-full form__input text-black"
+                      class="w-full form__input"
                     />
                   </div>
                 {/if}
