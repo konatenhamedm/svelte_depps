@@ -33,14 +33,12 @@ export async function handle({ event, resolve }) {
   }
   if ((event.url.pathname.startsWith("/site/dossiers") ||
    event.url.pathname.startsWith("/site/forum") ||
-    event.url.pathname.startsWith("/site/contact")  ||
      event.url.pathname.startsWith("/site/documents") ||
       event.url.pathname.startsWith("/site/chatbox") ||
        event.url.pathname.startsWith("/site/dashboard") ||
         event.url.pathname.startsWith("/site/notification") ||
          event.url.pathname.startsWith("/site/paiement") ||
           event.url.pathname.startsWith("/site/forum/all-forums") ||
-           event.url.pathname.startsWith("/site/about") ||
             event.url.pathname.startsWith("/site/faq") ||
      event.url.pathname.startsWith("/site/alerte") ||
       event.url.pathname.startsWith("/site/profil")) &&

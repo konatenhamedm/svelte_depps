@@ -51,7 +51,7 @@
         topics = result.data.map((forum) => ({
           id: forum.id,
           titre: forum.titre,
-          author: forum.user.username, // L'API ne fournit pas d'auteur pour le topic
+          author: forum.user.email, // L'API ne fournit pas d'auteur pour le topic
           contenu: forum.contenu, // L'API ne fournit pas d'auteur pour le topic
           date: forum.createdAt, // À adapter si l'API fournit une date
           avatarUrl: forum.user.avatar

@@ -142,7 +142,7 @@
                     <NotificationSkeleton count={5} />
                 {:else}
                     {#each notifications as notification (notification.id)}
-                        <div class="flex items-start p-4 hover:bg-gray-50 relative {!notification.isRead ? 'bg-gray-100' : ''}">
+                        <div class="flex items-start p-4 hover:bg-gray-50 relative cursor-pointer {!notification.isRead ? 'bg-gray-100' : ''}">
                             {#if !notification.isRead}
                                 <div class="h-2 w-2 rounded-full bg-green-400 absolute left-2 top-6"></div>
                             {/if}

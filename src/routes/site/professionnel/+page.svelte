@@ -79,6 +79,7 @@
     dateDiplome: "",
     lieuDiplome: "",
     situation: "",
+    adressePro: "",
     profession: "",
     situationPro: "",
     specialite: "",
@@ -104,6 +105,7 @@
     email: "",
     password: "",
     confirmPassword: "",
+    adressePro: "",
 
     // Personal Informations
     genre: "",
@@ -237,6 +239,9 @@
       errors.dateEmploi = formData.dateEmploi
         ? ""
         : "Veuillez choisir une date de premier emploi";
+      errors.adressePro = formData.adressePro
+        ? ""
+        : "L'adresse professionnelle est requise";
 
       valid =
         !errors.profession &&
@@ -248,6 +253,7 @@
         !errors.ville &&
         !errors.dateEmploi &&
         !emailProError &&
+        !errors.adressePro &&
         isValidContact;
     }
     if (step === 4) {
@@ -647,7 +653,9 @@
   function connexion() {
     goto("/site/connexion");
     localStorage.clear(); // Nettoyer les données du localStorage
-    /* localStorage.setItem('reference', ''); */ // Nettoyer les données du localStorage
+
+    if(localStorage.getItem('reference'))
+        localStorage.setItem('reference', '');  // Nettoyer les données du localStorage
   }
 
   async function checkTransactionID(idtransaction: any) {
@@ -823,7 +831,7 @@
 
     console.log("fileNames:", localStorage.getItem("reference"));
 
-    const EXPIRATION_TIME = 60 * 60 * 1000; // 1 heure en millisecondes
+    const EXPIRATION_TIME = 30 * 60 * 1000; // 30 minutes en millisecondes // 1 heure en millisecondes
     const lastSaved = localStorage.getItem("timestamp");
 
     if (lastSaved && Date.now() - parseInt(lastSaved) > EXPIRATION_TIME) {
@@ -1303,8 +1311,8 @@
                       {#each professionGP.professions as profession}
                         <div class="flex items-center space-x-2">
                           <input
-                            on:input={saveFormState}
-                            on:input={(e: any) =>
+                            on:change={saveFormState}
+                            on:change={(e: any) =>
                               updateField("profession", e.target.value)}
                             type="radio"
                             class="cursor-pointer"
@@ -1475,6 +1483,23 @@
                   />
                   {#if errors.dateEmploi}
                     <p class="text-red-500 text-sm">{errors.dateEmploi}</p>
+                  {/if}
+                </div>
+                <div class="form__group">
+                  <label class="form_label block mb-2"
+                    >Addresse professionnelle *</label
+                  >
+                  <input
+                    on:input={saveFormState}
+                    on:input={(e: any) =>
+                      updateField("adressePro", e.target.value)}
+                    type="text"
+                    class="form__input w-full form__input"
+                    bind:value={formData.adressePro}
+                    placeholder="Addresse professionnelle"
+                  />
+                  {#if errors.adressePro}
+                    <p class="text-red-500 text-sm">{errors.adressePro}</p>
                   {/if}
                 </div>
               </div>

@@ -254,7 +254,7 @@
             <li class="mr-[0.5px] border-2 border-r-white ">
               <button
                 class="inline-block p-4 btn-tabs {activeTab === 'step2'
-                  ? 'text-white-600 border-b-2 border-blue-600 bg-blue-400 '
+                  ? 'text-white-600 border-b-2 border-blue-600 bg-blue-400 ' 
                   : 'hover:text-gray-600 hover:border-gray-300'}"
                 on:click={() => (activeTab = "step2")}
               >

@@ -1,4 +1,4 @@
-<script>
+<script lang="ts">
     import Footer from "$components/Footer.svelte";
   import GoogleMap from "$components/GoogleMap.svelte";
     import Slide from "$components/Slide.svelte";
@@ -14,7 +14,7 @@
 
     let faqOpen = [false, false, false, false]; // Pour gérer l'état des réponses des FAQ
 
-    const toggleFaq = (index) => {
+    const toggleFaq = (index:any) => {
         faqOpen[index] = !faqOpen[index];
     };
 </script>

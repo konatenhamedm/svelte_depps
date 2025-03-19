@@ -80,7 +80,7 @@
   }
 
   async function getTransactionInfos() {
-    await apiFetch(true, "/paiement/info/transaction/DEPPS250304234714045").then((response) => {
+    await apiFetch(true, "/paiement/info/transaction/"+pdfUrl).then((response) => {
       if (response.code === 200) {
         receiptData.amount = response.data.montant;
         receiptData.paymentMethod = response.data.channel;

@@ -55,6 +55,17 @@
   let certificatPath = "";
   let certificatAlt = "";
 
+  function formatDateForInput(dateString: string) {
+    if (!dateString) return "";
+    try {
+      const date = new Date(dateString);
+      return date.toISOString().split("T")[0];
+    } catch (e) {
+      console.error("Erreur de formatage de date:", e);
+      return "";
+    }
+  }
+
   function init(form: HTMLFormElement) {
     console.log(`je suis la data `, data);
     numero = data.personne.number || "";
@@ -66,10 +77,10 @@
     professionnel = data.personne.professionnel || "";
     profession = data.personne.profession || "";
     civilite = data.personne.civilite.libelle || "";
-    dateNaissance = data.personne.dateNaissance || "";
+    dateNaissance =  formatDateForInput(data.personne.dateNaissance) || "";
     contactPro = data.personne.contactPro || "";
-    dateDiplome = data.personne.dateDiplome || "";
-    dateEmploi = data.personne.dateEmploi || "";
+    dateDiplome = formatDateForInput(data.personne.dateDiplome) || "";
+    dateEmploi = formatDateForInput(data.personne.dateEmploi) || "";
     diplome = data.personne.diplome || "";
     situationPro = data.personne.situationPro || "";
     lieuResidence = data.personne.lieuResidence || "";
@@ -98,13 +109,13 @@
     certificatAlt = data.personne.certificat.alt || "";
 
    /*  if(data.personne.status == "attente"){ */
-      valid_endUser.status = "acceptation";
-      valid_endUser.raison = "";
+     /*  valid_endUser.status = "acceptation";
+      valid_endUser.raison = ""; */
     /* } */
   }
   let valid_endUser = {
     raison: "",
-    status: ""
+    status: "acceptation"
   };
 
   let openShow: boolean = false;
@@ -467,7 +478,7 @@
       </div>
       <br />
 
-      {#if status === "attente"}
+      {#if status === "attente" || status === "accepte" || status === "valide" || status === "renouvellement"} 
         <fieldset class="border border-gray-300 rounded-md p-4">
           <legend class="text-lg font-semibold text-blue-500">Décision</legend>
           <div class="space-y-4">
