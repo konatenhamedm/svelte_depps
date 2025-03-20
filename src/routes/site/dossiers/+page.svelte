@@ -231,10 +231,32 @@
     await getUserInfos();
     isLoading = false;
   });
+  function navigateToDashboard() {
+    goto("/site/dashboard");
+  }
 </script>
 
 <Header {user} />
+
 <Slide {user} />
+<div class="file-ariane flex items-center space-x-2 text-sm text-gray-600 mb-4">
+  <button on:click={navigateToDashboard} class="flex items-center hover:text-blue-600">
+    <!-- Icône SVG pour "Tableau de bord" -->
+    <svg
+            xmlns="http://www.w3.org/2000/svg"
+            class="w-4 h-4 mr-1"
+            viewBox="0 0 20 20"
+            fill="currentColor"
+    >
+      <path
+              d="M10.707 2.293a1 1 0 00-1.414 0l-7 7a1 1 0 001.414 1.414L4 10.414V17a1 1 0 001 1h2a1 1 0 001-1v-2a1 1 0 011-1h2a1 1 0 011 1v2a1 1 0 001 1h2a1 1 0 001-1v-6.586l.293.293a1 1 0 001.414-1.414l-7-7z"
+      />
+    </svg>
+    Tableau de bord
+  </button>
+  <span>/</span>
+  <span class="text-gray-800">Liste des dossiers</span> <!-- Nom de la page actuelle -->
+</div>
 
 {#if isLoading}
   <main style="padding-top: 10px" class="pb-0">
@@ -731,5 +753,19 @@
   .btn-tabs {
     color: black !important;
     font-size: 14px;
+  }
+
+  .file-ariane {
+    position: absolute;
+    width: 100%;
+    top: 112px;
+    background: #4292cecc;
+    padding: 22px;
+    color: white;
+    font-size: 14px;
+  }
+
+  .file-ariane span {
+    color: white;
   }
 </style>

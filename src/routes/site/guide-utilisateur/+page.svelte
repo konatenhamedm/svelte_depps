@@ -12,6 +12,7 @@
   import Modal from "$components/Modal.svelte";
   import { apiFetch, BASE_URL_API_UPLOAD } from "$lib/api.js";
   import { onMount } from "svelte";
+  import {goto} from "$app/navigation";
 
   export let data;
   let user = data?.user;
@@ -91,17 +92,38 @@
   function closeModal() {
     isModalOpen = false;
   }
+  function navigateToDashboard() {
+    goto("/site/dashboard");
+  }
 </script>
 
 <Slide {user} />
+<div class="file-ariane flex items-center space-x-2 text-sm text-gray-600 mb-4">
+  <button on:click={navigateToDashboard} class="flex items-center hover:text-blue-600">
+    <!-- Icône SVG pour "Tableau de bord" -->
+    <svg
+            xmlns="http://www.w3.org/2000/svg"
+            class="w-4 h-4 mr-1"
+            viewBox="0 0 20 20"
+            fill="currentColor"
+    >
+      <path
+              d="M10.707 2.293a1 1 0 00-1.414 0l-7 7a1 1 0 001.414 1.414L4 10.414V17a1 1 0 001 1h2a1 1 0 001-1v-2a1 1 0 011-1h2a1 1 0 011 1v2a1 1 0 001 1h2a1 1 0 001-1v-6.586l.293.293a1 1 0 001.414-1.414l-7-7z"
+      />
+    </svg>
+    Tableau de bord
+  </button>
+  <span>/</span>
+  <span class="text-gray-800">Liste des documents </span> <!-- Nom de la page actuelle -->
+</div>
 <main class="mx-auto px-8 py-8 main-div" style="padding-top: 200px">
   <section class="iletisim-form-alani">
     <div id="guide-user">
       <div class="mx-auto bg-white rounded-lg shadow-lg main-div">
         <div class="p-1 bg-white" >
-          <h1 class="text-3xl font-bold text-gray-800 mb-6">
+         <!-- <h1 class="text-3xl font-bold text-gray-800 mb-6">
             Liste des documents
-          </h1>
+          </h1>-->
           <div class="divide-y divide-gray-200">
             {#if loading }
               {#each Array(3) as _, i}
@@ -208,4 +230,18 @@
     border-radius: 10px;
     padding: -10px 0px 0px 0px;
   }
+
+    .file-ariane {
+      position: absolute;
+      width: 100%;
+      top: 112px;
+      background: #4292cecc;
+      padding: 22px;
+      color: white;
+      font-size: 14px;
+    }
+
+    .file-ariane span {
+      color: white;
+    }
 </style>
