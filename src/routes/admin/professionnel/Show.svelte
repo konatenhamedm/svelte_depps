@@ -1,11 +1,11 @@
 <script lang="ts">
   import InputCheck from "$components/inputs/InputCheck.svelte";
   import InputSimple from "$components/inputs/InputSimple.svelte";
-  import { BASE_URL_API } from "$lib/api";
+  import { apiFetch, BASE_URL_API } from "$lib/api";
   import { BASE_URL } from "$lib/config";
   import { Button, Modal } from "flowbite-svelte";
   import { TrashBinSolid } from "flowbite-svelte-icons";
-  import { createEventDispatcher } from "svelte";
+  import { createEventDispatcher, onMount } from "svelte";
   import DocShow from "./DocShow.svelte";
 
   let isLoad = false;
@@ -16,6 +16,8 @@
   export let sizeModal: any = "lg";
   export let data: Record<string, string> = {};
   const dispatch = createEventDispatcher();
+
+  let professionLibelle: string = "";
 
   const url_image = "https://depps.leadagro.net/uploads/";
   let numero = "";
@@ -66,7 +68,31 @@
     }
   }
 
-  function init(form: HTMLFormElement) {
+  async function getProfessionLibelle(code:any) {
+    console.log("Code profession:", code);
+    try {
+      const res = await fetch(BASE_URL_API + "/profession/get/by/code/" + code);
+
+      if (res.ok) {
+        const data = await res.json();
+        if (data && data.data) {
+          console.log("Data récupérée:", data.data);
+          return data.data;
+        } else {
+          console.error("Erreur: data.data est undefined", data);
+          return null;
+        }
+      } else {
+        console.error("Erreur HTTP:", res.status, res.statusText);
+        return null;
+      }
+    } catch (error) {
+      console.error("Erreur lors de la récupération des données:", error);
+      return null;
+    }
+  }
+
+  async function init(form: HTMLFormElement) {
     console.log(`je suis la data `, data);
     numero = data.personne.number || "";
     nom = data.personne.nom || "";
@@ -75,9 +101,8 @@
     reason = data.personne.reason || "";
     addressPro = data.personne.addressPro || "";
     professionnel = data.personne.professionnel || "";
-    profession = data.personne.profession || "";
     civilite = data.personne.civilite.libelle || "";
-    dateNaissance =  formatDateForInput(data.personne.dateNaissance) || "";
+    dateNaissance = formatDateForInput(data.personne.dateNaissance) || "";
     contactPro = data.personne.contactPro || "";
     dateDiplome = formatDateForInput(data.personne.dateDiplome) || "";
     dateEmploi = formatDateForInput(data.personne.dateEmploi) || "";
@@ -92,26 +117,24 @@
     cni = data.personne.cni || "";
     CVpath = data.personne.cv.path || "";
     CValt = data.personne.cv.alt || "";
-
     Photopath = data.personne.photo.path || "";
     Photoalt = data.personne.photo.alt || "";
-
     diplomeFilePath = data.personne.diplomeFile.path || "";
     diplomeFileAlt = data.personne.diplomeFile.alt || "";
-
     cniPath = data.personne.cni.path || "";
     cniAlt = data.personne.cni.alt || "";
-
     casierPath = data.personne.casier.path || "";
     casierAlt = data.personne.casier.alt || "";
-
     certificatPath = data.personne.certificat.path || "";
     certificatAlt = data.personne.certificat.alt || "";
 
-   /*  if(data.personne.status == "attente"){ */
-     /*  valid_endUser.status = "acceptation";
-      valid_endUser.raison = ""; */
-    /* } */
+    // Récupérer la profession
+     profession = await getProfessionLibelle(data.personne.profession);
+    if (profession) {
+      console.log("Profession récupérée:", profession);
+    } else {
+      console.error("Impossible de récupérer la profession");
+    }
   }
   let valid_endUser = {
     raison: "",
@@ -206,13 +229,16 @@
       console.error("Error saving:", error);
     }
   }
+
+  /*  onMount(async () => {
+    await getProfessionLibelle(profession);
+  }) */
 </script>
 
 <Modal bind:open title="Détails " size={sizeModal} class="m-4 modale_general">
   <div class="space-y-6 p-4">
     <form action="#" use:init>
-
-    <!--   {#if reason }
+      <!--   {#if reason }
       <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-5" role="alert">
         <strong class="font-bold">OOUPS</strong>
         <span class="block sm:inline">{reason}</span>
@@ -385,36 +411,32 @@
 
       <div class="grid grid-cols-3 gap-6 mt-6">
         <!-- <div class="space-y-6"> -->
-        <div   on:click={() => (
-          (current_data = url_image + CVpath + "/" + CValt),
-          (openShow = true)
-        )}
+        <div
+          on:click={() => (
+            (current_data = url_image + CVpath + "/" + CValt), (openShow = true)
+          )}
           class="w-full h-9 flex justify-center bg-gray-500 hover:bg-gray-500 text-white font-bold py-2 pb-[1.9rem] px-4 border border-white rounded cursor-pointer"
         >
-          
-            VOIR LE CV
-         
+          VOIR LE CV
         </div>
-        <div   on:click={() => (
+        <div
+          on:click={() => (
             (current_data = url_image + diplomeFilePath + "/" + diplomeFileAlt),
             (openShow = true)
           )}
           class="w-full h-9 flex justify-center bg-gray-500 hover:bg-gray-500 text-white font-bold py-2 pb-[1.9rem] px-4 border border-white rounded cursor-pointer"
         >
-          
-            VOIR LE DIPLOME
-          
+          VOIR LE DIPLOME
         </div>
 
-        <div    on:click={() => (
+        <div
+          on:click={() => (
             (current_data = url_image + casierPath + "/" + casierAlt),
             (openShow = true)
           )}
           class="w-full h-9 flex justify-center bg-gray-500 hover:bg-gray-500 text-white font-bold py-2 pb-[1.9rem] px-4 border border-white rounded cursor-pointer"
         >
-         
-            VOIR LE CASIER
-          
+          VOIR LE CASIER
         </div>
         <!--  </div>
         <div class="space-y-6"> -->
@@ -427,26 +449,24 @@
         >
           VOIR LE CERTIFICAT
         </div>
-        <div   on:click={() => (
-          (current_data = url_image + Photopath + "/" + Photoalt),
-          (openShow = true)
-        )}
+        <div
+          on:click={() => (
+            (current_data = url_image + Photopath + "/" + Photoalt),
+            (openShow = true)
+          )}
           class="w-full h-9 flex justify-center bg-gray-500 hover:bg-gray-500 text-white font-bold py-2 pb-[1.9rem] px-4 border border-white rounded cursor-pointer"
         >
-          
-            VOIR LA PHOTO
-          
+          VOIR LA PHOTO
         </div>
 
-        <div   on:click={() => (
-          (current_data = url_image + cniPath + "/" + cniAlt),
-          (openShow = true)
-        )}
+        <div
+          on:click={() => (
+            (current_data = url_image + cniPath + "/" + cniAlt),
+            (openShow = true)
+          )}
           class="w-full h-9 flex justify-center bg-gray-500 hover:bg-gray-500 text-white font-bold py-2 pb-[1.9rem] px-4 border border-white rounded cursor-pointer"
         >
-         
-            VOIR LA CNI
-          
+          VOIR LA CNI
         </div>
         <!--   </div> -->
       </div>
@@ -478,7 +498,7 @@
       </div>
       <br />
 
-      {#if status === "attente" || status === "accepte" || status === "valide" || status === "renouvellement"} 
+      {#if status === "attente" || status === "accepte" || status === "valide" || status === "renouvellement"}
         <fieldset class="border border-gray-300 rounded-md p-4">
           <legend class="text-lg font-semibold text-blue-500">Décision</legend>
           <div class="space-y-4">

@@ -111,7 +111,7 @@
   </button>
   <span>/</span>
   <span class="text-gray-800">Liste des forums</span> <!-- Nom de la page actuelle -->
-</div>
+</div><br>
 <main class="mx-auto px-8 py-8 main-div" style="padding-top: 200px">
   <section class="iletisim-form-alani">
     <div id="">

@@ -156,7 +156,7 @@
   </button>
   <span>/</span>
   <span class="text-gray-800">Discussion forums</span> <!-- Nom de la page actuelle -->
-</div>
+</div><br>
 
 <main class="mx-auto px-8 py-8 main-div" style="padding-top: 200px !important;">
   <!--<header class="bg-white py-6 px-4 shadow-sm pb-2">

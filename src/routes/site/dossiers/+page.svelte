@@ -177,8 +177,7 @@
           organisationAnnee: apiData.appartenirOrganisation == "oui" ? apiData.organisations[0].annee || "" :""
         };
         
-        console.log("Données chargées:", apiData.genre.id);
-        console.log("Données chargées:", formData);
+        await getProfessionLibelle(apiData.profession);
       } else {
         console.error("Erreur API", response.status);
       }
@@ -225,10 +224,37 @@
     isModalOpen = false;
   }
 
+  
+  async function getProfessionLibelle(code:any) {
+    
+    try {
+      const res = await fetch(BASE_URL_API + "/profession/get/by/code/" + code);
+
+      if (res.ok) {
+        const data = await res.json();
+        if (data && data.data) {
+          console.log("Data récupérée:", data.data);
+          formData.profession = data.data;
+         /*  return data.data; */
+        } else {
+          console.error("Erreur: data.data est undefined", data);
+          /* return null; */
+        }
+      } else {
+        console.error("Erreur HTTP:", res.status, res.statusText);
+        /* return null; */
+      }
+    } catch (error) {
+      console.error("Erreur lors de la récupération des données:", error);
+      /* return null; */
+    }
+  }
+
   onMount(async () => {
     isLoading = true;
     await loadReferenceData();
     await getUserInfos();
+   
     isLoading = false;
   });
   function navigateToDashboard() {
@@ -256,10 +282,10 @@
   </button>
   <span>/</span>
   <span class="text-gray-800">Liste des dossiers</span> <!-- Nom de la page actuelle -->
-</div>
+</div><br>
 
 {#if isLoading}
-  <main style="padding-top: 10px" class="pb-0">
+  <main style="padding-top: 8px" class="pb-0">
     <section class="iletisim-form-alani">
       <SkeletonLoader {activeTab} />
     </section>
@@ -513,7 +539,7 @@
                   />
                 </div>
 
-                <div class="space-y-2">
+                <!-- <div class="space-y-2">
                   <label class="block text-3xl font-medium text-black"
                     >Spécialité</label
                   >
@@ -527,7 +553,7 @@
                       >
                     {/each}
                   </select>
-                </div>
+                </div> -->
 
                 <div class="space-y-2">
                   <label class="block text-3xl font-medium text-black"

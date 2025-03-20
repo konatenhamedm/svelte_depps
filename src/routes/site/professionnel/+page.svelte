@@ -246,7 +246,6 @@
       valid =
         !errors.profession &&
         !errors.situationPro &&
-        !errors.specialite &&
         !errors.emailPro &&
         !errors.contactPro &&
         !errors.professionnel &&
@@ -1356,7 +1355,7 @@
                   {/if}
                 </div>
 
-                <div class="form__group">
+               <!--  <div class="form__group">
                   <label class="form_label block mb-2">Spécialité *</label>
                   <select
                     on:change={saveFormState}
@@ -1378,7 +1377,7 @@
                   {#if errors.specialite}
                     <p class="text-red-500 text-sm">{errors.specialite}</p>
                   {/if}
-                </div>
+                </div> -->
 
                 <div class="form__group">
                   <label class="form_label block mb-2"

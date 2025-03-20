@@ -118,17 +118,40 @@ async function logout() {
       ? BASE_URL_API_UPLOAD + user?.avatar
       : "https://static.vecteezy.com/system/resources/thumbnails/009/292/244/small/default-avatar-icon-of-social-media-user-vector.jpg";
   });
+
+  function navigateToDashboard() {
+    goto("/site/dashboard");
+  }
 </script>
 
 <Header />
 <Slide />
 
-<section class="text-center pb-0 " style="padding-top:142px;">
+<!-- <section class="text-center pb-0 " style="padding-top:142px;">
   <h2 class="h2-baslik-anasayfa-ozel h-yazi-margin-kucuk "> Informations & Accès</h2>
 
-</section>
+</section> -->
 
-<main style="padding-top: 200px">
+<div class="file-ariane flex items-center space-x-2 text-sm text-gray-600 mb-4" style="margin-bottom: 100px;">
+  <button on:click={navigateToDashboard} class="flex items-center hover:text-blue-600">
+    <!-- Icône SVG pour "Tableau de bord" -->
+    <svg
+            xmlns="http://www.w3.org/2000/svg"
+            class="w-4 h-4 mr-1"
+            viewBox="0 0 20 20"
+            fill="currentColor"
+    >
+      <path
+              d="M10.707 2.293a1 1 0 00-1.414 0l-7 7a1 1 0 001.414 1.414L4 10.414V17a1 1 0 001 1h2a1 1 0 001-1v-2a1 1 0 011-1h2a1 1 0 011 1v2a1 1 0 001 1h2a1 1 0 001-1v-6.586l.293.293a1 1 0 001.414-1.414l-7-7z"
+      />
+    </svg>
+    Tableau de bord
+  </button>
+  <span>/</span>
+  <span class="text-gray-800">Profil</span> <!-- Nom de la page actuelle -->
+</div><br>
+
+<main style="padding-top: 320px">
   <section class="iletisim-form-alani">
     <div class="tablo">
       <div class="tablo--1-ve-2">
@@ -316,6 +339,7 @@ async function logout() {
     border-radius: 50%;
     overflow: hidden;
     cursor: pointer;
+    border:1px solid gray;
   }
 
   .dropify-preview {
@@ -333,5 +357,19 @@ async function logout() {
     height: 100%;
     opacity: 0;
     cursor: pointer;
+  }
+
+    .file-ariane {
+    position: absolute;
+    width: 100%;
+    top: 112px;
+    background: #4292cecc;
+    padding: 22px;
+    color: white;
+    font-size: 14px;
+  }
+
+  .file-ariane span {
+    color: white;
   }
 </style>
