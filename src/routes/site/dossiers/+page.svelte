@@ -14,32 +14,36 @@
   let user = data?.user;
   let activeTab = "step2";
   let isLoading = true;
+  
   let formData = {
-    genre: "",
-    civilite: "",
-    numero: "",
+  
+  
+    // Personal Informations
+    code: "",
+    poleSanitaire: "",
     nom: "",
+    professionnel: "",
     prenoms: "",
-    nationalite: "",
-    dateNaissance: "",
-    address: "",
-    lieuResidence: "",
-    diplome: "",
-    dateDiplome: "",
-    lieuDiplome: "",
-    situation: "",
+    lieuExercicePro: "",
+    emailAutre: "",
 
     // Professional informations
     profession: "",
-    situationPro: "",
-    specialite: "",
+    civilite: "",
     emailPro: "",
-    contactPro: "",
-    professionnel: "",
-    ville: "",
-    dateEmploi: "",
+    dateDiplome: "",
+    dateNaissance: "",
+    numero: "",
+    lieuDiplome: "",
+    nationalite: "",
+    situation: "",
+    datePremierDiplome: "",
+    poleSanitairePro: "",
+    diplome: "",
+    situationPro: "",
 
-    // Media informations
+    //media informations
+
     photo: "",
     cni: "",
     casier: "",
@@ -47,17 +51,19 @@
     certificat: "",
     cv: "",
 
-    // Organization informations
-    appartenirOrganisation: "",
+    // organization informations
+
+    appartenirOrganisation: "non",
     organisationNom: "",
     organisationNumero: "",
     organisationAnnee: ""
   };
 
-  let specialites: any = [];
-  let genres: any = [];
+
+
+ 
   let civilites: any = [];
-  let villes: any = [];
+  let pays: any = [];
 
   let openShow: boolean = false;
   let current_data: any = {};
@@ -138,29 +144,33 @@
         console.log("content api data", apiData);
 
         formData = {
-          genre: apiData.genre ? apiData.genre.id : "",
-          civilite: apiData.civilite ? apiData.civilite.id : "",
+
+          code: apiData.code ? apiData.code : "",
+          poleSanitaire: apiData.poleSanitaire ? apiData.poleSanitaire : "",
           nom: apiData.nom || "",
-           prenoms: apiData.prenoms || "",
-          nationalite: apiData.nationalite ? apiData.nationalite.id : "",
+          prenoms: apiData.prenoms || "",
+          professionnel: apiData.professionnel || "",
+          lieuExercicePro: apiData.lieuExercicePro || "",
+          emailAutre: apiData.email || "",
+
+
+
+      
+          civilite: apiData.civilite ? apiData.civilite.id : "",
+          nationalite: apiData.nationate ? apiData.nationate.id : "",
           dateNaissance: formatDateForInput(apiData.dateNaissance),
           numero: apiData.number || "",
-          address: apiData.address || "",
-          lieuResidence: apiData.lieuResidence || "",
           diplome: apiData.diplome || "",
           dateDiplome: formatDateForInput(apiData.dateDiplome),
           lieuDiplome: apiData.lieuDiplome || "",
           situation: apiData.situation || "",
-
           profession: apiData.profession || "",
           situationPro: apiData.situationPro || "",
-          specialite: apiData.specialite ? apiData.specialite.id : "",
           emailPro: apiData.emailPro || "",
-          contactPro: apiData.contactPro || "",
-          professionnel: apiData.professionnel || "",
-          ville: apiData.ville ? apiData.ville.id : "",
-          dateEmploi: formatDateForInput(apiData.dateEmploi),
+          poleSanitairePro: apiData.poleSanitairePro || "",
+          datePremierDiplome: formatDateForInput(apiData.datePremierDiplome),
 
+          
           photo: apiData.photo || "",
           cni: apiData.cni || "",
           casier: apiData.casier || "",
@@ -188,25 +198,18 @@
 
   async function loadReferenceData() {
     try {
-      const genresResponse = await apiFetch(true, "/genre");
-      if (genresResponse.code === 200) {
-        genres = genresResponse.data || [];
-      }
-
+    
       const civilitesResponse = await apiFetch(true, "/civilite");
       if (civilitesResponse.code === 200) {
         civilites = civilitesResponse.data || [];
       }
-
-      const specialitesResponse = await apiFetch(true, "/specialite");
-      if (specialitesResponse.code === 200) {
-        specialites = specialitesResponse.data || [];
+      const paysResponse = await apiFetch(true, "/pays");
+      if (paysResponse.code === 200) {
+        pays =paysResponse.data || [];
       }
 
-      const villesResponse = await apiFetch(true, "/ville");
-      if (villesResponse.code === 200) {
-        villes = villesResponse.data || [];
-      }
+   
+     
     } catch (error) {
       console.error("Erreur lors du chargement des références:", error);
     }
@@ -347,37 +350,30 @@
           <!-- Step 2: Informations Personnelles -->
           {#if activeTab === "step2"}
             <div class="bg-white p-6 rounded-lg shadow-md">
-              <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                <div class="space-y-2">
-                  <label class="block text-3xl font-medium text-black"
-                    >Genre</label
-                  >
-                  <select
-                    bind:value={formData.genre}
-                    class="w-full form__input text-black"
-                  >
-                    <option value="">Sélectionner un genre</option>
-                    {#each genres as genre}
-                      <option value={genre.id}>{genre.libelle}</option>
-                    {/each}
-                  </select>
-                </div>
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+               
+
 
                 <div class="space-y-2">
                   <label class="block text-3xl font-medium text-black"
-                    >Civilité</label
+                    >Code de vérification (Uniquement pour les anciens membres)</label
                   >
-                  <select
-                    bind:value={formData.civilite}
-                    class="w-full form__input"
-                  >
-                    <option value="">Sélectionner une civilité</option>
-                    {#each civilites as civilite}
-                      <option value={civilite.id}>{civilite.libelle}</option>
-                    {/each}
-                  </select>
+                  <input
+                    type="text"
+                    bind:value={formData.code}
+                    class="w-full form__input" style="color:black"
+                  />
                 </div>
-
+                <div class="space-y-2">
+                  <label class="block text-3xl font-medium text-black"
+                    >Pôle sanitaire,District,Ville,Commune,quartier,lot,ilot</label
+                  >
+                  <input
+                    type="text"
+                    bind:value={formData.poleSanitaire}
+                    class="w-full form__input" style="color:black"
+                  />
+                </div>
                 <div class="space-y-2">
                   <label class="block text-3xl font-medium text-black"
                     >Nom</label
@@ -385,6 +381,16 @@
                   <input
                     type="text"
                     bind:value={formData.nom}
+                    class="w-full form__input" style="color:black"
+                  />
+                </div>
+                <div class="space-y-2">
+                  <label class="block text-3xl font-medium text-black"
+                    >Structure d'exercice professionnel</label
+                  >
+                  <input
+                    type="text"
+                    bind:value={formData.professionnel}
                     class="w-full form__input" style="color:black"
                   />
                 </div>
@@ -399,10 +405,83 @@
                     class="w-full form__input"
                   />
                 </div>
-
                 <div class="space-y-2">
                   <label class="block text-3xl font-medium text-black"
-                    >Date de Naissance</label
+                    >Lieu d'exercice professionnel</label
+                  >
+                  <input
+                    type="text"
+                    bind:value={formData.lieuExercicePro}
+                    class="w-full form__input"
+                  />
+                </div>
+                <div class="space-y-2">
+                  <label class="block text-3xl font-medium text-black"
+                    >Email</label
+                  >
+                  <input
+                    type="text"
+                    bind:value={formData.emailAutre}
+                    class="w-full form__input"
+                  />
+                </div>
+
+              </div>
+            </div>
+          {/if}
+
+          <!-- Step 3: Informations Professionnelles -->
+          {#if activeTab === "step3"}
+            <div class="bg-white p-6 rounded-lg shadow-md">
+              <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div class="space-y-2">
+                  <label class="block text-3xl font-medium text-black"
+                    >Civilité</label
+                  >
+                  <select
+                 
+                  class="w-full form__input"
+                  name=""
+                  id=""
+                  bind:value={formData.civilite}
+                >
+                  <option value="" selected={!formData.civilite}
+                    >Veuillez sélectionner une option</option
+                  >
+                  {#each civilites as civilite}
+                    <option
+                      value={civilite.id}
+                      selected={formData.civilite === civilite.id}
+                      >{civilite.libelle}</option
+                    >
+                  {/each}
+                </select>
+                </div>
+
+                
+                <div class="space-y-2">
+                  <label class="block text-3xl font-medium text-black"
+                    >Email Professionnel</label
+                  >
+                  <input
+                    type="email"
+                    bind:value={formData.emailPro}
+                    class="w-full form__input"
+                  />
+                </div>
+                <div class="space-y-2">
+                  <label class="block text-3xl font-medium text-black"
+                    >Date d'obtention du diplome</label
+                  >
+                  <input
+                    type="date"
+                    bind:value={formData.dateDiplome}
+                    class="w-full form__input"
+                  />
+                </div>
+                <div class="space-y-2">
+                  <label class="block text-3xl font-medium text-black"
+                    >Date de naissance</label
                   >
                   <input
                     type="date"
@@ -424,24 +503,36 @@
 
                 <div class="space-y-2">
                   <label class="block text-3xl font-medium text-black"
-                    >Adresse</label
+                    >Lieu D'obtention du diplome</label
                   >
                   <input
                     type="text"
-                    bind:value={formData.address}
+                    bind:value={formData.lieuDiplome}
                     class="w-full form__input"
                   />
                 </div>
-
                 <div class="space-y-2">
                   <label class="block text-3xl font-medium text-black"
-                    >Lieu de Résidence</label
+                    >Nationalité</label
                   >
-                  <input
-                    type="text"
-                    bind:value={formData.lieuResidence}
-                    class="w-full form__input"
-                  />
+                  <select
+                 
+                  class="w-full form__input"
+                  name=""
+                  id=""
+                  bind:value={formData.nationalite}
+                >
+                  <option value="" selected={!formData.nationalite}
+                    >Veuillez sélectionner une option</option
+                  >
+                  {#each pays as nationate}
+                    <option
+                      value={nationate.id}
+                      selected={formData.nationalite === nationate.id}
+                      >{nationate.libelle}</option
+                    >
+                  {/each}
+                </select>
                 </div>
 
                 <div class="space-y-2 form__group">
@@ -477,53 +568,35 @@
                   </select>
                 </div>
 
+          
                 <div class="space-y-2">
                   <label class="block text-3xl font-medium text-black"
-                    >Diplôme</label
+                    >Date du premier diplome</label
+                  >
+                  <input
+                    type="date"
+                    bind:value={formData.datePremierDiplome}
+                    class="w-full form__input"
+                  />
+                </div>
+                <div class="space-y-2">
+                  <label class="block text-3xl font-medium text-black"
+                    >Pole Sanitaire,District,Commune,Quartier...</label
+                  >
+                  <input
+                    type="text" placeholder="Pole Sanitaire,District,Commune,Quartier,lot,ilot"
+                    bind:value={formData.poleSanitairePro}
+                    class="w-full form__input"
+                  />
+                </div>
+
+                <div class="space-y-2">
+                  <label class="block text-3xl font-medium text-black"
+                    >Dénomination du diplome</label
                   >
                   <input
                     type="text"
                     bind:value={formData.diplome}
-                    class="w-full form__input"
-                  />
-                </div>
-
-                <div class="space-y-2">
-                  <label class="block text-3xl font-medium text-black"
-                    >Date d'obtention du diplôme</label
-                  >
-                  <input
-                    type="date"
-                    bind:value={formData.dateDiplome}
-                    class="w-full form__input"
-                  />
-                </div>
-
-                <div class="space-y-2">
-                  <label class="block text-3xl font-medium text-black"
-                    >Lieu d'obtention du diplôme</label
-                  >
-                  <input
-                    type="text"
-                    bind:value={formData.lieuDiplome}
-                    class="w-full form__input"
-                  />
-                </div>
-              </div>
-            </div>
-          {/if}
-
-          <!-- Step 3: Informations Professionnelles -->
-          {#if activeTab === "step3"}
-            <div class="bg-white p-6 rounded-lg shadow-md">
-              <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div class="space-y-2">
-                  <label class="block text-3xl font-medium text-black"
-                    >Profession</label
-                  >
-                  <input
-                    type="text"
-                    bind:value={formData.profession}
                     class="w-full form__input"
                   />
                 </div>
@@ -538,81 +611,17 @@
                     class="w-full form__input"
                   />
                 </div>
-
-                <!-- <div class="space-y-2">
-                  <label class="block text-3xl font-medium text-black"
-                    >Spécialité</label
-                  >
-                  <select
-                    bind:value={formData.specialite}
-                    class="w-full form__input"
-                  >
-                    <option value="">Sélectionner une spécialité</option>
-                    {#each specialites as specialite}
-                      <option value={specialite.id}>{specialite.libelle}</option
-                      >
-                    {/each}
-                  </select>
-                </div> -->
-
                 <div class="space-y-2">
                   <label class="block text-3xl font-medium text-black"
-                    >Email Professionnel</label
-                  >
-                  <input
-                    type="email"
-                    bind:value={formData.emailPro}
-                    class="w-full form__input"
-                  />
-                </div>
-
-                <div class="space-y-2">
-                  <label class="block text-3xl font-medium text-black"
-                    >Contact Professionnel</label
+                    >Profession</label
                   >
                   <input
                     type="text"
-                    bind:value={formData.contactPro}
+                    bind:value={formData.profession}
                     class="w-full form__input"
                   />
                 </div>
-
-                <div class="space-y-2">
-                  <label class="block text-3xl font-medium text-black"
-                    >Professionnel</label
-                  >
-                  <input
-                    type="text"
-                    bind:value={formData.professionnel}
-                    class="w-full form__input"
-                  />
-                </div>
-
-                <div class="space-y-2">
-                  <label class="block text-3xl font-medium text-black"
-                    >Ville d'exercice</label
-                  >
-                  <select
-                    bind:value={formData.ville}
-                    class="w-full form__input"
-                  >
-                    <option value="">Sélectionner une ville</option>
-                    {#each villes as ville}
-                      <option value={ville.id}>{ville.libelle}</option>
-                    {/each}
-                  </select>
-                </div>
-
-                <div class="space-y-2">
-                  <label class="block text-3xl font-medium text-black"
-                    >Date d'emploi</label
-                  >
-                  <input
-                    type="date"
-                    bind:value={formData.dateEmploi}
-                    class="w-full form__input"
-                  />
-                </div>
+                
               </div>
             </div>
           {/if}

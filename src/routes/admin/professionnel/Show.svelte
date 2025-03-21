@@ -24,16 +24,13 @@
   let nom = "";
   let status = "";
   let prenoms = "";
-  let addressPro = "";
   let professionnel = "";
   let profession = "";
   let civilite = "";
   let dateNaissance = "";
-  let contactPro = "";
-  let lieuResidence = "";
+  let nationalite = "";
   let situation = "";
   let dateDiplome = "";
-  let dateEmploi = "";
   let diplome = "";
   let situationPro = "";
   let userEmail = "";
@@ -99,16 +96,13 @@
     status = data.personne.status || "";
     prenoms = data.personne.prenoms || "";
     reason = data.personne.reason || "";
-    addressPro = data.personne.addressPro || "";
     professionnel = data.personne.professionnel || "";
     civilite = data.personne.civilite.libelle || "";
+    nationalite = data.personne.nationate.libelle || "";
     dateNaissance = formatDateForInput(data.personne.dateNaissance) || "";
-    contactPro = data.personne.contactPro || "";
     dateDiplome = formatDateForInput(data.personne.dateDiplome) || "";
-    dateEmploi = formatDateForInput(data.personne.dateEmploi) || "";
     diplome = data.personne.diplome || "";
     situationPro = data.personne.situationPro || "";
-    lieuResidence = data.personne.lieuResidence || "";
     situation = data.personne.situation || "";
     typeUser = data?.typeUser || "";
     userEmail = data?.email || "";
@@ -287,8 +281,8 @@
         <div>
           <InputSimple
             fieldName="lieuResidence"
-            label="Lieu de résidence"
-            field={lieuResidence}
+            label="Nationnalité"
+            field={nationalite}
             disabled={true}
           />
         </div>
@@ -348,31 +342,17 @@
         </div>
         <div class="space-y-6">
           <InputSimple
-            fieldName="contactPro"
-            label="Contact professionnel"
-            field={contactPro}
-            disabled={true}
-          />
-        </div>
-      </div>
-
-      <div class="grid grid-cols-3 gap-6 mt-6">
-        <div class="space-y-6">
-          <InputSimple
-            fieldName="addressPro"
-            label="Adresse professionnelle"
-            field={addressPro}
-            disabled={true}
-          />
-        </div>
-        <div class="space-y-6">
-          <InputSimple
             fieldName="situationPro"
             label="Situation professionnelle"
             field={situationPro}
             disabled={true}
           />
         </div>
+        
+      </div>
+
+   
+      <div class="grid grid-cols-3 gap-6 mt-6">
         <div class="space-y-6">
           <InputSimple
             fieldName="diplome"
@@ -381,8 +361,6 @@
             disabled={true}
           />
         </div>
-      </div>
-      <div class="grid grid-cols-3 gap-6 mt-6">
         <div class="space-y-6">
           <InputSimple
             fieldName="situation"
@@ -399,14 +377,7 @@
             disabled={true}
           />
         </div>
-        <div class="space-y-6">
-          <InputSimple
-            fieldName="dateEmploi"
-            label="Date d'emploi"
-            field={dateEmploi}
-            disabled={true}
-          />
-        </div>
+       
       </div>
 
       <div class="grid grid-cols-3 gap-6 mt-6">
