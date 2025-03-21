@@ -398,7 +398,7 @@
       localStorage.setItem("step", step.toString());
       return;
     } else {
-      messagefile = "Veuillez remplir tous les champs obligatoires.";
+     /*  messagefile = "Veuillez remplir tous les champs obligatoires."; */
     }
   }
 
