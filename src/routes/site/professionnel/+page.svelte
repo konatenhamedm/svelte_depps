@@ -608,7 +608,7 @@
           messagefile = result.errors;
           console.log(result.errors);
         } else {
-          alert("")
+          /* alert("") */
           connexion();
         }
       })
@@ -623,8 +623,9 @@
     goto("/site/connexion");
     localStorage.clear(); // Nettoyer les données du localStorage
 
-   /*  if (localStorage.getItem("reference"))
-      localStorage.setItem("reference", "");  */// Nettoyer les données du localStorage
+    if (localStorage.getItem("reference")) {
+      localStorage.setItem("reference", ""); // Nettoyer les données du localStorage
+    }
   }
 
   async function checkTransactionID(idtransaction: any) {
