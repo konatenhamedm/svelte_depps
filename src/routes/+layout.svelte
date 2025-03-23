@@ -23,6 +23,7 @@
     <link rel="stylesheet" href="/css/style.css" />
     <link rel="stylesheet" href="/css/skin_color.css" />
     <link rel="stylesheet" href="/css/custom.css" />
+ 
   {:else}
     <!-- Styles pour le site normal -->
     <link href="https://fonts.googleapis.com/css?family=Poppins:100,300,400,700,900" rel="stylesheet">
@@ -47,6 +48,7 @@
     <Side />
     <div class="content-wrapper">
       {@render children()}
+      
       
     </div>
     <Footer />

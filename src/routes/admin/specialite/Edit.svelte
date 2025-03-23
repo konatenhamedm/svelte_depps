@@ -16,39 +16,41 @@
 
   export let data: Record<string, string> = {};
 
-  let paiementValue:any = 0; // Valeur initiale
+  let paiementValue: any = 0; // Valeur initiale
 
-function updateField() {
-  paiementValue = paiementValue === 1 ? 0 : 1; // Basculer entre 0 et 1
+  function updateField() {
+    paiementValue = paiementValue === 1 ? 0 : 1; // Basculer entre 0 et 1
 
-  console.log(paiement);
-}
+    console.log(paiement);
+  }
 
   // Initialize form data with the provided record
   function init(form: HTMLFormElement) {
-    
     libelle = data?.libelle;
     paiement = data?.paiement ? 1 : 0;
-    paiementValue = paiement;  // Synchroniser la valeur de la checkbox
+    paiementValue = paiement; // Synchroniser la valeur de la checkbox
 
-    console.log(paiement)
+    console.log(paiement);
   }
 
   async function SaveFunction() {
     isLoad = true;
 
     try {
-      const res = await fetch(BASE_URL_API_V2 + "/specialite/update/" + data?.id, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          libelle: libelle,
-          userUpdate: userUpdateId,
-          paiement: paiementValue,
-        }),
-      });
+      const res = await fetch(
+        BASE_URL_API_V2 + "/specialite/update/" + data?.id,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify({
+            libelle: libelle,
+            userUpdate: userUpdateId,
+            paiement: paiementValue
+          })
+        }
+      );
 
       if (res.ok) {
         isLoad = false;
@@ -75,37 +77,39 @@ function updateField() {
   class="m-4 modale_general"
   on:close={handleModalClose}
 >
-  <!-- Modal body -->
+  <link
+    rel="stylesheet"
+    href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
+    integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN"
+    crossorigin="anonymous"
+  />
   <div class="space-y-6 p-0">
     <form action="#" use:init>
-     
-        <div class="grid grid-cols-1 mb-4">
-          
-          <InputSimple
-            fieldName="libelle"
-            label="Libelle"
-            bind:field={libelle}
-            placeholder="entrez le libelle"
-            class="w-full"
-          ></InputSimple>
-        </div>
-        <div class="grid grid-cols-1">
-          <div class="flex items-center mb-4">
-            <input
+      <div class="grid grid-cols-1 mb-4">
+        <InputSimple
+          fieldName="libelle"
+          label="Libelle"
+          bind:field={libelle}
+          placeholder="entrez le libelle"
+          class="w-full"
+        ></InputSimple>
+      </div>
+      <div class="grid grid-cols-1">
+        <div class="flex items-center mb-4">
+          <input
             id="default-checkbox"
             type="checkbox"
             class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded-sm focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
-            bind:checked={paiementValue} 
+            bind:checked={paiementValue}
           />
-            <label
-              for="default-checkbox"
-              class="ms-2 text-sm font-medium text-gray-900 dark:text-gray-300"
-            >
-              paiement
-            </label>
-          </div>
+          <label
+            for="default-checkbox"
+            class="ms-2 text-sm font-medium text-gray-900 dark:text-gray-300"
+          >
+            paiement
+          </label>
         </div>
-
+      </div>
     </form>
   </div>
 

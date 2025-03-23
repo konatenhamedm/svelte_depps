@@ -106,8 +106,7 @@
 
     appartenirOrganisation: "non",
     organisationNom: "",
-    organisationNumero: "",
-    organisationAnnee: ""
+   
   };
 
   let errors = {
@@ -116,7 +115,7 @@
     confirmPassword: "",
 
     // Personal Informations
-    code: "",
+  
     poleSanitaire: "",
     nom: "",
     professionnel: "",
@@ -178,7 +177,7 @@
     }
 
     if (step === 2) {
-      /* errors.code = formData.code ? "" : "Le code est requis"; */
+      
       errors.poleSanitaire = formData.poleSanitaire
         ? ""
         : "Le pole sanitaire est requis";
@@ -193,7 +192,6 @@
         : "Le professionnel est requis";
 
       valid =
-        !errors.code &&
         !errors.poleSanitaire &&
         !errors.professionnel &&
         !errors.nom &&
@@ -261,17 +259,10 @@
         errors.organisationNom = formData.organisationNom
           ? ""
           : "Le nom de l'organisation est requis";
-        errors.organisationNumero = formData.organisationNumero
-          ? ""
-          : "Le numero de l'organisation est requis";
-        errors.organisationAnnee = formData.organisationAnnee
-          ? ""
-          : "L'année est requise";
+       
 
         valid =
           !errors.organisationNom &&
-          !errors.organisationNumero &&
-          !errors.organisationAnnee &&
           isValidPhoneOrganisation;
       }
     }
@@ -741,13 +732,15 @@
    */
   let objects = [
     { name: "civilite", url: "/civilite" },
-    { name: "nationate", url: "/pays" }
+    { name: "nationate", url: "/pays" },
+    { name: "situationProfessionnelle", url: "/situationProfessionnelle" }
   ];
 
   let values: {
     civilite: Civilite[];
     nationate: Pays[];
-  } = { civilite: [], nationate: [] };
+    situationProfessionnelle: Pays[];
+  } = { civilite: [], nationate: [], situationProfessionnelle: [] };
 
   async function fetchData() {
     try {
@@ -1056,7 +1049,7 @@
               class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-2 gap-4 mb-4"
             >
               <!-- code -->
-              <div class="form__group">
+              <!-- <div class="form__group">
                 <label class="block text-3xl font-medium mb-1"
                   >Code de vérification (Uniquement pour les anciens membres)</label
                 >
@@ -1070,7 +1063,7 @@
                 {#if errors.code}<p class="text-red-500 text-sm">
                     {errors.code}
                   </p>{/if}
-              </div>
+              </div> -->
               <!-- pole sanitaire -->
               <div class="form__group">
                 <label class="block text-3xl font-medium mb-1"
@@ -1258,7 +1251,7 @@
                 </div>
 
                 <!-- Autres champs similaires -->
-                {#each [{ key: "dateDiplome", label: "Date d'obtention  diplôme", type: "date" }, { key: "dateNaissance", label: "Date de naissance", type: "date" }, { key: "numero", label: "Contact", type: "tel" }, { key: "lieuDiplome", label: "Lieu d'obtention  diplôme" }, { key: "nationalite", label: "Nationalité" }, { key: "situation", label: "Situation matrimoniale" }, { key: "datePremierDiplome", label: "Date du premier diplôme", type: "date" }, { key: "poleSanitairePro", label: "Pole Sanitaire,District,Commune,Quartier,lot,ilot" }, { key: "diplome", label: "Dénomination du diplome" }, { key: "situationPro", label: "Situation professionnel" }] as field}
+                {#each [{ key: "dateDiplome", label: "Date d'obtention  diplôme", type: "date" }, { key: "dateNaissance", label: "Date de naissance", type: "date" }, { key: "numero", label: "Contact", type: "tel" }, { key: "lieuDiplome", label: "Lieu d'obtention  diplôme" }, { key: "nationalite", label: "Nationalité" }, { key: "situation", label: "Situation matrimoniale" }, { key: "datePremierDiplome", label: "Date du premier emploi", type: "date" }, { key: "poleSanitairePro", label: "Pole Sanitaire,District,Commune,Quartier,lot,ilot" }, { key: "diplome", label: "Dénomination du diplome" }, { key: "situationPro", label: "Situation professionnel" }] as field}
                   {#if field.key === "nationalite"}
                     <div class="form__group">
                       <label class="block text-2xl font-medium mb-1"
@@ -1311,6 +1304,29 @@
                         </p>{/if}
                     </div>
                   {/if}
+
+                  {#if field.key === "situationPro"}
+                   <!-- Civilité -->
+                <div class="form__group">
+                  <label class="block text-2xl font-medium mb-1"
+                    >{field.label} *</label
+                  >
+                  <select
+                    on:input={saveFormState}
+                    bind:value={formData.situationPro}
+                    class="w-full form__input"
+                  >
+                    <option value="">Veuillez sélectionner une option</option>
+                    {#each values.situationProfessionnelle as situationPro}
+                      <option value={situationPro.id}>{situationPro.libelle}</option>
+                    {/each}
+                  </select>
+                  {#if errors.situationPro}<p class="text-red-500 text-sm">
+                      {errors.situationPro}
+                    </p>{/if}
+                </div>
+
+                {/if}
 
                   {#if field.key != "nationalite" && field.key != "situation"}
                     <div class="form__group">
@@ -1455,53 +1471,7 @@
                         </p>{/if}
                     </div>
 
-                    <div
-                      class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-2 gap-2"
-                    >
-                      <div class="form__group">
-                        <label class="form_label"
-                          >Numero de l'organisation *</label
-                        >
-                        <input
-                          on:input={saveFormState}
-                          on:input={(e: any) =>
-                            updateField("organisationNumero", e.target.value)}
-                          type="text"
-                          class="form__input"
-                          bind:value={formData.organisationNumero}
-                          placeholder="Numero de l'organisation"
-                          on:input={(e) => {
-                            validatePhoneOrganisation();
-                          }}
-                        />
-                        {#if errors.organisationNumero}<p class="error">
-                            {errors.organisationNumero}
-                          </p>{/if}
-
-                        {#if !isValidPhoneOrganisation && formData.organisationNumero}
-                          <p style="color: red;" class="text-red-500 text-sm">
-                            Numéro invalide. Il doit commencer par 07, 01 ou 05
-                            et contenir 10 chiffres.
-                          </p>
-                        {/if}
-                      </div>
-
-                      <div class="form__group">
-                        <label class="form_label">Année *</label>
-                        <input
-                          on:input={saveFormState}
-                          on:input={(e: any) =>
-                            updateField("organisationAnnee", e.target.value)}
-                          type="text"
-                          class="form__input"
-                          bind:value={formData.organisationAnnee}
-                          placeholder="Année"
-                        />
-                        {#if errors.organisationAnnee}<p class="error">
-                            {errors.organisationAnnee}
-                          </p>{/if}
-                      </div>
-                    </div>
+                    
                   {/if}
                 </div>
               </div>

@@ -32,18 +32,17 @@
     formData.append("libelle", icons.libelle);
     formData.append("userUpdate", userUpdateId);
 
-   
     if (icons.path instanceof File) {
       // Vérifie que c'est bien un fichier
       formData.append("path", icons.path);
     }
-    console.log(formData)
+    console.log(formData);
 
     isLoad = true;
     try {
       const res = await fetch(BASE_URL_API + "/adminDocument/create", {
         method: "POST",
-       
+
         body: formData
       });
 
@@ -58,7 +57,7 @@
       notificationMessage = "Une erreur crée lors de l enregistrement";
       notificationType = "error";
       showNotification = true;
-      console.error("Error saving:", error);  
+      console.error("Error saving:", error);
     }
   }
 
@@ -88,7 +87,12 @@
   class="m-4 modale_general"
   on:close={handleModalClose}
 >
-  <!-- Modal body -->
+  <link
+    rel="stylesheet"
+    href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
+    integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN"
+    crossorigin="anonymous"
+  />
   <div class="space-y-6 p-0">
     <form action="#" use:init>
       <div class="grid grid-cols-1 mb-4">
@@ -103,7 +107,7 @@
       <div class="grid grid-cols-1">
         <Label class="col-span-6 space-y-1 sm:col-span-3">
           <span>Document</span>
-          <Input 
+          <Input
             type="file"
             name="document"
             on:change={handleFileUpload}

@@ -45,6 +45,8 @@
 				 <li><a href="/admin/ville"><i class="icon-Commit"><span class="path1"></span><span class="path2"></span></i>Villes</a></li>         
 				 <li><a href="/admin/type_profession"><i class="icon-Commit"><span class="path1"></span><span class="path2"></span></i>Types  profession</a></li>         
 				 <li><a href="/admin/profession"><i class="icon-Commit"><span class="path1"></span><span class="path2"></span></i>Profession</a></li>         
+				 <li><a href="/admin/situation_professionnelle"><i class="icon-Commit"><span class="path1"></span><span class="path2"></span></i>Situation professionnelle</a></li>         
+				 <li><a href="/admin/racine_sequence"><i class="icon-Commit"><span class="path1"></span><span class="path2"></span></i>Racine sequence</a></li>         
 				</ul>
 			</li>
 

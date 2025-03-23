@@ -10,17 +10,18 @@
   let showNotification = false;
   let notificationMessage = "";
   let notificationType = "info";
-  let typeProfessions : any = []; // Assume that this will be populated with cities
+  let typeProfessions: any = []; // Assume that this will be populated with cities
 
   export let open: boolean = false;
   let isLoad = false;
 
-  let icons: any = {
+  let profession: any = {
     code: "",
     libelle: "",
+    codeGeneration: "",
     typeProfession: "",
     montantRenouvellement: "",
-    montantNouvelleDemande: "",
+    montantNouvelleDemande: ""
   };
   export let sizeModal: any = "lg";
   export let userUpdateId: any;
@@ -30,26 +31,26 @@
   function init(form: HTMLFormElement) {}
 
   async function SaveFunction() {
-
     console.log({
-          typeProfession: icons.typeProfession,
-          libelle: icons.libelle,
-          userUpdate: userUpdateId,
-        })
+      typeProfession: profession.typeProfession,
+      libelle: profession.libelle,
+      userUpdate: userUpdateId
+    });
     isLoad = true;
     try {
       const res = await fetch(BASE_URL_API + "/profession/create", {
         method: "POST",
         headers: {
-          "Content-Type": "application/json",
+          "Content-Type": "application/json"
         },
         body: JSON.stringify({
-          typeProfession: icons.typeProfession,
-          libelle: icons.libelle,
-          montantRenouvellement: icons.montantRenouvellement,
-          montantNouvelleDemande: icons.montantNouvelleDemande,
-          userUpdate: userUpdateId,
-        }),
+          typeProfession: profession.typeProfession,
+          libelle: profession.libelle,
+          codeGeneration: profession.codeGeneration,
+          montantRenouvellement: profession.montantRenouvellement,
+          montantNouvelleDemande: profession.montantNouvelleDemande,
+          userUpdate: userUpdateId
+        })
       });
 
       if (res.ok) {
@@ -74,75 +75,88 @@
   }
 
   async function getTypeProfession() {
-        try {
-            const res = await fetch(BASE_URL_API + "/typeProfession");
-            const data = await res.json();
-            typeProfessions = data.data
-        } catch (error) {
-            console.error("Error fetching villes:", error);
-        }
+    try {
+      const res = await fetch(BASE_URL_API + "/typeProfession");
+      const data = await res.json();
+      typeProfessions = data.data;
+    } catch (error) {
+      console.error("Error fetching villes:", error);
     }
+  }
 
-    onMount(async () => {
-        await getTypeProfession();
-    })
+  onMount(async () => {
+    await getTypeProfession();
+  });
 </script>
 
 <Modal
   bind:open
-  title={Object.keys(data).length ? "Ajouter une  profession " : "Ajouter une  profession"}
+  title={Object.keys(data).length
+    ? "Ajouter une  profession "
+    : "Ajouter une  profession"}
   size={sizeModal}
   class="m-4 modale_general"
   on:close={handleModalClose}
 >
-  <!-- Modal body -->
+  <link
+    rel="stylesheet"
+    href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
+    integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN"
+    crossorigin="anonymous"
+  />
+  <link
+    rel="stylesheet"
+    href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
+    integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN"
+    crossorigin="anonymous"
+  />
   <div class="space-y-6 p-0">
     <form action="#" use:init>
       <div class="grid grid-cols-1 mb-2">
-     
-
         <InputSimple
           fieldName="libelle"
           label="Libelle"
-          bind:field={icons.libelle}
+          bind:field={profession.libelle}
           placeholder="entrez le libelle"
           class="w-full"
         ></InputSimple>
       </div>
 
-      <div class="grid grid-cols-1 gap-6 mb-2">
-        
-        <InputSelect 
-        label="Type profession"
-        bind:selectedId={icons.typeProfession}
-        datas={typeProfessions}
-        id="typePersonne"
-    />
-       
-      </div>
-      <div class="grid grid-cols-2 gap-2">
-      <div>
-          <InputSimple
-          fieldName="montantNouvelleDemande"
-          label="Montant nouvelle demande"
-          bind:field={icons.montantNouvelleDemande}
-          placeholder="entrez le montant"
+      <div class="grid grid-cols-6 gap-6 mb-2">
+        <InputSelect
+          label="Type profession"
+          bind:selectedId={profession.typeProfession}
+          datas={typeProfessions}
+          id="typePersonne"
+        />
+
+        <InputSimple
+          fieldName="codeGeneration"
+          label="Code Generation"
+          bind:field={profession.codeGeneration}
+          placeholder="entrez le code de generation"
           class="w-full"
         ></InputSimple>
       </div>
-      <div>
-
-        <InputSimple
-        fieldName="montantRenouvellement"
-        label="Montant renouvellement"
-        bind:field={icons.montantRenouvellement}
-        placeholder="entrez le montant"
-        class="w-full"
-      ></InputSimple>
-      </div>
-
-      
-      
+      <div class="grid grid-cols-2 gap-2">
+        <div>
+          <InputSimple
+            fieldName="montantNouvelleDemande"
+            label="Montant nouvelle demande"
+            bind:field={profession.montantNouvelleDemande}
+            placeholder="entrez le montant"
+            class="w-full"
+          ></InputSimple>
+        </div>
+        <div>
+          <InputSimple
+            fieldName="montantRenouvellement"
+            label="Montant renouvellement"
+            bind:field={profession.montantRenouvellement}
+            placeholder="entrez le montant"
+            class="w-full"
+          ></InputSimple>
+        </div>
       </div>
     </form>
   </div>

@@ -95,30 +95,40 @@
 
 
 
-<Header {user} />
+
 <Slide {user} />
-<div class="file-ariane flex items-center space-x-2 text-sm text-gray-600 mb-4">
-  <button on:click={navigateToDashboard} class="flex items-center hover:text-blue-600">
-    <!-- Icône SVG pour "Tableau de bord" -->
-    <svg
-            xmlns="http://www.w3.org/2000/svg"
-            class="w-4 h-4 mr-1"
-            viewBox="0 0 20 20"
-            fill="currentColor"
-    >
-      <path
-              d="M10.707 2.293a1 1 0 00-1.414 0l-7 7a1 1 0 001.414 1.414L4 10.414V17a1 1 0 001 1h2a1 1 0 001-1v-2a1 1 0 011-1h2a1 1 0 011 1v2a1 1 0 001 1h2a1 1 0 001-1v-6.586l.293.293a1 1 0 001.414-1.414l-7-7z"
-      />
-    </svg>
-    Tableau de bord
-  </button>
-  <span>/</span>
-  <span class="text-gray-800">Liste des paiements</span> <!-- Nom de la page actuelle -->
-</div><br>
+<link
+rel="stylesheet"
+href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
+integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN"
+crossorigin="anonymous"
+/>
+
+<div class="container ">
+  <div class="file-ariane flex items-center space-x-2 text-sm text-gray-600 mb-4">
+    <button on:click={navigateToDashboard} class="flex items-center hover:text-blue-600">
+      <!-- Icône SVG pour "Tableau de bord" -->
+      <svg
+              xmlns="http://www.w3.org/2000/svg"
+              class="w-4 h-4 mr-1"
+              viewBox="0 0 20 20"
+              fill="currentColor"
+      >
+        <path
+                d="M10.707 2.293a1 1 0 00-1.414 0l-7 7a1 1 0 001.414 1.414L4 10.414V17a1 1 0 001 1h2a1 1 0 001-1v-2a1 1 0 011-1h2a1 1 0 011 1v2a1 1 0 001 1h2a1 1 0 001-1v-6.586l.293.293a1 1 0 001.414-1.414l-7-7z"
+        />
+      </svg>
+      Tableau de bord
+    </button>
+    <span>/</span>
+    <span class="text-gray-800">Liste des paiements</span> <!-- Nom de la page actuelle -->
+  </div>
+</div>
+<br>
 
 <main class="mx-auto px-8 py-8 main-div" style="">
   <!-- <section class="iletisim-form-alani"> -->
-    <div id="">
+    <div id="" class="table-responsive government-table">
       <div class="container mx-auto p-4 ">
         <!-- Boutons en haut du tableau -->
         <div class="flex justify-between mb-4">
@@ -132,9 +142,8 @@
         </div>
 
         <!-- Tableau -->
-        <table
-          class="min-w-full bg-white border border-gray-200 border-collapse"
-        >
+      
+          <table class="table table-bordered">
           <thead>
             <tr class="bg-gray-100">
               <th
@@ -280,17 +289,17 @@
     background-color: #fff;
   }
   .main-div {
-    margin-top: -10px;
+    margin-top: -30px;
     margin-bottom: 180px;
   
     background: transparent;
     border-radius: 10px;
-    padding: 20rem 316px 10rem !important;
+    padding: 20rem 0px 0rem !important;
   }
 
   .file-ariane {
     position: absolute;
-    width: 100%;
+    width: 68%;
     top: 112px;
     background: #4292cecc;
     padding: 22px;

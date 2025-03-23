@@ -8,7 +8,7 @@
     Input,
     Label,
     Modal,
-    Textarea,
+    Textarea
   } from "flowbite-svelte";
   import InputTextArea from "$components/inputs/InputTextArea.svelte";
   import InputSimplePassword from "$components/inputs/InputSimplePassword.svelte";
@@ -19,12 +19,12 @@
 
   let typeUsers: any = [
     {
-      'id':"ADMINISTRATEUR",
-      'libelle':"ADMINISTRATEUR"
+      id: "ADMINISTRATEUR",
+      libelle: "ADMINISTRATEUR"
     },
     {
-      'id':"INSTRUCTEUR",
-      'libelle':"INSTRUCTEUR"
+      id: "INSTRUCTEUR",
+      libelle: "INSTRUCTEUR"
     }
   ];
 
@@ -44,7 +44,6 @@
 
   // Initialize form data with the provided record
   function init(form: HTMLFormElement) {
-   
     username = data?.username;
 
     email = data?.email;
@@ -70,13 +69,10 @@
       formData.append("typeUser", typeUser);
       formData.append("Avatar", "null"); // Si Avatar est un fichier, il faut fournir un `File` ou `Blob`
 
-      const res = await fetch(
-        BASE_URL_API + "/user/admin/update/" + data?.id,
-        {
-          method: "POST",
-          body: formData,
-        }
-      );
+      const res = await fetch(BASE_URL_API + "/user/admin/update/" + data?.id, {
+        method: "POST",
+        body: formData
+      });
       if (res.ok) {
         isLoad = false;
         open = false; // Close the modal
@@ -102,7 +98,12 @@
   class="m-4 modale_general"
   on:close={handleModalClose}
 >
-  <!-- Modal body -->
+  <link
+    rel="stylesheet"
+    href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
+    integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN"
+    crossorigin="anonymous"
+  />
   <div class="space-y-6 p-0">
     <form action="#" use:init>
       <div class="grid grid-cols-6 gap-6 mb-4">
@@ -140,9 +141,7 @@
         ></InputSimple>
       </div>
 
-     
       <div class="grid grid-cols-6 gap-6">
-      
         <InputSimplePassword
           fieldName="password"
           label="Mot de passe"
@@ -150,12 +149,12 @@
           placeholder="entrez le mot de passe"
           class="w-full"
         />
-        <InputSelect 
-        label="Type utilisateur"
-        bind:selectedId={typeUser}
-        datas={typeUsers}
-        id="typeUser"
-    />
+        <InputSelect
+          label="Type utilisateur"
+          bind:selectedId={typeUser}
+          datas={typeUsers}
+          id="typeUser"
+        />
       </div>
     </form>
   </div>

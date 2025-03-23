@@ -19,175 +19,87 @@
     };
 </script>
 
-<div id="">
     <Slide user={user}/>
-    <main class="flex ">
-        <div class="max-w-[134rem] mx-auto px-4 sm:px-6 lg:px-8 pt-[150px]">
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-12">
-                <!-- Left Column -->
-                <div>
-                    <h1 class="text-4xl font-bold  mb-6 h2-baslik-anasayfa-ozel_autre">Contactez-nous</h1>
-                    <p class="paragraf mb-8">
-                        Envoyez-nous un e-mail, appelez-nous ou remplissez le formulaire pour savoir comment Snappy peut résoudre vos problèmes de messagerie.
-                    </p>
+    <main class="">
+        <iframe src="https://www.google.com/maps/embed?pb=!1m14!1m8!1m3!1d63561.74820863039!2d-4.082955703637691!3d5.323482559365998!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0xfc1eb0ac6bb768d%3A0x1bb04b0baf73417c!2sDirection%20des%20%C3%A9tablissements%20et%20professions%20sanitaires!5e0!3m2!1sfr!2sci!4v1712870937241!5m2!1sfr!2sci" width="100%" height="500px" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
 
-                    <div class="space-y-4">
-                        <p class="text-primary">info@snappy.io</p>
-                        <p class="text-primary">321-221-231</p>
-                        <p class="font-medium h2-baslik-anasayfa-ozel_autre">Support client</p>
+      <!--   <main> -->
+            <!-- İletişim İcon Alanı -->
+            <section class="iletisim-icon-alani ">
+                <div class="tablo">
+                    <!-- téléphone 1 -->
+                    <div class="tablo--1-ve-3">
+                        <div class="ozellik-kutu-iletisim wow fadeInUp"  style="cursor:pointer;">
+                            <i class="ozellik-kutu-iletisim--icon icon-basic-headset"></i>
+                            <h3 class="baslik-4 h-yazi-margin-kucuk-2">Support</h3>
+                            <p class="ozellik-kutu-iletisim--yazi">
+                                CONTACT_1
+                            </p>
+                        </div>
                     </div>
-
-                    <div class="mt-12 grid grid-cols-3 gap-8">
-                        <div>
-                            <h3 class="font-medium mb-2 ">Support client</h3>
-                            <p class="text-md   paragraf">Notre équipe de support est disponible 24h/24 et 7j/7 pour répondre à toutes vos préoccupations ou questions.</p>
+                    <!-- mail 2 -->
+                    <div class="tablo--1-ve-3">
+                        <div class="ozellik-kutu-iletisim wow fadeInUp"  style="cursor:pointer;">
+                            <i class="ozellik-kutu-iletisim--icon icon-basic-paperplane"></i>
+                            <h3 class="baslik-4 h-yazi-margin-kucuk-2">Mail</h3>
+                            <p class="ozellik-kutu-iletisim--yazi">
+                                EMAIL
+                            </p>
                         </div>
-                        <div>
-                            <h3 class="font-medium mb-2">Avis et suggestions</h3>
-                            <p class="text-md   paragraf">Nous prenons vos retours très au sérieux et travaillons en continu pour améliorer Snappy. Vos suggestions sont essentielles pour façonner l'avenir de Snappy.</p>
-                        </div>
-                        <div>
-                            <h3 class="font-medium mb-2">Demandes médias</h3>
-                            <p class="text-md   paragraf">Pour toute question liée aux médias, demandes de presse, contactez-nous à media@snappy.com.</p>
+                    </div>
+                    <!-- adres 3 -->
+                    <div class="tablo--1-ve-3">
+                        <div class="ozellik-kutu-iletisim wow fadeInUp"  style="cursor:pointer;">
+                            <i class="ozellik-kutu-iletisim--icon icon-basic-map"></i>
+                            <h3 class="baslik-4 h-yazi-margin-kucuk-2">Office</h3>
+                            <p class="ozellik-kutu-iletisim--yazi">
+                                COMMUNE
+                            </p>
                         </div>
                     </div>
                 </div>
-
-                <!-- Right Column - Contact Form -->
-                <div class="bg-white rounded-2xl shadow-lg p-8">
-                    <h2 class="text-2xl font-semibold mb-6 h2-baslik-anasayfa-ozel_autre">Prenez contact</h2>
-                    <p class="  paragraf mb-8">Vous pouvez nous joindre à tout moment</p>
-
-                    <form class="space-y-6">
-                        <div class="grid grid-cols-2 gap-4">
-                            <div>
-                                <input
-                                        type="text"
-                                        bind:value={firstName}
-                                        placeholder="Prénom"
-                                        class="w-full px-4 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-primary focus:border-transparent"
-                                />
+                <div class="tablo w-full ">
+                    <div class="tablo--1-ve-2 ">
+                        <h2 class="h2-baslik-anasayfa-ozel h-yazi-margin-kucuk">Formulaire de contact</h2>
+                        <form action="https://garantiwebtasarim.com/medicare/contactform.php" class="form" method="post">
+                            <div class="form__grup">
+                                <input type="text" class="form__input" placeholder="Nom complet" id="txt_isim" name="nom" required>
+                                <label for="name" class="form__label">Nom complet</label>
                             </div>
-                            <div>
-                                <input
-                                        type="text"
-                                        bind:value={lastName}
-                                        placeholder="Nom"
-                                        class="w-full px-4 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-primary focus:border-transparent"
-                                />
+                            <div class="form__grup">
+                                <input type="email" class="form__input" placeholder="Adresse e-mail" id="txt_eposta" name="email" required>
+                                <label for="email" class="form__label">Adresse e-mail</label>
                             </div>
-                        </div>
-
-                        <input
-                                type="email"
-                                bind:value={email}
-                                placeholder="Votre e-mail"
-                                class="w-full px-4 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-primary focus:border-transparent"
-                        />
-
-                        <div class="flex gap-2">
-                            <select class="px-4 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-primary focus:border-transparent">
-                                <option>+62</option>
-                            </select>
-                            <input
-                                    type="tel"
-                                    bind:value={phoneNumber}
-                                    placeholder="Numéro de téléphone"
-                                    class="w-full px-4 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-primary focus:border-transparent"
-                            />
-                        </div>
-
-                        <textarea
-                                bind:value={message}
-                                placeholder="Comment pouvons-nous vous aider ?"
-                                rows="4"
-                                class="w-full px-4 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-primary focus:border-transparent"
-                        ></textarea>
-
-                        <button
-                                type="submit"
-                                class="w-full py-3 px-6 text-white font-medium rounded-lg bg-gradient-to-r from-gradient-start to-gradient-end hover:opacity-90 transition-opacity"
-                        >
-                            Envoyer
-                        </button>
-
-                        <p class="text-sm text-center   paragraf">
-                            En nous contactant, vous acceptez nos
-                            <a href="#" class="text-primary">Conditions d'utilisation</a>
-                            et notre
-                            <a href="#" class="text-primary">Politique de confidentialité</a>
+                            <div class="form__grup">
+                                <input type="text" class="form__input" placeholder="Numéro de téléphone" id="txt_telefon" name="telefon" required>
+                                <label for="telefon" class="form__label">Numéro de téléphone</label>
+                            </div>
+                            <div class="form__grup">
+                                <textarea rows="3" cols="66" maxlength="90" name="message" id="txt_mesaj" placeholder="Votre message" class="form__input"></textarea>
+                                <label for="message" class="form__label">Votre message...</label>
+                            </div>
+                            <div class="form__grup">
+                                <button class="buton buton--kirmizi" id="btn_Gonder">ENVOYER</button>
+                            </div><br>
+                        </form>
+                    </div>
+                    <div class="tablo--1-ve-2 wow fadeInUp">
+                        <h2 class="h2-baslik-anasayfa-ozel h-yazi-margin-kucuk">Vous nous connaissez ?</h2>
+                        <p class="paragraphe">
+                            L’accès à E-DEPPS est le moyen digital pour la demande et la délivrance des documents administratifs des établissements sanitaires privés et des professionnels de santé.<br><br>C’est aussi, pour la population, un accès aisé aux informations relatives à la santé.<br><br>Pour une meilleure coordination des interventions du secteur de la santé et aboutir au renforcement du cadre de régulation du secteur privé de la santé en particulier, plusieurs activités ont été réalisées.
                         </p>
-                    </form>
-                </div>
-            </div>
-
-            <!-- Map Section -->
-            <div class="mt-24 grid grid-cols-1 md:grid-cols-1 gap-12">
-               <!--  <div class="bg-gray-200 rounded-lg h-80">
-
-                    <GoogleMap apiKey="AIzaSyDvlpPz-3nRwnzYQHvKXtnF_kApD9yR8IE" latitude={5.345317} longitude={-4.024429} zoom={14} />
-
-                </div> -->
-               <!--  <div>
-                    <h2 class="text-2xl font-semibold mb-6">Notre emplacement</h2>
-                    <h3 class="text-3xl font-bold mb-8">Connecter proche et lointain</h3>
-
-                    <div>
-                        <h4 class="font-medium mb-4">Siège social</h4>
-                        <p class="  paragraf">Snappy Inc.</p>
-                        <p class="  paragraf">San Francisco, USA</p>
-                        <p class="  paragraf">123 Tech Boulevard, Suite 456</p>
-                        <p class="  paragraf">San Francisco, CA 92345</p>
-                        <p class="  paragraf">États-Unis</p>
-                    </div>
-                </div> -->
-            </div>
-
-            <!-- FAQ Section -->
-        <!--     <div class="mt-24">
-                <h2 class="text-3xl font-bold mb-8">FAQ</h2>
-                <h3 class="text-4xl font-bold mb-4">Vous avez des questions ?</h3>
-                <p class="  paragraf mb-8">Si vous avez des questions, nous répondrons à toutes vos interrogations.</p>
-
-                <div class="space-y-4">
-                    <div class="p-4 border rounded-lg">
-                        <button class="w-full text-left font-medium title-faq"  on:click={() => toggleFaq(0)}>
-                            Qu'est-ce qui rend Snappy différent des autres applications de messagerie ?
-                        </button>
-                        {#if faqOpen[0]}
-                            <p class="mt-2   paragraf">Snappy se distingue par sa rapidité, son interface intuitive et sa sécurité de bout en bout.</p>
-                        {/if}
-                    </div>
-                    <div class="p-4 border rounded-lg">
-                        <button class="w-full text-left font-medium text-black title-faq" on:click={() => toggleFaq(1)}>
-                            Quelle est la sécurité de mes conversations sur Snappy ?
-                        </button>
-                        {#if faqOpen[1]}
-                            <p class="mt-2   paragraf">Toutes vos conversations sur Snappy sont cryptées pour garantir la confidentialité de vos échanges.</p>
-                        {/if}
-                    </div>
-                    <div class="p-4 border rounded-lg">
-                        <button class="w-full text-left font-medium title-faq" on:click={() => toggleFaq(2)}>
-                            Puis-je personnaliser mon expérience Snappy ?
-                        </button>
-                        {#if faqOpen[2]}
-                            <p class="mt-2   paragraf">Oui, vous pouvez personnaliser les notifications, le thème et bien plus encore pour rendre votre expérience unique.</p>
-                        {/if}
-                    </div>
-                    <div class="p-4 border rounded-lg">
-                        <button class="w-full text-left font-medium title-faq" on:click={() => toggleFaq(3)}>
-                            Quelles fonctionnalités de groupe Snappy propose-t-il ?
-                        </button>
-                        {#if faqOpen[3]}
-                            <p class="mt-2   paragraf">Snappy propose des fonctionnalités de groupe avancées, telles que des discussions de groupe, des appels vidéo en groupe, et la gestion des membres du groupe.</p>
-                        {/if}
                     </div>
                 </div>
-            </div> -->
-        </div>
+            </section>
+        <br>
+            <!-- İletişim Form Alanı -->
+            <section class="iletisim-form-alani mt-0">
+                
+            </section>
+        <!-- </main> -->
     </main>
     <Footer/>
-</div>
+
 <style>
     .text-center.content-value p {
       text-align: center;

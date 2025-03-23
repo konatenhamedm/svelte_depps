@@ -55,14 +55,14 @@
 
     appartenirOrganisation: "non",
     organisationNom: "",
-    organisationNumero: "",
-    organisationAnnee: ""
+   
   };
 
 
 
  
   let civilites: any = [];
+  let situationProfessionnelles: any = [];
   let pays: any = [];
 
   let openShow: boolean = false;
@@ -183,8 +183,7 @@
 
        
           organisationNom: apiData.appartenirOrganisation == "oui" ? apiData.organisations[0].nom || "" : "",
-          organisationNumero: apiData.appartenirOrganisation == "oui" ? apiData.organisations[0].numero || "" :"",
-          organisationAnnee: apiData.appartenirOrganisation == "oui" ? apiData.organisations[0].annee || "" :""
+         
         };
         
         await getProfessionLibelle(apiData.profession);
@@ -206,6 +205,10 @@
       const paysResponse = await apiFetch(true, "/pays");
       if (paysResponse.code === 200) {
         pays =paysResponse.data || [];
+      }
+      const situationProfessionnellesResponse = await apiFetch(true, "/situationProfessionnelle");
+      if (situationProfessionnellesResponse.code === 200) {
+        situationProfessionnelles =situationProfessionnellesResponse.data || [];
       }
 
    
@@ -601,7 +604,7 @@
                   />
                 </div>
 
-                <div class="space-y-2">
+                <!-- <div class="space-y-2">
                   <label class="block text-3xl font-medium text-black"
                     >Situation Professionnelle</label
                   >
@@ -610,6 +613,30 @@
                     bind:value={formData.situationPro}
                     class="w-full form__input"
                   />
+                </div> -->
+
+                <div class="space-y-2">
+                  <label class="block text-3xl font-medium text-black"
+                    >Situation Professionnelle *</label
+                  >
+                  <select
+                 
+                  class="w-full form__input"
+                  name=""
+                  id=""
+                  bind:value={formData.situationPro}
+                >
+                  <option value="" selected={!formData.situationPro}
+                    >Veuillez sélectionner une option</option
+                  >
+                  {#each situationProfessionnelles as situationPro}
+                    <option
+                      value={situationPro.id}
+                      selected={formData.situationPro === situationPro.id}
+                      >{situationPro.libelle}</option
+                    >
+                  {/each}
+                </select>
                 </div>
                 <div class="space-y-2">
                   <label class="block text-3xl font-medium text-black"
@@ -714,7 +741,7 @@
                     />
                   </div>
 
-                  <div class="space-y-2">
+                 <!--  <div class="space-y-2">
                     <label class="block text-3xl font-medium text-black"
                       >Numéro de l'organisation</label
                     >
@@ -733,8 +760,8 @@
                       type="number"
                       bind:value={formData.organisationAnnee}
                       class="w-full form__input"
-                    />
-                  </div>
+                    /> -->
+                <!--   </div> -->
                 {/if}
               </div>
             </div>

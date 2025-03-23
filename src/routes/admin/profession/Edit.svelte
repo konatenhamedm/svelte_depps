@@ -12,8 +12,9 @@
   let typeProfession: any = "";
   let libelle: string = "";
   let montantNouvelleDemande: string = "";
+  let codeGeneration: string = "";
   let montantRenouvellement: string = "";
-  let typeProfessions : any = [];
+  let typeProfessions: any = [];
 
   export let sizeModal: any = "lg";
   export let userUpdateId: any;
@@ -24,6 +25,7 @@
   function init(form: HTMLFormElement) {
     typeProfession = data?.typeProfession?.id;
     libelle = data?.libelle;
+    codeGeneration = data?.codeGeneration;
     montantRenouvellement = data?.montantRenouvellement;
     montantNouvelleDemande = data?.montantNouvelleDemande;
   }
@@ -35,15 +37,16 @@
       const res = await fetch(BASE_URL_API + "/profession/update/" + data?.id, {
         method: "POST",
         headers: {
-          "Content-Type": "application/json",
+          "Content-Type": "application/json"
         },
         body: JSON.stringify({
           typeProfession: typeProfession,
           libelle: libelle,
+          codeGeneration: codeGeneration,
           montantRenouvellement: montantRenouvellement,
           montantNouvelleDemande: montantNouvelleDemande,
-          userUpdate: userUpdateId,
-        }),
+          userUpdate: userUpdateId
+        })
       });
 
       if (res.ok) {
@@ -62,18 +65,18 @@
   }
 
   async function getTypeProfession() {
-        try {
-            const res = await fetch(BASE_URL_API + "/typeProfession");
-            const data = await res.json();
-            typeProfessions = data.data
-        } catch (error) {
-            console.error("Error fetching villes:", error);
-        }
+    try {
+      const res = await fetch(BASE_URL_API + "/typeProfession");
+      const data = await res.json();
+      typeProfessions = data.data;
+    } catch (error) {
+      console.error("Error fetching villes:", error);
     }
+  }
 
-    onMount(async () => {
-        await getTypeProfession();
-    })
+  onMount(async () => {
+    await getTypeProfession();
+  });
 </script>
 
 <Modal
@@ -85,35 +88,46 @@
   class="m-4 modale_general"
   on:close={handleModalClose}
 >
-  <!-- Modal body -->
+  <link
+    rel="stylesheet"
+    href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
+    integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN"
+    crossorigin="anonymous"
+  />
   <div class="space-y-6 p-0">
     <form action="#" use:init>
       <div class="grid grid-cols-1 mb-2">
         <div class="grid grid-cols-1">
-       
           <InputSimple
-          fieldName="libelle"
-          label="Libelle"
-          bind:field={libelle}
-          placeholder="entrez le libelle"
-          class="w-full"
-        ></InputSimple>
-      </div>
+            fieldName="libelle"
+            label="Libelle"
+            bind:field={libelle}
+            placeholder="entrez le libelle"
+            class="w-full"
+          ></InputSimple>
+        </div>
 
-      <div class="grid grid-cols-1 gap-6 mb-2">
-        
-        <InputSelect
-        label="Type profession"
-        bind:selectedId={typeProfession}
-        datas={typeProfessions}
-        id="typePersonne"
-    />
+        <div class="grid grid-cols-6 gap-6 mb-2">
+          <InputSelect
+            label="Type profession"
+            bind:selectedId={typeProfession}
+            datas={typeProfessions}
+            id="typePersonne"
+          />
+
+          <InputSimple
+            fieldName="codeGeneration"
+            label="Code Generation"
+            bind:field={codeGeneration}
+            placeholder="entrez le code de generation"
+            class="w-full"
+          ></InputSimple>
         </div>
       </div>
 
       <div class="grid grid-cols-2 gap-2">
         <div>
-            <InputSimple
+          <InputSimple
             fieldName="montantNouvelleDemande"
             label="Montant nouvelle demande"
             bind:field={montantNouvelleDemande}
@@ -122,19 +136,15 @@
           ></InputSimple>
         </div>
         <div>
-  
           <InputSimple
-          fieldName="montantRenouvellement"
-          label="Montant renouvellement"
-          bind:field={montantRenouvellement}
-          placeholder="entrez le montant"
-          class="w-full"
-        ></InputSimple>
+            fieldName="montantRenouvellement"
+            label="Montant renouvellement"
+            bind:field={montantRenouvellement}
+            placeholder="entrez le montant"
+            class="w-full"
+          ></InputSimple>
         </div>
-  
-        
-        
-        </div>
+      </div>
     </form>
   </div>
 

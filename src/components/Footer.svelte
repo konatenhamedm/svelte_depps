@@ -39,7 +39,7 @@
     <div id="top" style="cursor: pointer; display: block;">
         <img width="50" height="50" src="/site/img/go-top.png" alt="">
     </div>
-    <script type="text/javascript" async="" charset="utf-8" src="https://www.gstatic.com/recaptcha/releases/I0bG74fWAenNf3Z5ncHSz-bd/recaptcha__fr.js" crossorigin="anonymous" integrity="sha384-SuLEVo1wb8QhuPsIZMqOg4KgVlwDLK5gQPeMMg8TKAxgTarbThNYStXtyYDtOWR/"></script><script src="js/jquery.min.js"></script> 
+     
     <script src="/site/js/imagesloaded.pkgd.min.js"></script> 
     <script src="/site/js/isotope.min.js"></script> 
     <script src="/site/js/swiper.min.js"></script> 
@@ -51,8 +51,7 @@
     <script src="/site/js/jquery.min.js"></script>  
     <script src="/site/js/pointer.js"></script>
     <script src="/site/js/BeerSlider.unmin.js"></script>
-
-    <script src="https://www.google.com/recaptcha/api.js" async="" defer=""></script>
+  
     <!-- Toastr CDN -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
@@ -102,3 +101,18 @@
         $('.beer-slider').BeerSlider({start: 50}); */
     </script>
 </footer>
+
+<style>
+    .footerss p {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: start !important;
+        align-items: start !important;
+    }
+    h2.h2-baslik-footer.h-yazi-margin-kucuk,.footer__list,.footer__sosyal {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: start !important;
+        align-items: start !important;
+    }
+</style>  

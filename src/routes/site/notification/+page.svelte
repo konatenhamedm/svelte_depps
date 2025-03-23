@@ -177,7 +177,9 @@
                                     </svg>
                                 </div>
                             </div>
-                            <div class="flex-grow" on:click={() => markAsRead(notification.id)}>
+                            <div class="flex-grow" on:click={() => {
+                                goto(`/site/suivi`);
+                            }}>
                                 <p class="text-sm text-gray-800 mb-1">{notification.libelle}</p>
                                 <p class="text-xs text-gray-500">{notification.createdAt}</p>
                             </div>

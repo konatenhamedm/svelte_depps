@@ -454,9 +454,10 @@ export interface professionnel {
   email: string;
   phone: string;
   typeUser: string;
-
   personne: {
     nom: string;
+    professionLibelle?: string;
+    code:string
     prenoms: string;
     number: string;
     email: string;

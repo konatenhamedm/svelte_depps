@@ -14,12 +14,12 @@
   export let open: boolean = false;
   let isLoad = false;
 
-  let typePersonnes : any = []; // Assume that this will be populated with cities
+  let typePersonnes: any = []; // Assume that this will be populated with cities
 
   let typeDoc: any = {
     nombre: "",
     libelle: "",
-    typePersonne: "",
+    typePersonne: ""
   };
   export let sizeModal: any = "lg";
   export let userUpdateId: any;
@@ -34,14 +34,14 @@
       const res = await fetch(BASE_URL_API + "/typeDocument/create", {
         method: "POST",
         headers: {
-          "Content-Type": "application/json",
+          "Content-Type": "application/json"
         },
         body: JSON.stringify({
           nombre: typeDoc.nombre,
           libelle: typeDoc.libelle,
           typePersonne: typeDoc.typePersonne,
-          userUpdate: userUpdateId,
-        }),
+          userUpdate: userUpdateId
+        })
       });
 
       if (res.ok) {
@@ -66,35 +66,39 @@
     }
   }
 
-  
   async function getTypePersonne() {
-        try {
-            const res = await fetch(BASE_URL_API + "/typePersonne");
-            const data = await res.json();
-            typePersonnes = data.data
-        } catch (error) {
-            console.error("Error fetching villes:", error);
-        }
+    try {
+      const res = await fetch(BASE_URL_API + "/typePersonne");
+      const data = await res.json();
+      typePersonnes = data.data;
+    } catch (error) {
+      console.error("Error fetching villes:", error);
     }
+  }
 
-    onMount(async () => {
-        await getTypePersonne();
-    })
+  onMount(async () => {
+    await getTypePersonne();
+  });
 </script>
 
 <Modal
   bind:open
-  title={Object.keys(data).length ? "Ajouter une type document " : "Ajouter une type document"}
+  title={Object.keys(data).length
+    ? "Ajouter une type document "
+    : "Ajouter une type document"}
   size={sizeModal}
   class="m-4 modale_general"
   on:close={handleModalClose}
 >
-  <!-- Modal body -->
+  <link
+    rel="stylesheet"
+    href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
+    integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN"
+    crossorigin="anonymous"
+  />
   <div class="space-y-6 p-0">
     <form action="#" use:init>
       <div class="grid grid-cols-1 gap-4 mb-4">
-       
-
         <InputSimple
           fieldName="libelle"
           label="Libelle"
@@ -102,7 +106,7 @@
           placeholder="entrez le libelle"
           class="w-full"
         ></InputSimple>
-         <InputSimple
+        <InputSimple
           fieldName="nombre"
           label="Nombre"
           bind:field={typeDoc.nombre}
@@ -111,14 +115,12 @@
         ></InputSimple>
       </div>
       <div class="grid grid-cols-1 gap-6">
-        
-        <InputSelect 
-        label="Type personne"
-        bind:selectedId={typeDoc.typePersonne}
-        datas={typePersonnes}
-        id="typePersonne"
-    />
-       
+        <InputSelect
+          label="Type personne"
+          bind:selectedId={typeDoc.typePersonne}
+          datas={typePersonnes}
+          id="typePersonne"
+        />
       </div>
     </form>
   </div>

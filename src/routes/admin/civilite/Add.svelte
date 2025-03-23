@@ -15,6 +15,7 @@
   let icons: any = {
     code: "",
     libelle: "",
+    codeGeneration: ""
   };
   export let sizeModal: any = "lg";
   export let userUpdateId: any;
@@ -29,13 +30,14 @@
       const res = await fetch(BASE_URL_API + "/civilite/create", {
         method: "POST",
         headers: {
-          "Content-Type": "application/json",
+          "Content-Type": "application/json"
         },
         body: JSON.stringify({
           code: icons.code,
+          codeGeneration: icons.codeGeneration,
           libelle: icons.libelle,
-          userUpdate: userUpdateId,
-        }),
+          userUpdate: userUpdateId
+        })
       });
 
       if (res.ok) {
@@ -62,12 +64,19 @@
 
 <Modal
   bind:open
-  title={Object.keys(data).length ? "Ajouter une civilite " : "Ajouter une civilite"}
+  title={Object.keys(data).length
+    ? "Ajouter une civilite "
+    : "Ajouter une civilite"}
   size={sizeModal}
   class="m-4 modale_general"
   on:close={handleModalClose}
 >
-  <!-- Modal body -->
+  <link
+    rel="stylesheet"
+    href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
+    integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN"
+    crossorigin="anonymous"
+  />
   <div class="space-y-6 p-0">
     <form action="#" use:init>
       <div class="grid grid-cols-1">
@@ -84,6 +93,13 @@
           label="Libelle"
           bind:field={icons.libelle}
           placeholder="entrez le libelle"
+          class="w-full"
+        ></InputSimple>
+        <InputSimple
+          fieldName="codeGeneration"
+          label="Code Generation"
+          bind:field={icons.codeGeneration}
+          placeholder="entrez le code de generation"
           class="w-full"
         ></InputSimple>
       </div>

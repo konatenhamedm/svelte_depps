@@ -7,6 +7,8 @@
   import { TrashBinSolid } from "flowbite-svelte-icons";
   import { createEventDispatcher, onMount } from "svelte";
   import DocShow from "./DocShow.svelte";
+  import ModalRecu from "./Modal.svelte";
+
 
   let isLoad = false;
 
@@ -25,6 +27,11 @@
   let status = "";
   let prenoms = "";
   let professionnel = "";
+  let datePremierDiplome = "";
+  let poleSanitaire = "";
+  let poleSanitairePro = "";
+  let organisationNom = "";
+  let lieuExercicePro = "";
   let profession = "";
   let civilite = "";
   let dateNaissance = "";
@@ -65,7 +72,7 @@
     }
   }
 
-  async function getProfessionLibelle(code:any) {
+  async function getProfessionLibelle(code: any) {
     console.log("Code profession:", code);
     try {
       const res = await fetch(BASE_URL_API + "/profession/get/by/code/" + code);
@@ -102,6 +109,12 @@
     dateNaissance = formatDateForInput(data.personne.dateNaissance) || "";
     dateDiplome = formatDateForInput(data.personne.dateDiplome) || "";
     diplome = data.personne.diplome || "";
+    poleSanitaire = data.personne.poleSanitaire || "";
+    organisationNom = data.personne.organisationNom || "";
+    poleSanitairePro = data.personne.poleSanitairePro || "";
+    lieuExercicePro = data.personne.lieuExercicePro || "";
+    datePremierDiplome =
+      formatDateForInput(data.personne.datePremierDiplome) || "";
     situationPro = data.personne.situationPro || "";
     situation = data.personne.situation || "";
     typeUser = data?.typeUser || "";
@@ -123,7 +136,7 @@
     certificatAlt = data.personne.certificat.alt || "";
 
     // Récupérer la profession
-     profession = await getProfessionLibelle(data.personne.profession);
+    profession = await getProfessionLibelle(data.personne.profession);
     if (profession) {
       console.log("Profession récupérée:", profession);
     } else {
@@ -227,9 +240,27 @@
   /*  onMount(async () => {
     await getProfessionLibelle(profession);
   }) */
+
+  let isModalOpen = false;
+  let pdfUrl = "";
+
+  function openModal(url: any) {
+    pdfUrl = url; // ✅ Met à jour la variable réactive
+    isModalOpen = true;
+  }
+
+  function closeModal() {
+    isModalOpen = false;
+  }
 </script>
 
 <Modal bind:open title="Détails " size={sizeModal} class="m-4 modale_general">
+  <link
+    rel="stylesheet"
+    href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
+    integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN"
+    crossorigin="anonymous"
+  />
   <div class="space-y-6 p-4">
     <form action="#" use:init>
       <!--   {#if reason }
@@ -295,7 +326,7 @@
           />
         </div>
       </div>
-      <div class="grid grid-cols-2 gap-6">
+      <div class="grid grid-cols-3 gap-6">
         <div>
           <InputSimple
             fieldName="userPhone"
@@ -312,14 +343,14 @@
             disabled={true}
           />
         </div>
-        <!--   <div>  <InputSimple
-          fieldName="casier"
-          label="Casier"
-          field={casier}
-          disabled={true}
-        />
-      
-        </div> -->
+        <div class="space-y-6">
+          <InputSimple
+            fieldName="profession"
+            label="Spécialité"
+            field={profession}
+            disabled={true}
+          />
+        </div>
       </div>
 
       <!-- Deuxième section : Informations professionnelles -->
@@ -327,8 +358,8 @@
         <div class="space-y-6">
           <InputSimple
             fieldName="profession"
-            label="Profession"
-            field={profession}
+            label="Date d'obtention premier emploi"
+            field={datePremierDiplome}
             disabled={true}
           />
         </div>
@@ -348,11 +379,9 @@
             disabled={true}
           />
         </div>
-        
       </div>
 
-   
-      <div class="grid grid-cols-3 gap-6 mt-6">
+      <div class="grid grid-cols-3 gap-6 mt-6 mb-6">
         <div class="space-y-6">
           <InputSimple
             fieldName="diplome"
@@ -377,10 +406,28 @@
             disabled={true}
           />
         </div>
-       
       </div>
 
-      <div class="grid grid-cols-3 gap-6 mt-6">
+      <div class="grid grid-cols-2 gap-6">
+        <div>
+          <InputSimple
+            fieldName="poleSanitaire"
+            label="Pôle sanitaire,District,Ville,Commune,quartier,lot,ilot *"
+            field={poleSanitaire}
+            disabled={true}
+          />
+        </div>
+
+        <div class="space-y-6">
+          <InputSimple
+            fieldName="lieuExercicePro"
+            label="Lieu d’exercice professionnel"
+            field={lieuExercicePro}
+            disabled={true}
+          />
+        </div>
+      </div>
+      <div class="grid grid-cols-4 gap-6 mt-6">
         <!-- <div class="space-y-6"> -->
         <div
           on:click={() => (
@@ -439,14 +486,28 @@
         >
           VOIR LA CNI
         </div>
+
+        <div
+          style="background-color: green;"
+          class="w-full h-9 flex justify-center bg-green hover:bg-green text-white font-bold py-2 pb-[1.9rem] px-4 border border-white rounded cursor-pointer"
+        >
+          FICHE D'INSCRIPTION
+        </div>
+        <div  on:click={() =>
+                              openModal("DEPPS250219040558025")}
+          style="background-color: green;"
+          class="w-full h-9 flex justify-center bg-green hover:bg-green text-white font-bold py-2 pb-[1.9rem] px-4 border border-white rounded cursor-pointer"
+        >
+          REÇU DE PAIEMENT
+        </div>
         <!--   </div> -->
       </div>
 
-      <div class="grid grid-cols-2 gap-6 mt-6">
+      <div class="grid grid-cols-2 gap-6 mt-6 mb-2">
         <div class="space-y-6">
           <div class="flex items-center justify-between space-x-2">
             <fieldset>
-              <legend>Appartenance à une organisation</legend>
+              <legend style="color: black;">Appartenance à une organisation</legend>
               <div class="flex items-center">
                 <div class="mr-2">
                   <InputCheck
@@ -466,7 +527,20 @@
             </fieldset>
           </div>
         </div>
+        {#if appartenirOrganisation === "oui"}
+        <!-- <div class="grid grid-cols-1 gap-6 mt-6"> -->
+          <div class="space-y-6">
+            <InputSimple
+              fieldName="organisation"
+              label="Nom de l'organisation"
+              field={organisationNom}
+              disabled={true}
+            />
+          </div>
+        <!-- </div> -->
+      {/if}
       </div>
+      
       <br />
 
       {#if status === "attente" || status === "accepte" || status === "valide" || status === "renouvellement"}
@@ -616,5 +690,6 @@
     </div>
   </div>
 </Modal>
+<ModalRecu isOpen={isModalOpen} {pdfUrl} onClose={closeModal} />
 
 <DocShow bind:open={openShow} data={current_data} sizeModal="xl" />

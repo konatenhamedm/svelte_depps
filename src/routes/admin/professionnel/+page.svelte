@@ -24,7 +24,7 @@
   import { onMount, onDestroy } from "svelte";
   import MessageError from "$components/MessageError.svelte";
 
-  import { apiFetch } from "$lib/api";
+  import { apiFetch, BASE_URL_API } from "$lib/api";
   import type { EndUser, professionnel } from "../../../types";
   import Add from "./Add.svelte";
   import Edit from "./Edit.svelte";
@@ -53,28 +53,60 @@
   let loading = false;
   $: searchQuery = "";
 
-  // Fonction pour récupérer les données
-  async function fetchData() {
-    loading = true; // Active le spinner de chargement
-    try {
-      const res = await apiFetch(true, "/professionnel/");
-      if (res) {
-        main_data = res.data as professionnel[];
 
-        console.log(main_data);
+  async function getProfessionLibelle(code:any) {
+    
+    try {
+      const res = await fetch(BASE_URL_API + "/profession/get/by/code/" + code);
+
+      if (res.ok) {
+        const data = await res.json();
+        if (data && data.data) {
+          console.log("Data récupérée:", data.data);
+       /* profession = data.data; */
+          return data.data;
+        } else {
+          console.error("Erreur: data.data est undefined", data);
+          return "";
+        }
       } else {
-        console.error(
-          "Erreur lors de la récupération des données:",
-          res.statusText
-        );
+        console.error("Erreur HTTP:", res.status, res.statusText);
+        return "";
       }
     } catch (error) {
       console.error("Erreur lors de la récupération des données:", error);
-    } finally {
-      loading = false; // Désactive le spinner de chargement
+      return "";
     }
   }
 
+  // Fonction pour récupérer les données
+async function fetchData() {
+  loading = true; // Active le spinner de chargement
+  try {
+    const res = await apiFetch(true, "/professionnel/");
+    if (res) {
+      main_data = res.data as professionnel[];
+
+      // Pour chaque professionnel, récupérez le libellé de la profession
+      for (let i = 0; i < main_data.length; i++) {
+        const professionnel = main_data[i];
+        const professionLibelle = await getProfessionLibelle(professionnel.personne.profession);
+        professionnel.personne.professionLibelle = professionLibelle; // Ajoutez le libellé à l'objet professionnel
+      }
+
+      console.log(main_data);
+    } else {
+      console.error(
+        "Erreur lors de la récupération des données:",
+        res.statusText
+      );
+    }
+  } catch (error) {
+    console.error("Erreur lors de la récupération des données:", error);
+  } finally {
+    loading = false; // Désactive le spinner de chargement
+  }
+}
   onMount(async () => {
     fetchData();
   });
@@ -156,6 +188,9 @@
       openDelete = false;
     }
   };
+let profession: any;
+    
+ 
 </script>
 
 <Entete
@@ -211,11 +246,21 @@
               <TableHead
                 class="border-y border-gray-200 bg-gray-100 dark:border-gray-700"
               >
-                {#each ["nom", "prénoms", "Téléphone", "email", "type", "statut", "Action"] as title}
-                  <TableHeadCell class="ps-4 font-normal border border-gray-300"
-                    >{title}</TableHeadCell
-                  >
-                {/each}
+                {#if activeTab === "valide"}
+                  {#each ["nom", "prénoms", "Téléphone", "email","professionnel de santé ", "Code", "Action"] as title}
+                    <TableHeadCell
+                      class="ps-4 font-normal border border-gray-300"
+                      >{title}</TableHeadCell
+                    >
+                  {/each}
+                {:else}
+                  {#each ["nom", "prénoms", "Téléphone", "email", "professionnel de santé ", "Action"] as title}
+                    <TableHeadCell
+                      class="ps-4 font-normal border border-gray-300"
+                      >{title} </TableHeadCell
+                    >
+                  {/each}
+                {/if}
               </TableHead>
               <TableBody>
                 {#if loading && paginatedProducts.length === 0}
@@ -272,11 +317,13 @@
                         >{item.email}</TableBodyCell
                       >
                       <TableBodyCell class="p-4 border border-gray-300"
-                        >{item.typeUser}</TableBodyCell
+                        >{ item.personne.professionLibelle}</TableBodyCell
                       >
-                      <TableBodyCell class="p-4 border border-gray-300"
-                        >{item.personne.status}</TableBodyCell
-                      >
+                      {#if activeTab === "valide"}
+                        <TableBodyCell class="p-4 border border-gray-300"
+                          >{item.personne.code}</TableBodyCell
+                        >
+                      {/if}
 
                       <TableBodyCell class="p-2 w-8 border border-gray-300">
                         <DropdownMenuShow {item} onAction={handleAction} />
@@ -347,16 +394,14 @@
   userUpdateId={user?.id}
 />
 
-{#if openShow }
-<Show
-  bind:open={openShow}
-  data={current_data}
-  sizeModal="xl"
-  userUpdateId={user.id}
-/>
-{/if }
-
-
+{#if openShow}
+  <Show
+    bind:open={openShow}
+    data={current_data}
+    sizeModal="xl"
+    userUpdateId={user.id}
+  />
+{/if}
 
 <Delete bind:open={openDelete} data={current_data} />
 

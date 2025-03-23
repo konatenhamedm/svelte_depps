@@ -6,10 +6,12 @@
   export let data: Record<string, string> = {};
   let code = "";
   let libelle = "";
+  let codeGeneration = "";
 
   function init(form: HTMLFormElement) {
     code = data.code || "";
     libelle = data.libelle || "";
+    codeGeneration = data.codeGeneration || "";
   }
 </script>
 
@@ -19,7 +21,12 @@
   size={sizeModal}
   class="m-4 modale_general"
 >
-  <!-- Modal body -->
+  <link
+    rel="stylesheet"
+    href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
+    integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN"
+    crossorigin="anonymous"
+  />
   <div class="space-y-6 p-0">
     <form action="#" use:init>
       <div class="grid grid-cols-1 gap-6">
@@ -37,6 +44,13 @@
           placeholder="entrez le libelle"
           disabled={true}
         />
+        <InputSimple
+        fieldName="codeGeneration"
+        label="Code Generation"
+        bind:field={codeGeneration}
+        placeholder="entrez le code de generation"
+        class="w-full"
+      ></InputSimple>
       </div>
     </form>
   </div>

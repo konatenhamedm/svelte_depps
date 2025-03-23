@@ -28,7 +28,8 @@
      cards = [
     { icon: 'fas fa-folder-open', text: 'Mise à jour du dossier', link: 'dossiers' },
     { icon: 'fas fa-bell', text: 'Alertes', link: 'alerte' },
-    { icon: 'fas fa-comments', text: 'MyDEPPS chat', link: 'chatbox' },
+    { icon: 'fas fa-tasks', text: 'suivi de mon dossier', link: 'suivi' },/* 
+    { icon: 'fas fa-comments', text: 'MyDEPPS chat', link: 'chatbox' }, */
     { icon: 'fas fa-book', text: 'Historique paiements', link: 'paiements' },
     { icon: 'fas fa-file-pdf', text: "Documenthèque", link: "guide-utilisateur" },
     { icon: 'fas fa-users', text: 'Forum', link: 'forum' }
@@ -37,7 +38,8 @@
      cards = [
     { icon: 'fas fa-folder-open', text: 'Mise à jour du dossier', link: 'dossiers_etablissement' },
     { icon: 'fas fa-bell', text: 'Alertes', link: 'alerte' },
-    { icon: 'fas fa-comments', text: 'MyDEPPS chat', link: 'chatbox' },
+    { icon: 'fas fa-tasks', text: 'suivi de mon dossier', link: 'suivi' },
+    /* { icon: 'fas fa-comments', text: 'MyDEPPS chat', link: 'chatbox' }, */
     { icon: 'fas fa-book', text: 'Historique paiements', link: 'paiements' },
     { icon: 'fas fa-file-pdf', text: "Documenthèque", link: "guide-utilisateur" },
     { icon: 'fas fa-users', text: 'Forum', link: 'forum' }
@@ -81,8 +83,8 @@
         style="border-color: rgb(113, 88, 190); transform: translate(228px, 635px);"
 ></div> -->
 <div id="">
-  <Header user={user} />
-  <Slide user={user} />
+  
+  <Slide user={user} /><br><br><br><br>
   <style>
     .tablo:not(:last-child) {
       margin-bottom: 35px;

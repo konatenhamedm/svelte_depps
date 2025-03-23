@@ -14,7 +14,7 @@
 
   let icons: any = {
     code: "",
-    libelle: "",
+    libelle: ""
   };
   export let sizeModal: any = "lg";
   export let userUpdateId: any;
@@ -29,13 +29,13 @@
       const res = await fetch(BASE_URL_API + "/civilite/create", {
         method: "POST",
         headers: {
-          "Content-Type": "application/json",
+          "Content-Type": "application/json"
         },
         body: JSON.stringify({
           code: icons.code,
           libelle: icons.libelle,
-          userUpdate: userUpdateId,
-        }),
+          userUpdate: userUpdateId
+        })
       });
 
       if (res.ok) {
@@ -67,7 +67,12 @@
   class="m-4 modale_general"
   on:close={handleModalClose}
 >
-  <!-- Modal body -->
+  <link
+    rel="stylesheet"
+    href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
+    integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN"
+    crossorigin="anonymous"
+  />
   <div class="space-y-6 p-0">
     <form action="#" use:init>
       <div class="grid grid-cols-1">

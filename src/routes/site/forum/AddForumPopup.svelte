@@ -42,47 +42,53 @@
   <div
     class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center"
   >
-    <div class="bg-white p-6 rounded-lg shadow-lg w-[43em] forum-con">
-      <h2 class="text-xl font-bold mb-4">Ajouter un nouveau forum</h2>
+    <div class="bg-white p-6 rounded-lg shadow-lg w-[65em] forum-con">
+      <h2 class="text-xl font-bold mb-4 border-b-2 mb-2">Ajouter un nouveau forum</h2>
       <form on:submit={handleSubmit}>
+
         <div class="mb-4">
-          <label class="block text-gray-700 mb-2">Titre</label>
-          <input
-            type="text"
-            name="title"
-            class="w-full px-3 py-2 border rounded"
-            required
-          />
+          <div class="form__grup" style="margin-top:10px">
+            <label for="name" class="form__label">Titre</label>
+            <input
+              type="text"
+              class="form__input w-full"
+              required
+              placeholder="Titre"
+              id="txt_eposta"
+              name="titre"
+            />
+          </div>
         </div>
         <div class="mb-4">
-          <label class="block text-gray-700 mb-2">Contenu</label>
-          <textarea
-            name="content"
-            class="w-full px-3 py-2 border rounded"
-            required
-          ></textarea>
+          <div class="form__grup" style="margin-top:10px">
+            <label for="name" class="form__label">Contenu</label>
+            <textarea rows="5" cols="66"  maxlength="90" name="contenu" id="txt_mesaj" placeholder="Text de l'article" class="form__input w-full"></textarea>
+
+          </div>
         </div>
+
         <div class="mb-4">
-          <label class="block text-gray-700 mb-2">Status</label>
-          <select name="status" class="w-full px-3 py-2 border rounded">
-            <option value="Actif">Actif</option>
-            <option value="Inactif">Inactif</option>
-          </select>
+          <div class="form__grup my-2 w-full">
+            <label for="name" class="form__label">Status</label>
+            <select name="destinateur" class="form__input w-full" id="">
+              <option value="Actif">Actif</option>
+              <option value="Inactif">Inactif</option>
+            </select>
+          </div>
         </div>
+
+    
+       
         <div class="flex justify-end">
           <button
             type="button"
             on:click={closePopup}
-            class="bg-gray-500 text-white px-4 py-2 rounded mr-2 hover:bg-gray-600"
+            class="bg-gray-500 text-white buton buton--kirmizi mr-2"
           >
             Annuler
-          </button>
-
+          </button><br />
           {#if loading}
-            <button
-              type="submit"
-              class="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600"
-            >
+            <button type="submit" class="bg-green-500 buton buton--kirmizi">
               <div class="flex flex-row gap-2">
                 <div
                   class="w-3 h-3 rounded-full bg-white animate-bounce [animation-delay:.7s]"
@@ -96,11 +102,8 @@
               </div>
             </button>
           {:else}
-            <button
-              type="submit"
-              class="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600"
-            >
-              Ajouter
+            <button type="submit" class="bg-green-500 buton buton--kirmizi">
+             PUBLIER
             </button>
           {/if}
         </div>

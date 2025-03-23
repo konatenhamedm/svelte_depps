@@ -13,6 +13,8 @@
 
   let user = data?.user;
   async function handleSubmit(event: any) {
+    loading = true;
+
     event.preventDefault();
     const formData = new FormData(event.target);
     const updatedForum = {
@@ -74,57 +76,69 @@
   <div
     class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center"
   >
-    <div class="bg-white p-6 rounded-lg shadow-lg w-[43em] forum-con">
-      <h2 class="text-xl font-bold mb-4">Modifier le forum</h2>
+    <div class="bg-white p-6 rounded-lg shadow-lg w-[65em] forum-con">
+      <h2 class="text-xl font-bold mb-4">Modifier l'alerte</h2>
       <form on:submit={handleSubmit}>
         <div class="mb-4">
-          <label class="block text-black mb-2">Objet</label>
-          <input disabled placeholder="entrez l'objet"
-            type="text"
-            name="objet"
-            value={forum.objet}
-            class="w-full px-3 py-2 border rounded"
-            required
-          />
-        </div>
-        <div class="mb-4">
-          <label class="block text-black mb-2">Message</label>
-          <textarea disabled placeholder="entrez le message"
-            name="message"
-            class="w-full px-3 py-2 border rounded"
-            required>{forum.message}</textarea
-          >
-        </div>
-        <div class="mb-4">
-          <label class="block text-black mb-2">Destinataire</label>
-          <!--  <select name="destinateur" class="w-full px-3 py-2 border rounded">
-                        <option value="Actif" selected={forum.status === 'Actif'}>Actif</option>
-                        <option value="Inactif" selected={forum.status === 'Inactif'}>Inactif</option>
-                    </select> -->
-
-          <select  disabled class="w-full px-3 py-2 border rounded" name="destinateur" >
-            {#each recipients as recipient}
-              <option
+          <div class="form__grup my-2 w-full">
+            <label for="name" class="form__label">Destinataire</label>
+            <select name="destinateur" class="form__input w-full" id="">
+              {#each recipients as recipient}
+                 <option
                 value={recipient.id}
                 selected={forum.destinateur.id === recipient.id}
                 >{recipient.libelle}</option
               >
-            {/each}
-          </select>
+              {/each}
+            </select>
+          </div>
         </div>
+
+        <div class="mb-4">
+          <div class="form__grup" style="margin-top:10px">
+            <label for="name" class="form__label">Objet</label>
+            <input
+              type="text"
+              class="form__input w-full"
+              required
+              placeholder="Objet"
+              id="txt_eposta"
+              name="objet"
+              value={forum.objet}
+            />
+          </div>
+        </div>
+
+        <div class="mb-4">
+          <div class="form__grup">
+            <br />
+            <label for="name" class="form__label">Message</label>
+            <textarea
+              rows="3"
+              cols="66"
+              required
+              maxlength="90"
+              name="message"
+              id="txt_mesaj"
+              placeholder="alerte message"
+              class="form__input w-full"
+              value={forum.message}
+            ></textarea>
+          </div>
+        </div>
+
+
+
         <div class="flex justify-end">
           <button
             type="button"
             on:click={closePopup}
-            class="bg-gray-500 text-white px-4 py-2 rounded mr-2 hover:bg-gray-600"
+            class="bg-gray-500 text-white buton buton--kirmizi mr-2"
           >
             Annuler
-          </button>
+          </button><br />
           {#if loading}
-         <!--    <button
-              type="submit"
-              class="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600"
-            >
+            <button type="submit" class="bg-green-500 buton buton--kirmizi">
               <div class="flex flex-row gap-2">
                 <div
                   class="w-3 h-3 rounded-full bg-white animate-bounce [animation-delay:.7s]"
@@ -138,12 +152,9 @@
               </div>
             </button>
           {:else}
-            <button
-              type="submit"
-              class="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600"
-            >
-              Modifier
-            </button> -->
+            <button type="submit" class="bg-green-500 buton buton--kirmizi">
+              ENVOYER L'ALERTE
+            </button>
           {/if}
         </div>
       </form>

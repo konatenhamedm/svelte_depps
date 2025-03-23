@@ -7,10 +7,9 @@
   export let data: Record<string, string> = {};
   let code = "";
   let libelle = "";
-  let pdfUrl:any = "";
+  let pdfUrl: any = "";
 
   function init(form: HTMLFormElement) {
-   
     pdfUrl = data || "";
 
     console.log(pdfUrl);
@@ -24,7 +23,12 @@
   size={sizeModal}
   class="m-4 modale_general"
 >
-  <!-- Modal body -->
+  <link
+    rel="stylesheet"
+    href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
+    integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN"
+    crossorigin="anonymous"
+  />
   <div class="space-y-6 p-0">
     <form action="#" use:init>
       <div class="pdf-viewer">

@@ -51,7 +51,7 @@
   $: totalPages = Math.ceil(forums.length / itemsPerPage);
 
   // Fonction pour changer de page
-  function goToPage(page) {
+  function goToPage(page: number) {
     if (page >= 1 && page <= totalPages) {
       currentPage = page;
     }
@@ -66,7 +66,7 @@
     showAddPopup = false;
   }
 
-  function openEditPopup(forum) {
+  function openEditPopup(forum: any) {
     selectedForum = forum;
     showEditPopup = true;
   }
@@ -76,11 +76,11 @@
     selectedForum = null;
   }
 
-  function addForum(newForum) {
+  function addForum(newForum: any) {
     forums = [...forums, { ...newForum, id: forums.length + 1 }];
   }
 
-  function updateForum(updatedForum) {
+  function updateForum(updatedForum: any) {
     forums = forums.map((f) => (f.id === updatedForum.id ? updatedForum : f));
   }
 
@@ -92,264 +92,134 @@
   }
 </script>
 
-<Header {user} />
-<Slide {user} />
-<div class="file-ariane flex items-center space-x-2 text-sm text-gray-600 mb-4">
-  <button on:click={navigateToDashboard} class="flex items-center hover:text-blue-600">
-    <!-- Icône SVG pour "Tableau de bord" -->
-    <svg
-            xmlns="http://www.w3.org/2000/svg"
-            class="w-4 h-4 mr-1"
-            viewBox="0 0 20 20"
-            fill="currentColor"
-    >
-      <path
-              d="M10.707 2.293a1 1 0 00-1.414 0l-7 7a1 1 0 001.414 1.414L4 10.414V17a1 1 0 001 1h2a1 1 0 001-1v-2a1 1 0 011-1h2a1 1 0 011 1v2a1 1 0 001 1h2a1 1 0 001-1v-6.586l.293.293a1 1 0 001.414-1.414l-7-7z"
-      />
-    </svg>
-    Tableau de bord
-  </button>
-  <span>/</span>
-  <span class="text-gray-800">Liste des forums</span> <!-- Nom de la page actuelle -->
-</div><br>
-<main class="mx-auto px-8 py-8 main-div" style="padding-top: 200px">
-  <section class="iletisim-form-alani">
-    <div id="">
-      <div class="container mx-auto p-4 main-div">
-        <!-- Boutons en haut du tableau -->
-        <div class="flex justify-between mb-4">
-          <a
-            href="forum/all-forums"
-            class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
-          >
-            Accéder à tous les forums
-          </a>
-          <button
-            on:click={openAddPopup}
-            class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-500"
-          >
-            Ajouter
-          </button>
-        </div>
 
-        <!-- Tableau -->
-        <table
-          class="min-w-full bg-white border border-gray-200 border-collapse"
-        >
-          <thead>
-            <tr class="bg-gray-100">
-              <th class="border border-gray-300 py-2 px-4 border-b text-center"
-                >Titre</th
-              >
-              <th class="border border-gray-300 py-2 px-4 border-b text-center"
-                >Contenu</th
-              >
-              <th class="border border-gray-300 py-2 px-4 border-b text-center"
-                >Status</th
-              >
-              <th
-                class="border border-gray-300 py-2 px-4 border-b text-center"
-                style="width: 50px;">Actions</th
-              >
-            </tr>
-          </thead>
-          <tbody>
-            {#if loading && paginatedForums.length === 0}
-              <tr
-                class="hover:bg-gray-50 text-center items-center p-4 text-gray-500 border border-gray-300"
-              >
-                <td colspan="4" class="text-center p-4 text-gray-500">
-                  <div class="flex flex-row gap-2 items-center justify-center">
-                    <div
-                      class="w-4 h-4 rounded-full bg-blue-600 animate-bounce"
-                    ></div>
-                    <div
-                      class="w-4 h-4 rounded-full bg-blue-600 animate-bounce"
-                    ></div>
-                    <div
-                      class="w-4 h-4 rounded-full bg-blue-600 animate-bounce"
-                    ></div>
-                  </div>
-                </td>
-              </tr>
-            {:else if paginatedForums.length === 0}
-              <tr
-                class="hover:bg-gray-50 text-center items-center p-4 text-gray-500 border border-gray-300"
-              >
-                <td colspan="4" class="text-center p-4 text-gray-500">
-                  <div class="flex flex-row items-center justify-center">
-                    <div class="grid grid-cols-1">
-                      <img
-                        src="/search_notfound.svg"
-                        alt="Aucun résultat trouvé"
-                      /><br />
-                      <h1 class="text-2xl font-bold">Aucun résultat</h1>
-                    </div>
-                  </div>
-                </td>
-              </tr>
-            {:else}
-              {#each paginatedForums as forum}
-                <tr class="hover:bg-gray-50">
-                  <td
-                    class="border border-gray-300 py-2 px-4 border-b text-left"
-                    >{forum.titre}</td
-                  >
-                  <td
-                    class="border border-gray-300 py-2 px-4 border-b text-left"
-                    >{forum.contenu}</td
-                  >
-                  <td
-                    class="border border-gray-300 py-2 px-4 border-b text-center"
-                  >
-                    <span
-                      class={`px-2 py-1 rounded ${forum.status === "Actif" ? "bg-green-100 text-green-800" : "bg-red-100 text-red-800"}`}
-                    >
-                      {forum.status}
-                    </span>
-                  </td>
-                  <td
-                    class="border border-gray-300 py-2 px-4 border-b text-center"
-                  >
-                    <!-- Bouton Modifier -->
-                    <button
-                      on:click={() => openEditPopup(forum)}
-                      class="text-blue-500 hover:text-blue-700 mr-2"
-                      style="color: blue !important;"
-                    >
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        class="h-5 w-5"
-                        viewBox="0 0 20 20"
-                        fill="currentColor"
-                      >
-                        <path
-                          d="M13.586 3.586a2 2 0 112.828 2.828l-.793.793-2.828-2.828.793-.793zM11.379 5.793L3 14.172V17h2.828l8.38-8.379-2.83-2.828z"
-                        />
-                      </svg>
-                    </button>
+<Slide {user} /> <br><br><br><br>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
 
-                    <!-- Bouton Supprimer -->
-                    <button
-                      on:click={() => handleDelete(forum)}
-                      class="text-red-500 hover:text-red-700"
-                      style="color: red !important;"
-                    >
-
-
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        class="h-5 w-5"
-                        viewBox="0 0 20 20"
-                        fill="currentColor"
-                      >
-                        <path
-                          fill-rule="evenodd"
-                          d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z"
-                          clip-rule="evenodd"
-                        />
-                      </svg>
-                    </button>
-                  </td>
-                </tr>
-              {/each}
-            {/if}
-          </tbody>
-        </table>
-
-        <!-- Pagination avec icônes -->
-        <div class="flex justify-end items-center mt-4">
-          <button
-            on:click={() => goToPage(currentPage - 1)}
-            disabled={currentPage === 1}
-            class="bg-blue-500 px-3 py-2 text-white rounded hover:bg-blue-500 disabled:opacity-50"
-          >
-            <svg
+<div class="container">
+  <div class="file-ariane flex items-center space-x-2 text-sm text-gray-600 mb-4">
+    <button on:click={navigateToDashboard} class="flex items-center hover:text-blue-600">
+      <!-- Icône SVG pour "Tableau de bord" -->
+      <svg
               xmlns="http://www.w3.org/2000/svg"
-              class="h-5 w-5"
+              class="w-4 h-4 mr-1"
               viewBox="0 0 20 20"
               fill="currentColor"
-            >
-              <path
-                fill-rule="evenodd"
-                d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z"
-                clip-rule="evenodd"
-              />
-            </svg>
-          </button>
-
-          <span class="mx-4 text-black">{currentPage}</span>
-
-          <button
-            on:click={() => goToPage(currentPage + 1)}
-            disabled={currentPage === totalPages}
-            class="bg-blue-500 px-3 py-2 rounded hover:bg-blue-500 text-white disabled:opacity-50"
-          >
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              class="h-5 w-5"
-              viewBox="0 0 20 20"
-              fill="currentColor"
-            >
-              <path
-                fill-rule="evenodd"
-                d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z"
-                clip-rule="evenodd"
-              />
-            </svg>
-          </button>
-        </div>
-
-        <!-- Popup d'ajout -->
-        <AddForumPopup
-          {data}
-          bind:showPopup={showAddPopup}
-          closePopup={closeAddPopup}
-          on:submit={addForum}
+      >
+        <path
+                d="M10.707 2.293a1 1 0 00-1.414 0l-7 7a1 1 0 001.414 1.414L4 10.414V17a1 1 0 001 1h2a1 1 0 001-1v-2a1 1 0 011-1h2a1 1 0 011 1v2a1 1 0 001 1h2a1 1 0 001-1v-6.586l.293.293a1 1 0 001.414-1.414l-7-7z"
         />
+      </svg>
+      Tableau de bord
+    </button>
+    <span>/</span>
+    <span class="text-gray-800">Liste des forums</span> <!-- Nom de la page actuelle -->
+  </div><br>
+</div><br>
 
-        <!-- Popup d'édition -->
-        {#if selectedForum}
-          <EditForumPopup
-            {data}
-            bind:showPopup={showEditPopup}
-            closePopup={closeEditPopup}
-            forum={selectedForum}
-            on:submit={updateForum}
-          />
-        {/if}
-      </div>
+<main class="pb-[120px]">
+  <section class="">
+    <br><br>
+    <div class="h-yazi-ortalama h-yazi-margin-orta-3 wow fadeInUp container pb-8" >
+       <!--  <h2 class="h2-baslik-hizmetler-2 wow fadeInUp"> &nbsp;&nbsp;FORUM</h2> -->
+    </div><br>
+    <div class="container">
+        <div class="row">
+            <div class="col-md-4">
+                <div class="post wow fadeInUp" data-wow-delay="0.60s"  style="cursor:pointer;">
+                    <div class="datesection">
+                        <span class="date">10 Octobre 2023</span>&nbsp;<span class="tt">-</span>&nbsp;<span class="category">John Doe</span>
+                    </div>
+                    <h3 class="baslik-3 h-yazi-margin-kucuk">Titre de l'article 1</h3>
+                    <p class="post-kutu--yazi">
+                        Ceci est un extrait du texte de l'article 1. Il est limité à 200 caractères...
+                    </p>
+                    <div class="h-yazi-ortalama h-yazi-margin-4">
+                        <a href="javascript:void(0);" on:click={()=>{
+                          goto('/site/forum/details/2')
+                        }} class="buton buton--kirmizi buton--animasyon">Voir plus</a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="post wow fadeInUp" data-wow-delay="0.60s"  style="cursor:pointer;">
+                    <div class="datesection">
+                        <span class="date">11 Octobre 2023</span>&nbsp;<span class="tt">-</span>&nbsp;<span class="category">Jane Doe</span>
+                    </div>
+                    <h3 class="baslik-3 h-yazi-margin-kucuk">Titre de l'article 2</h3>
+                    <p class="post-kutu--yazi">
+                        Ceci est un extrait du texte de l'article 2. Il est limité à 200 caractères...
+                    </p>
+                    <div class="h-yazi-ortalama h-yazi-margin-4">
+                        <a href="javascript:void(0);" class="buton buton--kirmizi buton--animasyon" on:click={()=>{
+                          goto('/forum/details/2')
+                        }}>Voir plus</a>
+                    </div>
+                </div>
+            </div>
+            <!-- Ajoutez d'autres articles ici si nécessaire -->
+        </div>
     </div>
-  </section>
-</main>
-<Footer></Footer>
+    <div class="alanb"></div>
+    <br><br>
+</section>
 
+
+<div class="adminActions">
+  <a class="adminButton" href="javascript:void(0);"  on:click={openAddPopup}><i style="font-size: 30px;color:#fff;" class="fa fa-plus"></i></a>
+</div>
+          
 <style>
-  .iletisim-form-alani {
-    padding: 20rem 226px 10rem !important;
+.post{
+  margin-bottom:40px
+}
+.adminActions {
+  position: fixed;
+  bottom: 35px; right: 35px;
+  z-index: 999;
+  width:70px;
+  background:#20aae1;
+  height: 70px;
+  border-radius:50%;
+}
+.adminActions a i {
+  position: absolute;
+  top: 50%; left: 50%;
+  transform: translate(-50%, -50%);
+}
 
-    background-color: transparent !important;
-  }
-  .main-div {
-    margin-top: 10px;
-    margin-bottom: 50px;
-    border: 1px solid #e5e7eb;
-    background: transparent;
-    border-radius: 10px;
-    padding: -10px 0px 0px 0px;
-  }
+.file-ariane {
+      position: absolute;
+      width: 68%;
+      top: 112px;
+      background: #4292cecc;
+      padding: 22px;
+      color: white;
+      font-size: 14px;
+    }
 
-  .file-ariane {
-    position: absolute;
-    width: 100%;
-    top: 112px;
-    background: #4292cecc;
-    padding: 22px;
-    color: white;
-    font-size: 14px;
-  }
-
-  .file-ariane span {
-    color: white;
-  }
+    .file-ariane span {
+      color: white;
+    }
 </style>
+<link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" />
+</main>
+ <!-- Popup d'ajout -->
+ <AddForumPopup
+ {data}
+ bind:showPopup={showAddPopup}
+ closePopup={closeAddPopup}
+ on:submit={addForum}
+/>
+
+<!-- Popup d'édition -->
+{#if selectedForum}
+ <EditForumPopup
+   {data}
+   bind:showPopup={showEditPopup}
+   closePopup={closeEditPopup}
+   forum={selectedForum}
+   on:submit={updateForum}
+ />
+{/if}
+<Footer />
