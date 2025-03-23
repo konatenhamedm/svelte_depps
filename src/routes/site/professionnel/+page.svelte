@@ -608,7 +608,7 @@
           messagefile = result.errors;
           console.log(result.errors);
         } else {
-          /* alert("") */
+         
           connexion();
         }
       })
