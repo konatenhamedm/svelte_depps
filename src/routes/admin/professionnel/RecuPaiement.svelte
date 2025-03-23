@@ -1,13 +1,26 @@
-<script>
-  import { apiFetch } from '$lib/api';
+<script lang="ts">
+  import Spinner from "$components/_skeletons/Spinner.svelte";
+  import InputSimple from "$components/inputs/InputSimple.svelte";
+  import { apiFetch, BASE_URL_API } from "$lib/api";
+  import { Button, Input, Label, Modal, Textarea } from "flowbite-svelte";
+  import InputTextArea from "$components/inputs/InputTextArea.svelte";
   import { formatDate } from '$lib/dateUtils';
   import jsPDF from 'jspdf';
-  import { onMount } from 'svelte';
+  import { onMount } from "svelte";
 
-  export let isOpen = false;
-  export let pdfUrl = "";
-  let pdfUrlAffiche ="";
-  export let onClose = () => {};
+  export let open: boolean = false; // modal control
+  let isLoad = false;
+   let pdfUrlAffiche ="";
+
+  export let sizeModal: any = "lg";
+  export let userUpdateId: any;
+
+  export let data: Record<string, string> = {};
+
+  // Initialize form data with the provided record
+  function init(form: HTMLFormElement) {
+ 
+  }
 
   let receiptData = {
     logo: 'https://mydepps.pages.dev/_files/logo-depps.png', // URL du logo
@@ -75,12 +88,14 @@
     pdfUrlAffiche = URL.createObjectURL(pdfBlob);
   }
 
-  $: if (isOpen) {
+  $: if (open) {
     generatePDF();
   }
 
   async function getTransactionInfos() {
-    await apiFetch(true, "/paiement/info/transaction/"+pdfUrl).then((response) => {
+
+   /*  alert(pdfUrl) */
+    await apiFetch(true, "/paiement/info/transaction/last/transaction/"+data.id).then((response) => {
       if (response.code === 200) {
         receiptData.amount = response.data.montant;
         receiptData.paymentMethod = response.data.channel;
@@ -92,64 +107,84 @@
  
  
        */
-        receiptData.name = response.data.typeUser == "professionnel" ? response.data.user.personne.nom + " "+ response.data.user.personne.prenoms : response.data.user.personne.nomEntreprise  ;
-        receiptData.phone = response.data.typeUser == "professionnel" ? response.data.user.personne.number  : response.data.user.personne.contactEntreprise  ;
+        receiptData.name = response.data.user.typeUser == "PROFESSIONNEL" ? response.data.user.personne.nom + " "+ response.data.user.personne.prenoms : response.data.user.personne.nomEntreprise  ;
+        receiptData.phone = response.data.user.typeUser == "PROFESSIONNEL" ? response.data.user.personne.number  : response.data.user.personne.contactEntreprise  ;
         receiptData.date = formatDate( response.data.createdAt);
       }
     });
+
+    console.log(receiptData);
   }
 
   onMount(async () => {
   
     getTransactionInfos();
   });
+
+  function handleModalClose(event: Event) {
+    if (isLoad) {
+      event.preventDefault();
+    }
+  }
 </script>
 
-{#if isOpen}
-  <div class="modal">
-    <div class="modal-content">
-      <button class="close-btn" on:click={onClose}>Fermer</button>
+<Modal
+  bind:open
+  title={Object.keys(data).length
+    ? "Reçu de Paiement"
+    : "Reçu de Paiement"}
+  size={sizeModal}
+  class="m-4 modale_general"
+  on:close={handleModalClose}
+>
+  <link
+    rel="stylesheet"
+    href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
+    integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN"
+    crossorigin="anonymous"
+  />
+  <div class="space-y-6 p-0">
+    <form action="#" use:init>
       
       <div class="pdf-viewer">
         {#if pdfUrlAffiche}
           <iframe src={pdfUrlAffiche} title="Aperçu du PDF" width="100%" height="700px" type="application/pdf"></iframe>
         {/if}
-      </div>
+    </form>
+  </div>
+
+  <!-- Modal footer -->
+  <div slot="footer" class="w-full">
+    <div class="flex justify-end">
+      {#if isLoad}
+        <Button
+          disabled={true}
+          color="blue"
+          style="background-color: #55a1ff;"
+          type="submit"
+        >
+          <div class="flex flex-row gap-2">
+            <div
+              class="w-3 h-3 rounded-full bg-white animate-bounce [animation-delay:.7s]"
+            ></div>
+            <div
+              class="w-3 h-3 rounded-full bg-white animate-bounce [animation-delay:.3s]"
+            ></div>
+            <div
+              class="w-3 h-3 rounded-full bg-white animate-bounce [animation-delay:.7s]"
+            ></div>
+          </div>
+        </Button>
+      {:else}
+        <button
+          type="button"
+          style="background-color: #55a1ff;"
+          class="bg-[#55a1ff] text-white px-4 py-2 rounded-md shadow-sm hover:bg-[#008020]"
+          on:click={SaveFunction}
+        >
+          Modifier
+        </button>
+      {/if}
     </div>
   </div>
-{/if}
-
-<style>
-  .modal {
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background-color: rgba(0, 0, 0, 0.5);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-  }
-  .modal-content {
-    background-color: white;
-    padding: 20px;
-    border-radius: 8px;
-    width: 90%;
-    max-width: 900px;
-    position: relative;
-  }
-  .close-btn {
-    position: absolute;
-    top: -13px;
-    right: 10px;
-    color:black !important;
-    background-color: transparent;
-    border: none;
-    font-size: 18px;
-    cursor: pointer;
-  }
-  .pdf-viewer {
-    margin-top: 20px;
-  }
-</style>
+</Modal>

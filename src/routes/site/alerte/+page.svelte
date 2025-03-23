@@ -108,7 +108,7 @@ function navigateToDashboard() {
 
 <Slide {user} /> <br /><br /><br /><br /><br /><br />
 
-<div class="container">
+<div class="container tablo">
   <div
     class="file-ariane flex items-center space-x-2 text-sm text-gray-600 mb-8"
   >

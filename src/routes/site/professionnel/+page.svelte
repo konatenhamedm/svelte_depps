@@ -105,8 +105,7 @@
     // organization informations
 
     appartenirOrganisation: "non",
-    organisationNom: "",
-   
+    organisationNom: ""
   };
 
   let errors = {
@@ -115,7 +114,7 @@
     confirmPassword: "",
 
     // Personal Informations
-  
+
     poleSanitaire: "",
     nom: "",
     professionnel: "",
@@ -177,7 +176,6 @@
     }
 
     if (step === 2) {
-      
       errors.poleSanitaire = formData.poleSanitaire
         ? ""
         : "Le pole sanitaire est requis";
@@ -259,11 +257,8 @@
         errors.organisationNom = formData.organisationNom
           ? ""
           : "Le nom de l'organisation est requis";
-       
 
-        valid =
-          !errors.organisationNom &&
-          isValidPhoneOrganisation;
+        valid = !errors.organisationNom && isValidPhoneOrganisation;
       }
     }
 
@@ -389,7 +384,7 @@
       localStorage.setItem("step", step.toString());
       return;
     } else {
-     /*  messagefile = "Veuillez remplir tous les champs obligatoires."; */
+      /*  messagefile = "Veuillez remplir tous les champs obligatoires."; */
     }
   }
 
@@ -613,11 +608,8 @@
           messagefile = result.errors;
           console.log(result.errors);
         } else {
-          if (result) {
-            goto("/site/connexion");
-            localStorage.clear(); // Nettoyer les données du localStorage
-            localStorage.setItem("reference", "");
-          }
+          alert("")
+          connexion();
         }
       })
       .catch((error) => {
@@ -631,8 +623,8 @@
     goto("/site/connexion");
     localStorage.clear(); // Nettoyer les données du localStorage
 
-    if (localStorage.getItem("reference"))
-      localStorage.setItem("reference", ""); // Nettoyer les données du localStorage
+   /*  if (localStorage.getItem("reference"))
+      localStorage.setItem("reference", "");  */// Nettoyer les données du localStorage
   }
 
   async function checkTransactionID(idtransaction: any) {
@@ -1195,7 +1187,7 @@
                             on:change={() =>
                               (formData.profession = profession.code)}
                           />
-                          <label for={profession.id} class="cursor-pointer"
+                          <label for={profession.code} class="cursor-pointer"
                             >{profession.libelle}</label
                           >
                         </div>
@@ -1251,7 +1243,7 @@
                 </div>
 
                 <!-- Autres champs similaires -->
-                {#each [{ key: "dateDiplome", label: "Date d'obtention  diplôme", type: "date" }, { key: "dateNaissance", label: "Date de naissance", type: "date" }, { key: "numero", label: "Contact", type: "tel" }, { key: "lieuDiplome", label: "Lieu d'obtention  diplôme" }, { key: "nationalite", label: "Nationalité" }, { key: "situation", label: "Situation matrimoniale" }, { key: "datePremierDiplome", label: "Date du premier emploi", type: "date" }, { key: "poleSanitairePro", label: "Pole Sanitaire,District,Commune,Quartier,lot,ilot" }, { key: "diplome", label: "Dénomination du diplome" }, { key: "situationPro", label: "Situation professionnel" }] as field}
+                {#each [{ key: "dateDiplome", label: "Date d'obtention  diplôme", type: "date" }, { key: "dateNaissance", label: "Date de naissance", type: "date" }, { key: "numero", label: "Contact", type: "tel" }, { key: "lieuDiplome", label: "Lieu d'obtention  diplôme" }, { key: "nationalite", label: "Nationalité" }, { key: "situation", label: "Situation matrimoniale" }, { key: "datePremierDiplome", label: "Date du premier emploi", type: "date" }, { key: "poleSanitairePro", label: "Pole Sanitaire,District,Commune,Quartier,lot,ilot" }, { key: "diplome", label: "Dénomination du diplome" }, { key: "situationPro", label: "Situation professionnelle" }] as field}
                   {#if field.key === "nationalite"}
                     <div class="form__group">
                       <label class="block text-2xl font-medium mb-1"
@@ -1306,29 +1298,34 @@
                   {/if}
 
                   {#if field.key === "situationPro"}
-                   <!-- Civilité -->
-                <div class="form__group">
-                  <label class="block text-2xl font-medium mb-1"
-                    >{field.label} *</label
-                  >
-                  <select
-                    on:input={saveFormState}
-                    bind:value={formData.situationPro}
-                    class="w-full form__input"
-                  >
-                    <option value="">Veuillez sélectionner une option</option>
-                    {#each values.situationProfessionnelle as situationPro}
-                      <option value={situationPro.id}>{situationPro.libelle}</option>
-                    {/each}
-                  </select>
-                  {#if errors.situationPro}<p class="text-red-500 text-sm">
-                      {errors.situationPro}
-                    </p>{/if}
-                </div>
+                    <!-- Civilité -->
+                    <div class="form__group">
+                      <label class="block text-2xl font-medium mb-1"
+                        >{field.label} *</label
+                      >
+                      <select
+                        on:change={saveFormState}
+                        bind:value={formData.situationPro}
+                        class="w-full form__input"
+                      >
+                        <option value=""
+                          >Veuillez sélectionner une option</option
+                        >
+                        {#each values.situationProfessionnelle as situationPro}
+                          <option
+                            value={situationPro.id}
+                            selected={formData.nationalite === situationPro.id}
+                            >{situationPro.libelle}</option
+                          >
+                        {/each}
+                      </select>
+                      {#if errors.situationPro}<p class="text-red-500 text-sm">
+                          {errors.situationPro}
+                        </p>{/if}
+                    </div>
+                  {/if}
 
-                {/if}
-
-                  {#if field.key != "nationalite" && field.key != "situation"}
+                  {#if field.key != "nationalite" && field.key != "situation" && field.key != "situationPro"}
                     <div class="form__group">
                       <label class="block text-2xl font-medium mb-1"
                         >{field.label} *</label
@@ -1384,11 +1381,20 @@
                   {#each [{ key: "photo", label: "Photo d'identité", type: "file" }, { key: "cni", label: "Copie CNI(Carte nationale d’identité)", type: "file" }, { key: "casier", label: "Extrait Casier judiciaire(Datant de moins 3 mois)", type: "file" }, { key: "diplomeFile", label: "Diplôme légalisé", type: "file" }, { key: "certificat", label: "Certificat de residence (Datant de moins 3 mois)", type: "file" }, { key: "cv", label: "CV", type: "file" }] as field}
                     <div class="form__group">
                       <label class="form_label">{field.label}</label>
-                      <input
-                        type={field.type}
-                        class="form__input"
-                        on:change={(e) => handleFileChange(e, field.key)}
-                      />
+                      <div class="input-container">
+                        {#if fileNames[field.key]}
+                          <img
+                            src={fileNames[field.key].url}
+                            alt={fileNames[field.key].name}
+                            class="preview-image"
+                          />
+                        {/if}
+                        <input
+                          type={field.type}
+                          class="form__input"
+                          on:change={(e) => handleFileChange(e, field.key)}
+                        />
+                      </div>
                       {#if fileNames[field.key]}
                         <p>
                           {fileNames[field.key].name}
@@ -1404,6 +1410,39 @@
                       {/if}
                     </div>
                   {/each}
+
+                  <style>
+                    .input-container {
+                      display: flex;
+                      align-items: center;
+                      gap: 10px; /* Espace entre l'image et le champ input */
+                    }
+
+                    .preview-image {
+                      width: 50px; /* Ajustez la taille de l'image selon vos besoins */
+                      height: 50px;
+                      border-radius: 5px;
+                      object-fit: cover;
+                    }
+
+                    .form__input {
+                      flex-grow: 1; /* Le champ input prend le reste de l'espace */
+                    }
+
+                    .download-link {
+                      margin-left: 10px;
+                      color: blue;
+                      text-decoration: none;
+                    }
+
+                    .download-link:hover {
+                      text-decoration: underline;
+                    }
+
+                    .text-red-500 {
+                      color: red;
+                    }
+                  </style>
                 </div>
               </div>
             </div>
@@ -1470,8 +1509,6 @@
                           {errors.organisationNom}
                         </p>{/if}
                     </div>
-
-                    
                   {/if}
                 </div>
               </div>

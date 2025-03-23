@@ -23,7 +23,7 @@
   async function fetchData(userId: number) {
     loading = true;
     try {
-      const res = await apiFetch(true, `/forum/forum/by/user/${userId}`);
+      const res = await apiFetch(true, `/forum/actif`);
       if (res) {
         forums = res.data;
         console.log("content main_data", forums);
@@ -90,13 +90,24 @@
   function navigateToDashboard() {
     goto("/site/dashboard");
   }
+  function formatDateForInput(dateString: any) {
+    const date = new Date(dateString);
+    const day = String(date.getDate()).padStart(2, "0");
+    const month = String(date.getMonth() + 1).padStart(2, "0");
+    const year = date.getFullYear();
+
+    return `${day}/${month}/${year}`;
+  }
+  function truncate(text: string, maxLength: number): string {
+    return text.slice(0, maxLength);
+  }
 </script>
 
 
 <Slide {user} /> <br><br><br><br>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
 
-<div class="container">
+<div class="container tablo">
   <div class="file-ariane flex items-center space-x-2 text-sm text-gray-600 mb-4">
     <button on:click={navigateToDashboard} class="flex items-center hover:text-blue-600">
       <!-- Icône SVG pour "Tableau de bord" -->
@@ -125,38 +136,35 @@
     </div><br>
     <div class="container">
         <div class="row">
+          {#each paginatedForums as forum}
+         <!--  id: forum.id,
+          titre: forum.titre,
+          author: forum.user.email, // L'API ne fournit pas d'auteur pour le topic
+          contenu: forum.contenu, // L'API ne fournit pas d'auteur pour le topic
+          date: forum.createdAt, // À adapter si l'API fournit une date -->
             <div class="col-md-4">
                 <div class="post wow fadeInUp" data-wow-delay="0.60s"  style="cursor:pointer;">
                     <div class="datesection">
-                        <span class="date">10 Octobre 2023</span>&nbsp;<span class="tt">-</span>&nbsp;<span class="category">John Doe</span>
+                        <span class="date">{formatDateForInput(forum.createdAt) }</span>&nbsp;<span class="tt">-</span>&nbsp;<span class="category">
+                          
+                          {#if forum.user.typeUser == "PROFESSIONNEL" }
+                          {forum.user.personne.nom + " " + forum.user.personne.prenoms}
+                          {:else}
+                          {forum.user.email} 
+                          {/if}
+                          </span>
                     </div>
-                    <h3 class="baslik-3 h-yazi-margin-kucuk">Titre de l'article 1</h3>
+                    <h3 class="baslik-3 h-yazi-margin-kucuk">{forum.titre}</h3>
                     <p class="post-kutu--yazi">
-                        Ceci est un extrait du texte de l'article 1. Il est limité à 200 caractères...
-                    </p>
+                      {truncate(forum.contenu, 80)} ...
                     <div class="h-yazi-ortalama h-yazi-margin-4">
                         <a href="javascript:void(0);" on:click={()=>{
-                          goto('/site/forum/details/2')
+                          goto('/site/forum/details/' + forum.id);
                         }} class="buton buton--kirmizi buton--animasyon">Voir plus</a>
                     </div>
                 </div>
             </div>
-            <div class="col-md-4">
-                <div class="post wow fadeInUp" data-wow-delay="0.60s"  style="cursor:pointer;">
-                    <div class="datesection">
-                        <span class="date">11 Octobre 2023</span>&nbsp;<span class="tt">-</span>&nbsp;<span class="category">Jane Doe</span>
-                    </div>
-                    <h3 class="baslik-3 h-yazi-margin-kucuk">Titre de l'article 2</h3>
-                    <p class="post-kutu--yazi">
-                        Ceci est un extrait du texte de l'article 2. Il est limité à 200 caractères...
-                    </p>
-                    <div class="h-yazi-ortalama h-yazi-margin-4">
-                        <a href="javascript:void(0);" class="buton buton--kirmizi buton--animasyon" on:click={()=>{
-                          goto('/forum/details/2')
-                        }}>Voir plus</a>
-                    </div>
-                </div>
-            </div>
+            {/each}
             <!-- Ajoutez d'autres articles ici si nécessaire -->
         </div>
     </div>

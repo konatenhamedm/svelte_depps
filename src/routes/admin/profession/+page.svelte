@@ -168,7 +168,7 @@
               <TableHead
                 class="border-y border-gray-200 bg-gray-100 dark:border-gray-700"
               >
-                {#each ["code", "libelle","Montant renouvellement","Montant nouvelle demande", "Action"] as title}
+                {#each ["code", "libelle","Montant renouvellement","Montant nouvelle demande","code generation", "Action"] as title}
                   <TableHeadCell class="ps-4 font-normal border border-gray-300"
                     >{title}</TableHeadCell
                   >
@@ -227,6 +227,9 @@
                       >
                       <TableBodyCell class="p-4 border border-gray-300"
                         >{item.montantNouvelleDemande}</TableBodyCell
+                      >
+                      <TableBodyCell class="p-4 border border-gray-300"
+                        >{item.codeGeneration}</TableBodyCell
                       >
 
                       <!--  <TableBodyCell class="p-4 border border-gray-300">{item.sous_menu.libelle}</TableBodyCell>

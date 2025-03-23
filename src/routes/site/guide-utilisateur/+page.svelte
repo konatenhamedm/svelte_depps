@@ -98,24 +98,26 @@
 </script>
 
 <Slide {user} />
-<div class="file-ariane flex items-center space-x-2 text-sm text-gray-600 mb-4">
-  <button on:click={navigateToDashboard} class="flex items-center hover:text-blue-600">
-    <!-- Icône SVG pour "Tableau de bord" -->
-    <svg
-            xmlns="http://www.w3.org/2000/svg"
-            class="w-4 h-4 mr-1"
-            viewBox="0 0 20 20"
-            fill="currentColor"
-    >
-      <path
-              d="M10.707 2.293a1 1 0 00-1.414 0l-7 7a1 1 0 001.414 1.414L4 10.414V17a1 1 0 001 1h2a1 1 0 001-1v-2a1 1 0 011-1h2a1 1 0 011 1v2a1 1 0 001 1h2a1 1 0 001-1v-6.586l.293.293a1 1 0 001.414-1.414l-7-7z"
-      />
-    </svg>
-    Tableau de bord
-  </button>
-  <span>/</span>
-  <span class="text-gray-800">Liste des documents </span> <!-- Nom de la page actuelle -->
-</div><br>
+<div class="container tablo">
+  <div class="file-ariane flex items-center space-x-2 text-sm text-gray-600 mb-4">
+    <button on:click={navigateToDashboard} class="flex items-center hover:text-blue-600">
+      <!-- Icône SVG pour "Tableau de bord" -->
+      <svg
+              xmlns="http://www.w3.org/2000/svg"
+              class="w-4 h-4 mr-1"
+              viewBox="0 0 20 20"
+              fill="currentColor"
+      >
+        <path
+                d="M10.707 2.293a1 1 0 00-1.414 0l-7 7a1 1 0 001.414 1.414L4 10.414V17a1 1 0 001 1h2a1 1 0 001-1v-2a1 1 0 011-1h2a1 1 0 011 1v2a1 1 0 001 1h2a1 1 0 001-1v-6.586l.293.293a1 1 0 001.414-1.414l-7-7z"
+        />
+      </svg>
+      Tableau de bord
+    </button>
+    <span>/</span>
+    <span class="text-gray-800">Liste des documents </span> <!-- Nom de la page actuelle -->
+  </div><br>
+</div>
 <main class="mx-auto px-8 py-8 main-div" style="padding-top: 200px">
   <section class="iletisim-form-alani">
     <div id="guide-user">
@@ -233,7 +235,7 @@
 
     .file-ariane {
       position: absolute;
-      width: 100%;
+      width: 80%;
       top: 112px;
       background: #4292cecc;
       padding: 22px;

@@ -145,6 +145,10 @@ export interface sMenu {
   id: number;
   libelle: string;
 }
+export interface RacineSequence {
+  id: number;
+  code: string;
+}
 
 export interface StatsDashboard {
   countEtablissement: number;
@@ -220,6 +224,7 @@ export interface Profession {
   code: string;
   montantRenouvellement: string;
   montantNouvelleDemande: string;
+  codeGeneration: string;
 }
 export interface Doc {
   id: number;

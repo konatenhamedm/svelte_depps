@@ -124,14 +124,15 @@ async function logout() {
   }
 </script>
 
-<Header />
-<Slide />
+
+<Slide user={user} />
 
 <!-- <section class="text-center pb-0 " style="padding-top:142px;">
   <h2 class="h2-baslik-anasayfa-ozel h-yazi-margin-kucuk "> Informations & Accès</h2>
 
 </section> -->
-
+<div class="container mb-8 tablo">
+  
 <div class="file-ariane flex items-center space-x-2 text-sm text-gray-600 mb-4" style="margin-bottom: 100px;">
   <button on:click={navigateToDashboard} class="flex items-center hover:text-blue-600">
     <!-- Icône SVG pour "Tableau de bord" -->
@@ -149,123 +150,129 @@ async function logout() {
   </button>
   <span>/</span>
   <span class="text-gray-800">Profil</span> <!-- Nom de la page actuelle -->
-</div><br>
+</div>
+</div><br><br><br><br> <br><br><br><br><br> <br><br>
 
-<main style="padding-top: 320px">
+
+<main >
+  <!--İletişim Form Alanı-->
   <section class="iletisim-form-alani">
-    <div class="tablo">
-      <div class="tablo--1-ve-2">
-        <!-- <h2 class="h2-baslik-anasayfa-ozel h-yazi-margin-kucuk">
-         
-        </h2> -->
-        <form
-        on:submit|preventDefault={confirmUpdate}
-          class="form update_customer"
-        >
-          <div>
-            <div class="dropify-wrapper">
-              <input
-                type="file"
-                name="avatar"
-                accept="image/*,application/pdf"
-                on:change={handleFileUpload}
-                class="hidden-input dropify"
-              />
-              <img src={avatarPreview} alt="Avatar" class="dropify-preview" />
-            </div>
-          </div>
-          <br /><br />
+      <div class="tablo">
+           <div class="tablo--1-ve-2 masqueur à effet de révélation d'image de projet wow">
+              <!--  <h2 class="h2-baslik-anasayfa-ozel h-yazi-margin-kucuk"> Informations & accès </h2> -->
 
-          <div class="tablos flex grid grid-cols-1">
-            <!--  <div> -->
-            <div class="form__grup">
-              <label class="form__label">Nom utilisateur</label>
-              <input
-                disabled
-                type="text"
-                class="form__input"
-                bind:value={user_data.email}
-                placeholder="Nom utilisateur"
-              />
-            </div>
-          </div>
-          <div class="tablos flex grid grid-cols-2">
-            <!--  <div> -->
-            <div class="form__grup">
-              <label class="form__label">Ancien mot de passe</label>
-              <input
-                type="text"
-                class="form__input"
-                bind:value={user_data.password}
-                placeholder="Nom utilisateur"
-              />
-            </div>
-            <!--  </div> -->
-            <div>
-              <div class="form__grup">
-                <label class="form__label">Nouveau mot de passe</label>
-                <input
-                  type="password"
-                  class="form__input"
-                  bind:value={user_data.newPassword}
-                  placeholder="Mot de passe"
-                />
-              </div>
-            </div>
-          </div>
 
-          <div class="form__grup">
-            <button
-              class="buton buton--kirmizi"
-              style="width:100%"
-              id="login_customers"
-            >
-              {#if authenticating}
-                <div class="grid grid-cols-3">
-                  <div class="col-span-1">
-                    <Spinner />
+              <form
+              on:submit|preventDefault={confirmUpdate}
+                class="form update_customer"
+              >
+                <div>
+                  <div class="dropify-wrapper">
+                    <input
+                      type="file"
+                      name="avatar"
+                      accept="image/*,application/pdf"
+                      on:change={handleFileUpload}
+                      class="hidden-input dropify"
+                    />
+                    <img src={avatarPreview} alt="Avatar" class="dropify-preview" />
                   </div>
-                  <div>MODIFIER</div>
                 </div>
-              {:else}
-                MODIFIER
-              {/if}
-            </button>
-
-            <br />
-            <br />
-
-            {#if message !== "" && cpte > 0}
-              <div
-                class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative"
-                role="alert"
-              >
-                <strong class="font-bold">Oups erreur!</strong>
-                <span class="block sm:inline">{message}</span>
-              </div>
-            {:else if message !== ""}
-              <div
-                class="bg-red-100 border border-gray-400 text-black px-4 py-3 rounded relative"
-                role="alert"
-              >
-                <strong class="font-bold">Success!</strong>
-                <span class="block sm:inline">{message}</span>
-              </div>
-            {/if}
-
-            <br />
-
-         <!--    <a
-              href="paiements"
-              class="buton buton--kirmizi text-center"
-              style="width:100%; background:black">HISTORIQUE DE PAIEMENT</a
-            > -->
-          </div>
-        </form>
-      </div>
-    </div>
+                <br /><br />
+      
+                <div class="tablos flex grid grid-cols-1">
+                  <!--  <div> -->
+                  <div class="form__grup">
+                    <label class="form__label">Nom utilisateur</label>
+                    <input
+                      disabled
+                      type="text"
+                      class="form__input"
+                      bind:value={user_data.email}
+                      placeholder="Nom utilisateur"
+                    />
+                  </div>
+                </div>
+                <div class="tablos flex grid grid-cols-2">
+                  <!--  <div> -->
+                  <div class="form__grup">
+                    <label class="form__label">Ancien mot de passe</label>
+                    <input
+                      type="text"
+                      class="form__input"
+                      bind:value={user_data.password}
+                      placeholder="Nom utilisateur"
+                    />
+                  </div>
+                  <!--  </div> -->
+                  <div>
+                    <div class="form__grup">
+                      <label class="form__label">Nouveau mot de passe</label>
+                      <input
+                        type="password"
+                        class="form__input"
+                        bind:value={user_data.newPassword}
+                        placeholder="Mot de passe"
+                      />
+                    </div>
+                  </div>
+                </div>
+      
+                <div class="form__grup">
+                  <button
+                    class="buton buton--kirmizi"
+                    style="width:100%"
+                    id="login_customers"
+                  >
+                    {#if authenticating}
+                      <div class="grid grid-cols-3">
+                        <div class="col-span-1">
+                          <Spinner />
+                        </div>
+                        <div>MODIFIER</div>
+                      </div>
+                    {:else}
+                      MODIFIER
+                    {/if}
+                  </button>
+      
+                  <br />
+                  <br />
+      
+                  {#if message !== "" && cpte > 0}
+                    <div
+                      class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative"
+                      role="alert"
+                    >
+                      <strong class="font-bold">Oups erreur!</strong>
+                      <span class="block sm:inline">{message}</span>
+                    </div>
+                  {:else if message !== ""}
+                    <div
+                      class="bg-red-100 border border-gray-400 text-black px-4 py-3 rounded relative"
+                      role="alert"
+                    >
+                      <strong class="font-bold">Success!</strong>
+                      <span class="block sm:inline">{message}</span>
+                    </div>
+                  {/if}
+      
+                  <br />
+      
+               <!--    <a
+                    href="paiements"
+                    class="buton buton--kirmizi text-center"
+                    style="width:100%; background:black">HISTORIQUE DE PAIEMENT</a
+                  > -->
+                </div>
+              </form>
+               
+           </div>
+       </div>
   </section>
 </main>
+
+
 
 <Footer />
 {#if showModal}
@@ -361,7 +368,7 @@ async function logout() {
 
     .file-ariane {
     position: absolute;
-    width: 100%;
+    width: 68%;
     top: 112px;
     background: #4292cecc;
     padding: 22px;

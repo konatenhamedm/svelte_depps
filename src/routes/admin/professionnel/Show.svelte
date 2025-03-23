@@ -7,7 +7,8 @@
   import { TrashBinSolid } from "flowbite-svelte-icons";
   import { createEventDispatcher, onMount } from "svelte";
   import DocShow from "./DocShow.svelte";
-  import ModalRecu from "./Modal.svelte";
+  import { format } from "date-fns";
+  import RecuPaiement from "./RecuPaiement.svelte";
 
 
   let isLoad = false;
@@ -61,16 +62,17 @@
   let certificatPath = "";
   let certificatAlt = "";
 
-  function formatDateForInput(dateString: string) {
-    if (!dateString) return "";
-    try {
-      const date = new Date(dateString);
-      return date.toISOString().split("T")[0];
-    } catch (e) {
-      console.error("Erreur de formatage de date:", e);
-      return "";
-    }
+
+function formatDateForInput(dateString: string) {
+  if (!dateString) return "";
+  try {
+    const date = new Date(dateString);
+    return format(date, "yyyy-MM-dd"); // Formater en YYYY-MM-DD
+  } catch (e) {
+    console.error("Erreur de formatage de date:", e);
+    return "";
   }
+}
 
   async function getProfessionLibelle(code: any) {
     console.log("Code profession:", code);
@@ -115,7 +117,7 @@
     lieuExercicePro = data.personne.lieuExercicePro || "";
     datePremierDiplome =
       formatDateForInput(data.personne.datePremierDiplome) || "";
-    situationPro = data.personne.situationPro || "";
+    situationPro = data.personne.situationPro.libelle || "";
     situation = data.personne.situation || "";
     typeUser = data?.typeUser || "";
     userEmail = data?.email || "";
@@ -206,6 +208,8 @@
     }
   }
   async function SaveFunctionSingleMethode(etat: string) {
+
+    console.log('TTGDFDFDFD',etat)
     isLoad = true;
     try {
       const res = await fetch(
@@ -493,8 +497,11 @@
         >
           FICHE D'INSCRIPTION
         </div>
-        <div  on:click={() =>
-                              openModal("DEPPS250219040558025")}
+        <div   on:click={() => (
+          (current_data =
+              data),
+          (openShow = true)
+      )}
           style="background-color: green;"
           class="w-full h-9 flex justify-center bg-green hover:bg-green text-white font-bold py-2 pb-[1.9rem] px-4 border border-white rounded cursor-pointer"
         >
@@ -511,14 +518,14 @@
               <div class="flex items-center">
                 <div class="mr-2">
                   <InputCheck
-                    checked={appartenirOrganisation === "oui" ? true : false}
+                    checked={appartenirOrganisation === "non" ? true : false}
                     label="Non"
                     disabled={true}
                   />
                 </div>
                 <div>
                   <InputCheck
-                    checked={appartenirOrganisation === "non" ? true : false}
+                    checked={appartenirOrganisation === "oui" ? true : false}
                     label="Oui"
                     disabled={true}
                   />
@@ -690,6 +697,9 @@
     </div>
   </div>
 </Modal>
-<ModalRecu isOpen={isModalOpen} {pdfUrl} onClose={closeModal} />
+<!-- {#if isModalOpen} -->
+<RecuPaiement bind:open={openShow} data={current_data} sizeModal="xl" userUpdateId={userUpdateId}/>
 
+<!-- {/if} -->
 <DocShow bind:open={openShow} data={current_data} sizeModal="xl" />
+

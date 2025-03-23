@@ -19,7 +19,7 @@
   import Pagination from "../../../components/_includes/Pagination.svelte";
   // Importer le store pageSize
   import { get } from "svelte/store";
-  import type { Permission, sMenu, User } from "../../../types";
+  import type { Permission, RacineSequence, sMenu, User } from "../../../types";
   import { apiFetch } from "$lib/api";
   import { pageSize } from "../../../store"; // Importer le store pageSize
   import { onMount } from "svelte";
@@ -50,7 +50,7 @@
   async function fetchData() {
     loading = true; // Active le spinner de chargement
     try {
-      const res = await apiFetch(true, "/situation_professionnelle/");
+      const res = await apiFetch(true, "/situationProfessionnelle/");
       console.log(res);
       if (res) {
         main_data = res.data as sMenu[];

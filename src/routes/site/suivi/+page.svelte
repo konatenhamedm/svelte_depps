@@ -72,9 +72,9 @@
   </style>
 
 <br><br><br><br>
-<div class="container mt-5">
+<div class="container mt-5 tablo">
  <!--  <h2 class="text-center mb-4">Informations Gouvernementales</h2> -->
-  <div class="table-responsive government-table">
+  <div class="table-responsive government-table w-full">
       <table class="table table-bordered">
           <thead >
               <tr>

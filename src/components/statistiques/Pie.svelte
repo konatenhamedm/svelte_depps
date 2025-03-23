@@ -1,6 +1,9 @@
+<script context="module" lang="ts">
+  export const ssr = false; // Désactive le SSR pour ce composant
+</script>
+
 <script lang="ts">
   import { onMount } from 'svelte';
-  import { browser } from '$app/environment';
   import Highcharts from 'highcharts';
   import Exporting from 'highcharts/modules/exporting';
   import ExportData from 'highcharts/modules/export-data';
@@ -12,15 +15,13 @@
   let pie3;
 
   onMount(() => {
-    if (browser) {
-      // Initialisez les modules Highcharts
+    if (typeof window !== 'undefined') {
       Exporting(Highcharts);
       ExportData(Highcharts);
+      /*
+      ExportData(Highcharts); */
+   /*    pdfMake.vfs = pdfFonts.pdfMake.vfs; */
 
-      // Configurez pdfmake pour l'exportation PDF
-      pdfMake.vfs = pdfFonts.pdfMake.vfs;
-
-      // Créez le graphique
       pie3 = Highcharts.chart('container3', {
         chart: {
           plotBackgroundColor: null,
@@ -67,7 +68,6 @@
     }
   });
 
-  // Mettre à jour les données lorsque `data` change
   $: if (pie3 && data.length > 0) {
     pie3.series[0].setData(data);
   }

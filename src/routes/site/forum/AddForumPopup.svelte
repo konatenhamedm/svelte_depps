@@ -25,6 +25,7 @@
       await apiFetch(true, "/forum/create", "POST", newForum).then((res) => {
         if (res) {
           loading = false;
+          window.location.reload();
           closePopup();
         }
       });
@@ -55,14 +56,14 @@
               required
               placeholder="Titre"
               id="txt_eposta"
-              name="titre"
+              name="title"
             />
           </div>
         </div>
         <div class="mb-4">
           <div class="form__grup" style="margin-top:10px">
             <label for="name" class="form__label">Contenu</label>
-            <textarea rows="5" cols="66"  maxlength="90" name="contenu" id="txt_mesaj" placeholder="Text de l'article" class="form__input w-full"></textarea>
+            <textarea rows="5" cols="66"   name="content" id="txt_mesaj" placeholder="Text de l'article" class="form__input w-full"></textarea>
 
           </div>
         </div>
@@ -70,7 +71,7 @@
         <div class="mb-4">
           <div class="form__grup my-2 w-full">
             <label for="name" class="form__label">Status</label>
-            <select name="destinateur" class="form__input w-full" id="">
+            <select name="status" class="form__input w-full" id="">
               <option value="Actif">Actif</option>
               <option value="Inactif">Inactif</option>
             </select>

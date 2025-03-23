@@ -19,7 +19,7 @@
   import Pagination from "../../../components/_includes/Pagination.svelte";
   // Importer le store pageSize
   import { get } from "svelte/store";
-  import type { Permission, sMenu, User } from "../../../types";
+  import type { Permission, RacineSequence, sMenu, User } from "../../../types";
   import { apiFetch } from "$lib/api";
   import { pageSize } from "../../../store"; // Importer le store pageSize
   import { onMount } from "svelte";
@@ -33,7 +33,7 @@
   export let data; // Les données retournées par `load()`
   let user = data.user;
 
-  let main_data: sMenu[] = [];
+  let main_data: RacineSequence[] = [];
   let searchQuery = ""; // Pour la recherche par texte
   let selectedService: any = ""; // Pour filtrer par service
   let selectedStatus: any = ""; // Pour filtrer par status
@@ -50,10 +50,10 @@
   async function fetchData() {
     loading = true; // Active le spinner de chargement
     try {
-      const res = await apiFetch(true, "/racineSequence/");
+      const res = await apiFetch(true, "/racineSequence");
       console.log(res);
       if (res) {
-        main_data = res.data as sMenu[];
+        main_data = res.data as RacineSequence[];
       } else {
         console.error(
           "Erreur lors de la récupération des données:",
@@ -72,7 +72,7 @@
   });
 
   $: filteredData = main_data.filter((item) => {
-    return item.libelle.toLowerCase().includes(searchQuery.toLowerCase());
+    return item.code.toLowerCase().includes(searchQuery.toLowerCase());
   });
 
   // $: totalPages = Math.ceil(filteredData.length / get(pageSize)) pageSize se trouve store.ts;
@@ -209,7 +209,7 @@
                   {#each paginatedProducts as item}
                     <TableBodyRow class="text-base border border-gray-300">
                       <TableBodyCell class="p-4 border border-gray-300"
-                        >{item.libelle}</TableBodyCell
+                        >{item.code}</TableBodyCell
                       >
 
                       <!--  <TableBodyCell class="p-4 border border-gray-300">{item.sous_menu.libelle}</TableBodyCell>

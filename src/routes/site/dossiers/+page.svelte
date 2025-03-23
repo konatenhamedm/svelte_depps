@@ -152,10 +152,6 @@
           professionnel: apiData.professionnel || "",
           lieuExercicePro: apiData.lieuExercicePro || "",
           emailAutre: apiData.email || "",
-
-
-
-      
           civilite: apiData.civilite ? apiData.civilite.id : "",
           nationalite: apiData.nationate ? apiData.nationate.id : "",
           dateNaissance: formatDateForInput(apiData.dateNaissance),
@@ -169,20 +165,15 @@
           emailPro: apiData.emailPro || "",
           poleSanitairePro: apiData.poleSanitairePro || "",
           datePremierDiplome: formatDateForInput(apiData.datePremierDiplome),
-
-          
           photo: apiData.photo || "",
           cni: apiData.cni || "",
           casier: apiData.casier || "",
           diplomeFile: apiData.diplomeFile || "",
           certificat: apiData.certificat || "",
           cv: apiData.cv || "",
-
           // Organisation
          appartenirOrganisation: apiData.appartenirOrganisation,
-
-       
-          organisationNom: apiData.appartenirOrganisation == "oui" ? apiData.organisations[0].nom || "" : "",
+          organisationNom: apiData.appartenirOrganisation == "oui" ? apiData.organisationNom|| "" : "",
          
         };
         
@@ -268,27 +259,30 @@
   }
 </script>
 
-<Header {user} />
+
 
 <Slide {user} />
-<div class="file-ariane flex items-center space-x-2 text-sm text-gray-600 mb-4">
-  <button on:click={navigateToDashboard} class="flex items-center hover:text-blue-600">
-    <!-- Icône SVG pour "Tableau de bord" -->
-    <svg
-            xmlns="http://www.w3.org/2000/svg"
-            class="w-4 h-4 mr-1"
-            viewBox="0 0 20 20"
-            fill="currentColor"
-    >
-      <path
-              d="M10.707 2.293a1 1 0 00-1.414 0l-7 7a1 1 0 001.414 1.414L4 10.414V17a1 1 0 001 1h2a1 1 0 001-1v-2a1 1 0 011-1h2a1 1 0 011 1v2a1 1 0 001 1h2a1 1 0 001-1v-6.586l.293.293a1 1 0 001.414-1.414l-7-7z"
-      />
-    </svg>
-    Tableau de bord
-  </button>
-  <span>/</span>
-  <span class="text-gray-800">Liste des dossiers</span> <!-- Nom de la page actuelle -->
-</div><br>
+
+<div class="container">
+  <div class="file-ariane flex items-center space-x-2 text-sm text-gray-600 mb-4">
+    <button on:click={navigateToDashboard} class="flex items-center hover:text-blue-600">
+      <!-- Icône SVG pour "Tableau de bord" -->
+      <svg
+              xmlns="http://www.w3.org/2000/svg"
+              class="w-4 h-4 mr-1"
+              viewBox="0 0 20 20"
+              fill="currentColor"
+      >
+        <path
+                d="M10.707 2.293a1 1 0 00-1.414 0l-7 7a1 1 0 001.414 1.414L4 10.414V17a1 1 0 001 1h2a1 1 0 001-1v-2a1 1 0 011-1h2a1 1 0 011 1v2a1 1 0 001 1h2a1 1 0 001-1v-6.586l.293.293a1 1 0 001.414-1.414l-7-7z"
+        />
+      </svg>
+      Tableau de bord
+    </button>
+    <span>/</span>
+    <span class="text-gray-800">Liste des dossiers</span> <!-- Nom de la page actuelle -->
+  </div><br>
+</div>
 
 {#if isLoading}
   <main style="padding-top: 8px" class="pb-0">
@@ -297,7 +291,7 @@
     </section>
   </main>
 {:else}
-  <main style="padding-top: -10px" class="pb-0">
+  <main  class="pb-0">
     <section class="iletisim-form-alani">
       <div class="w-full mx-auto p-4 content-sec">
         <!-- Tabs Navigation -->
@@ -819,7 +813,7 @@
 
   .file-ariane {
     position: absolute;
-    width: 100%;
+    width: 80%;
     top: 112px;
     background: #4292cecc;
     padding: 22px;

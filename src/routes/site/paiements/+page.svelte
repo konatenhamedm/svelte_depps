@@ -104,7 +104,7 @@ integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2
 crossorigin="anonymous"
 />
 
-<div class="container ">
+<div class="container tablo ">
   <div class="file-ariane flex items-center space-x-2 text-sm text-gray-600 mb-4">
     <button on:click={navigateToDashboard} class="flex items-center hover:text-blue-600">
       <!-- Icône SVG pour "Tableau de bord" -->
