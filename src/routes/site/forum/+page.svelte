@@ -107,7 +107,6 @@
 <Slide {user} /> <br><br><br><br>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
 
-<div class="container tablo">
   <div class="file-ariane flex items-center space-x-2 text-sm text-gray-600 mb-4">
     <button on:click={navigateToDashboard} class="flex items-center hover:text-blue-600">
       <!-- Icône SVG pour "Tableau de bord" -->
@@ -125,8 +124,9 @@
     </button>
     <span>/</span>
     <span class="text-gray-800">Liste des forums</span> <!-- Nom de la page actuelle -->
-  </div><br>
-</div><br>
+  </div><br><br><br><br><br>
+
+<br>
 
 <main class="pb-[120px]">
   <section class="">
@@ -197,18 +197,21 @@
 }
 
 .file-ariane {
-      position: absolute;
-      width: 68%;
-      top: 112px;
-      background: #4292cecc;
-      padding: 22px;
-      color: white;
-      font-size: 14px;
-    }
+    position: absolute;
+    width: 100%;
+    top: 96px;
+    background: #4292cecc;
+    padding: 22px;
+    color: white;
+    font-size: 14px;
+    justify-content: center;
+    align-items: center;
+}
 
-    .file-ariane span {
-      color: white;
-    }
+.file-ariane span {
+    color: white;
+    margin: 0 5px;
+}
 </style>
 <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" />
 </main>

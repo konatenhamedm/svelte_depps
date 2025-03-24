@@ -108,7 +108,7 @@ function navigateToDashboard() {
 
 <Slide {user} /> <br /><br /><br /><br /><br /><br />
 
-<div class="container tablo">
+
   <div
     class="file-ariane flex items-center space-x-2 text-sm text-gray-600 mb-8"
   >
@@ -133,7 +133,7 @@ function navigateToDashboard() {
     <span class="text-gray-800">Liste des arlertes</span>
     <!-- Nom de la page actuelle -->
   </div>
-</div>
+
 
 <main style="background-color: #fff" class="pb-20">
   <style>
@@ -170,16 +170,19 @@ function navigateToDashboard() {
 
     .file-ariane {
       position: absolute;
-      width: 68%;
-      top: 112px;
+      width: 100%;
+      top: 96px;
       background: #4292cecc;
       padding: 22px;
       color: white;
       font-size: 14px;
+      justify-content: center;
+      align-items: center;
     }
 
     .file-ariane span {
       color: white;
+      margin: 0 5px;
     }
     .pagination-controls {
       /* display: flex; */
