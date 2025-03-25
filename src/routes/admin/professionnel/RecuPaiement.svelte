@@ -118,7 +118,7 @@
 
   onMount(async () => {
   
-    getTransactionInfos();
+   await getTransactionInfos();
   });
 
   function handleModalClose(event: Event) {

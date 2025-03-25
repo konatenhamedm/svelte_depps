@@ -10,7 +10,6 @@
   import { format } from "date-fns";
   import RecuPaiement from "./RecuPaiement.svelte";
 
-
   let isLoad = false;
 
   export let userUpdateId: any;
@@ -61,18 +60,18 @@
   let casierAlt = "";
   let certificatPath = "";
   let certificatAlt = "";
+  let lieuDiplome = "";
 
-
-function formatDateForInput(dateString: string) {
-  if (!dateString) return "";
-  try {
-    const date = new Date(dateString);
-    return format(date, "yyyy-MM-dd"); // Formater en YYYY-MM-DD
-  } catch (e) {
-    console.error("Erreur de formatage de date:", e);
-    return "";
+  function formatDateForInput(dateString: string) {
+    if (!dateString) return "";
+    try {
+      const date = new Date(dateString);
+      return format(date, "yyyy-MM-dd"); // Formater en YYYY-MM-DD
+    } catch (e) {
+      console.error("Erreur de formatage de date:", e);
+      return "";
+    }
   }
-}
 
   async function getProfessionLibelle(code: any) {
     console.log("Code profession:", code);
@@ -98,29 +97,29 @@ function formatDateForInput(dateString: string) {
     }
   }
 
-  async function init(form: HTMLFormElement) {
+  function init(form: HTMLFormElement) {
     console.log(`je suis la data `, data);
     numero = data.personne.number || "";
     nom = data.personne.nom || "";
     status = data.personne.status || "";
+    professionLibelle = data.personne.profession.libelle || "";
     prenoms = data.personne.prenoms || "";
     reason = data.personne.reason || "";
     professionnel = data.personne.professionnel || "";
-    civilite = data.personne.civilite.libelle || "";
-    nationalite = data.personne.nationate.libelle || "";
-    dateNaissance = formatDateForInput(data.personne.dateNaissance) || "";
-    dateDiplome = formatDateForInput(data.personne.dateDiplome) || "";
+    civilite = data.personne.civilite || "";
+    nationalite = data.personne.nationate || "";
+    dateNaissance = data.personne.dateNaissance || "";
+    dateDiplome = data.personne.dateDiplome || "";
     diplome = data.personne.diplome || "";
     poleSanitaire = data.personne.poleSanitaire || "";
     organisationNom = data.personne.organisationNom || "";
     poleSanitairePro = data.personne.poleSanitairePro || "";
     lieuExercicePro = data.personne.lieuExercicePro || "";
-    datePremierDiplome =
-      formatDateForInput(data.personne.datePremierDiplome) || "";
-    situationPro = data.personne.situationPro.libelle || "";
+    datePremierDiplome = data.personne.datePremierDiplome || "";
+    situationPro = data.personne.situationPro || "";
     situation = data.personne.situation || "";
     typeUser = data?.typeUser || "";
-    userEmail = data?.email || "";
+    userEmail = data.email || "";
     appartenirOrganisation = data.personne.appartenirOrganisation || "";
     photo = data.personne.photo || "";
     cni = data.personne.cni || "";
@@ -136,14 +135,15 @@ function formatDateForInput(dateString: string) {
     casierAlt = data.personne.casier.alt || "";
     certificatPath = data.personne.certificat.path || "";
     certificatAlt = data.personne.certificat.alt || "";
-
+    lieuDiplome = data.personne.lieuDiplome || "";
     // Récupérer la profession
-    profession = await getProfessionLibelle(data.personne.profession);
+    /*profession =  data.personne.professionLibelle || ""; await getProfessionLibelle(data.personne.profession);
     if (profession) {
       console.log("Profession récupérée:", profession);
     } else {
       console.error("Impossible de récupérer la profession");
-    }
+    }*/
+    
   }
   let valid_endUser = {
     raison: "",
@@ -151,7 +151,9 @@ function formatDateForInput(dateString: string) {
   };
 
   let openShow: boolean = false;
+  let openShowDoc: boolean = false;
   let current_data: any = {};
+  let pdfUrl: any ;
   let showNotification = false;
   let notificationMessage = "";
   let notificationType = "info";
@@ -177,6 +179,11 @@ function formatDateForInput(dateString: string) {
     isDialogOpen = false;
   }
   async function SaveFunction() {
+    console.log("Email", userEmail);
+    console.log("Email", valid_endUser.status);
+    console.log("Email", valid_endUser.raison);
+    console.log("Email", userUpdateId);
+
     isLoad = true;
     try {
       const res = await fetch(
@@ -208,8 +215,11 @@ function formatDateForInput(dateString: string) {
     }
   }
   async function SaveFunctionSingleMethode(etat: string) {
-
-    console.log('TTGDFDFDFD',etat)
+    console.log("EmailTTT", userEmail);
+    console.log("Email", valid_endUser.status);
+    console.log("Email", valid_endUser.raison);
+    console.log("Email", userUpdateId);
+    console.log("TTGDFDFDFD", etat);
     isLoad = true;
     try {
       const res = await fetch(
@@ -246,7 +256,7 @@ function formatDateForInput(dateString: string) {
   }) */
 
   let isModalOpen = false;
-  let pdfUrl = "";
+
 
   function openModal(url: any) {
     pdfUrl = url; // ✅ Met à jour la variable réactive
@@ -351,7 +361,7 @@ function formatDateForInput(dateString: string) {
           <InputSimple
             fieldName="profession"
             label="Spécialité"
-            field={profession}
+            field={professionLibelle}
             disabled={true}
           />
         </div>
@@ -361,7 +371,7 @@ function formatDateForInput(dateString: string) {
       <div class="grid grid-cols-3 gap-6 mt-6">
         <div class="space-y-6">
           <InputSimple
-            fieldName="profession"
+            fieldName="datePremierDiplome"
             label="Date d'obtention premier emploi"
             field={datePremierDiplome}
             disabled={true}
@@ -416,7 +426,7 @@ function formatDateForInput(dateString: string) {
         <div>
           <InputSimple
             fieldName="poleSanitaire"
-            label="Pôle sanitaire,District,Ville,Commune,quartier,lot,ilot *"
+            label="lot,ilot *"
             field={poleSanitaire}
             disabled={true}
           />
@@ -497,24 +507,27 @@ function formatDateForInput(dateString: string) {
         >
           FICHE D'INSCRIPTION
         </div>
-        <div   on:click={() => (
-          (current_data =
-              data),
-          (openShow = true)
-      )}
-          style="background-color: green;"
-          class="w-full h-9 flex justify-center bg-green hover:bg-green text-white font-bold py-2 pb-[1.9rem] px-4 border border-white rounded cursor-pointer"
-        >
-          REÇU DE PAIEMENT
-        </div>
-        <!--   </div> -->
+        {#if data.personne.profession.montantRenouvellement != null || data.personne.profession.montantNouvelleDemande != null}
+          <div   on:click={() => (
+            (current_data =
+                data),
+            (isModalOpen = true)
+        )}
+            style="background-color: green;"
+            class="w-full h-9 flex justify-center bg-green hover:bg-green text-white font-bold py-2 pb-[1.9rem] px-4 border border-white rounded cursor-pointer"
+          >
+            REÇU DE PAIEMENT
+          </div>
+        {/if}
       </div>
 
       <div class="grid grid-cols-2 gap-6 mt-6 mb-2">
         <div class="space-y-6">
           <div class="flex items-center justify-between space-x-2">
             <fieldset>
-              <legend style="color: black;">Appartenance à une organisation</legend>
+              <legend style="color: black;"
+                >Appartenance à une organisation</legend
+              >
               <div class="flex items-center">
                 <div class="mr-2">
                   <InputCheck
@@ -535,7 +548,7 @@ function formatDateForInput(dateString: string) {
           </div>
         </div>
         {#if appartenirOrganisation === "oui"}
-        <!-- <div class="grid grid-cols-1 gap-6 mt-6"> -->
+          <!-- <div class="grid grid-cols-1 gap-6 mt-6"> -->
           <div class="space-y-6">
             <InputSimple
               fieldName="organisation"
@@ -544,10 +557,10 @@ function formatDateForInput(dateString: string) {
               disabled={true}
             />
           </div>
-        <!-- </div> -->
-      {/if}
+          <!-- </div> -->
+        {/if}
       </div>
-      
+
       <br />
 
       {#if status === "attente" || status === "accepte" || status === "valide" || status === "renouvellement"}
@@ -691,15 +704,18 @@ function formatDateForInput(dateString: string) {
           color="alternative"
           style="background-color: gray !important; color: white;"
           on:click={() => (open = false)}
-          type="submit">{"Fermer"}</Button
+          type="submit">{"Fermer"} {data?.id}</Button
         >
       </div>
     </div>
   </div>
 </Modal>
-<!-- {#if isModalOpen} -->
-<RecuPaiement bind:open={openShow} data={current_data} sizeModal="xl" userUpdateId={userUpdateId}/>
 
-<!-- {/if} -->
+<!-- {#if isModalOpen == true}
+  <RecuPaiement bind:isOpen={isModalOpen} {pdfUrl} onClose={closeModal} />
+{/if} -->
+
+<RecuPaiement bind:open={isModalOpen} data={current_data} sizeModal="xl" userUpdateId={userUpdateId}/>
+
+
 <DocShow bind:open={openShow} data={current_data} sizeModal="xl" />
-

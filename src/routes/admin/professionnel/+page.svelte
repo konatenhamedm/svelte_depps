@@ -54,31 +54,6 @@
   $: searchQuery = "";
 
 
-  async function getProfessionLibelle(code:any) {
-    
-    try {
-      const res = await fetch(BASE_URL_API + "/profession/get/by/code/" + code);
-
-      if (res.ok) {
-        const data = await res.json();
-        if (data && data.data) {
-          console.log("Data récupérée:", data.data);
-       /* profession = data.data; */
-          return data.data;
-        } else {
-          console.error("Erreur: data.data est undefined", data);
-          return "";
-        }
-      } else {
-        console.error("Erreur HTTP:", res.status, res.statusText);
-        return "";
-      }
-    } catch (error) {
-      console.error("Erreur lors de la récupération des données:", error);
-      return "";
-    }
-  }
-
   // Fonction pour récupérer les données
 async function fetchData() {
   loading = true; // Active le spinner de chargement
@@ -86,13 +61,6 @@ async function fetchData() {
     const res = await apiFetch(true, "/professionnel/");
     if (res) {
       main_data = res.data as professionnel[];
-
-      // Pour chaque professionnel, récupérez le libellé de la profession
-      for (let i = 0; i < main_data.length; i++) {
-        const professionnel = main_data[i];
-        const professionLibelle = await getProfessionLibelle(professionnel.personne.profession);
-        professionnel.personne.professionLibelle = professionLibelle; // Ajoutez le libellé à l'objet professionnel
-      }
 
       console.log(main_data);
     } else {
@@ -108,7 +76,7 @@ async function fetchData() {
   }
 }
   onMount(async () => {
-    fetchData();
+    await fetchData();
   });
 
   // Liste des onglets avec leur label et couleur
@@ -188,7 +156,7 @@ async function fetchData() {
       openDelete = false;
     }
   };
-let profession: any;
+
     
  
 </script>
@@ -317,7 +285,7 @@ let profession: any;
                         >{item.email}</TableBodyCell
                       >
                       <TableBodyCell class="p-4 border border-gray-300"
-                        >{ item.personne.professionLibelle}</TableBodyCell
+                        >{ item.personne.profession.libelle}</TableBodyCell
                       >
                       {#if activeTab === "valide"}
                         <TableBodyCell class="p-4 border border-gray-300"

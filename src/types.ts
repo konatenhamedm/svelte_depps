@@ -471,19 +471,68 @@ export interface Select {
   libelle: string;
 }
 export interface professionnel {
+  id: number;
   username: string;
   email: string;
-  phone: string;
   typeUser: string;
   personne: {
     nom: string;
-    professionLibelle?: string;
-    code:string
+    profession: {
+      libelle: string;
+      montantNouvelleDemande: string;
+      montantRenouvellement: string;
+      id: number;
+
+    };
+    lieuDiplome: string;
+    code: string;
     prenoms: string;
     number: string;
     email: string;
     type: string;
     status: string;
+
+    // Nouveaux champs professionnels
+    professionnel?: string;
+    civilite: string;
+    nationate?:string;
+    dateNaissance?: string;
+    dateDiplome?: string;
+    diplome?: string;
+    poleSanitaire?: string;
+    organisationNom?: string;
+    poleSanitairePro?: string;
+    lieuExercicePro?: string; // Note: vous aviez "lieuExercicePro" dans votre code
+    datePremierDiplome?: string;
+    situationPro?: {
+      libelle: string;
+    };
+    situation?: string;
+
+    photo: {
+      path: string;
+      alt: string;
+    };
+    cv: {
+      path: string;
+      alt: string;
+    };
+    casier: {
+      path: string;
+      alt: string;
+    };
+    certificat: {
+      path: string;
+      alt: string;
+    };
+    diplomeFile: {
+      path: string;
+      alt: string;
+    };
+    cni: {
+      path: string;
+      alt: string;
+    };
   };
 }
 export interface Etablissement {
