@@ -71,8 +71,8 @@
     }
   }
 
-  onMount(() => {
-    getData();
+  onMount(async () => {
+   await getData();
   });
 </script>
 
@@ -93,10 +93,10 @@
     <form action="#" use:init>
       <div class="grid grid-cols-1">
         <InputSimple
-          fieldName="code"
-          label="Code"
+          fieldName="libelle"
+          label="Libelle"
           bind:field={icons.libelle}
-          placeholder="entrez le code"
+          placeholder="entrez le libelle"
           class="w-full"
         ></InputSimple>
 

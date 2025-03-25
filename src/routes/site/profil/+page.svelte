@@ -127,13 +127,7 @@ async function logout() {
 
 <Slide user={user} />
 
-<!-- <section class="text-center pb-0 " style="padding-top:142px;">
-  <h2 class="h2-baslik-anasayfa-ozel h-yazi-margin-kucuk "> Informations & Accès</h2>
-
-</section> -->
-<div class="container mb-8 tablo">
-  
-<div class="file-ariane flex items-center space-x-2 text-sm text-gray-600 mb-4" style="margin-bottom: 100px;">
+<div class="file-ariane flex items-center space-x-2 text-sm text-gray-600 mb-4">
   <button on:click={navigateToDashboard} class="flex items-center hover:text-blue-600">
     <!-- Icône SVG pour "Tableau de bord" -->
     <svg
@@ -150,11 +144,9 @@ async function logout() {
   </button>
   <span>/</span>
   <span class="text-gray-800">Profil</span> <!-- Nom de la page actuelle -->
-</div>
-</div><br><br><br><br> <br><br><br><br><br> <br><br>
+</div><br>
 
-
-<main >
+<main style="background-color: #fff" class="pb-20 main-div">
   <!--İletişim Form Alanı-->
   <section class="iletisim-form-alani">
       <div class="tablo">
@@ -290,6 +282,14 @@ async function logout() {
 
 
 <style>
+    .main-div {
+    margin-top: 30px;
+  /*   margin-bottom: 180px; */
+  
+    background: transparent;
+    border-radius: 10px;
+    padding: 20rem 0px 0rem !important;
+  }
   .modal-overlay {
   position: fixed;
   top: 0;
@@ -366,17 +366,20 @@ async function logout() {
     cursor: pointer;
   }
 
-    .file-ariane {
-    position: absolute;
-    width: 68%;
-    top: 112px;
-    background: #4292cecc;
-    padding: 22px;
-    color: white;
-    font-size: 14px;
-  }
+  .file-ariane {
+          position: absolute;
+          width: 100%;
+          top: 96px;
+          background: #4292cecc;
+          padding: 22px;
+          color: white;
+          font-size: 14px;
+          justify-content: center;
+          align-items: center;
+      }
 
-  .file-ariane span {
-    color: white;
-  }
+      .file-ariane span {
+          color: white;
+          margin: 0 5px;
+      }
 </style>

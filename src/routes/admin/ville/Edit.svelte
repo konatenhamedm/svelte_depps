@@ -67,8 +67,8 @@
     }
   }
 
-  onMount(() => {
-    getdistricts();
+  onMount(async() => {
+   await getdistricts();
   });
 </script>
 

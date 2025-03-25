@@ -65,8 +65,8 @@
     }
   }
 
-  onMount(() => {
-    getData();
+  onMount(async() => {
+    await getData();
   });
 </script>
 

@@ -52,7 +52,7 @@
     currentPage = 1;
   }
 
-  onMount(async () => {
+  onMount(async ()=> {
     await fetchInitialData();
 
     const timer = setInterval(() => {
