@@ -243,9 +243,7 @@
       errors.datePremierDiplome = formData.datePremierDiplome
         ? ""
         : "La date du premier diplome est requise";
-      errors.poleSanitairePro = formData.poleSanitairePro
-        ? ""
-        : "Le pole sanitaire est requis";
+    
       errors.diplome = formData.diplome ? "" : "Le diplome est requis";
       errors.situationPro = formData.situationPro
         ? ""
@@ -554,6 +552,8 @@
       });
     }
 
+    console.log(formDatas);
+
     fetch("https://depps.leadagro.net/api/paiement/paiement", {
       method: "POST",
       body: formDatas
@@ -723,12 +723,16 @@
     });
   }
 
+  let reference:any;
+
   // Déclenche la vérification de façon réactive dès que transactionID change
   $: if (typeof window !== "undefined" && localStorage.getItem("reference")) {
-    const reference = localStorage.getItem("reference").toString();
+     reference = localStorage.getItem("reference").toString();
     if (reference != "") {
       checkTransactionID(reference).then((resultat) => {
         console.log(resultat);
+    console.log("RRRDDFFF",reference)
+
         if (resultat.data == false) {
           message = "Votre paiement à échoué veillez ressayez svp.";
           isPaiementDone = false;
@@ -854,7 +858,7 @@
   let pdfUrl = "";
 
   function openModal(url: any) {
-    pdfUrl = url; // ✅ Met à jour la variable réactive
+    pdfUrl = reference; // ✅ Met à jour la variable réactive
     isModalOpen = true;
   }
 
@@ -1361,7 +1365,7 @@
                 </div>
 
                 <!-- Autres champs similaires -->
-                {#each [{ key: "dateDiplome", label: "Date d'obtention  diplôme", type: "date" }, { key: "dateNaissance", label: "Date de naissance", type: "date" }, { key: "numero", label: "Contact", type: "tel" }, { key: "lieuDiplome", label: "Lieu d'obtention  diplôme" }, { key: "nationalite", label: "Nationalité" }, { key: "situation", label: "Situation matrimoniale" }, { key: "datePremierDiplome", label: "Date du premier emploi", type: "date" }, { key: "poleSanitairePro", label: "Pole Sanitaire,District,Commune,Quartier,lot,ilot" }, { key: "diplome", label: "Dénomination du diplome" }, { key: "situationPro", label: "Situation professionnelle" }] as field}
+                {#each [{ key: "dateDiplome", label: "Date d'obtention  diplôme", type: "date" }, { key: "dateNaissance", label: "Date de naissance", type: "date" }, { key: "numero", label: "Contact", type: "tel" }, { key: "lieuDiplome", label: "Lieu d'obtention  diplôme" }, { key: "nationalite", label: "Nationalité" }, { key: "situation", label: "Situation matrimoniale" }, { key: "datePremierDiplome", label: "Date du premier emploi", type: "date" },  { key: "diplome", label: "Dénomination du diplome" }, { key: "situationPro", label: "Situation professionnelle" }] as field}
                   {#if field.key === "nationalite"}
                     <div class="form__group">
                       <label class="block text-2xl font-medium mb-1"
@@ -1673,7 +1677,10 @@
                             href="javascript:void(0);"
                             class="text-blue-500"
                             on:click={() =>
-                              openModal(localStorage.getItem("reference"))}
+                              {
+                                
+                                openModal(reference)
+                              }}
                             >ICI</a
                           >
                         </p>
@@ -1796,7 +1803,9 @@
     </div>
   </section>
 </main>
+{#if isModalOpen == true}
 <Modal isOpen={isModalOpen} {pdfUrl} onClose={closeModal} />
+{/if}
 <!-- </div> -->
 <Footer />
 

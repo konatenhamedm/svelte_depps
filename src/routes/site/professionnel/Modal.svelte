@@ -1,6 +1,7 @@
 <script>
   import { apiFetch } from '$lib/api';
   import { formatDate } from '$lib/dateUtils';
+  import { faArrowLeftRotate } from '@fortawesome/free-solid-svg-icons';
   import jsPDF from 'jspdf';
   import { onMount } from 'svelte';
 
@@ -75,13 +76,17 @@
     pdfUrlAffiche = URL.createObjectURL(pdfBlob);
   }
 
-  $: if (isOpen) {
-    generatePDF();
-  }
+
 
   async function getTransactionInfos() {
-    await apiFetch(true, "/paiement/info/transaction/"+pdfUrl).then((response) => {
+
+/*   alert(pdfUrl) */
+    await apiFetch(true, "/paiement/info/transaction/"+"DEPPS250325120902070").then((response) => {
+
+      console.log(response);
       if (response.code === 200) {
+
+       
         receiptData.amount = response.data.montant;
         receiptData.paymentMethod = response.data.channel;
         receiptData.receiptNumber = response.data.reference;
@@ -92,14 +97,26 @@
  
  
        */
-        receiptData.name = response.data.typeUser == "professionnel" ? response.data.user.personne.nom + " "+ response.data.user.personne.prenoms : response.data.user.personne.nomEntreprise  ;
-        receiptData.phone = response.data.typeUser == "professionnel" ? response.data.user.personne.number  : response.data.user.personne.contactEntreprise  ;
+       receiptData.name = response.data.user.typeUser == "PROFESSIONNEL" ? response.data.user.personne.nom + " "+ response.data.user.personne.prenoms : response.data.user.personne.nomEntreprise  ;
+        receiptData.phone = response.data.user.typeUser == "PROFESSIONNEL" ? response.data.user.personne.number  : response.data.user.personne.contactEntreprise  ;
         receiptData.date = formatDate( response.data.createdAt);
       }
+
+     
     });
   }
 
+ /*  $: if (isOpen && !pdfUrlAffiche) {
+    getTransactionInfos();
+  } */
+
+  $: if (isOpen) {
+    getTransactionInfos();
+    generatePDF();
+  }
+
   onMount(async () => {
+    console.log("REFFFFFFFFFFFFFF",pdfUrl);
   
     getTransactionInfos();
   });

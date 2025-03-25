@@ -58,7 +58,7 @@ async function logout() {
                      <div class="search-bx mx-5">
                         <form>
                             <div class="flex input-group">
-                             <input type="search" class="form-control" placeholder="Search">
+                             <input type="search" class="form-control" placeholder="Recherche">
                              <div class="input-group-append">
                                     <button class="btn" type="submit" id="button-addon3"><i class="icon-Search"><span class="path1"></span><span class="path2"></span></i></button>
                              </div>
