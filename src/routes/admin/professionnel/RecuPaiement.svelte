@@ -166,12 +166,12 @@ $: if (open && !isLoading) {
   <!-- Modal footer -->
   <div slot="footer" class="w-full">
     <div class="flex justify-end">
-      <Button
-      color="alternative"
-      style="background-color: gray !important; color: white;"
-      on:click={() => (open = false)}
-      type="submit">{"Fermer"} </Button
-    >
+       <Button
+          color="alternative"
+          style="background-color: gray !important; color: white;"
+          on:click={() => (open = false)}
+          type="submit">{"Fermer"} </Button
+        >
     </div>
   </div>
 </Modal>

@@ -494,7 +494,7 @@
         <div
           on:click={() => (
             (current_data = url_image + cniPath + "/" + cniAlt),
-            (openShow = true)
+            (isModalOpen = true)
           )}
           class="w-full h-9 flex justify-center bg-gray-500 hover:bg-gray-500 text-white font-bold py-2 pb-[1.9rem] px-4 border border-white rounded cursor-pointer"
         >
@@ -704,7 +704,7 @@
           color="alternative"
           style="background-color: gray !important; color: white;"
           on:click={() => (open = false)}
-          type="submit">{"Fermer"}</Button
+          type="submit">{"Fermer"} </Button
         >
       </div>
     </div>
