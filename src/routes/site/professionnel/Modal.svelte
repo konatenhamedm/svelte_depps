@@ -78,47 +78,40 @@
 
 
 
+  let isLoading = false;
+
   async function getTransactionInfos() {
-
-/*   alert(pdfUrl) */
-    await apiFetch(true, "/paiement/info/transaction/"+pdfUrl).then((response) => {
-
-      console.log(response);
-      if (response.code === 200) {
-
-       
-        receiptData.amount = response.data.montant;
-        receiptData.paymentMethod = response.data.channel;
-        receiptData.receiptNumber = response.data.reference;
-       /*  receiptData.date = response.data.montant; 
-    
-    residence: 'XX',
-    phone: '0564924282',
- 
- 
-       */
-       receiptData.name = response.data.user.typeUser == "PROFESSIONNEL" ? response.data.user.personne.nom + " "+ response.data.user.personne.prenoms : response.data.user.personne.nomEntreprise  ;
-        receiptData.phone = response.data.user.typeUser == "PROFESSIONNEL" ? response.data.user.personne.number  : response.data.user.personne.contactEntreprise  ;
-        receiptData.date = formatDate( response.data.createdAt);
-      }
-
-     
-    });
+    isLoading = true;
+    try {
+      await apiFetch(true, "/paiement/info/transaction/"+pdfUrl).then((response) => {
+        console.log(response);
+        if (response.code === 200) {
+          receiptData.amount = response.data.montant;
+          receiptData.paymentMethod = response.data.channel;
+          receiptData.receiptNumber = response.data.reference;
+          receiptData.name = response.data.user.typeUser == "PROFESSIONNEL" 
+            ? response.data.user.personne.nom + " "+ response.data.user.personne.prenoms 
+            : response.data.user.personne.nomEntreprise;
+          receiptData.phone = response.data.user.typeUser == "PROFESSIONNEL" 
+            ? response.data.user.personne.number 
+            : response.data.user.personne.contactEntreprise;
+          receiptData.date = formatDate(response.data.createdAt);
+        }
+      });
+    } catch (error) {
+      console.error("Erreur lors de la récupération des infos de transaction", error);
+    } finally {
+      isLoading = false;
+    }
   }
 
- /*  $: if (isOpen && !pdfUrlAffiche) {
-    getTransactionInfos();
-  } */
-
-  $: if (isOpen) {
-    getTransactionInfos();
+  $: if (isOpen && !isLoading) {
     generatePDF();
   }
 
   onMount(async () => {
-    console.log("REFFFFFFFFFFFFFF",pdfUrl);
-  
-    getTransactionInfos();
+    console.log("REFFFFFFFFFFFFFF", pdfUrl);
+    await getTransactionInfos();
   });
 </script>
 
@@ -128,7 +121,9 @@
       <button class="close-btn" on:click={onClose}>Fermer</button>
       
       <div class="pdf-viewer">
-        {#if pdfUrlAffiche}
+        {#if isLoading}
+          <p>Chargement en cours...</p>
+        {:else if pdfUrlAffiche}
           <iframe src={pdfUrlAffiche} title="Aperçu du PDF" width="100%" height="700px" type="application/pdf"></iframe>
         {/if}
       </div>
