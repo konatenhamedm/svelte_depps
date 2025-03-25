@@ -81,7 +81,7 @@
   async function getTransactionInfos() {
 
 /*   alert(pdfUrl) */
-    await apiFetch(true, "/paiement/info/transaction/"+"DEPPS250325120902070").then((response) => {
+    await apiFetch(true, "/paiement/info/transaction/"+pdfUrl).then((response) => {
 
       console.log(response);
       if (response.code === 200) {
