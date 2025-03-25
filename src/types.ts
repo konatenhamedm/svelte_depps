@@ -218,6 +218,22 @@ export interface Permission {
   libelle: string;
   code: string;
 }
+export interface District {
+  id: number;
+  libelle: string;
+  region: {
+    id: number;
+    libelle: string;
+  };
+}
+export interface Commune {
+  id: number;
+  libelle: string;
+  ville: {
+    id: number;
+    libelle: string;
+  };
+}
 export interface Profession {
   id: number;
   libelle: string;

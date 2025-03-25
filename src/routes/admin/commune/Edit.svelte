@@ -9,35 +9,33 @@
 
   export let open: boolean = false; // modal control
   let isLoad = false;
-  let code: string = "";
   let libelle: string = "";
-  let district: any = "";
+  let ville: any = "";
 
   export let sizeModal: any = "lg";
   export let userUpdateId: any;
 
   export let data: Record<string, string> = {};
-  let districts: any = [];
+  let villes: any = [];
   // Initialize form data with the provided record
   function init(form: HTMLFormElement) {
-    code = data?.code;
+  
     libelle = data?.libelle;
-    district = data?.district.id;
+    ville = data?.ville.id;
   }
 
   async function SaveFunction() {
     isLoad = true;
 
     try {
-      const res = await fetch(BASE_URL_API + "/ville/update/" + data?.id, {
+      const res = await fetch(BASE_URL_API + "/commune/update/" + data?.id, {
         method: "POST",
         headers: {
           "Content-Type": "application/json"
         },
         body: JSON.stringify({
-          code: code,
           libelle: libelle,
-          district: district,
+          ville: ville,
           userUpdate: userUpdateId
         })
       });
@@ -57,18 +55,18 @@
     }
   }
 
-  async function getdistricts() {
+  async function getData() {
     try {
-      const res = await fetch(BASE_URL_API + "/district/");
+      const res = await fetch(BASE_URL_API + "/ville/");
       const data = await res.json();
-      districts = data.data;
+      villes = data.data;
     } catch (error) {
-      console.error("Error fetching districts:", error);
+      console.error("Error fetching villes:", error);
     }
   }
 
   onMount(() => {
-    getdistricts();
+    getData();
   });
 </script>
 
@@ -91,13 +89,7 @@
     <form action="#" use:init>
       <div class="grid grid-cols-1">
         <div class="grid grid-cols-1">
-          <InputSimple
-            fieldName="code"
-            label="Code"
-            bind:field={code}
-            placeholder="entrez le code"
-            class="w-full"
-          ></InputSimple>
+         
           <InputSimple
             fieldName="libelle"
             label="Libelle"
@@ -106,10 +98,10 @@
             class="w-full"
           ></InputSimple>
           <InputSelect
-            label="District"
-            bind:selectedId={district}
-            datas={districts}
-            id="district"
+            label="Ville"
+            bind:selectedId={ville}
+            datas={villes}
+            id="Region"
           ></InputSelect>
         </div>
       </div>

@@ -4,6 +4,8 @@
   import { Button, Input, Label, Modal, Textarea } from "flowbite-svelte";
   import Notification from "$components/_includes/Notification.svelte";
   import InputTextArea from "$components/inputs/InputTextArea.svelte";
+  import { onMount } from "svelte";
+  import InputSelect from "$components/inputs/InputSelect.svelte";
 
   let showNotification = false;
   let notificationMessage = "";
@@ -11,10 +13,11 @@
 
   export let open: boolean = false;
   let isLoad = false;
-
+  let districts: any = [];
   let icons: any = {
     code: "",
-    libelle: ""
+    libelle: "",
+    district: ""
   };
   export let sizeModal: any = "lg";
   export let userUpdateId: any;
@@ -34,6 +37,7 @@
         body: JSON.stringify({
           code: icons.code,
           libelle: icons.libelle,
+          district: icons.district,
           userUpdate: userUpdateId
         })
       });
@@ -58,6 +62,20 @@
       event.preventDefault(); // Prevent modal from closing if loading
     }
   }
+
+  async function getdistricts() {
+    try {
+      const res = await fetch(BASE_URL_API + "/district/");
+      const data = await res.json();
+      districts = data.data;
+    } catch (error) {
+      console.error("Error fetching districts:", error);
+    }
+  }
+
+  onMount(() => {
+    getdistricts();
+  });
 </script>
 
 <Modal
@@ -91,6 +109,13 @@
           placeholder="entrez le libelle"
           class="w-full"
         ></InputSimple>
+        <InputSelect
+          label="District"
+          bind:selectedId={icons.district}
+          datas={districts}
+          id="district"
+        
+        ></InputSelect>
       </div>
     </form>
   </div>

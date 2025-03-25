@@ -1,18 +1,14 @@
-<script context="module" lang="ts">
-  export const ssr = false; // Désactive le SSR pour ce composant
-</script>
 
 <script lang="ts">
   import { onMount } from 'svelte';
   import Highcharts from 'highcharts';
   import Exporting from 'highcharts/modules/exporting';
   import ExportData from 'highcharts/modules/export-data';
-  import pdfMake from 'pdfmake';
-  import pdfFonts from 'pdfmake/build/vfs_fonts';
+  
 
   export let data: any = [];
 
-  let pie3;
+  let pie3: any;
 
   onMount(() => {
     if (typeof window !== 'undefined') {

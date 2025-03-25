@@ -7,6 +7,7 @@
   import { apiFetch, BASE_URL_API, BASE_URL_API_V2 } from "$lib/api";
   import type {
     Civilite,
+    District,
     Genre,
     Pays,
     Specialite,
@@ -72,6 +73,11 @@
     // Personal Informations
     code: "",
     poleSanitaire: "",
+    region: "",
+    district: "",
+    ville: "",
+    commune: "",
+    quartier: "",
     nom: "",
     professionnel: "",
     prenoms: "",
@@ -116,6 +122,11 @@
     // Personal Informations
 
     poleSanitaire: "",
+    region: "",
+    district: "",
+    ville: "",
+    commune: "",
+    quartier: "",
     nom: "",
     professionnel: "",
     prenoms: "",
@@ -188,8 +199,18 @@
       errors.professionnel = formData.professionnel
         ? ""
         : "Le professionnel est requis";
+      errors.region = formData.region ? "" : "La région est requise";
+      errors.district = formData.district ? "" : "Le district est requis";
+      errors.ville = formData.ville ? "" : "La ville est requise";
+      errors.commune = formData.commune ? "" : "La commune est requise";
+      errors.quartier = formData.quartier ? "" : "Le quartier est requis";
 
       valid =
+        !errors.region &&
+        !errors.district &&
+        !errors.ville &&
+        !errors.commune &&
+        !errors.quartier &&
         !errors.poleSanitaire &&
         !errors.professionnel &&
         !errors.nom &&
@@ -608,7 +629,6 @@
           messagefile = result.errors;
           console.log(result.errors);
         } else {
-         
           connexion();
         }
       })
@@ -725,15 +745,23 @@
    */
   let objects = [
     { name: "civilite", url: "/civilite" },
+    { name: "region", url: "/region" },
+    { name: "ville", url: "/ville" },
+    { name: "district", url: "/district" },
+    { name: "commune", url: "/commune" },
     { name: "nationate", url: "/pays" },
     { name: "situationProfessionnelle", url: "/situationProfessionnelle" }
   ];
 
   let values: {
     civilite: Civilite[];
+    region: Civilite[];
+    district: District[];
+    ville: Civilite[];
+    commune: Civilite[];
     nationate: Pays[];
     situationProfessionnelle: Pays[];
-  } = { civilite: [], nationate: [], situationProfessionnelle: [] };
+  } = { civilite: [], nationate: [], situationProfessionnelle: [], ville: [], region: [], district: [], commune: [] };
 
   async function fetchData() {
     try {
@@ -867,9 +895,12 @@
         >
           <!-- Étape 1 -->
           {#if step === 1}
-            <h2 class="text-3xl font-semibold mb-4 text-center md:text-left">
+            <h2
+              class="text-3xl h2-baslik-anasayfa-ozel font-semibold mb-4 text-center md:text-left"
+            >
               Informations de rapport (étape 1/6)
             </h2>
+            <br /><br />
             <div class="w-full mb-4" style="width:100%">
               <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
                 <div class="flex flex-col form__group">
@@ -1034,47 +1065,94 @@
 
           <!-- Étape 2 -->
           {#if step === 2}
-            <h2 class="text-3xl font-semibold mb-4 text-center md:text-left">
+            <h2
+              class="text-3xl h2-baslik-anasayfa-ozel font-semibold mb-4 text-center md:text-left"
+            >
               Informations personnelles (étape 2/6)
             </h2>
+            <br /><br />
 
             <div
               class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-2 gap-4 mb-4"
             >
-              <!-- code -->
-              <!-- <div class="form__group">
-                <label class="block text-3xl font-medium mb-1"
-                  >Code de vérification (Uniquement pour les anciens membres)</label
-                >
-                <input
-                  type="text"
-                  bind:value={formData.code}
-                  class="w-full form__input"
-                  placeholder="Code de vérification"
-                  on:input={saveFormState}
-                />
-                {#if errors.code}<p class="text-red-500 text-sm">
-                    {errors.code}
-                  </p>{/if}
-              </div> -->
-              <!-- pole sanitaire -->
-              <div class="form__group">
-                <label class="block text-3xl font-medium mb-1"
-                  >Pôle sanitaire,District,Ville,Commune,quartier,lot,ilot *</label
-                >
-                <input
-                  type="text"
-                  bind:value={formData.poleSanitaire}
-                  class="w-full form__input"
-                  placeholder="Pôle sanitaire,District,Ville,Commune,quartier,lot,ilot"
-                  on:input={saveFormState}
-                />
-                {#if errors.poleSanitaire}<p class="text-red-500 text-sm">
-                    {errors.poleSanitaire}
-                  </p>{/if}
-              </div>
+                     <!-- region -->
+                     <div class="form__group">
+                      <label class="block text-2xl font-medium mb-1"
+                        >Région *</label
+                      >
+                      <select
+                        on:input={saveFormState}
+                        bind:value={formData.region}
+                        class="w-full form__input"
+                      >
+                        <option value="">Veuillez sélectionner une région</option>
+                        {#each values.region as region}
+                          <option value={region.id}>{region.libelle}</option>
+                        {/each}
+                      </select>
+                      {#if errors.region}<p class="text-red-500 text-sm">
+                          {errors.region}
+                        </p>{/if}
+                    </div>
+                     <!-- distric -->
+                     <div class="form__group">
+                      <label class="block text-2xl font-medium mb-1"
+                        >District *</label
+                      >
+                      <select
+                        on:input={saveFormState}
+                        bind:value={formData.district}
+                        class="w-full form__input"
+                      >
+                        <option value="">Veuillez sélectionner un district</option>
+                        {#each values.district as district}
+                          <option value={district.id}>{district.libelle}</option>
+                        {/each}
+                      </select>
+                      {#if errors.district}<p class="text-red-500 text-sm">
+                          {errors.district}
+                        </p>{/if}
+                    </div>
+                     <!-- distric -->
+                     <div class="form__group">
+                      <label class="block text-2xl font-medium mb-1"
+                        >Ville *</label
+                      >
+                      <select
+                        on:input={saveFormState}
+                        bind:value={formData.ville}
+                        class="w-full form__input"
+                      >
+                        <option value="">Veuillez sélectionner une ville</option>
+                        {#each values.ville as ville}
+                          <option value={ville.id}>{ville.libelle}</option>
+                        {/each}
+                      </select>
+                      {#if errors.ville}<p class="text-red-500 text-sm">
+                          {errors.ville}
+                        </p>{/if}
+                    </div>
+                     <!-- distric -->
+                     <div class="form__group">
+                      <label class="block text-2xl font-medium mb-1"
+                        >Commune *</label
+                      >
+                      <select
+                        on:input={saveFormState}
+                        bind:value={formData.commune}
+                        class="w-full form__input"
+                      >
+                        <option value="">Veuillez sélectionner une commune</option>
+                        {#each values.commune as commune}
+                          <option value={commune.id}>{commune.libelle}</option>
+                        {/each}
+                      </select>
+                      {#if errors.commune}<p class="text-red-500 text-sm">
+                          {errors.commune}
+                        </p>{/if}
+                    </div>
 
-              <!-- Nom -->
+                     <!-- Nom -->
               <div class="form__group">
                 <label class="block text-3xl font-medium mb-1">Nom *</label>
                 <input
@@ -1088,6 +1166,22 @@
                     {errors.nom}
                   </p>{/if}
               </div>
+
+                  <!-- Prenoms -->
+                  <div class="form__group">
+                    <label class="block text-3xl font-medium mb-1">Prenoms *</label>
+                    <input
+                      type="text"
+                      bind:value={formData.prenoms}
+                      class="w-full form__input"
+                      placeholder="Prenoms"
+                      on:input={saveFormState}
+                    />
+                    {#if errors.prenoms}<p class="text-red-500 text-sm">
+                        {errors.prenoms}
+                      </p>{/if}
+                  </div>
+
               <!-- Structure -->
               <div class="form__group">
                 <label class="block text-3xl font-medium mb-1"
@@ -1104,22 +1198,9 @@
                     {errors.professionnel}
                   </p>{/if}
               </div>
-              <!-- Prenoms -->
-              <div class="form__group">
-                <label class="block text-3xl font-medium mb-1">Prenoms *</label>
-                <input
-                  type="text"
-                  bind:value={formData.prenoms}
-                  class="w-full form__input"
-                  placeholder="Prenoms"
-                  on:input={saveFormState}
-                />
-                {#if errors.prenoms}<p class="text-red-500 text-sm">
-                    {errors.prenoms}
-                  </p>{/if}
-              </div>
-              <!-- Lieu d'exercice -->
-              <div class="form__group">
+
+               <!-- Lieu d'exercice -->
+               <div class="form__group">
                 <label class="block text-3xl font-medium mb-1"
                   >Lieu d'exercice professionnel *</label
                 >
@@ -1134,6 +1215,41 @@
                     {errors.lieuExercicePro}
                   </p>{/if}
               </div>
+                    
+              
+            </div>
+            <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 gap-4 mb-4">
+              <div class="form__group">
+                <label class="block text-3xl font-medium mb-1"
+                  >Quartier *</label
+                >
+                <input
+                  type="text"
+                  bind:value={formData.quartier}
+                  class="w-full form__input"
+                  placeholder="Quartier"
+                  on:input={saveFormState}
+                />
+                {#if errors.quartier}<p class="text-red-500 text-sm">
+                    {errors.quartier}
+                  </p>{/if}
+              </div>
+              <div class="form__group">
+                <label class="block text-3xl font-medium mb-1"
+                  >lot,ilot *</label
+                >
+                <input
+                  type="text"
+                  bind:value={formData.poleSanitaire}
+                  class="w-full form__input"
+                  placeholder="lot,ilot"
+                  on:input={saveFormState}
+                />
+                {#if errors.poleSanitaire}<p class="text-red-500 text-sm">
+                    {errors.poleSanitaire}
+                  </p>{/if}
+              </div>
+
               <!-- Prenoms -->
               <div class="form__group">
                 <label class="block text-3xl font-medium mb-1">Email *</label>
@@ -1158,10 +1274,11 @@
           <!-- Étape 3 -->
           {#if step === 3}
             <h2
-              class="text-3xl md:text-2xl font-bold my-4 text-center md:text-left"
+              class="text-3xl h2-baslik-anasayfa-ozel md:text-2xl font-bold my-4 text-center md:text-left"
             >
               Informations professionnelles (étape 3/6)
             </h2>
+            <br /><br />
 
             <div class="bg-white p-6 rounded-lg shadow-md mb-4">
               <div class="mb-4">

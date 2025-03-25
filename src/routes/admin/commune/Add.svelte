@@ -1,82 +1,84 @@
 <script lang="ts">
-  import Spinner from "$components/_skeletons/Spinner.svelte";
   import InputSimple from "$components/inputs/InputSimple.svelte";
   import { BASE_URL_API } from "$lib/api";
   import { Button, Input, Label, Modal, Textarea } from "flowbite-svelte";
+  import Notification from "$components/_includes/Notification.svelte";
   import InputTextArea from "$components/inputs/InputTextArea.svelte";
-  import InputSelect from "$components/inputs/InputSelect.svelte";
   import { onMount } from "svelte";
+  import InputSelect from "$components/inputs/InputSelect.svelte";
 
-  export let open: boolean = false; // modal control
+  let showNotification = false;
+  let notificationMessage = "";
+  let notificationType = "info";
+
+  export let open: boolean = false;
   let isLoad = false;
-  let code: string = "";
-  let libelle: string = "";
-  let district: any = "";
-
+  let villes: any = [];
+  let icons: any = {
+    libelle: "",
+    ville: ""
+  };
   export let sizeModal: any = "lg";
   export let userUpdateId: any;
 
   export let data: Record<string, string> = {};
-  let districts: any = [];
-  // Initialize form data with the provided record
-  function init(form: HTMLFormElement) {
-    code = data?.code;
-    libelle = data?.libelle;
-    district = data?.district.id;
-  }
+
+  function init(form: HTMLFormElement) {}
 
   async function SaveFunction() {
     isLoad = true;
-
     try {
-      const res = await fetch(BASE_URL_API + "/ville/update/" + data?.id, {
+      const res = await fetch(BASE_URL_API + "/commune/create", {
         method: "POST",
         headers: {
           "Content-Type": "application/json"
         },
         body: JSON.stringify({
-          code: code,
-          libelle: libelle,
-          district: district,
+          libelle: icons.libelle,
+          ville: icons.ville,
           userUpdate: userUpdateId
         })
       });
 
       if (res.ok) {
         isLoad = false;
-        open = false; // Close the modal
+        open = false;
+        notificationMessage = "ville créé avec succès!";
+        notificationType = "success";
+        showNotification = true;
       }
     } catch (error) {
+      notificationMessage = "Une erreur crée lors de l enregistrement";
+      notificationType = "error";
+      showNotification = true;
       console.error("Error saving:", error);
     }
   }
 
   function handleModalClose(event: Event) {
     if (isLoad) {
-      event.preventDefault();
+      event.preventDefault(); // Prevent modal from closing if loading
     }
   }
 
-  async function getdistricts() {
+  async function getData() {
     try {
-      const res = await fetch(BASE_URL_API + "/district/");
+      const res = await fetch(BASE_URL_API + "/ville/");
       const data = await res.json();
-      districts = data.data;
+      villes = data.data;
     } catch (error) {
-      console.error("Error fetching districts:", error);
+      console.error("Error fetching villes:", error);
     }
   }
 
   onMount(() => {
-    getdistricts();
+    getData();
   });
 </script>
 
 <Modal
   bind:open
-  title={Object.keys(data).length
-    ? "Modification de ville"
-    : "Modification de ville"}
+  title={Object.keys(data).length ? "Ajouter une ville " : "Ajouter une ville"}
   size={sizeModal}
   class="m-4 modale_general"
   on:close={handleModalClose}
@@ -90,28 +92,21 @@
   <div class="space-y-6 p-0">
     <form action="#" use:init>
       <div class="grid grid-cols-1">
-        <div class="grid grid-cols-1">
-          <InputSimple
-            fieldName="code"
-            label="Code"
-            bind:field={code}
-            placeholder="entrez le code"
-            class="w-full"
-          ></InputSimple>
-          <InputSimple
-            fieldName="libelle"
-            label="Libelle"
-            bind:field={libelle}
-            placeholder="entrez le libelle"
-            class="w-full"
-          ></InputSimple>
-          <InputSelect
-            label="District"
-            bind:selectedId={district}
-            datas={districts}
-            id="district"
-          ></InputSelect>
-        </div>
+        <InputSimple
+          fieldName="code"
+          label="Code"
+          bind:field={icons.libelle}
+          placeholder="entrez le code"
+          class="w-full"
+        ></InputSimple>
+
+        <InputSelect
+          label="Ville"
+          bind:selectedId={icons.ville}
+          datas={villes}
+          id="ville"
+        
+        ></InputSelect>
       </div>
     </form>
   </div>
@@ -123,7 +118,7 @@
         <Button
           disabled={true}
           color="blue"
-          style="background-color: #55a1ff;"
+          style="background-color: blue;"
           type="submit"
         >
           <div class="flex flex-row gap-2">
@@ -140,14 +135,22 @@
         </Button>
       {:else}
         <button
-          type="button"
           style="background-color: #55a1ff;"
+          type="button"
           class="bg-[#55a1ff] text-white px-4 py-2 rounded-md shadow-sm hover:bg-[#008020]"
           on:click={SaveFunction}
         >
-          Modifier
+          Enregistrer
         </button>
       {/if}
     </div>
   </div>
 </Modal>
+
+{#if showNotification}
+  <Notification
+    message={notificationMessage}
+    type={notificationType}
+    duration={5000}
+  />
+{/if}
