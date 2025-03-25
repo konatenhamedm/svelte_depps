@@ -84,7 +84,7 @@
 ></div> -->
 <div id="">
   
-  <Slide user={user} /><br><br><br><br>
+  <Slide user={user} /><br><br><br><br><br><br>
   <style>
     .tablo:not(:last-child) {
       margin-bottom: 35px;
