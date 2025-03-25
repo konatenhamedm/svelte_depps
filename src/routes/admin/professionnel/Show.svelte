@@ -704,7 +704,7 @@
           color="alternative"
           style="background-color: gray !important; color: white;"
           on:click={() => (open = false)}
-          type="submit">{"Fermer"} {data?.id}</Button
+          type="submit">{"Fermer"}</Button
         >
       </div>
     </div>

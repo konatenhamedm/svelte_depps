@@ -88,33 +88,37 @@
     pdfUrlAffiche = URL.createObjectURL(pdfBlob);
   }
 
-  $: if (open) {
-    generatePDF();
-  }
 
-  async function getTransactionInfos() {
+  let isLoading = false;
 
-   /*  alert(pdfUrl) */
+async function getTransactionInfos() {
+  isLoading = true;
+  try {
     await apiFetch(true, "/paiement/info/transaction/last/transaction/"+data.id).then((response) => {
+      console.log(response);
       if (response.code === 200) {
         receiptData.amount = response.data.montant;
         receiptData.paymentMethod = response.data.channel;
         receiptData.receiptNumber = response.data.reference;
-       /*  receiptData.date = response.data.montant; 
-    
-    residence: 'XX',
-    phone: '0564924282',
- 
- 
-       */
-        receiptData.name = response.data.user.typeUser == "PROFESSIONNEL" ? response.data.user.personne.nom + " "+ response.data.user.personne.prenoms : response.data.user.personne.nomEntreprise  ;
-        receiptData.phone = response.data.user.typeUser == "PROFESSIONNEL" ? response.data.user.personne.number  : response.data.user.personne.contactEntreprise  ;
-        receiptData.date = formatDate( response.data.createdAt);
+        receiptData.name = response.data.user.typeUser == "PROFESSIONNEL" 
+          ? response.data.user.personne.nom + " "+ response.data.user.personne.prenoms 
+          : response.data.user.personne.nomEntreprise;
+        receiptData.phone = response.data.user.typeUser == "PROFESSIONNEL" 
+          ? response.data.user.personne.number 
+          : response.data.user.personne.contactEntreprise;
+        receiptData.date = formatDate(response.data.createdAt);
       }
     });
-
-    console.log(receiptData);
+  } catch (error) {
+    console.error("Erreur lors de la récupération des infos de transaction", error);
+  } finally {
+    isLoading = false;
   }
+}
+
+$: if (open && !isLoading) {
+  generatePDF();
+}
 
   onMount(async () => {
   
@@ -147,44 +151,27 @@
     <form action="#" use:init>
       
       <div class="pdf-viewer">
-        {#if pdfUrlAffiche}
+    <!--     {#if pdfUrlAffiche}
           <iframe src={pdfUrlAffiche} title="Aperçu du PDF" width="100%" height="700px" type="application/pdf"></iframe>
-        {/if}
+        {/if} -->
+
+        {#if isLoading}
+        <p>Chargement en cours...</p>
+      {:else if pdfUrlAffiche}
+        <iframe src={pdfUrlAffiche} title="Aperçu du PDF" width="100%" height="700px" type="application/pdf"></iframe>
+      {/if}
     </form>
   </div>
 
   <!-- Modal footer -->
   <div slot="footer" class="w-full">
     <div class="flex justify-end">
-      {#if isLoad}
-        <Button
-          disabled={true}
-          color="blue"
-          style="background-color: #55a1ff;"
-          type="submit"
-        >
-          <div class="flex flex-row gap-2">
-            <div
-              class="w-3 h-3 rounded-full bg-white animate-bounce [animation-delay:.7s]"
-            ></div>
-            <div
-              class="w-3 h-3 rounded-full bg-white animate-bounce [animation-delay:.3s]"
-            ></div>
-            <div
-              class="w-3 h-3 rounded-full bg-white animate-bounce [animation-delay:.7s]"
-            ></div>
-          </div>
-        </Button>
-      {:else}
-        <button
-          type="button"
-          style="background-color: #55a1ff;"
-          class="bg-[#55a1ff] text-white px-4 py-2 rounded-md shadow-sm hover:bg-[#008020]"
-          on:click={SaveFunction}
-        >
-          Modifier
-        </button>
-      {/if}
+      <Button
+      color="alternative"
+      style="background-color: gray !important; color: white;"
+      on:click={() => (open = false)}
+      type="submit">{"Fermer"} </Button
+    >
     </div>
   </div>
 </Modal>
