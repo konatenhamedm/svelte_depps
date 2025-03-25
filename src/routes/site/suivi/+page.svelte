@@ -11,7 +11,7 @@
 </script>
 
 <Slide /><br><br><br><br>
-<div class="container ">
+
   <div class="file-ariane flex items-center space-x-2 text-sm text-gray-600 mb-4">
     <button on:click={navigateToDashboard} class="flex items-center hover:text-blue-600">
       <!-- Icône SVG pour "Tableau de bord" -->
@@ -30,24 +30,27 @@
     <span>/</span>
     <span class="text-gray-800">Détails du forum</span> <!-- Nom de la page actuelle -->
   </div><br>
-</div>
+
 <main style="background-color: #fff" class="pb-[100px]">
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
   <style>
       /* Custom styles */
       .file-ariane {
-      position: absolute;
-      width: 68%;
-      top: 112px;
-      background: #4292cecc;
-      padding: 22px;
-      color: white;
-      font-size: 14px;
-    }
+          position: absolute;
+          width: 100%;
+          top: 96px;
+          background: #4292cecc;
+          padding: 22px;
+          color: white;
+          font-size: 14px;
+          justify-content: center;
+          align-items: center;
+      }
 
-    .file-ariane span {
-      color: white;
-    }
+      .file-ariane span {
+          color: white;
+          margin: 0 5px;
+      }
       .government-table {
         font-size: 20px;
           background-color: #f8f9fa;
