@@ -2,6 +2,7 @@
   import { onMount } from "svelte";
   import type { StatsDashboard } from "../../types";
   import { apiFetch } from "$lib/api";
+  import Pdf from "$components/pdf/Pdf.svelte";
 
   export let data;
   let user = data.user;
@@ -51,6 +52,58 @@
     activeTab = type;
     currentPage = 1;
   }
+  async function downloadPDF() {
+    let dataToExport;
+    let title;
+    let headers;
+
+    if (activeTab === 'professionnel') {
+      dataToExport = professionnels;
+      title = 'Liste des professionnels';
+      headers = ['Nom', 'Prénoms', 'Téléphone', 'Email'];
+    } else if (activeTab === 'etablissement') {
+      dataToExport = etablissements;
+      title = 'Liste des établissements';
+      headers = ['Nom', 'Adresse', 'Téléphone', 'Email'];
+    } else {
+      dataToExport = professionnelsAjour;
+      title = 'Liste des professionnels à jour';
+      headers = ['Nom', 'Prénoms', 'Téléphone', 'Email'];
+    }
+
+    const { jsPDF } = await import("jspdf");
+    const doc = new jsPDF();
+
+    // Titre
+    doc.setFontSize(18);
+    doc.text(title, 14, 16);
+
+    // En-têtes
+    doc.setFontSize(12);
+    headers.forEach((header, i) => {
+      doc.text(header, 14 + (i * 45), 26);
+    });
+
+    // Données
+    doc.setFontSize(10);
+    dataToExport.forEach((item, index) => {
+      const y = 36 + (index * 10);
+
+      if (activeTab === 'professionnel' || activeTab === 'pro') {
+        doc.text(item.personne?.nom || 'N/A', 14, y);
+        doc.text(item.personne?.prenoms || 'N/A', 14 + 45, y);
+        doc.text(item.personne?.number || 'N/A', 14 + 90, y);
+        doc.text(item.personne?.email || 'N/A', 14 + 135, y);
+      } else {
+        doc.text(item.username || 'N/A', 14, y);
+        doc.text(item.adresse || 'N/A', 14 + 45, y);
+        doc.text(item.number || 'N/A', 14 + 90, y);
+        doc.text(item.email || 'N/A', 14 + 135, y);
+      }
+    });
+
+    doc.save(`${title}.pdf`);
+  }
 
   onMount(async ()=> {
     await fetchInitialData();
@@ -64,6 +117,8 @@
         year: 'numeric'
       });
     }, 1000);
+
+
 
     return () => clearInterval(timer);
   });
@@ -146,6 +201,23 @@
       </div>
     </div>
 
+    <!-- Tableau de données -->
+    <div class="bg-white rounded-lg shadow overflow-hidden">
+      <!-- Dans votre premier composant, remplacez la partie du bouton PDF par : -->
+      <div class="flex justify-end p-4">
+        <Pdf
+                title={activeTab === 'professionnel' ? 'Liste des professionnels' :
+              activeTab === 'etablissement' ? 'Liste des établissements' :
+              'Liste des professionnels à jour'}
+                headers={activeTab === 'professionnel' || activeTab === 'pro' ?
+                ['Nom', 'Prénoms', 'Téléphone', 'Email'] :
+                ['Nom', 'Adresse', 'Téléphone', 'Email']}
+                data={activeTab === 'professionnel' ? professionnels :
+              activeTab === 'etablissement' ? etablissements :
+              professionnelsAjour}
+                type={activeTab}
+        />
+      </div>
     <!-- Tableau de données -->
     <div class="bg-white rounded-lg shadow overflow-hidden">
       {#if loading}
