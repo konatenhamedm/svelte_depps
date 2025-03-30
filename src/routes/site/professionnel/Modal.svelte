@@ -49,7 +49,7 @@
     const fields = [
       { label: "Date d'édition:", value: receiptData.date },
       { label: "Nom complet:", value: receiptData.name },
-      { label: "Mode de paiement:", value: receiptData.paymentMethod },
+      /* { label: "Mode de paiement:", value: receiptData.paymentMethod }, */
       { label: "Lieu de résidence:", value: receiptData.residence },
       { label: "Numéro de téléphone:", value: receiptData.phone },
       { label: "Réference paiement:", value: `N° ${receiptData.receiptNumber}` },

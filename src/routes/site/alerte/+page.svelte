@@ -26,7 +26,7 @@ let loading = false;
 async function fetchData(userId: number) {
     loading = true;
     try {
-        const res = await apiFetch(true, `/alerte/get/all/${userId}`);
+        const res = await apiFetch(true, `/alerte/get/all/Professionnel`);
         if (res) {
             alertes = res.data;
             console.log("content main_data", alertes);
@@ -51,14 +51,35 @@ $: paginatedalertes = alertes.slice(
 );
 
 // Calcul du nombre total de pages
+export let totalPages = 10;
+
+// Calcul du nombre total de pages
 $: totalPages = Math.ceil(alertes.length / itemsPerPage);
 
 // Fonction pour changer de page
-function goToPage(page: number) {
+function goToPage(page: any) {
     if (page >= 1 && page <= totalPages) {
         currentPage = page;
     }
 }
+
+
+  function getPageNumbers() {
+    let pages = [];
+    if (totalPages <= 7) {
+      // Affiche toutes les pages si <= 7 pages
+      for (let i = 1; i <= totalPages; i++) {
+        pages.push(i);
+      }
+    } else {
+      if (currentPage > 3) pages.push(1, '...');
+      for (let i = Math.max(1, currentPage - 2); i <= Math.min(totalPages, currentPage + 2); i++) {
+        pages.push(i);
+      }
+      if (currentPage < totalPages - 2) pages.push('...', totalPages);
+    }
+    return pages;
+  }
 
 // Fonctions pour gérer les popups
 function openAddPopup() {
@@ -112,7 +133,8 @@ function navigateToDashboard() {
   <div
     class="file-ariane flex items-center space-x-2 text-sm text-gray-600 mb-8"
   >
-    <button
+    <div class="flex items-center hover:text-blue-600 entete">
+      <button
       on:click={navigateToDashboard}
       class="flex items-center hover:text-blue-600"
     >
@@ -131,12 +153,16 @@ function navigateToDashboard() {
     </button>
     <span>/</span>
     <span class="text-gray-800">Liste des arlertes</span>
+    </div>
     <!-- Nom de la page actuelle -->
   </div>
 
 
 <main style="background-color: #fff" class="pb-20">
   <style>
+      .entete {
+    width: 70% !important;
+  }
     .tablo:not(:last-child) {
       margin-bottom: 35px;
     }
@@ -208,6 +234,8 @@ function navigateToDashboard() {
     .pagination-controls span {
       margin: 0 10px;
     }
+
+    
    
   </style>
   <link
@@ -291,21 +319,39 @@ function navigateToDashboard() {
         {/if}
 
         <!-- Contrôles de pagination -->
+        {#if alertes.length > itemsPerPage}
         <div class="pagination-controls">
-          <button
-            on:click={() => goToPage(currentPage - 1)}
-            disabled={currentPage === 1}
-          >
-            Précédent
+        
+          <button on:click={() => goToPage(1)} disabled={currentPage === 1}>
+             Premier
           </button>
-          <span>Page {currentPage} sur {totalPages}</span>
-          <button
-            on:click={() => goToPage(currentPage + 1)}
-            disabled={currentPage === totalPages}
-          >
-            Suivant
+          <button on:click={() => goToPage(currentPage - 1)} disabled={currentPage === 1}>
+             Précédent
+          </button> 
+          {#each getPageNumbers() as page}
+            {#if page === '...'}
+              <span class="dots">...</span>
+            {:else}
+              <button
+                on:click={() => goToPage(page)}
+                class:active={page === currentPage}
+              >
+                {page}
+              </button>
+            {/if}
+          {/each}
+          <button on:click={() => goToPage(currentPage + 1)} disabled={currentPage === totalPages}>
+            Suivant 
+          </button>
+        
+ 
+          <button on:click={() => goToPage(totalPages)} disabled={currentPage === totalPages}>
+            Dernier 
           </button>
         </div>
+        
+        {/if}
+        
       </div>
     </div>
   </section>

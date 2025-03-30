@@ -48,12 +48,12 @@
   let topics: any[] = []; // Utilisez `any[]` ou un type spécifique si vous avez une interface `Topic`
   let comments: any[] = [];
 
-  let dataUser :any;
+  let dataUser: any;
 
   let currentPage = 1;
   const itemsPerPage = 5;
   let loadFetch = false;
-  let selectedTopic:any;
+  let selectedTopic: any;
 
   async function fetchData() {
     loadFetch = true;
@@ -67,9 +67,8 @@
         const forums = response.data;
         dataUser = forums.user.id;
         topics.push({
-
           id: forums.id,
-          user : forums.user.id,
+          user: forums.user.id,
           titre: forums.titre,
           nom:
             forums.user.typeUser === "PROFESSIONNEL"
@@ -81,21 +80,21 @@
           date: forums.createdAt,
           avatarUrl: forums.user.avatar
             ? `${BASE_URL_API_UPLOAD}${forums.user.avatar.path}/${forums.user.avatar.alt}`
-            : "https://randomuser.me/api/portraits/men/1.jpg"
+            : "https://static.vecteezy.com/system/resources/thumbnails/009/292/244/small/default-avatar-icon-of-social-media-user-vector.jpg"
         });
 
-        
         // Créer un tableau de commentaires
         if (forums.avis && Array.isArray(forums.avis)) {
           comments = forums.avis.map((avis) => ({
-            author:  avis.user.typeUser === "PROFESSIONNEL"
-              ? `${avis.user.personne.nom} ${avis.user.personne.prenoms}`
-              : avis.user.email, // Gérer les champs manquants
+            author:
+              avis.user.typeUser === "PROFESSIONNEL"
+                ? `${avis.user.personne.nom} ${avis.user.personne.prenoms}`
+                : avis.user.email, // Gérer les champs manquants
             date: avis.createdAt,
             contenu: avis.contenu || "Pas de contenu", // Gérer les champs manquants
             avatarUrl: avis.user?.avatar
-            ? `${BASE_URL_API_UPLOAD}${avis.user.avatar.path}/${avis.user.avatar.alt}`
-            : "https://randomuser.me/api/portraits/men/1.jpg"
+              ? `${BASE_URL_API_UPLOAD}${avis.user.avatar.path}/${avis.user.avatar.alt}`
+              : "https://static.vecteezy.com/system/resources/thumbnails/009/292/244/small/default-avatar-icon-of-social-media-user-vector.jpg"
           }));
         }
         console.log("content Data", comments);
@@ -134,55 +133,49 @@
   async function addComment() {
     loading = true;
 
-      try {
-        const response = await fetch(
-          "https://depps.leadagro.net/api/avis/create",
-          {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json"
-            },
-            body: JSON.stringify({
-              contenu: newComment,
-              forum: String($page.params.id),
-              userUpdate: String(user.id)
-            })
-          }
-        );
-
-        const result = await response.json();
-
-        if (result.code === 200) {
-          newComment = "";
-          loading = false;
-
-          await fetchData(); // Recharge les forums pour voir les nouveaux commentaires
-          selectedTopic =$page.params.id || null;
-        } else {
-          console.error(
-            "Erreur lors de l'ajout du commentaire:",
-            result.message
-          );
-          loading = false;
+    try {
+      const response = await fetch(
+        "https://depps.leadagro.net/api/avis/create",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify({
+            contenu: newComment,
+            forum: String($page.params.id),
+            userUpdate: String(user.id)
+          })
         }
-      } catch (error) {
-        console.error("Erreur lors de l'envoi du commentaire:", error);
+      );
+
+      const result = await response.json();
+
+      if (result.code === 200) {
+        newComment = "";
+        loading = false;
+
+        await fetchData(); // Recharge les forums pour voir les nouveaux commentaires
+        selectedTopic = $page.params.id || null;
+      } else {
+        console.error("Erreur lors de l'ajout du commentaire:", result.message);
         loading = false;
       }
-    
+    } catch (error) {
+      console.error("Erreur lors de l'envoi du commentaire:", error);
+      loading = false;
+    }
   }
   function updateForum(updatedForum: any) {
-   /*  goto("/site/forum"); */
-}
-
+    /*  goto("/site/forum"); */
+  }
 </script>
 
 <Slide {user} /> <br /><br />
 <!--   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
  -->
-  <div
-    class="file-ariane flex items-center space-x-2 text-sm text-gray-600 mb-4"
-  >
+<div class="file-ariane flex items-center space-x-2 text-sm text-gray-600 mb-4">
+  <div class="flex items-center hover:text-blue-600 entete">
     <button
       on:click={navigateToDashboard}
       class="flex items-center hover:text-blue-600"
@@ -202,9 +195,10 @@
     </button>
     <span>/</span>
     <span class="text-gray-800">Détails du forum</span>
-    <!-- Nom de la page actuelle -->
   </div>
-  <br />
+  <!-- Nom de la page actuelle -->
+</div>
+<br />
 <main>
   <section class="hizmetler-detay-sayfasi-alani">
     <div class="h-yazi-ozel h-yazi-margin-ozel"></div>
@@ -234,38 +228,31 @@
             class="services-kutu2 project-image reveal-effect masker wow"
             style="cursor: pointer; visibility: visible; width: 100%; margin-bottom: 10px;"
           >
-            <div class="row">
-              <div class="col-md-12">
-                <p style="margin: auto; text-align: start;">{commentaire.author}</p>
+            <div class="row align-items-center">
+              <!-- Ajout de la photo de profil -->
+              <div class="col-auto">
+                <img
+                  src={commentaire.avatarUrl}
+                  alt="Photo de {commentaire.author}"
+                  class="rounded-circle border-raidus-circle modal-contente"
+                  style="width: 50px; height: 50px; object-fit: cover;border: 1px solid gray;"
+                />
+              </div>
+              <div class="col">
+                <p style="margin: auto; text-align: start; font-weight: bold;">
+                  Ecrit par : <strong>{commentaire.author}</strong> le
+                  <small>{formatDateForInput(commentaire.date)}</small>
+                </p>
                 <p style="margin: auto; text-align: start;">
                   {commentaire.contenu}
                 </p>
-                <p style="margin: auto; text-align: start;">
-                  <small>{formatDateForInput(commentaire.date)}</small>
-                </p>
+                <!--  <p style="margin: auto; text-align: start;">
+                <small>{formatDateForInput(commentaire.date)}</small>
+              </p> -->
               </div>
             </div>
           </div>
         {/each}
-
-        <!-- Commentaire 2 -->
-        <!--  <div
-        class="services-kutu2 project-image reveal-effect masker wow"
-        style="cursor: pointer; visibility: visible; width: 100%; margin-bottom: 10px;"
-      >
-        <div class="row">
-          <div class="col-md-12">
-            <p style="margin: auto; text-align: start;">John Smith</p>
-            <p style="margin: auto; text-align: start;">
-              Un autre commentaire statique.
-            </p>
-            <p style="margin: auto; text-align: start;">
-              <small>12 Octobre 2023</small>
-            </p>
-          </div>
-        </div>
-      </div> -->
-        <!-- Aucun commentaire -->
 
         {#if comments.length === 0}
           <div
@@ -285,18 +272,15 @@
       <br />
       <div class="container">
         <div class="col-md-8">
-          <div
-          
-            class="form add_commentaire"
-           
-          >
+          <div class="form add_commentaire">
             <div class="form__grup">
-              <textarea  bind:value={newComment}
-              on:keydown={(e) => e.key === "Enter" && addComment()}
+              <textarea
+                bind:value={newComment}
+                on:keydown={(e) => e.key === "Enter" && addComment()}
                 rows="10"
                 cols="66"
                 required
-                maxlength="40"
+                maxlength="300"
                 name="commentaire"
                 id="txt_mesaj"
                 placeholder="Laisser un commentaire"
@@ -305,8 +289,10 @@
             </div>
             <div class="form__grup">
               <br />
-              <button  on:click={addComment}  class="buton buton--kirmizi" id="add_commentaire"
-                >AJOUTER LE COMMENTAIRE</button
+              <button
+                on:click={addComment}
+                class="buton buton--kirmizi"
+                id="add_commentaire">AJOUTER LE COMMENTAIRE</button
               >
             </div>
             <br />
@@ -314,38 +300,46 @@
         </div>
       </div>
 
-      {#if user.id == dataUser }
-      <div class="container">
-        <div  class="delete_article">
-          <input type="hidden" name="id" value="1" />
-          <button    on:click={() => openEditPopup(topics[0])}
-            style="background: red !important; margin-top: 30px;"
-            class="buton buton--kirmizi"
-            id="delete_article"
-          >
-            SUPPRIMER L'ARTICLE <i class="fa fa-trash"></i></button
-          >
+      {#if user.id == dataUser}
+        <div class="container">
+          <div class="delete_article">
+            <input type="hidden" name="id" value="1" />
+            <button
+              on:click={() => openEditPopup(topics[0])}
+              style="background: red !important; margin-top: 30px;"
+              class="buton buton--kirmizi"
+              id="delete_article"
+            >
+              SUPPRIMER L'ARTICLE <i class="fa fa-trash"></i></button
+            >
+          </div>
         </div>
-      </div>
       {/if}
-     
+
       <!-- Hizmet Detay 2 -->
       <div class="h-yazi-ozel h-yazi-margin-ozel"></div>
     </div>
   </section>
 </main>
 {#if selectedForum}
-          <Delete
-            {data}
-            bind:showPopup={showEditPopup}
-            closePopup={closeEditPopup}
-            forum={selectedForum}
-            on:submit={updateForum}
-          />
-        {/if}
+  <Delete
+    {data}
+    bind:showPopup={showEditPopup}
+    closePopup={closeEditPopup}
+    forum={selectedForum}
+    on:submit={updateForum}
+  />
+{/if}
 <Footer />
 
 <style>
+  .entete {
+    width: 75% !important;
+  }
+  .modal-contente {
+    border-radius: 8px;
+    /* box-shadow: 0 0 10px rgba(0, 0, 0, 0.3); */
+  }
   .file-ariane {
     position: absolute;
     width: 100%;

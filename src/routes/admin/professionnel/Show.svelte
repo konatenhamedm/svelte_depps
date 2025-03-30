@@ -447,7 +447,7 @@
           on:click={() => (
             (current_data = url_image + CVpath + "/" + CValt), (openShow = true)
           )}
-          class="w-full h-9 flex justify-center bg-gray-500 hover:bg-gray-500 text-white font-bold py-2 pb-[1.9rem] px-4 border border-white rounded cursor-pointer"
+          class="w-full h-9 flex justify-center bg-gray-700 hover:bg-gray-700 text-white font-bold py-2 pb-[1.9rem] px-4 border border-white rounded cursor-pointer"
         >
           VOIR LE CV
         </div>
@@ -456,7 +456,7 @@
             (current_data = url_image + diplomeFilePath + "/" + diplomeFileAlt),
             (openShow = true)
           )}
-          class="w-full h-9 flex justify-center bg-gray-500 hover:bg-gray-500 text-white font-bold py-2 pb-[1.9rem] px-4 border border-white rounded cursor-pointer"
+          class="w-full h-9 flex justify-center bg-gray-700 hover:bg-gray-700 text-white font-bold py-2 pb-[1.9rem] px-4 border border-white rounded cursor-pointer"
         >
           VOIR LE DIPLOME
         </div>
@@ -466,7 +466,7 @@
             (current_data = url_image + casierPath + "/" + casierAlt),
             (openShow = true)
           )}
-          class="w-full h-9 flex justify-center bg-gray-500 hover:bg-gray-500 text-white font-bold py-2 pb-[1.9rem] px-4 border border-white rounded cursor-pointer"
+          class="w-full h-9 flex justify-center bg-gray-700 hover:bg-gray-700 text-white font-bold py-2 pb-[1.9rem] px-4 border border-white rounded cursor-pointer"
         >
           VOIR LE CASIER
         </div>
@@ -477,7 +477,7 @@
             (current_data = url_image + certificatPath + "/" + certificatAlt),
             (openShow = true)
           )}
-          class="w-full h-9 flex justify-center bg-gray-500 hover:bg-gray-500 text-white font-bold py-2 pb-[1.9rem] px-4 border border-white rounded cursor-pointer"
+          class="w-full h-9 flex justify-center bg-gray-700 hover:bg-gray-700 text-white font-bold py-2 pb-[1.9rem] px-4 border border-white rounded cursor-pointer"
         >
           VOIR LE CERTIFICAT
         </div>
@@ -486,7 +486,7 @@
             (current_data = url_image + Photopath + "/" + Photoalt),
             (openShow = true)
           )}
-          class="w-full h-9 flex justify-center bg-gray-500 hover:bg-gray-500 text-white font-bold py-2 pb-[1.9rem] px-4 border border-white rounded cursor-pointer"
+          class="w-full h-9 flex justify-center bg-gray-700 hover:bg-gray-700 text-white font-bold py-2 pb-[1.9rem] px-4 border border-white rounded cursor-pointer"
         >
           VOIR LA PHOTO
         </div>
@@ -496,7 +496,7 @@
             (current_data = url_image + cniPath + "/" + cniAlt),
             (isModalOpen = true)
           )}
-          class="w-full h-9 flex justify-center bg-gray-500 hover:bg-gray-500 text-white font-bold py-2 pb-[1.9rem] px-4 border border-white rounded cursor-pointer"
+          class="w-full h-9 flex justify-center bg-gray-700 hover:bg-gray-700 text-white font-bold py-2 pb-[1.9rem] px-4 border border-white rounded cursor-pointer"
         >
           VOIR LA CNI
         </div>
@@ -711,11 +711,11 @@
   </div>
 </Modal>
 
-<!-- {#if isModalOpen == true}
-  <RecuPaiement bind:isOpen={isModalOpen} {pdfUrl} onClose={closeModal} />
-{/if} -->
+{#if isModalOpen == true}
+  
+  <RecuPaiement bind:open={isModalOpen} data={current_data} sizeModal="xl" userUpdateId={userUpdateId}/>
+{/if}
 
-<RecuPaiement bind:open={isModalOpen} data={current_data} sizeModal="xl" userUpdateId={userUpdateId}/>
 
 
 <DocShow bind:open={openShow} data={current_data} sizeModal="xl" />

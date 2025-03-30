@@ -9,6 +9,9 @@
   import { goto } from "$app/navigation";
   import DocShow from "./DocShow.svelte";
   import Modal from "$components/Modal.svelte";
+  import TextInput from "$components/site/TextInput.svelte";
+  import SelectInput from "$components/site/SelectInput.svelte";
+  import type { Civilite, District, Pays } from "../../../types";
 
   export let data;
   let user = data?.user;
@@ -17,31 +20,35 @@
   
   let formData = {
   
-  
-    // Personal Informations
-    code: "",
-    poleSanitaire: "",
+  // Personal Informations
+  code: "",
     nom: "",
-    professionnel: "",
     prenoms: "",
-    lieuExercicePro: "",
+    nationalite: "",
+    civilite: "",
     emailAutre: "",
+    numero: "",
+    dateNaissance: "",
+    situation: "",
 
     // Professional informations
     profession: "",
-    civilite: "",
     emailPro: "",
     dateDiplome: "",
-    dateNaissance: "",
-    numero: "",
     lieuDiplome: "",
-    nationalite: "",
-    situation: "",
     datePremierDiplome: "",
     poleSanitairePro: "",
     diplome: "",
     situationPro: "",
 
+    poleSanitaire: "",
+    region: "",
+    district: "",
+    ville: "",
+    commune: "",
+    quartier: "",
+    professionnel: "",
+    lieuExercicePro: "",
     //media informations
 
     photo: "",
@@ -56,6 +63,55 @@
     appartenirOrganisation: "non",
     organisationNom: "",
    
+  };
+  let errors = {
+  
+
+    nom: "",
+    prenoms: "",
+    nationalite: "",
+    civilite: "",
+    emailAutre: "",
+    numero: "",
+    dateNaissance: "",
+    situation: "",
+
+    // Professional informations
+    profession: "",
+    emailPro: "",
+    dateDiplome: "",
+    lieuDiplome: "",
+    datePremierDiplome: "",
+    poleSanitairePro: "",
+    diplome: "",
+    situationPro: "",
+
+    poleSanitaire: "",
+    region: "",
+    district: "",
+    ville: "",
+    commune: "",
+    quartier: "",
+    professionnel: "",
+    lieuExercicePro: "",
+
+    //media informations
+
+    // Media informations
+    photo: "",
+    cni: "",
+    casier: "",
+    diplomeFile: "",
+    certificat: "",
+    cv: "",
+
+    // Organization informations
+    appartenirOrganisation: "",
+    organisationNom: "",
+    organisationNumero: "",
+    organisationAnnee: ""
+
+    // Paiement informations
   };
 
 
@@ -146,6 +202,11 @@
         formData = {
 
           code: apiData.code ? apiData.code : "",
+         region: apiData.region ? apiData.region.id : "",
+          district: apiData.district ? apiData.district.id : "",
+          commune: apiData.commune ? apiData.commune.id : "",
+          ville: apiData.ville ? apiData.ville.id : "",
+          quartier: apiData.quartier ? apiData.quartier : "",
           poleSanitaire: apiData.poleSanitaire ? apiData.poleSanitaire : "",
           nom: apiData.nom || "",
           prenoms: apiData.prenoms || "",
@@ -246,17 +307,169 @@
       /* return null; */
     }
   }
-
+ /*  onMount(async () => {
+    getAllProfessions();
+  }); */
   onMount(async () => {
     isLoading = true;
+    fetchData();
     await loadReferenceData();
     await getUserInfos();
-   
+    
+    await loadData();
     isLoading = false;
   });
   function navigateToDashboard() {
     goto("/site/dashboard");
   }
+
+  function saveFormState() {
+    if (typeof window !== "undefined" && typeof localStorage !== "undefined") {
+      localStorage.setItem("formData", JSON.stringify(formData));
+      /* localStorage.setItem("step", step.toString()); */
+    }
+  }
+
+
+  
+  /**
+   * @type {any[]}
+   */
+   let objects = [
+    { name: "civilite", url: "/civilite" },
+    { name: "region", url: "/region" },
+    { name: "ville", url: "/ville" },
+    { name: "district", url: "/district" },
+    { name: "commune", url: "/commune" },
+    { name: "nationate", url: "/pays" },
+    { name: "situationProfessionnelle", url: "/situationProfessionnelle" }
+  ];
+
+  let values: {
+    civilite: Civilite[];
+    region: Civilite[];
+    district: District[];
+    ville: Civilite[];
+    commune: Civilite[];
+    nationate: Pays[];
+    situationProfessionnelle: Pays[];
+  } = {
+    civilite: [],
+    nationate: [],
+    situationProfessionnelle: [],
+    ville: [],
+    region: [],
+    district: [],
+    commune: []
+  };
+
+  async function fetchData() {
+    try {
+      let res = null;
+      objects.forEach(async (element) => {
+        res = await apiFetch(true, element.url);
+        if (res) {
+          if (Object.keys(values).includes(element.name)) {
+            values[element.name as keyof typeof values] = res.data;
+          } else {
+            console.error(`Invalid key: ${element.name}`);
+          }
+        } else {
+          console.error(
+            "Erreur lors de la récupération des données:",
+            res.statusText
+          );
+        }
+      });
+    } catch (error) {
+      console.error("Erreur lors de la récupération des données:", error);
+    }
+  }
+
+  // Fonction pour charger les données depuis une API
+  async function fetchDataChange(url: string) {
+    const response = await apiFetch(true, url);
+    if (!response) {
+      console.error("Erreur lors de la récupération des données:", url);
+      return [];
+    }
+    const data = response.data;
+    return data;
+  }
+
+  async function applyFilters() {
+    if (formData.region) {
+      await updateDistricts();
+    }
+    if (formData.district) {
+      await updateVilles();
+    }
+    if (formData.ville) {
+      await updateCommunes();
+    }
+  }
+
+  const situationsMatrimoniales = [
+    { value: "Célibataire", label: "Célibataire" },
+    { value: "Marié(e)", label: "Marié(e)" },
+    { value: "Divorcé(e)", label: "Divorcé(e)" },
+    { value: "Veuf (Veuve)", label: "Veuf (Veuve)" }
+  ];
+
+  // Fonction pour charger les données nécessaires lors de l'initialisation
+  async function loadData() {
+    for (let obj of objects) {
+      const data = await fetchDataChange(obj.url);
+      values[obj.name] = data;
+    }
+
+    applyFilters();
+  }
+
+
+  // Fonction pour mettre à jour les districts en fonction de la région
+  async function updateDistricts() {
+   
+    const selectedRegion = values.region.find(
+      (region) => region.id === +formData.region
+    );
+    if (selectedRegion) {
+      // Charger les districts de la région sélectionnée
+      formData.district = "";
+      formData.ville = "";
+      formData.commune = "";
+      values.district = await fetchDataChange(`/district/${formData.region}`);
+      values.ville = [];
+      values.commune = [];
+    }
+  }
+
+  // Fonction pour mettre à jour les villes en fonction du district
+  async function updateVilles() {
+    const selectedDistrict = values.district.find(
+      (district) => district.id === +formData.district
+    );
+    if (selectedDistrict) {
+      // Charger les villes du district sélectionné
+      formData.ville = "";
+      formData.commune = "";
+      values.ville = await fetchDataChange(`/ville/${formData.district}`);
+      values.commune = [];
+    }
+  }
+
+  // Fonction pour mettre à jour les communes en fonction de la ville
+  async function updateCommunes() {
+    const selectedVille = values.ville.find(
+      (ville) => ville.id === +formData.ville
+    );
+    if (selectedVille) {
+      // Charger les communes de la ville sélectionnée
+      formData.commune = "";
+      values.commune = await fetchDataChange(`/commune/${formData.ville}`);
+    }
+  }
+
 </script>
 
 
@@ -265,7 +478,9 @@
 
 
   <div class="file-ariane flex items-center space-x-2 text-sm text-gray-600 mb-4">
-    <button on:click={navigateToDashboard} class="flex items-center hover:text-blue-600">
+    
+    <div class="flex items-center hover:text-blue-600 entete">
+        <button on:click={navigateToDashboard} class="flex items-center hover:text-blue-600">
       <!-- Icône SVG pour "Tableau de bord" -->
       <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -281,6 +496,8 @@
     </button>
     <span>/</span>
     <span class="text-gray-800">Liste des dossiers</span> <!-- Nom de la page actuelle -->
+    </div>
+  
   </div><br>
 
 
@@ -306,7 +523,7 @@
                   : 'hover:text-gray-600 hover:border-gray-300'}"
                 on:click={() => (activeTab = "step2")}
               >
-                Informations de Base
+                Informations Personnelles
               </button>
             </li>
             <li class="mr-[0.5px] border-2 border-r-white">
@@ -346,174 +563,35 @@
         <div class="mt-1">
           <!-- Step 2: Informations Personnelles -->
           {#if activeTab === "step2"}
-            <div class="bg-white p-6 rounded-lg shadow-md">
+            <div class="bg-white p-2 rounded-lg shadow-sm">
               <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                
+                <TextInput
+                type="text"
+                label="Nom"
+                bind:value={formData.nom}
+                placeholder="Entrez votre nom"
+                error={errors.nom}
+                onInput={saveFormState}
+                step={2}
+              />
 
+              <TextInput
+                type="text"
+                label="Prénoms"
+                bind:value={formData.prenoms}
+                placeholder="Entrez votre prénom"
+                error={errors.prenoms}
+                onInput={saveFormState}
+                step={2}
+              />
 
-                <div class="space-y-2">
-                  <label class="block text-3xl font-medium text-black"
-                    >Code de vérification (Uniquement pour les anciens membres)</label
-                  >
-                  <input
-                    type="text"
-                    bind:value={formData.code}
-                    class="w-full form__input" style="color:black"
-                  />
-                </div>
-                <div class="space-y-2">
-                  <label class="block text-3xl font-medium text-black"
-                    >Pôle sanitaire,District,Ville,Commune,quartier,lot,ilot</label
-                  >
-                  <input
-                    type="text"
-                    bind:value={formData.poleSanitaire}
-                    class="w-full form__input" style="color:black"
-                  />
-                </div>
-                <div class="space-y-2">
-                  <label class="block text-3xl font-medium text-black"
-                    >Nom</label
-                  >
-                  <input
-                    type="text"
-                    bind:value={formData.nom}
-                    class="w-full form__input" style="color:black"
-                  />
-                </div>
-                <div class="space-y-2">
-                  <label class="block text-3xl font-medium text-black"
-                    >Structure d'exercice professionnel</label
-                  >
-                  <input
-                    type="text"
-                    bind:value={formData.professionnel}
-                    class="w-full form__input" style="color:black"
-                  />
-                </div>
-
-                <div class="space-y-2">
-                  <label class="block text-3xl font-medium text-black"
-                    >Prénoms</label
-                  >
-                  <input
-                    type="text"
-                    bind:value={formData.prenoms}
-                    class="w-full form__input"
-                  />
-                </div>
-                <div class="space-y-2">
-                  <label class="block text-3xl font-medium text-black"
-                    >Lieu d'exercice professionnel</label
-                  >
-                  <input
-                    type="text"
-                    bind:value={formData.lieuExercicePro}
-                    class="w-full form__input"
-                  />
-                </div>
-                <div class="space-y-2">
-                  <label class="block text-3xl font-medium text-black"
-                    >Email</label
-                  >
-                  <input
-                    type="text"
-                    bind:value={formData.emailAutre}
-                    class="w-full form__input"
-                  />
-                </div>
-
-              </div>
-            </div>
-          {/if}
-
-          <!-- Step 3: Informations Professionnelles -->
-          {#if activeTab === "step3"}
-            <div class="bg-white p-6 rounded-lg shadow-md">
-              <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                <div class="space-y-2">
-                  <label class="block text-3xl font-medium text-black"
-                    >Civilité</label
-                  >
-                  <select
-                 
-                  class="w-full form__input"
-                  name=""
-                  id=""
-                  bind:value={formData.civilite}
+              <div class="form__group">
+                <label class="block text-2xl font-medium mb-1"
+                  >Nationalité *</label
                 >
-                  <option value="" selected={!formData.civilite}
-                    >Veuillez sélectionner une option</option
-                  >
-                  {#each civilites as civilite}
-                    <option
-                      value={civilite.id}
-                      selected={formData.civilite === civilite.id}
-                      >{civilite.libelle}</option
-                    >
-                  {/each}
-                </select>
-                </div>
-
-                
-                <div class="space-y-2">
-                  <label class="block text-3xl font-medium text-black"
-                    >Email Professionnel</label
-                  >
-                  <input
-                    type="email"
-                    bind:value={formData.emailPro}
-                    class="w-full form__input"
-                  />
-                </div>
-                <div class="space-y-2">
-                  <label class="block text-3xl font-medium text-black"
-                    >Date d'obtention du diplome</label
-                  >
-                  <input
-                    type="date"
-                    bind:value={formData.dateDiplome}
-                    class="w-full form__input"
-                  />
-                </div>
-                <div class="space-y-2">
-                  <label class="block text-3xl font-medium text-black"
-                    >Date de naissance</label
-                  >
-                  <input
-                    type="date"
-                    bind:value={formData.dateNaissance}
-                    class="w-full form__input"
-                  />
-                </div>
-
-                <div class="space-y-2">
-                  <label class="block text-3xl font-medium text-black"
-                    >Numéro</label
-                  >
-                  <input
-                    type="text"
-                    bind:value={formData.numero}
-                    class="w-full form__input"
-                  />
-                </div>
-
-                <div class="space-y-2">
-                  <label class="block text-3xl font-medium text-black"
-                    >Lieu D'obtention du diplome</label
-                  >
-                  <input
-                    type="text"
-                    bind:value={formData.lieuDiplome}
-                    class="w-full form__input"
-                  />
-                </div>
-                <div class="space-y-2">
-                  <label class="block text-3xl font-medium text-black"
-                    >Nationalité</label
-                  >
-                  <select
-                 
+                <select
+                  on:change={saveFormState}
                   class="w-full form__input"
                   name=""
                   id=""
@@ -522,7 +600,7 @@
                   <option value="" selected={!formData.nationalite}
                     >Veuillez sélectionner une option</option
                   >
-                  {#each pays as nationate}
+                  {#each values.nationate as nationate}
                     <option
                       value={nationate.id}
                       selected={formData.nationalite === nationate.id}
@@ -530,118 +608,265 @@
                     >
                   {/each}
                 </select>
-                </div>
+                {#if errors.nationalite}<p class="text-red-500 text-sm">
+                    {errors.nationalite}
+                  </p>{/if}
+              </div>
 
-                <div class="space-y-2 form__group">
-                  <label class="block text-3xl font-medium text-black"
-                    >Situation Matrimoniale</label
-                  >
-
-                  <select class=" w-full form__input" bind:value={formData.situation}>
-                    <option value="" selected={!formData.situation}
-                      >Veuillez sélectionner une option</option
-                    >
-
-                    <option
-                      value="Célibataire"
-                      selected={formData.situation === "Célibataire"}
-                      >Célibataire</option
-                    >
-                    <option
-                      value="Marié(e)"
-                      selected={formData.situation === "Marié(e)"}
-                      >Marié(e)</option
-                    >
-                    <option
-                      value="Divorcé(e)"
-                      selected={formData.situation === "Divorcé(e)"}
-                      >Divorcé(e)</option
-                    >
-                    <option
-                      value="Veuf (Veuve)"
-                      selected={formData.situation === "Veuf (Veuve)"}
-                      >Veuf (Veuve)</option
-                    >
-                  </select>
-                </div>
-
-          
-                <div class="space-y-2">
-                  <label class="block text-3xl font-medium text-black"
-                    >Date du premier diplome</label
-                  >
-                  <input
-                    type="date"
-                    bind:value={formData.datePremierDiplome}
-                    class="w-full form__input"
-                  />
-                </div>
-                <div class="space-y-2">
-                  <label class="block text-3xl font-medium text-black"
-                    >Pole Sanitaire,District,Commune,Quartier...</label
-                  >
-                  <input
-                    type="text" placeholder="Pole Sanitaire,District,Commune,Quartier,lot,ilot"
-                    bind:value={formData.poleSanitairePro}
-                    class="w-full form__input"
-                  />
-                </div>
-
-                <div class="space-y-2">
-                  <label class="block text-3xl font-medium text-black"
-                    >Dénomination du diplome</label
-                  >
-                  <input
-                    type="text"
-                    bind:value={formData.diplome}
-                    class="w-full form__input"
-                  />
-                </div>
-
-                <!-- <div class="space-y-2">
-                  <label class="block text-3xl font-medium text-black"
-                    >Situation Professionnelle</label
-                  >
-                  <input
-                    type="text"
-                    bind:value={formData.situationPro}
-                    class="w-full form__input"
-                  />
-                </div> -->
-
-                <div class="space-y-2">
-                  <label class="block text-3xl font-medium text-black"
-                    >Situation Professionnelle *</label
-                  >
-                  <select
-                 
-                  class="w-full form__input"
-                  name=""
-                  id=""
-                  bind:value={formData.situationPro}
+              <div class="form__group">
+                <label class="block text-2xl font-medium mb-1"
+                  >Civilité *</label
                 >
-                  <option value="" selected={!formData.situationPro}
-                    >Veuillez sélectionner une option</option
-                  >
-                  {#each situationProfessionnelles as situationPro}
-                    <option
-                      value={situationPro.id}
-                      selected={formData.situationPro === situationPro.id}
-                      >{situationPro.libelle}</option
-                    >
+                <select
+                  on:input={saveFormState}
+                  bind:value={formData.civilite}
+                  class="w-full form__input"
+                >
+                  <option value="" selected={!formData.civilite}>Veuillez sélectionner une option</option>
+                  {#each values.civilite as civilite}
+                    <option  selected={ civilite.id === +formData.civilite} value={civilite.id}>{civilite.libelle}</option>
                   {/each}
                 </select>
-                </div>
-                <div class="space-y-2">
-                  <label class="block text-3xl font-medium text-black"
-                    >Profession</label
-                  >
-                  <input
-                    type="text"
-                    bind:value={formData.profession}
-                    class="w-full form__input"
-                  />
-                </div>
+                {#if errors.civilite}<p class="text-red-500 text-sm">
+                    {errors.civilite}
+                  </p>{/if}
+              </div>
+
+              <TextInput
+                type="email"
+                label="Email"
+                bind:value={formData.emailAutre}
+                placeholder="Entrez votre email"
+                error={errors.emailAutre}
+                onInput={saveFormState}
+                step={2}
+              />
+
+              <TextInput
+                type="tel"
+                label="Contact"
+                bind:value={formData.numero}
+                placeholder="07xxxxxxxx"
+                error={errors.numero}
+                onInput={saveFormState}
+                step={2}
+              />
+
+              <TextInput
+                type="date"
+                label="Date de naissance"
+                bind:value={formData.dateNaissance}
+                placeholder="Entrez votre date de naissance"
+                error={errors.dateNaissance}
+                onInput={saveFormState}
+                step={2}
+              />
+
+              <SelectInput
+                label="Situation matrimoniale"
+                bind:value={formData.situation}
+                options={situationsMatrimoniales.map((c) => ({
+                  id: String(c.value),
+                  libelle: c.label
+                }))}
+                placeholder="Veuillez sélectionner une situation matrimoniale"
+                error={errors.situation}
+                onInput={saveFormState}
+                step={2}
+              />
+
+              </div>
+            </div>
+          {/if}
+
+          <!-- Step 3: Informations Professionnelles -->
+          {#if activeTab === "step3"}
+            <div class="bg-white p-6 rounded-lg shadow-sm">
+              <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <TextInput
+                type="email"
+                label="Adresse email professionnel"
+                bind:value={formData.emailPro}
+                placeholder="Entrez votre email professionnel"
+                error={errors.emailPro}
+                onInput={saveFormState}
+                step={3}
+              />
+
+              <!-- Date d'obtention du diplôme -->
+              <TextInput
+                type="date"
+                label="Date d'obtention du diplôme"
+                bind:value={formData.dateDiplome}
+                placeholder="Entrez la date d'obtention du diplôme"
+                error={errors.dateDiplome}
+                onInput={saveFormState}
+                step={3}
+              />
+
+              <!-- Lieu d'obtention du diplôme -->
+              <TextInput
+                type="text"
+                label="Lieu d'obtention du diplôme"
+                bind:value={formData.lieuDiplome}
+                placeholder="Entrez le lieu d'obtention"
+                error={errors.lieuDiplome}
+                onInput={saveFormState}
+                step={3}
+              />
+
+              <!-- Date du premier emploi -->
+              <TextInput
+                type="date"
+                label="Date du premier emploi"
+                bind:value={formData.datePremierDiplome}
+                placeholder="Entrez la date du premier emploi"
+                error={errors.datePremierDiplome}
+                onInput={saveFormState}
+                step={3}
+              />
+
+              <!-- Dénomination du diplôme -->
+              <TextInput
+                type="text"
+                label="Dénomination du diplôme"
+                bind:value={formData.diplome}
+                placeholder="Entrez la dénomination du diplôme"
+                error={errors.diplome}
+                onInput={saveFormState}
+                step={3}
+              />
+
+              <!-- Situation Professionnelle (Select) -->
+              <SelectInput
+                label="Situation professionnelle"
+                bind:value={formData.situationPro}
+                options={values.situationProfessionnelle.map((c) => ({
+                  id: String(c.id),
+                  libelle: c.libelle
+                }))}
+                placeholder="Sélectionnez votre situation professionnelle"
+                error={errors.situationPro}
+                onInput={saveFormState}
+                step={3}
+              />
+
+              <!-- Région (Select) -->
+            
+              <div class="form__group">
+                <label class="block text-2xl font-medium mb-1">Région *</label>
+                <select
+                bind:value={formData.region}
+                  class="w-full form__input"
+                  on:change={saveFormState}
+                  on:change={updateDistricts} on:change={saveFormState}
+                >
+                <option value="" selected={!formData.region}>Sélectionnez votre Région</option>
+                {#each values.region as region}
+                  <option value={region.id} selected={region.id === +formData.region}>{region.libelle}</option>
+                {/each}
+                </select>
+                {#if errors.region}
+                  <p class="text-red-500 text-sm">{errors.region}</p>
+                {/if}
+              </div>
+
+              <div class="form__group">
+                <label class="block text-2xl font-medium mb-1">District *</label>
+                <select
+               
+                  class="w-full form__input"
+                  bind:value={formData.district}
+                on:change={updateVilles} on:change={saveFormState}
+                >
+                <option value="" selected={!formData.district}>Sélectionnez votre district</option>
+                {#each values.district as district}
+                  <option value={district.id} selected={district.id === +formData.district}>{district.libelle}</option>
+                {/each}
+                </select>
+                {#if errors.district}
+                  <p class="text-red-500 text-sm">{errors.district}</p>
+                {/if}
+              </div>
+
+              <div class="form__group">
+                <label class="block text-2xl font-medium mb-1">Ville *</label>
+                <select
+               
+                  class="w-full form__input"
+                  bind:value={formData.ville}
+                on:change={updateCommunes} on:change={saveFormState}
+                >
+                <option value="" selected={!formData.ville}>Sélectionnez votre ville</option>
+                {#each values.ville as ville}
+                  <option value={ville.id} selected={ville.id === +formData.ville}>{ville.libelle}</option>
+                {/each}
+                </select>
+                {#if errors.ville}
+                  <p class="text-red-500 text-sm">{errors.ville}</p>
+                {/if}
+              </div>
+
+              <div class="form__group">
+                <label class="block text-2xl font-medium mb-1">Commune *</label>
+                <select
+               
+                  class="w-full form__input"
+                  bind:value={formData.commune} on:change={saveFormState}
+                >
+                <option value="" selected={!formData.commune}>Sélectionnez votre commune</option>
+                {#each values.commune as commune}
+                  <option value={commune.id} selected={commune.id === +formData.commune}>{commune.libelle}</option>
+                {/each}
+                </select>
+                {#if errors.commune}
+                  <p class="text-red-500 text-sm">{errors.commune}</p>
+                {/if}
+              </div>
+
+              <!-- Quartier -->
+              <TextInput
+                type="text"
+                label="Quartier"
+                bind:value={formData.quartier}
+                placeholder="Entrez votre Quartier"
+                error={errors.quartier}
+                onInput={saveFormState}
+                step={3}
+              />
+
+              <!-- Pôle Sanitaire -->
+              <TextInput
+                type="text"
+                label="Ilot,lot"
+                bind:value={formData.poleSanitaire}
+                placeholder="Entrez votre Ilot,Lot"
+                error={errors.poleSanitaire}
+                onInput={saveFormState}
+                step={3}
+              />
+
+              <!-- Professionnel -->
+              <TextInput
+                type="text"
+                label="Structure d'exercice professionnel"
+                bind:value={formData.professionnel}
+                placeholder="Entrez votre Structure d'exercice professionnel"
+                error={errors.professionnel}
+                onInput={saveFormState}
+                step={3}
+              />
+
+              <!-- Lieu d'exercice professionnel -->
+              <TextInput
+                type="text"
+                label="Lieu d'exercice professionnel"
+                bind:value={formData.lieuExercicePro}
+                placeholder="Entrez votre lieu d'exercice professionnel"
+                error={errors.lieuExercicePro}
+                onInput={saveFormState}
+                step={3}
+              />
                 
               </div>
             </div>
@@ -649,7 +874,7 @@
 
           <!-- Step 4: Documents -->
           {#if activeTab === "step4"}
-            <div class="bg-white p-6 rounded-lg shadow-md">
+            <div class="bg-white p-6 rounded-lg shadow-sm">
               <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                 {#each ["photo", "cni", "casier", "diplomeFile", "certificat", "cv"] as field}
                   <div class="space-y-2">
@@ -691,7 +916,7 @@
 
           <!-- Step 5: Organisation -->
           {#if activeTab === "step5"}
-            <div class="bg-white p-6 rounded-lg shadow-md">
+            <div class="bg-white p-6 rounded-lg shadow-sm">
               <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div class="col-span-2 space-y-2">
                   <label class="block text-3xl font-medium text-black"
@@ -800,7 +1025,10 @@
   .iletisim-form-alani {
     padding: 20rem 226px 10rem !important;
 
-    background-color: transparent !important;
+    background-color: white !important;
+  }
+  .entete {
+    width: 76% !important;
   }
   .content-sec {
     margin-top: 160px;
