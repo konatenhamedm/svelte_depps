@@ -631,6 +631,7 @@
         `https://depps.leadagro.net/api/paiement/get/transaction/${idtransaction}`
       );
       const data = await res.json();
+      isPaiementDone = data.data;
       return data.data; // Assurez-vous que l'API renvoie un objet avec une clé `valid`
     } catch (error) {
       console.error(
@@ -648,6 +649,7 @@
         `https://depps.leadagro.net/api/profession/get/status/paiement/${professionCode}`
       );
       const data = await res.json();
+      paiementStatus = data.data;
       return data.data; // Assurez-vous que l'API renvoie un objet avec une clé `valid`
     } catch (error) {
       console.error(
@@ -680,9 +682,10 @@
     console.log("PALMERYYYYYY", formData.profession);
 
     checkPaiementStatus(formData.profession).then((resultat) => {
-      paiementStatus = resultat;
+     // paiementStatus = resultat.data;
 
-      console.log("PALMERYYYYuuuuu", formData.profession);
+      console.log("PALMERYYYYuuuuu", paiementStatus);
+      console.log("AUTRE", isPaiementDone);
     });
   }
 
@@ -708,9 +711,9 @@
         console.log(resultat);
         console.log("RRRDDFFF", reference);
 
-        if (resultat.data == false) {
+        if (resultat == false) {
           message = "Votre paiement à échoué veillez ressayez svp.";
-          isPaiementDone = false;
+          /* isPaiementDone = false; */
         } else {
           message = "";
           isPaiementDone = true;
@@ -789,8 +792,13 @@
     await loadData();
   });
   onMount(() => {
-    /* localStorage.setItem('reference', ''); */
+   /*  localStorage.setItem("reference", ""); */
     /* localStorage.setItem("reference", "DEPPS250304234714045"); */
+    if (localStorage.getItem("reference"))
+      console.log("JE VEUX", localStorage.getItem("reference")?.toString());
+  
+    console.log(isPaiementDone)  
+    console.log(paiementStatus)  
 
     const savedStep = localStorage.getItem("step");
     if (savedStep) {
@@ -890,10 +898,8 @@
     applyFilters();
   }
 
-
   // Fonction pour mettre à jour les districts en fonction de la région
   async function updateDistricts() {
-   
     const selectedRegion = values.region.find(
       (region) => region.id === +formData.region
     );
@@ -1354,19 +1360,21 @@
                 />
 
                 <!-- Région (Select) -->
-              
+
                 <div class="form__group">
-                  <label class="block text-2xl font-medium mb-1">Région *</label>
+                  <label class="block text-2xl font-medium mb-1">Région *</label
+                  >
                   <select
-                  bind:value={formData.region}
+                    bind:value={formData.region}
                     class="w-full form__input"
                     on:change={saveFormState}
-                    on:change={updateDistricts} on:change={saveFormState}
+                    on:change={updateDistricts}
+                    on:change={saveFormState}
                   >
-                  <option value="">Sélectionnez votre Région</option>
-                  {#each values.region as region}
-                    <option value={region.id}>{region.libelle}</option>
-                  {/each}
+                    <option value="">Sélectionnez votre Région</option>
+                    {#each values.region as region}
+                      <option value={region.id}>{region.libelle}</option>
+                    {/each}
                   </select>
                   {#if errors.region}
                     <p class="text-red-500 text-sm">{errors.region}</p>
@@ -1374,17 +1382,19 @@
                 </div>
 
                 <div class="form__group">
-                  <label class="block text-2xl font-medium mb-1">District *</label>
+                  <label class="block text-2xl font-medium mb-1"
+                    >District *</label
+                  >
                   <select
-                 
                     class="w-full form__input"
                     bind:value={formData.district}
-                  on:change={updateVilles} on:change={saveFormState}
+                    on:change={updateVilles}
+                    on:change={saveFormState}
                   >
-                  <option value="">Sélectionnez votre district</option>
-                  {#each values.district as district}
-                    <option value={district.id}>{district.libelle}</option>
-                  {/each}
+                    <option value="">Sélectionnez votre district</option>
+                    {#each values.district as district}
+                      <option value={district.id}>{district.libelle}</option>
+                    {/each}
                   </select>
                   {#if errors.district}
                     <p class="text-red-500 text-sm">{errors.district}</p>
@@ -1394,15 +1404,15 @@
                 <div class="form__group">
                   <label class="block text-2xl font-medium mb-1">Ville *</label>
                   <select
-                 
                     class="w-full form__input"
                     bind:value={formData.ville}
-                  on:change={updateCommunes} on:change={saveFormState}
+                    on:change={updateCommunes}
+                    on:change={saveFormState}
                   >
-                  <option value="">Sélectionnez votre ville</option>
-                  {#each values.ville as ville}
-                    <option value={ville.id}>{ville.libelle}</option>
-                  {/each}
+                    <option value="">Sélectionnez votre ville</option>
+                    {#each values.ville as ville}
+                      <option value={ville.id}>{ville.libelle}</option>
+                    {/each}
                   </select>
                   {#if errors.ville}
                     <p class="text-red-500 text-sm">{errors.ville}</p>
@@ -1410,16 +1420,18 @@
                 </div>
 
                 <div class="form__group">
-                  <label class="block text-2xl font-medium mb-1">Commune *</label>
-                  <select
-                 
-                    class="w-full form__input"
-                    bind:value={formData.commune} on:change={saveFormState}
+                  <label class="block text-2xl font-medium mb-1"
+                    >Commune *</label
                   >
-                  <option value="">Sélectionnez votre commune</option>
-                  {#each values.commune as commune}
-                    <option value={commune.id}>{commune.libelle}</option>
-                  {/each}
+                  <select
+                    class="w-full form__input"
+                    bind:value={formData.commune}
+                    on:change={saveFormState}
+                  >
+                    <option value="">Sélectionnez votre commune</option>
+                    {#each values.commune as commune}
+                      <option value={commune.id}>{commune.libelle}</option>
+                    {/each}
                   </select>
                   {#if errors.commune}
                     <p class="text-red-500 text-sm">{errors.commune}</p>
@@ -1730,7 +1742,7 @@
                 on:click={nextStep}>SUIVANT →</button
               >
             {:else}
-              {#if isPaiementDone == false && paiementStatus}
+              {#if isPaiementDone == false && paiementStatus == true}
                 <button
                   type="button"
                   on:click={clickPaiement}
@@ -1748,6 +1760,8 @@
                   {/if}
                 </button>
               {:else}
+
+              {#if isPaiementDone == false && paiementStatus == false}
                 <button
                   type="button"
                   on:click={clickValidation}
@@ -1765,7 +1779,8 @@
                   {/if}
                 </button>
               {/if}
-              {#if isPaiementDone == true && paiementStatus}
+              {/if}
+              {#if isPaiementDone == true && paiementStatus == true}
                 <button
                   type="button"
                   on:click={connexion}
