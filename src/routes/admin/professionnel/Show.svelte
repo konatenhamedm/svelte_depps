@@ -9,6 +9,7 @@
   import DocShow from "./DocShow.svelte";
   import { format } from "date-fns";
   import RecuPaiement from "./RecuPaiement.svelte";
+  import FicheInscription from "./FicheInscription.svelte";
 
   let isLoad = false;
 
@@ -256,6 +257,7 @@
   }) */
 
   let isModalOpen = false;
+  let isModalOpenRegister = false;
 
 
   function openModal(url: any) {
@@ -502,8 +504,12 @@
         </div>
 
         <div
-          style="background-color: green;"
-          class="w-full h-9 flex justify-center bg-green hover:bg-green text-white font-bold py-2 pb-[1.9rem] px-4 border border-white rounded cursor-pointer"
+                on:click={() => (
+    (current_data = data),
+    (isModalOpenRegister = true)  // Utiliser isModalOpenRegister ici au lieu de isModalOpen
+  )}
+                style="background-color: green;"
+                class="w-full h-9 flex justify-center bg-green hover:bg-green text-white font-bold py-2 pb-[1.9rem] px-4 border border-white rounded cursor-pointer"
         >
           FICHE D'INSCRIPTION
         </div>
@@ -714,6 +720,10 @@
 {#if isModalOpen == true}
   
   <RecuPaiement bind:open={isModalOpen} data={current_data} sizeModal="xl" userUpdateId={userUpdateId}/>
+{/if}
+
+{#if isModalOpenRegister == true}
+  <FicheInscription bind:open={isModalOpenRegister} data={current_data} sizeModal="xl" userUpdateId={userUpdateId}/>
 {/if}
 
 

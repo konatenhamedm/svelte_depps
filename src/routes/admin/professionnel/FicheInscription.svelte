@@ -1,181 +1,204 @@
 <script lang="ts">
-  import Spinner from "$components/_skeletons/Spinner.svelte";
-  import InputSimple from "$components/inputs/InputSimple.svelte";
-  import { apiFetch, BASE_URL_API } from "$lib/api";
-  import { Button, Input, Label, Modal, Textarea } from "flowbite-svelte";
-  import InputTextArea from "$components/inputs/InputTextArea.svelte";
-  import { formatDate } from '$lib/dateUtils';
-  import jsPDF from 'jspdf';
-  import { onMount } from "svelte";
+    import { BASE_URL_API } from "$lib/api";
+    import { Button, Modal } from "flowbite-svelte";
+    import { format } from "date-fns";
+    import jsPDF from 'jspdf';
+    import { onMount } from "svelte";
 
-  export let open: boolean = false; // modal control
-  let isLoad = false;
-   let pdfUrlAffiche ="";
+    export let open: boolean = false;
+    export let sizeModal: any = "xl";
+    export let userUpdateId: any;
+    export let data: any;
 
-  export let sizeModal: any = "lg";
-  export let userUpdateId: any;
+    let isLoading = false;
+    let pdfUrl = "";
+    const url_image = "https://depps.leadagro.net/uploads/";
 
-  export let data: Record<string, string> = {};
+    // Formatage des données
+    let formattedData = {
+        numero: data?.personne?.number || "N/A",
+        nom: data?.personne?.nom || "N/A",
+        prenoms: data?.personne?.prenoms || "N/A",
+        civilite: data?.personne?.civilite || "N/A",
+        dateNaissance: data?.personne?.dateNaissance ? format(new Date(data.personne.dateNaissance), "dd/MM/yyyy") : "N/A",
+        nationalite: data?.personne?.nationate || "N/A",
+        email: data?.email || "N/A",
+        profession: data?.personne?.profession?.libelle || "N/A",
+        dateDiplome: data?.personne?.dateDiplome ? format(new Date(data.personne.dateDiplome), "dd/MM/yyyy") : "N/A",
+        diplome: data?.personne?.diplome || "N/A",
+        lieuDiplome: data?.personne?.lieuDiplome || "N/A",
+        poleSanitaire: data?.personne?.poleSanitaire || "N/A",
+        lieuExercicePro: data?.personne?.lieuExercicePro || "N/A",
+        organisationNom: data?.personne?.organisationNom || "N/A",
+        appartenirOrganisation: data?.personne?.appartenirOrganisation === "oui" ? "Oui" : "Non",
+        photo: data?.personne?.photo?.path ? `${url_image}${data.personne.photo.path}/${data.personne.photo.alt}` : null
+    };
 
-  // Initialize form data with the provided record
-  function init(form: HTMLFormElement) {
- 
-  }
+    function generatePDF() {
+        const doc = new jsPDF();
+        const pageWidth = doc.internal.pageSize.getWidth();
+        const margin = 15;
+        const lineHeight = 7;
+        let yPos = margin;
 
-  let receiptData = {
-    logo: 'https://mydepps.pages.dev/_files/logo-depps.png', // URL du logo
-    title: 'Reçu de Paiement - Renouvellement',
-    date: '04 novembre 2024 à 16:39:59',
-    name: 'Kra Rita',
-    paymentMethod: 'OMCIV2',
-    residence: 'XX',
-    phone: '0564924282',
-    receiptNumber: '1730738267',
-    amount: '10000 XOF',
-    footerText: 'Ce document ne tient pas lieu d’autorisation d’exercice',
-  };
+        // Logo centré en haut
+        const logoWidth = 30;
+        const logoHeight = 30;
+        const logoX = (pageWidth - logoWidth) / 2;
+        doc.addImage('https://mydepps.pages.dev/_files/logo-depps.png', 'PNG', logoX, yPos, logoWidth, logoHeight);
+        yPos += logoHeight + 10;
 
-  function generatePDF() {
-    const doc = new jsPDF();
+        // Titre principal sous le logo
+        doc.setFontSize(16);
+        doc.setFont('helvetica', 'bold');
+        doc.text('FICHE D\'INSCRIPTION', pageWidth / 2, yPos, { align: 'center' });
+        yPos += 10;
 
-    // Centrer le logo
-    const imgWidth = 30;
-    const imgHeight = 30;
-    const pageWidth = 210;
-    const logoX = (pageWidth - imgWidth) / 2; // Position X centrée
-    doc.addImage(receiptData.logo, 'PNG', logoX, 10, imgWidth, imgHeight);
+        // Sous-titre
+        doc.setFontSize(10);
+        doc.setFont('helvetica', 'normal');
+        doc.text('Ministère de la Santé et de l\'Hygiène Publique', pageWidth / 2, yPos, { align: 'center' });
+        doc.text('Direction des Etudes, des Effectifs et de la Planification des Professionnels de Santé', pageWidth / 2, yPos + 5, { align: 'center' });
 
-    // Ajouter le titre centré sous le logo
-    doc.setFontSize(16);
-    doc.setFont('helvetica', 'bold');
-    doc.text(receiptData.title, 105, 50, { align: 'center' });
+        // Ligne de séparation
+        yPos += 15;
+        doc.setDrawColor(200, 200, 200);
+        doc.line(margin, yPos, pageWidth - margin, yPos);
+        yPos += 10;
 
-    // Ajouter les informations du reçu
-    doc.setFontSize(12);
-    doc.setFont('helvetica', 'bold');
-    
-    const startX = 10;
-    const startY = 60;
-    const lineHeight = 10;
+        // Section Informations Personnelles
+        doc.setFontSize(14);
+        doc.setFont('helvetica', 'bold');
+        doc.setTextColor(59, 130, 246);
+        doc.text('INFORMATIONS PERSONNELLES', margin, yPos);
+        yPos += 10;
 
-    const fields = [
-      { label: "Date d'édition:", value: receiptData.date },
-      { label: "Nom complet:", value: receiptData.name },
-      { label: "Mode de paiement:", value: receiptData.paymentMethod },
-     /*  { label: "Lieu de résidence:", value: receiptData.residence }, */
-      { label: "Numéro de téléphone:", value: receiptData.phone },
-      { label: "Réference paiement:", value: `N° ${receiptData.receiptNumber}` },
-      { label: "Paiement:", value: `${receiptData.amount}` }
-    ];
+        doc.setFontSize(11);
+        doc.setFont('helvetica', 'normal');
+        doc.setTextColor(0, 0, 0);
 
-    let yPos = startY;
-    fields.forEach(({ label, value }) => {
-      doc.text(label, startX, yPos);
-      doc.setFont('helvetica', 'normal');
-      doc.text(value, startX + 50, yPos);
-      doc.setFont('helvetica', 'bold');
-      doc.line(startX, yPos + 2, 200, yPos + 2); // Ligne de séparation
-      yPos += lineHeight;
+        // Colonnes pour les informations
+        const col1 = margin;
+        const col2 = pageWidth / 2;
+
+        // Première colonne
+        doc.text(`Numéro: ${formattedData.numero}`, col1, yPos);
+        doc.text(`Nom: ${formattedData.nom}`, col1, yPos + lineHeight);
+        doc.text(`Prénoms: ${formattedData.prenoms}`, col1, yPos + (lineHeight * 2));
+        doc.text(`Civilité: ${formattedData.civilite}`, col1, yPos + (lineHeight * 3));
+
+        // Deuxième colonne
+        doc.text(`Date de naissance: ${formattedData.dateNaissance}`, col2, yPos);
+        doc.text(`Nationalité: ${formattedData.nationalite}`, col2, yPos + lineHeight);
+        doc.text(`Email: ${formattedData.email}`, col2, yPos + (lineHeight * 2));
+
+        yPos += (lineHeight * 4) + 10;
+
+        // Section Informations Professionnelles
+        doc.setFontSize(14);
+        doc.setFont('helvetica', 'bold');
+        doc.setTextColor(59, 130, 246);
+        doc.text('INFORMATIONS PROFESSIONNELLES', margin, yPos);
+        yPos += 10;
+
+        doc.setFontSize(11);
+        doc.setFont('helvetica', 'normal');
+        doc.setTextColor(0, 0, 0);
+
+        // Première colonne
+        doc.text(`Profession: ${formattedData.profession}`, col1, yPos);
+        doc.text(`Date du diplôme: ${formattedData.dateDiplome}`, col1, yPos + lineHeight);
+        doc.text(`Diplôme: ${formattedData.diplome}`, col1, yPos + (lineHeight * 2));
+
+        // Deuxième colonne
+        doc.text(`Lieu d'obtention: ${formattedData.lieuDiplome}`, col2, yPos);
+        doc.text(`Pôle sanitaire: ${formattedData.poleSanitaire}`, col2, yPos + lineHeight);
+        doc.text(`Lieu d'exercice: ${formattedData.lieuExercicePro}`, col2, yPos + (lineHeight * 2));
+
+        yPos += (lineHeight * 3) + 5;
+        doc.text(`Appartient à une organisation: ${formattedData.appartenirOrganisation}`, col1, yPos);
+
+        if (formattedData.appartenirOrganisation === "Oui") {
+            doc.text(`Nom de l'organisation: ${formattedData.organisationNom}`, col1, yPos + lineHeight);
+            yPos += lineHeight;
+        }
+
+        yPos += 15;
+
+        // Pied de page
+        doc.setFontSize(10);
+        doc.setTextColor(100, 100, 100);
+        doc.text(`Fiche générée le ${format(new Date(), "dd/MM/yyyy à HH:mm:ss")}`, pageWidth / 2, 280, { align: 'center' });
+        doc.text('DEPS - Ministère de la Santé et de l\'Hygiène Publique', pageWidth / 2, 285, { align: 'center' });
+
+        // Convertir en URL pour affichage
+        const pdfBlob = doc.output('blob');
+        pdfUrl = URL.createObjectURL(pdfBlob);
+    }
+
+    onMount(() => {
+        if (open) {
+            generatePDF();
+        }
     });
 
-    // Ajouter le texte en bas du reçu
-    doc.setFontSize(10);
-    doc.setFont('helvetica', 'italic');
-    doc.text(receiptData.footerText, 105, yPos + 10, { align: 'center' });
-
-    // Convertir en URL pour affichage
-    const pdfBlob = doc.output('blob');
-    pdfUrlAffiche = URL.createObjectURL(pdfBlob);
-  }
-
-
-  let isLoading = false;
-
-async function getTransactionInfos() {
-  isLoading = true;
-  try {
-
-    if(data.id){
-      await apiFetch(true, "/paiement/info/transaction/last/transaction/"+data.id).then((response) => {
-      console.log(response);
-      if (response.code === 200) {
-        receiptData.amount = response.data.montant;
-        receiptData.paymentMethod = response.data.channel;
-        receiptData.receiptNumber = response.data.reference;
-        receiptData.name = response.data.user.typeUser == "PROFESSIONNEL" 
-          ? response.data.user.personne.nom + " "+ response.data.user.personne.prenoms 
-          : response.data.user.personne.nomEntreprise;
-        receiptData.phone = response.data.user.typeUser == "PROFESSIONNEL" 
-          ? response.data.user.personne.number 
-          : response.data.user.personne.contactEntreprise;
-        receiptData.date = formatDate(response.data.createdAt);
-      } });
+    // Fermer la modal parente quand celle-ci s'ouvre
+    $: if (open) {
+        const parentModal = document.querySelector('.modale_general');
+        if (parentModal) {
+            parentModal.style.display = 'none';
+        }
     }
-    
-   
-  } catch (error) {
-    console.error("Erreur lors de la récupération des infos de transaction", error);
-  } finally {
-    isLoading = false;
-  }
-}
 
-$: if (open == true && !isLoading) {
-  generatePDF();
-}
-
-  onMount(async () => {
-  
-    getTransactionInfos();
-  });
-
-  function handleModalClose(event: Event) {
-    if (isLoad) {
-      event.preventDefault();
+    function handleClose() {
+        const parentModal = document.querySelector('.modale_general');
+        if (parentModal) {
+            parentModal.style.display = 'block';
+        }
+        open = false;
     }
-  }
 </script>
 
 <Modal
-  bind:open
-  title={Object.keys(data).length
-    ? "Reçu de Paiement"
-    : "Reçu de Paiement"}
-  size={sizeModal}
-  class="m-4 modale_general"
-  on:close={handleModalClose}
+        bind:open
+        title=""
+        size={sizeModal}
+        class="m-4"
+        on:close={handleClose}
 >
-  <link
-    rel="stylesheet"
-    href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
-    integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN"
-    crossorigin="anonymous"
-  />
-  <div class="space-y-6 p-0">
-    <form action="#" use:init>
-      
-      <div class="pdf-viewer">
-    <!--     {#if pdfUrlAffiche}
-          <iframe src={pdfUrlAffiche} title="Aperçu du PDF" width="100%" height="700px" type="application/pdf"></iframe>
-        {/if} -->
-
+    <div class="space-y-6 p-4">
         {#if isLoading}
-        <p>Chargement en cours...</p>
-      {:else if pdfUrlAffiche}
-        <iframe src={pdfUrlAffiche} title="Aperçu du PDF" width="100%" height="700px" type="application/pdf"></iframe>
-      {/if}
-    </form>
-  </div>
-
-  <!-- Modal footer -->
-  <div slot="footer" class="w-full">
-    <div class="flex justify-end">
-       <Button
-          color="alternative"
-          style="background-color: gray !important; color: white;"
-          on:click={() => (open = false)}
-          type="submit">{"Fermer"} </Button
-        >
+            <div class="flex justify-center items-center h-64">
+                <div class="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500"></div>
+            </div>
+        {:else if pdfUrl}
+            <iframe
+                    src={pdfUrl}
+                    title="Fiche d'inscription"
+                    width="100%"
+                    height="600px"
+                    class="border rounded-lg shadow-sm"
+            ></iframe>
+        {/if}
     </div>
-  </div>
+
+    <div slot="footer" class="w-full flex justify-end">
+        <Button
+                color="alternative"
+                style="background-color: gray !important; color: white;"
+                on:click={handleClose}
+        >
+            Fermer
+        </Button>
+    </div>
 </Modal>
+
+<style>
+    /* Masquer la modal parente quand celle-ci est ouverte */
+    .modal-backdrop {
+        z-index: 9999 !important;
+    }
+    .modal-container {
+        z-index: 10000 !important;
+    }
+</style>
