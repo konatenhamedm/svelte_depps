@@ -222,7 +222,7 @@
           lieuDiplome: apiData.lieuDiplome || "",
           situation: apiData.situation || "",
           profession: apiData.profession || "",
-          situationPro: apiData.situationPro || "",
+          situationPro: apiData.situationPro.id || "",
           emailPro: apiData.emailPro || "",
           poleSanitairePro: apiData.poleSanitairePro || "",
           datePremierDiplome: formatDateForInput(apiData.datePremierDiplome),
