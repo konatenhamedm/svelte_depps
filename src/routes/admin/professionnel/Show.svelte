@@ -23,6 +23,7 @@
   let professionLibelle: string = "";
 
   const url_image = "https://depps.leadagro.net/uploads/";
+  let persionneId = "";
   let numero = "";
   let nom = "";
   let status = "";
@@ -137,6 +138,7 @@
     certificatPath = data.personne.certificat.path || "";
     certificatAlt = data.personne.certificat.alt || "";
     lieuDiplome = data.personne.lieuDiplome || "";
+    persionneId = data.personne.id;
     // Récupérer la profession
     /*profession =  data.personne.professionLibelle || ""; await getProfessionLibelle(data.personne.profession);
     if (profession) {
@@ -144,6 +146,8 @@
     } else {
       console.error("Impossible de récupérer la profession");
     }*/
+
+    console.log("uuu",persionneId);
     
   }
   let valid_endUser = {
@@ -183,7 +187,7 @@
     console.log("Email", userEmail);
     console.log("Email", valid_endUser.status);
     console.log("Email", valid_endUser.raison);
-    console.log("Email", userUpdateId);
+    console.log("Email", data.personne);
 
     isLoad = true;
     try {

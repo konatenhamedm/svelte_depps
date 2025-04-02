@@ -82,7 +82,7 @@
         const col2 = pageWidth / 2;
 
         // Première colonne
-        doc.text(`Numéro: ${formattedData.numero}`, col1, yPos);
+        doc.text(`Contact: ${formattedData.numero}`, col1, yPos);
         doc.text(`Nom: ${formattedData.nom}`, col1, yPos + lineHeight);
         doc.text(`Prénoms: ${formattedData.prenoms}`, col1, yPos + (lineHeight * 2));
         doc.text(`Civilité: ${formattedData.civilite}`, col1, yPos + (lineHeight * 3));
@@ -112,7 +112,7 @@
 
         // Deuxième colonne
         doc.text(`Lieu d'obtention: ${formattedData.lieuDiplome}`, col2, yPos);
-        doc.text(`Pôle sanitaire: ${formattedData.poleSanitaire}`, col2, yPos + lineHeight);
+        doc.text(`Ilot,lot: ${formattedData.poleSanitaire}`, col2, yPos + lineHeight);
         doc.text(`Lieu d'exercice: ${formattedData.lieuExercicePro}`, col2, yPos + (lineHeight * 2));
 
         yPos += (lineHeight * 3) + 5;

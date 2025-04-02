@@ -141,7 +141,7 @@
                     />
                   </div>
                   <div class="ml-2">
-                    <select
+<!--                     <select
                       bind:value={genreField}
                       on:change={refreshDataIfNeeded}
                       id="role"
@@ -153,7 +153,7 @@
                       <option value="tout">Tout</option>
                       <option value="Masculin">Masculin</option>
                       <option value="Féminin">Féminin</option>
-                    </select>
+                    </select> -->
                   </div>
                 </div>
                 <Table class="border border-gray-300">

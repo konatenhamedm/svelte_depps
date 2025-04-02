@@ -1362,7 +1362,7 @@
                 <!-- Région (Select) -->
 
                 <div class="form__group">
-                  <label class="block text-2xl font-medium mb-1">Région *</label
+                  <label class="block text-2xl font-medium mb-1">Région sanitaire *</label
                   >
                   <select
                     bind:value={formData.region}
@@ -1383,7 +1383,7 @@
 
                 <div class="form__group">
                   <label class="block text-2xl font-medium mb-1"
-                    >District *</label
+                    >District sanitaire*</label
                   >
                   <select
                     class="w-full form__input"

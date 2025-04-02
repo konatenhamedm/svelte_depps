@@ -26,6 +26,13 @@ h1, h2, h3, h4, h5, h6 {
 }
 /* src/global.css */
 
+@media (prefers-color-scheme: dark) {
+  .dark\:text-white {
+      --tw-text-opacity: 1;
+      color: black !important ;
+  }
+}
+
 body{
   background-color: #e5e7eb !important;
   font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif !important;
