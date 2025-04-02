@@ -110,6 +110,7 @@
 
   let errors = {
     email: "",
+    code: "",
     password: "",
     confirmPassword: "",
 
@@ -1292,14 +1293,23 @@
                 <!-- Email Professionnel -->
                 <!-- Email Professionnel -->
                 <TextInput
-                  type="email"
-                  label="Adresse email professionnel"
-                  bind:value={formData.emailPro}
-                  placeholder="Entrez votre email professionnel"
-                  error={errors.emailPro}
+                  type="text"
+                  label="Code de vérification (Unique pour les ancien membres)"
+                  bind:value={formData.code}
+                  placeholder="Entrez votre code de vérification"
+                  error={errors.code}
                   onInput={saveFormState}
                   step={3}
                 />
+                <TextInput
+                type="email"
+                label="Adresse email professionnel"
+                bind:value={formData.emailPro}
+                placeholder="Entrez votre email professionnel"
+                error={errors.emailPro}
+                onInput={saveFormState}
+                step={3}
+              />
 
                 <!-- Date d'obtention du diplôme -->
                 <TextInput

@@ -68,6 +68,7 @@
   
 
     nom: "",
+    code: "",
     prenoms: "",
     nationalite: "",
     civilite: "",
@@ -684,6 +685,15 @@
             <div class="bg-white p-6 rounded-lg shadow-sm">
               <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
                 <TextInput
+                type="text"
+                label="Code"
+                bind:value={formData.code}
+                placeholder="Code"
+                error={errors.code}
+                onInput={saveFormState}
+                step={3}
+              />
+                <TextInput
                 type="email"
                 label="Adresse email professionnel"
                 bind:value={formData.emailPro}
@@ -754,7 +764,7 @@
               <!-- Région (Select) -->
             
               <div class="form__group">
-                <label class="block text-2xl font-medium mb-1">Région *</label>
+                <label class="block text-2xl font-medium mb-1">Région sanitaire *</label>
                 <select
                 bind:value={formData.region}
                   class="w-full form__input"
@@ -772,7 +782,7 @@
               </div>
 
               <div class="form__group">
-                <label class="block text-2xl font-medium mb-1">District *</label>
+                <label class="block text-2xl font-medium mb-1">District sanitaire *</label>
                 <select
                
                   class="w-full form__input"
