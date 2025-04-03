@@ -14,6 +14,7 @@
   let montantNouvelleDemande: string = "";
   let codeGeneration: string = "";
   let montantRenouvellement: string = "";
+  let chronoMax: string = "";
   let typeProfessions: any = [];
 
   export let sizeModal: any = "lg";
@@ -28,6 +29,7 @@
     codeGeneration = data?.codeGeneration;
     montantRenouvellement = data?.montantRenouvellement;
     montantNouvelleDemande = data?.montantNouvelleDemande;
+    chronoMax = data?.chronoMax;
   }
 
   async function SaveFunction() {
@@ -45,6 +47,7 @@
           codeGeneration: codeGeneration,
           montantRenouvellement: montantRenouvellement,
           montantNouvelleDemande: montantNouvelleDemande,
+          chronoMax: chronoMax,
           userUpdate: userUpdateId
         })
       });
@@ -97,12 +100,19 @@
   <div class="space-y-6 p-0">
     <form action="#" use:init>
       <div class="grid grid-cols-1 mb-2">
-        <div class="grid grid-cols-1">
+        <div class="grid grid-cols-6 gap-6 mb-2">
           <InputSimple
             fieldName="libelle"
             label="Libelle"
             bind:field={libelle}
             placeholder="entrez le libelle"
+            class="w-full"
+          ></InputSimple>
+          <InputSimple
+            fieldName="chronoMax"
+            label="Chrono max"
+            bind:field={chronoMax}
+            placeholder="entrez le chrono max"
             class="w-full"
           ></InputSimple>
         </div>

@@ -21,7 +21,8 @@
     codeGeneration: "",
     typeProfession: "",
     montantRenouvellement: "",
-    montantNouvelleDemande: ""
+    montantNouvelleDemande: "",
+    chronoMax:""
   };
   export let sizeModal: any = "lg";
   export let userUpdateId: any;
@@ -49,7 +50,8 @@
           codeGeneration: profession.codeGeneration,
           montantRenouvellement: profession.montantRenouvellement,
           montantNouvelleDemande: profession.montantNouvelleDemande,
-          userUpdate: userUpdateId
+          userUpdate: userUpdateId,
+          chronoMax: profession.chronoMax
         })
       });
 
@@ -112,12 +114,19 @@
   />
   <div class="space-y-6 p-0">
     <form action="#" use:init>
-      <div class="grid grid-cols-1 mb-2">
+      <div class="grid grid-cols-6 gap-6 mb-2">
         <InputSimple
           fieldName="libelle"
           label="Libelle"
           bind:field={profession.libelle}
           placeholder="entrez le libelle"
+          class="w-full"
+        ></InputSimple>
+        <InputSimple
+          fieldName="chronoMax"
+          label="Chrono max"
+          bind:field={profession.chronoMax}
+          placeholder="entrez le chrono max"
           class="w-full"
         ></InputSimple>
       </div>

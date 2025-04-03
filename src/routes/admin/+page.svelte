@@ -32,7 +32,7 @@
       const [statsRes, proRes, etabRes] = await Promise.all([
         apiFetch(true, "/statistique/info-dashboard"),
         apiFetch(true, "/professionnel/"),
-        apiFetch(true, "/etablissement/")
+        apiFetch(true, "/professionnel/")
       ]);
 
       if (statsRes) main_data = statsRes.data;

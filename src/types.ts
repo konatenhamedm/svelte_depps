@@ -218,6 +218,20 @@ export interface Permission {
   libelle: string;
   code: string;
 }
+export interface CodeGenerateur {
+  id: number;
+  civilite:{
+    id: number;
+    libelle: string;
+  },
+  profession:{
+    id: number;
+    libelle: string;
+  }
+  dateNaissance: string,
+  dateCreation: string,
+  code:string
+}
 export interface District {
   id: number;
   libelle: string;
@@ -241,6 +255,8 @@ export interface Profession {
   montantRenouvellement: string;
   montantNouvelleDemande: string;
   codeGeneration: string;
+  chronoMax: string;
+  maxCode: string;
 }
 export interface Doc {
   id: number;

@@ -14,6 +14,7 @@
   let montantNouvelleDemande: string = "";
   let codeGeneration: string = "";
   let montantRenouvellement: string = "";
+  let chronoMax: string = "";
   let typeProfessions: any = [];
 
 
@@ -24,6 +25,7 @@
     typeProfession = data.typeProfession.id || "";
     montantRenouvellement = data.montantRenouvellement || "";
     montantNouvelleDemande = data.montantNouvelleDemande || "";
+    chronoMax = data.chronoMax || "";
   }
 
   async function getTypeProfession() {
@@ -59,14 +61,23 @@
     <form action="#" use:init>
       <div class="grid grid-cols-1 mb-2">
         <div class="grid grid-cols-1">
-          <InputSimple disabled
-            fieldName="libelle"
-            label="Libelle"
-            bind:field={libelle}
-            placeholder="entrez le libelle"
-            class="w-full"
-          ></InputSimple>
-        </div>
+          <div class="grid grid-cols-6 gap-6 mb-2">
+            <InputSimple disabled
+              fieldName="libelle"
+              label="Libelle"
+              bind:field={libelle}
+              placeholder="entrez le libelle"
+              class="w-full"
+            ></InputSimple>
+            <InputSimple disabled
+              fieldName="chronoMax"
+              label="Chrono max"
+              bind:field={chronoMax}
+              placeholder="entrez le chrono max"
+              class="w-full"
+            ></InputSimple>
+          </div>
+  
 
         <div class="grid grid-cols-6 gap-6 mb-2">
           <InputSelect disabled

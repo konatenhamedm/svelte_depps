@@ -7,19 +7,19 @@
     TableBodyCell,
     TableBodyRow,
     TableHead,
-    TableHeadCell
+    TableHeadCell,
   } from "flowbite-svelte";
   import {
     EditOutline,
     EyeOutline,
-    TrashBinSolid
+    TrashBinSolid,
   } from "flowbite-svelte-icons";
   import Entete from "../../../components/_includes/Entete.svelte";
   import MessageError from "../../../components/MessageError.svelte";
   import Pagination from "../../../components/_includes/Pagination.svelte";
   // Importer le store pageSize
   import { get } from "svelte/store";
-  import type { Permission, Profession, User } from "../../../types";
+  import type { CodeGenerateur, Permission, User } from "../../../types";
   import { apiFetch } from "$lib/api";
   import { pageSize } from "../../../store"; // Importer le store pageSize
   import { onMount } from "svelte";
@@ -30,7 +30,10 @@
   import { getAuthCookie } from "$lib/auth";
   import DropdownMenu from "$components/DropdownMenu.svelte";
 
-  let main_data: Profession[] = [];
+  export let data; // Les données retournées par `load()`
+  let user = data.user;
+
+  let main_data: CodeGenerateur[] = [];
   let searchQuery = ""; // Pour la recherche par texte
   let selectedService: any = ""; // Pour filtrer par service
   let selectedStatus: any = ""; // Pour filtrer par status
@@ -44,21 +47,17 @@
   let openShow: boolean = false;
   let current_data: any = {};
 
-  export let data; // Les données retournées par `load()`
-  let user = data.user;
-
   async function fetchData() {
     loading = true; // Active le spinner de chargement
     try {
-      const res = await apiFetch(true, "/profession/");
-
+      const res = await apiFetch(true, "/codeGenerateur");
+      console.log(res);
       if (res) {
-        main_data = res.data as Profession[];
-        loading = false; // Active le spinner de chargement
+        main_data = res.data as CodeGenerateur[];
       } else {
         console.error(
           "Erreur lors de la récupération des données:",
-          res.statusText
+          res.statusText,
         );
       }
     } catch (error) {
@@ -73,10 +72,7 @@
   });
 
   $: filteredData = main_data.filter((item) => {
-    return (
-      item.code.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      item.libelle.toLowerCase().includes(searchQuery.toLowerCase())
-    );
+    return item.code.toLowerCase().includes(searchQuery.toLowerCase());
   });
 
   // $: totalPages = Math.ceil(filteredData.length / get(pageSize)) pageSize se trouve store.ts;
@@ -87,7 +83,7 @@
     filteredData.length > 0
       ? filteredData.slice(
           (currentPage - 1) * get(pageSize),
-          currentPage * get(pageSize)
+          currentPage * get(pageSize),
         )
       : [];
 
@@ -108,14 +104,13 @@
 
   // Fonction pour rafraîchir les données après certaines actions
   async function refreshDataIfNeeded() {
-    fetchData();
+    await fetchData();
   }
 
   // Rafraîchir les données après fermeture des modales
   $: if (!openAdd || !openEdit || !openDelete) {
     refreshDataIfNeeded();
   }
-  // Fonction de callback pour gérer les actions
   const handleAction = (action: any, item: any) => {
     current_data = item;
     if (action === "view") {
@@ -126,28 +121,38 @@
       openDelete = true;
     }
   };
+
+  function formatDateForInput(dateString: string) {
+    if (!dateString) return "";
+    try {
+      const date = new Date(dateString);
+      return date.toISOString().split("T")[0];
+    } catch (e) {
+      console.error("Erreur de formatage de date:", e);
+      return "";
+    }
+  }
+
 </script>
 
 <Entete
-  libelle="Gestion des professions"
+  libelle="Gestion des codes "
   parent="Parametres"
-  descr="Liste des professions"
+  descr="Liste des codes"
 />
 <section class="content">
   <div class="row">
     <div class="col-12">
       <div class="box">
         <div class="box-header with-border flex justify-between items-center">
-          <h4 class="box-title text-xl font-medium">
-            Liste des  professions
-          </h4>
+          <h4 class="box-title text-xl font-medium">Liste des codes</h4>
 
           <div>
             <a
               class="py-[5px] px-3 waves-effect waves-light btn btn-info mb-5"
               on:click={() => ((current_data = {}), (openAdd = true))}
             >
-              + Nouvelle profession
+              + Nouvelle
             </a>
           </div>
         </div>
@@ -168,7 +173,7 @@
               <TableHead
                 class="border-y border-gray-200 bg-gray-100 dark:border-gray-700"
               >
-                {#each ["code", "libelle","Montant renouvellement","Montant nouvelle demande","code generation","Chrono max", "Action"] as title}
+                {#each ["Date création","code","Civilite","Profession","Date naissance"] as title}
                   <TableHeadCell class="ps-4 font-normal border border-gray-300"
                     >{title}</TableHeadCell
                   >
@@ -217,30 +222,27 @@
                   {#each paginatedProducts as item}
                     <TableBodyRow class="text-base border border-gray-300">
                       <TableBodyCell class="p-4 border border-gray-300"
+                        >{formatDateForInput(item.dateCreation)}</TableBodyCell
+                      >
+                      <TableBodyCell class="p-4 border border-gray-300"
                         >{item.code}</TableBodyCell
                       >
                       <TableBodyCell class="p-4 border border-gray-300"
-                        >{item.libelle}</TableBodyCell
+                        >{item.civilite.libelle}</TableBodyCell
                       >
                       <TableBodyCell class="p-4 border border-gray-300"
-                        >{item.montantRenouvellement}</TableBodyCell
+                        >{item.profession.libelle}</TableBodyCell
                       >
                       <TableBodyCell class="p-4 border border-gray-300"
-                        >{item.montantNouvelleDemande}</TableBodyCell
-                      >
-                      <TableBodyCell class="p-4 border border-gray-300"
-                        >{item.codeGeneration}</TableBodyCell
-                      >
-                      <TableBodyCell class="p-4 border border-gray-300"
-                        >{item.chronoMax}</TableBodyCell
+                        >{formatDateForInput(item.dateNaissance)}</TableBodyCell
                       >
 
                       <!--  <TableBodyCell class="p-4 border border-gray-300">{item.sous_menu.libelle}</TableBodyCell>
                                    -->
 
-                      <TableBodyCell class="p-2 w-8 border border-gray-300">
+                  <!--     <TableBodyCell class="p-2 w-8 border border-gray-300">
                         <DropdownMenu {item} onAction={handleAction} />
-                      </TableBodyCell>
+                      </TableBodyCell> -->
                     </TableBodyRow>
                   {/each}
                 {/if}
@@ -282,17 +284,19 @@
 </section>
 
 <!-- Modales -->
-<Add
-  bind:open={openAdd}
-  data={current_data}
-  sizeModal="xl"
-  userUpdateId={user?.id}
-/>
+ {#if openAdd == true}
+ <Add
+   bind:open={openAdd}
+   data={current_data}
+   sizeModal="md"
+   userUpdateId={user.id}
+ />
+ {/if}
 <Edit
   bind:open={openEdit}
   data={current_data}
   sizeModal="xl"
-  userUpdateId={user?.id}
+  userUpdateId={user.id}
 />
 <Show bind:open={openShow} data={current_data} sizeModal="xl" />
 <Delete bind:open={openDelete} data={current_data} />

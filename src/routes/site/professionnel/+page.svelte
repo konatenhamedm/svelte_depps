@@ -48,6 +48,10 @@
     formData.email && !validateEmail(formData.email)
       ? "Veuillez entrer un email valide"
       : "";
+  $: codeExisteError =
+    formData.code 
+      ? "Ce code de vérification existe deja"
+      : "";
   $: emailProError =
     formData.emailPro && !validateEmail(formData.emailPro)
       ? "Veuillez entrer un email valide"
@@ -245,7 +249,7 @@
 
       // Vérifie si toutes les valeurs dans errors sont vides (""), donc aucune erreur
       valid =
-        Object.values(errors).every((error) => error === "") && !emailProError;
+        Object.values(errors).every((error) => error === "") && !emailProError && !codeExisteError ;
     }
 
     if (step === 4) {
@@ -660,6 +664,25 @@
       return false;
     }
   }
+  let codeVericationStatus = false;
+  async function checkCodeVerification(code: any) {
+    if (!code) return false;
+
+    try {
+      const res = await fetch(
+        `https://depps.leadagro.net/api/professionnel/existe/code/${code}`
+      );
+      const data = await res.json();
+       return data.data;
+      return data.data; // Assurez-vous que l'API renvoie un objet avec une clé `valid`
+    } catch (error) {
+      console.error(
+        "Erreur lors de la vérification de la transaction :",
+        error
+      );
+      return false;
+    }
+  }
 
   async function checkEmail(email: any) {
     if (!email) return false;
@@ -679,14 +702,21 @@
     }
   }
   let emailCheck = false;
-  $: if (formData.profession) {
-    console.log("PALMERYYYYYY", formData.profession);
-
+  $: if(formData.profession) {
+  
     checkPaiementStatus(formData.profession).then((resultat) => {
      // paiementStatus = resultat.data;
 
-      console.log("PALMERYYYYuuuuu", paiementStatus);
-      console.log("AUTRE", isPaiementDone);
+    });
+  }
+  $: if(formData.code) {
+    
+    checkCodeVerification(formData.code).then((resultat) => {
+       codeVericationStatus = resultat;
+
+      if (codeVericationStatus == true) {
+        codeExisteError = "Cet code de vérification existe deja";
+      }
     });
   }
 
@@ -788,7 +818,7 @@
   }
 
   onMount(async () => {
-    fetchData();
+   await fetchData();
     getAllProfessions();
     await loadData();
   });
@@ -1297,7 +1327,7 @@
                   label="Code de vérification (Unique pour les ancien membres)"
                   bind:value={formData.code}
                   placeholder="Entrez votre code de vérification"
-                  error={errors.code}
+                  error={codeExisteError}
                   onInput={saveFormState}
                   step={3}
                 />

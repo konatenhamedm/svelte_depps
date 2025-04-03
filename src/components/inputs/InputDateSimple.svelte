@@ -10,7 +10,7 @@ export let disabled: boolean = false;
 
 
 <Label class="col-span-6 space-y-1 sm:col-span-3">
-    <span>{label}</span>
+    <span class="text-black">{label}</span>
 
     <input type="date"  name={fieldName}   disabled={disabled}  class="select2 w-full  bg-gray-50 border border-gray-300
  text-gray-900 text-sm rounded focus:ring-blue-500 focus:border-blue-500 block" placeholder="{placeholder}"
