@@ -521,9 +521,26 @@ export interface professionnel {
     lieuExercicePro?: string; // Note: vous aviez "lieuExercicePro" dans votre code
     datePremierDiplome?: string;
     situationPro?: {
+      id:number,
       libelle: string;
     };
     situation?: string;
+    region?:{
+      id:number,
+      libelle: string;
+    }
+    district?:{
+      id:number,
+      libelle: string;
+    }
+    ville?:{
+      id:number,
+      libelle: string;
+    }
+    commune?:{
+      id:number,
+      libelle: string;
+    }
 
     photo: {
       path: string;

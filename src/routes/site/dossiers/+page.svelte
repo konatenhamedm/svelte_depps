@@ -220,7 +220,7 @@
           professionnel: apiData.personne.professionnel || "",
           region: apiData.personne.region ? apiData.personne.region.id : "",
           poleSanitaire: apiData.personne.poleSanitaire ? apiData.personne.poleSanitaire : "", 
-        district: apiData.personne.district ? apiData.personne.district.id : "",
+          district: apiData.personne.district ? apiData.personne.district.id : "",
           commune: apiData.personne.commune ? apiData.personne.commune.id : "",
           ville: apiData.personne.ville ? apiData.personne.ville.id : "",
           quartier: apiData.personne.quartier ? apiData.personne.quartier : "",
