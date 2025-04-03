@@ -194,6 +194,17 @@
       Tableau de bord
     </button>
     <span>/</span>
+    <button
+    on:click={()=>{
+       goto("/site/forum")
+    }}
+    class="flex items-center hover:text-blue-black"
+  >
+    <!-- Icône SVG pour "Tableau de bord" -->
+   
+   Liste des articles
+  </button>
+    <span>/</span>
     <span class="text-gray-800">Détails du forum</span>
   </div>
   <!-- Nom de la page actuelle -->

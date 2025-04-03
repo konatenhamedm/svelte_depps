@@ -147,12 +147,12 @@ function goToPage(page: any) {
     <span class="text-gray-800">Suivi documents</span>
   </div>
   <!-- Nom de la page actuelle -->
-</div>
+</div><br /><br /><br /><br /><br /><br />
 
 <main style="background-color: #fff" class="pb-20">
   <style>
     .entete {
-      width: 70% !important;
+      width: 80% !important;
     }
     .tablo:not(:last-child) {
       margin-bottom: 35px;
@@ -172,7 +172,7 @@ function goToPage(page: any) {
       margin-top: 15px !important;
     }
     .iletisim-form-alani {
-      padding: 20rem 226px 10rem !important;
+      padding: 20rem 157px 10rem !important;
 
       background-color: #fff;
     }
@@ -240,7 +240,7 @@ function goToPage(page: any) {
     crossorigin="anonymous"
     referrerpolicy="no-referrer"
   />
-  <section class="hakkimizda-bolumu-anasayfa1" style="padding-top:120px">
+  <section class="hakkimizda-bolumu-anasayfa1 iletisim-form-alani" style="padding-top:120px">
     <div class="container">
       <div class="masqueur à effet de révélation d'image de projet wow">
         {#if paginatedpaiementData.length > 0}
@@ -325,6 +325,7 @@ function goToPage(page: any) {
         </div>
         
         {/if}
+        <br /><br /><br /><br /><br /><br /> <br /><br /><br /><br /><br /><br /> <br /><br /><br /><br /><br /><br /> <br /><br /><br /><br /><br /><br /> <br /><br /><br /><br /><br /><br />
         </div>
       </div>
     

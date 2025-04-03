@@ -184,13 +184,13 @@ let isModalOpen = false;
     <span class="text-gray-800">Liste des docuements</span>
     </div>
     <!-- Nom de la page actuelle -->
-  </div>
+  </div><br><br><br><br><br><br>
 
 
 <main style="background-color: #fff" class="pb-20">
   <style>
       .entete {
-    width: 70% !important;
+    width: 80% !important;
   }
     .tablo:not(:last-child) {
       margin-bottom: 35px;
@@ -210,7 +210,7 @@ let isModalOpen = false;
       margin-top: 15px !important;
     }
     .iletisim-form-alani {
-      padding: 20rem 226px 10rem !important;
+      padding: 20rem 157px 10rem !important;
 
       background-color: #fff;
     }
@@ -263,6 +263,8 @@ let isModalOpen = false;
     .pagination-controls span {
       margin: 0 10px;
     }
+
+   
    
   </style>
   <link
@@ -278,7 +280,7 @@ let isModalOpen = false;
     crossorigin="anonymous"
     referrerpolicy="no-referrer"
   />
-  <section class="hakkimizda-bolumu-anasayfa1" style="padding-top:120px">
+  <section class="hakkimizda-bolumu-anasayfa1 iletisim-form-alani" style="padding-top:120px">
     <div class="container">
       <div class="masqueur à effet de révélation d'image de projet wow">
        <br />
@@ -374,6 +376,7 @@ let isModalOpen = false;
         </div>
         
         {/if}
+        <br><br><br><br><br><br>
       </div>
     </div>
   </section>
