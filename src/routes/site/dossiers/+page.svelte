@@ -24,7 +24,7 @@
   code: "",
     nom: "",
     prenoms: "",
-    nationalite: "",
+     nationalite: "",
     civilite: "",
     emailAutre: "",
     numero: "",
@@ -37,9 +37,10 @@
     dateDiplome: "",
     lieuDiplome: "",
     datePremierDiplome: "",
-    poleSanitairePro: "",
     diplome: "",
     situationPro: "",
+    
+    professionnel: "",
 
     poleSanitaire: "",
     region: "",
@@ -47,10 +48,9 @@
     ville: "",
     commune: "",
     quartier: "",
-    professionnel: "",
     lieuExercicePro: "",
-    //media informations
-
+   /* //media informations
+*/
     photo: "",
     cni: "",
     casier: "",
@@ -61,7 +61,7 @@
     // organization informations
 
     appartenirOrganisation: "non",
-    organisationNom: "",
+    organisationNom: "", 
    
   };
   let errors = {
@@ -83,7 +83,6 @@
     dateDiplome: "",
     lieuDiplome: "",
     datePremierDiplome: "",
-    poleSanitairePro: "",
     diplome: "",
     situationPro: "",
 
@@ -199,47 +198,52 @@
       if (response.data) {
         const apiData = response.data;
         console.log("content api data", apiData);
-
+    
         formData = {
 
-          code: apiData.code ? apiData.code : "",
-         region: apiData.region ? apiData.region.id : "",
-          district: apiData.district ? apiData.district.id : "",
-          commune: apiData.commune ? apiData.commune.id : "",
-          ville: apiData.ville ? apiData.ville.id : "",
-          quartier: apiData.quartier ? apiData.quartier : "",
-          poleSanitaire: apiData.poleSanitaire ? apiData.poleSanitaire : "",
-          nom: apiData.nom || "",
-          prenoms: apiData.prenoms || "",
-          professionnel: apiData.professionnel || "",
-          lieuExercicePro: apiData.lieuExercicePro || "",
-          emailAutre: apiData.email || "",
-          civilite: apiData.civilite ? apiData.civilite.id : "",
-          nationalite: apiData.nationate ? apiData.nationate.id : "",
-          dateNaissance: formatDateForInput(apiData.dateNaissance),
-          numero: apiData.number || "",
-          diplome: apiData.diplome || "",
-          dateDiplome: formatDateForInput(apiData.dateDiplome),
-          lieuDiplome: apiData.lieuDiplome || "",
-          situation: apiData.situation || "",
-          profession: apiData.profession || "",
-          situationPro: apiData.situationPro.id || "",
-          emailPro: apiData.emailPro || "",
-          poleSanitairePro: apiData.poleSanitairePro || "",
-          datePremierDiplome: formatDateForInput(apiData.datePremierDiplome),
-          photo: apiData.photo || "",
-          cni: apiData.cni || "",
-          casier: apiData.casier || "",
-          diplomeFile: apiData.diplomeFile || "",
-          certificat: apiData.certificat || "",
-          cv: apiData.cv || "",
-          // Organisation
-         appartenirOrganisation: apiData.appartenirOrganisation,
-          organisationNom: apiData.appartenirOrganisation == "oui" ? apiData.organisationNom|| "" : "",
+          code: apiData.personne.code ? apiData.personne.code : "",
+          nom: apiData.personne.nom || "",
+          prenoms: apiData.personne.prenoms || "",
+          nationalite: apiData.personne.nationate ? apiData.personne.nationate.id : "",
+          civilite: apiData.personne.civilite ? apiData.personne.civilite.id : "",
+          emailAutre: apiData.personne.email || "",
+          numero: apiData.personne.number || "",
+          dateNaissance: formatDateForInput(apiData.personne.dateNaissance),
+          situation: apiData.personne.situation || "",
+          profession: apiData.personne.profession || "",
+          emailPro: apiData.personne.emailPro || "",
+          dateDiplome: formatDateForInput(apiData.personne.dateDiplome),
+          lieuDiplome: apiData.personne.lieuDiplome || "",
+          datePremierDiplome: formatDateForInput(apiData.personne.datePremierDiplome),
+          diplome: apiData.personne.diplome || "",
+          situationPro: apiData.personne.situationPro ? apiData.personne.situationPro.id : "",
+          professionnel: apiData.personne.professionnel || "",
+          region: apiData.personne.region ? apiData.personne.region.id : "",
+          poleSanitaire: apiData.personne.poleSanitaire ? apiData.personne.poleSanitaire : "", 
+        district: apiData.personne.district ? apiData.personne.district.id : "",
+          commune: apiData.personne.commune ? apiData.personne.commune.id : "",
+          ville: apiData.personne.ville ? apiData.personne.ville.id : "",
+          quartier: apiData.personne.quartier ? apiData.personne.quartier : "",
+          lieuExercicePro: apiData.personne.lieuExercicePro || "",
+
          
+         
+          /*  poleSanitairePro: apiData.personne.poleSanitairePro || "",*/
+          photo: apiData.personne.photo || "",
+          cni: apiData.personne.cni || "",
+          casier: apiData.personne.casier || "",
+          diplomeFile: apiData.personne.diplomeFile || "",
+          certificat: apiData.personne.certificat || "",
+          cv: apiData.personne.cv || "",
+          // Organisation
+         appartenirOrganisation: apiData.personne.appartenirOrganisation,
+          organisationNom: apiData.personne.appartenirOrganisation == "oui" ? apiData.personne.organisationNom|| "" : "", 
+         
+
+
         };
         
-        await getProfessionLibelle(apiData.profession);
+        await getProfessionLibelle(apiData.personne.profession.code);
       } else {
         console.error("Erreur API", response.status);
       }
@@ -313,9 +317,11 @@
   }); */
   onMount(async () => {
     isLoading = true;
-    fetchData();
+   await fetchData();
     await loadReferenceData();
     await getUserInfos();
+
+    console.log("YEEEE",formData)
     
     await loadData();
     isLoading = false;
@@ -436,9 +442,10 @@
     );
     if (selectedRegion) {
       // Charger les districts de la région sélectionnée
-      formData.district = "";
-      formData.ville = "";
-      formData.commune = "";
+      formData.district ? formData.district : "";
+      formData.ville ? formData.ville : "";
+      formData.commune ? formData.commune : "";
+    
       values.district = await fetchDataChange(`/district/${formData.region}`);
       values.ville = [];
       values.commune = [];
@@ -452,8 +459,8 @@
     );
     if (selectedDistrict) {
       // Charger les villes du district sélectionné
-      formData.ville = "";
-      formData.commune = "";
+      formData.ville ? formData.ville : "";
+      formData.commune ? formData.commune : "";
       values.ville = await fetchDataChange(`/ville/${formData.district}`);
       values.commune = [];
     }
@@ -466,7 +473,8 @@
     );
     if (selectedVille) {
       // Charger les communes de la ville sélectionnée
-      formData.commune = "";
+      
+      formData.commune ? formData.commune : "";
       values.commune = await fetchDataChange(`/commune/${formData.ville}`);
     }
   }
@@ -663,6 +671,8 @@
                 step={2}
               />
 
+          
+
               <SelectInput
                 label="Situation matrimoniale"
                 bind:value={formData.situation}
@@ -748,7 +758,7 @@
               />
 
               <!-- Situation Professionnelle (Select) -->
-              <SelectInput
+            <!--   <SelectInput
                 label="Situation professionnelle"
                 bind:value={formData.situationPro}
                 options={values.situationProfessionnelle.map((c) => ({
@@ -759,7 +769,25 @@
                 error={errors.situationPro}
                 onInput={saveFormState}
                 step={3}
-              />
+              /> -->
+
+              <div class="form__group">
+                <label class="block text-2xl font-medium mb-1">Situation professionnelle *</label>
+                <select
+                bind:value={formData.situationPro}
+                  class="w-full form__input"
+                  on:change={saveFormState}
+                  on:change={updateDistricts} on:change={saveFormState}
+                >
+                <option value="" selected={!formData.situation}>Sélectionnez votre Région</option>
+                {#each values.situationProfessionnelle as situation}
+                  <option value={situation.id} selected={situation.id === +formData.situationPro}>{situation.libelle}</option>
+                {/each}
+                </select>
+                {#if errors.situationPro}
+                  <p class="text-red-500 text-sm">{errors.situationPro}</p>
+                {/if}
+              </div>
 
               <!-- Région (Select) -->
             
@@ -769,7 +797,7 @@
                 bind:value={formData.region}
                   class="w-full form__input"
                   on:change={saveFormState}
-                  on:change={updateDistricts} on:change={saveFormState}
+                  on:change={updateDistricts}
                 >
                 <option value="" selected={!formData.region}>Sélectionnez votre Région</option>
                 {#each values.region as region}
@@ -789,9 +817,9 @@
                   bind:value={formData.district}
                 on:change={updateVilles} on:change={saveFormState}
                 >
-                <option value="" selected={!formData.district}>Sélectionnez votre district</option>
+                <option value="" selected={formData.district == ""}>Sélectionnez votre district</option>
                 {#each values.district as district}
-                  <option value={district.id} selected={district.id === +formData.district}>{district.libelle}</option>
+                  <option value={district.id} selected={district.id === 1}>{district.libelle}</option>
                 {/each}
                 </select>
                 {#if errors.district}
@@ -900,9 +928,8 @@
                         <a   on:click={() =>
                           openModal(
                             BASE_URL_API_UPLOAD +
-                              formData[field].path +
-                              "/" +
-                              formData[field].alt
+                              formData[field].url 
+                              
                           )}
                           href="javascript:void(0)"
                           download="document"

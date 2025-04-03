@@ -34,7 +34,7 @@
     <!-- Option vide par défaut -->
     <option value="" disabled selected={value === ""}>{placeholder}</option>
     {#each options as option}
-      <option value={option.id} selected={value === option.id}>{option.libelle}</option>
+      <option value={option.id}   selected={value === option.id}>{option.libelle}</option>
     {/each}
   </select>
   {#if error}
