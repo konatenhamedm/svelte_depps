@@ -32,6 +32,7 @@
   import DropdownMenuShow from "$components/DropdownMenuShow.svelte";
   import DropdownMenu from "$components/DropdownMenu.svelte";
   import DropdownOnlyShow from "$components/DropdownOnlyShow.svelte";
+  import Pdf from "$components/pdf/Pdf.svelte";
 
   export let data; // Les données retournées par `load()`
   let user = data.user;
@@ -165,6 +166,12 @@
           <h4 class="box-title text-xl font-medium">
             Liste des historiques de paiement
           </h4>
+          <Pdf
+                  title="Historique_Paiements"
+                  headers={["Reference", "Type", "Email", "Etat", "Montant", "Date"]}
+                  data={main_data}
+                  type="paiement"
+          />
         </div>
         <!-- /.box-header -->
         <div class="box-body">

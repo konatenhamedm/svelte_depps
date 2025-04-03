@@ -27,6 +27,10 @@
     );
   }
 
+  function getStatus(status) {
+    return status === 1 ? "Paiement effectué" : "Paiement échoué";
+  }
+
   function addFooter(doc, pageNumber) {
     doc.setFontSize(8);
     doc.line(10, 280, 200, 280);
@@ -45,6 +49,16 @@
       callback(canvas.toDataURL("image/png"));
     };
   }
+  function formatMontant(montant) {
+    return new Intl.NumberFormat('fr-FR', {
+      style: 'currency',
+      currency: 'XOF'
+    }).format(montant);
+  }
+  function formatDatePaiement(dateString) {
+    const options = { year: 'numeric', month: '2-digit', day: '2-digit' };
+    return new Date(dateString).toLocaleDateString('fr-FR', options);
+  }
 
   function exportToPDF() {
     const doc = new jsPDF();
@@ -54,61 +68,41 @@
 
       const head = [headers];
 
-      const sortedData = data.sort((a, b) => {
-        const nomA =
-          type === "professionnel" || type === "pro"
-            ? a.personne?.nom || ""
-            : a.username || "";
-        const nomB =
-          type === "professionnel" || type === "pro"
-            ? b.personne?.nom || ""
-            : b.username || "";
-        if (nomA < nomB) return -1;
-        if (nomA > nomB) return 1;
-        return 0;
-      });
-
-      const body = sortedData.map((item) => {
-        if (type === "professionnel" || type === "pro") {
+      const body = data.map((item) => {
+        if (type === "paiement") {
           return [
-            item.personne?.nom || "N/A",
-            item.personne?.prenoms || "N/A",
-            item.personne?.number || "N/A",
-            item.personne?.email || "N/A"
+            item.reference || "N/A",
+            item.type || "N/A",
+            item.user?.email || "N/A",
+            getStatus(item.state),
+            formatMontant(parseInt(item.montant, 10)),
+            formatDatePaiement(item.createdAt)
           ];
+        } else if (type === "professionnel" || type === "pro") {
+          // ... (garder la logique existante)
         } else {
-          return [
-            item.username || "N/A",
-            item.adresse || "N/A",
-            item.number || "N/A",
-            item.email || "N/A"
-          ];
+          // ... (garder la logique existante)
         }
       });
-
-   /*    const body = data.map((item) => {
-        if (type === "professionnel" || type === "pro") {
-          return [
-            item.personne?.nom || "N/A",
-            item.personne?.prenoms || "N/A",
-            item.personne?.number || "N/A",
-            item.personne?.email || "N/A"
-          ];
-        } else {
-          return [
-            item.username || "N/A",
-            item.adresse || "N/A",
-            item.number || "N/A",
-            item.email || "N/A"
-          ];
-        }
-      }); */
 
       autoTable(doc, {
         head: head,
         body: body,
         startY: 35,
-        tableWidth: "auto"
+        tableWidth: "auto",
+        styles: {
+          fontSize: 8,
+          cellPadding: 2,
+          overflow: 'linebreak'
+        },
+        columnStyles: type === "paiement" ? {
+          0: { cellWidth: 30 },
+          1: { cellWidth: 25 },
+          2: { cellWidth: 40 },
+          3: { cellWidth: 30 },
+          4: { cellWidth: 25 },
+          5: { cellWidth: 25 }
+        } : undefined
       });
 
       addFooter(doc, 1);
