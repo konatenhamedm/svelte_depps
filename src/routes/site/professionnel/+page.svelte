@@ -715,7 +715,7 @@
        codeVericationStatus = resultat;
 
       if (codeVericationStatus == true) {
-        codeExisteError = "Cet code de vérification existe deja";
+        codeExisteError = "Ce code de vérification existe deja";
       }
     });
   }
