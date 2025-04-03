@@ -61,7 +61,7 @@ async function logout() {
     formData.append("newPassword", user_data.newPassword);
 
     if (user_data.avatar instanceof File) {
-      // Vérifie que c'est bien un fichier
+    
       formData.append("avatar", user_data.avatar);
     }
 
@@ -128,32 +128,32 @@ async function logout() {
 <Slide user={user} />
 
 <div class="file-ariane flex items-center space-x-2 text-sm text-gray-600 mb-4">
-  <button on:click={navigateToDashboard} class="flex items-center hover:text-blue-600">
-    <!-- Icône SVG pour "Tableau de bord" -->
-    <svg
-            xmlns="http://www.w3.org/2000/svg"
-            class="w-4 h-4 mr-1"
-            viewBox="0 0 20 20"
-            fill="currentColor"
-    >
-      <path
-              d="M10.707 2.293a1 1 0 00-1.414 0l-7 7a1 1 0 001.414 1.414L4 10.414V17a1 1 0 001 1h2a1 1 0 001-1v-2a1 1 0 011-1h2a1 1 0 011 1v2a1 1 0 001 1h2a1 1 0 001-1v-6.586l.293.293a1 1 0 001.414-1.414l-7-7z"
-      />
-    </svg>
-    Tableau de bord
-  </button>
-  <span>/</span>
-  <span class="text-gray-800">Profil</span> <!-- Nom de la page actuelle -->
-</div><br>
+  <div class="flex items-center hover:text-blue-600 entete">
+    <button on:click={navigateToDashboard} class="flex items-center hover:text-blue-600">
+    
+      <svg
+              xmlns="http://www.w3.org/2000/svg"
+              class="w-4 h-4 mr-1"
+              viewBox="0 0 20 20"
+              fill="currentColor"
+      >
+        <path
+                d="M10.707 2.293a1 1 0 00-1.414 0l-7 7a1 1 0 001.414 1.414L4 10.414V17a1 1 0 001 1h2a1 1 0 001-1v-2a1 1 0 011-1h2a1 1 0 011 1v2a1 1 0 001 1h2a1 1 0 001-1v-6.586l.293.293a1 1 0 001.414-1.414l-7-7z"
+        />
+      </svg>
+      Tableau de bord
+    </button>
+    <span>/</span>
+    <span class="text-gray-800">Profil</span> 
+  </div>
+</div><br><br><br><br><br>
 
 <main style="background-color: #fff" class="pb-20 main-div">
-  <!--İletişim Form Alanı-->
+ 
   <section class="iletisim-form-alani">
       <div class="tablo">
            <div class="tablo--1-ve-2 masqueur à effet de révélation d'image de projet wow">
-              <!--  <h2 class="h2-baslik-anasayfa-ozel h-yazi-margin-kucuk"> Informations & accès </h2> -->
-
-
+            
               <form
               on:submit|preventDefault={confirmUpdate}
                 class="form update_customer"
@@ -282,6 +282,9 @@ async function logout() {
 
 
 <style>
+  .entete {
+    width: 30% !important;
+  }
     .main-div {
     margin-top: 30px;
   /*   margin-bottom: 180px; */
