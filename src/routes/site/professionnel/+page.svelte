@@ -48,10 +48,7 @@
     formData.email && !validateEmail(formData.email)
       ? "Veuillez entrer un email valide"
       : "";
-  $: codeExisteError =
-    formData.code 
-      ? "Ce code de vérification existe deja"
-      : "";
+  
   $: emailProError =
     formData.emailPro && !validateEmail(formData.emailPro)
       ? "Veuillez entrer un email valide"
@@ -709,15 +706,24 @@
 
     });
   }
+  let codeExisteError :string ;
   $: if(formData.code) {
     
     checkCodeVerification(formData.code).then((resultat) => {
        codeVericationStatus = resultat;
 
       if (codeVericationStatus == true) {
-        codeExisteError = "Ce code de vérification existe deja";
+        codeExisteError = "Ce codes de vérification existe deja";
+      }else{
+        codeExisteError = "";
       }
+
+  
+          
+
     });
+  }else{
+    codeExisteError = "";
   }
 
   $: if (formData.email) {
