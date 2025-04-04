@@ -210,7 +210,7 @@
           numero: apiData.personne.number || "",
           dateNaissance: formatDateForInput(apiData.personne.dateNaissance),
           situation: apiData.personne.situation || "",
-          profession: apiData.personne.profession || "",
+          profession: apiData.personne.profession.code || "",
           emailPro: apiData.personne.emailPro || "",
           dateDiplome: formatDateForInput(apiData.personne.dateDiplome),
           lieuDiplome: apiData.personne.lieuDiplome || "",
@@ -243,7 +243,7 @@
 
         };
         
-        await getProfessionLibelle(apiData.personne.profession.code);
+        /* await getProfessionLibelle(apiData.personne.profession.code); */
       } else {
         console.error("Erreur API", response.status);
       }
@@ -288,7 +288,7 @@
   }
 
   
-  async function getProfessionLibelle(code:any) {
+  /* async function getProfessionLibelle(code:any) {
     
     try {
       const res = await fetch(BASE_URL_API + "/profession/get/by/code/" + code);
@@ -298,34 +298,32 @@
         if (data && data.data) {
           console.log("Data récupérée:", data.data);
           formData.profession = data.data;
-         /*  return data.data; */
+        
         } else {
           console.error("Erreur: data.data est undefined", data);
-          /* return null; */
+         
         }
       } else {
         console.error("Erreur HTTP:", res.status, res.statusText);
-        /* return null; */
+      
       }
     } catch (error) {
       console.error("Erreur lors de la récupération des données:", error);
-      /* return null; */
+      
     }
-  }
- /*  onMount(async () => {
-    getAllProfessions();
-  }); */
-  onMount(async () => {
-    isLoading = true;
-   await fetchData();
-    await loadReferenceData();
-    await getUserInfos();
+  } */
+ 
 
-    console.log("YEEEE",formData)
-    
-    await loadData();
-    isLoading = false;
-  });
+  let professions: any[] = [];
+
+  async function getAllProfessions() {
+    await apiFetch(true, "/typeProfession").then((response) => {
+      if (response.code === 200) {
+        professions = response.data;
+      }
+    });
+  }
+
   function navigateToDashboard() {
     goto("/site/dashboard");
   }
@@ -479,6 +477,19 @@
     }
   }
 
+
+  onMount(async () => {
+    isLoading = true;
+   await fetchData();
+    await loadReferenceData();
+    await getUserInfos();
+    await getAllProfessions();
+
+    console.log("YEEEE",formData)
+    
+    await loadData();
+    isLoading = false;
+  });
 </script>
 
 
@@ -693,6 +704,38 @@
           <!-- Step 3: Informations Professionnelles -->
           {#if activeTab === "step3"}
             <div class="bg-white p-6 rounded-lg shadow-sm">
+              <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 gap-6">
+                  {#each professions as professionGP}
+                    <div class="form__group mb-4">
+                      <label class="form_label font-bold block mb-2">
+                        <big>{professionGP.libelle}</big>
+                      </label>
+
+                      {#each professionGP.professions as profession}
+                        <div class="flex items-center space-x-2">
+                          <input
+                            on:change={saveFormState}
+                            type="radio"
+                            class="cursor-pointer"
+                            id={profession.code}
+                            name="rd_profession"
+                            checked={profession.code == formData.profession}
+                            on:change={() =>
+                              (formData.profession = profession.code)}
+                          />
+                          <label for={profession.code} class="cursor-pointer"
+                            >{profession.libelle}</label
+                          >
+                        </div>
+                      {/each}
+                    </div>
+                  {/each}
+                </div>
+                {#if errors.profession}
+                  <p class="text-red-500 text-sm">{errors.profession}</p>
+                {/if}
+             <!--  </div> -->
+            
               <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
                 <TextInput
                 type="text"
