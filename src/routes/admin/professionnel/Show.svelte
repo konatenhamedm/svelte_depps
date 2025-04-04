@@ -118,7 +118,7 @@
     poleSanitairePro = data.personne.poleSanitairePro || "";
     lieuExercicePro = data.personne.lieuExercicePro || "";
     datePremierDiplome = data.personne.datePremierDiplome || "";
-    situationPro = data.personne.situationPro || "";
+    situationPro = data.personne.situationPro.libelle || "";
     situation = data.personne.situation || "";
     typeUser = data?.typeUser || "";
     userEmail = data.email || "";
