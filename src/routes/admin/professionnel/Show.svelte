@@ -108,8 +108,8 @@
     prenoms = data.personne.prenoms || "";
     reason = data.personne.reason || "";
     professionnel = data.personne.professionnel || "";
-    civilite = data.personne.civilite || "";
-    nationalite = data.personne.nationate || "";
+    civilite = data.personne.civilite.libelle || "";
+    nationalite = data.personne.nationate.libelle || "";
     dateNaissance = data.personne.dateNaissance || "";
     dateDiplome = data.personne.dateDiplome || "";
     diplome = data.personne.diplome || "";
