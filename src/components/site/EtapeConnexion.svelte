@@ -23,7 +23,7 @@
   </h2>
   <br /><br />
   
-  <div class="w-full mb-4">
+  <div class="w-full mb-4" style="width:100%">
     <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
       <!-- Email -->
       <div class="flex flex-col form__group">
