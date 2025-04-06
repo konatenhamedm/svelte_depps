@@ -11,7 +11,7 @@
     Genre,
     Pays,
     Specialite,
-    Ville
+    Ville,
   } from "../../../types.js";
   import { getProfessions } from "$lib/constants";
   import Spinner from "$components/_skeletons/Spinner.svelte";
@@ -20,6 +20,14 @@
   import { P } from "flowbite-svelte";
   import TextInput from "$components/site/TextInput.svelte";
   import SelectInput from "$components/site/SelectInput.svelte";
+  import TextInputCode from "$components/site/TextInputCode.svelte";
+  import FormButtons from "$components/site/FormButtons.svelte";
+  import InscriptionEtapeFinale from "$components/site/InscriptionEtapeFinale.svelte";
+  import EtapeOrganisation from "$components/site/EtapeOrganisation.svelte";
+  import EtapeMedia from "$components/site/EtapeMedia.svelte";
+  import EtapeProfessionnelle from "$components/site/EtapeProfessionnelle.svelte";
+  import Step2Form from "$components/site/Step2Form.svelte";
+  import EtapeConnexion from "$components/site/EtapeConnexion.svelte";
 
   export let data;
   let user = data?.user;
@@ -48,7 +56,7 @@
     formData.email && !validateEmail(formData.email)
       ? "Veuillez entrer un email valide"
       : "";
-  
+
   $: emailProError =
     formData.emailPro && !validateEmail(formData.emailPro)
       ? "Veuillez entrer un email valide"
@@ -64,7 +72,6 @@
     email: "",
     password: "",
     confirmPassword: "",
-
     // Personal Informations
     code: "",
     nom: "",
@@ -106,7 +113,7 @@
     // organization informations
 
     appartenirOrganisation: "non",
-    organisationNom: ""
+    organisationNom: "",
   };
 
   let errors = {
@@ -159,7 +166,7 @@
     appartenirOrganisation: "",
     organisationNom: "",
     organisationNumero: "",
-    organisationAnnee: ""
+    organisationAnnee: "",
 
     // Paiement informations
   };
@@ -246,7 +253,9 @@
 
       // Vérifie si toutes les valeurs dans errors sont vides (""), donc aucune erreur
       valid =
-        Object.values(errors).every((error) => error === "") && !emailProError && !codeExisteError ;
+        Object.values(errors).every((error) => error === "") &&
+        !emailProError &&
+        !codeExisteError;
     }
 
     if (step === 4) {
@@ -307,12 +316,12 @@
     reader.onload = () => {
       selectedFiles = {
         ...selectedFiles,
-        [fieldName]: { name: file.name, data: reader.result }
+        [fieldName]: { name: file.name, data: reader.result },
       };
 
       fileNames = {
         ...fileNames,
-        [fieldName]: { name: file.name, url: reader.result }
+        [fieldName]: { name: file.name, url: reader.result },
       };
 
       // 🔥 Mettre à jour `formData` immédiatement
@@ -321,22 +330,15 @@
       // 🔥 Stocker dans le localStorage
       localStorage.setItem("selectedFiles", JSON.stringify(selectedFiles));
 
-      console.log("Mise à jour réussie:", formData);
     };
   }
-
-  // Réaction automatique quand formData change
 
   function handleFileChange(event: any, fieldName: string) {
     const file = event.target.files[0] || null;
     updateFormData(fieldName, file);
 
-    console.log("Fichier sélectionné pour", fieldName, ":", file);
-    console.log("État actuel de formData:", formData);
   }
 
-  // 🔹 Fonction pour restaurer le formulaire après un retour
-  // Restaurer les données et l'étape depuis localStorage
   function restoreFormState() {
     if (typeof window !== "undefined" && typeof localStorage !== "undefined") {
       const savedFormData = localStorage.getItem("formData");
@@ -354,7 +356,6 @@
     }
   }
 
-  // ✅ Vérifier si on revient après un paiements
   onMount(() => {
     /*  localStorage.clear(); */
     console.log("gggg", formData);
@@ -410,7 +411,7 @@
       formDatas.append("type", "professionnel");
 
       const selectedFilesFromStorage = JSON.parse(
-        localStorage.getItem("selectedFiles")
+        localStorage.getItem("selectedFiles"),
       );
 
       if (selectedFilesFromStorage) {
@@ -435,7 +436,7 @@
             }
 
             const blob = new Blob(byteArrays, {
-              type: "application/octet-stream"
+              type: "application/octet-stream",
             });
             formDatas.append(fieldName, blob, fileData.name);
           }
@@ -446,7 +447,7 @@
 
       fetch("https://depps.leadagro.net/api/paiement/paiement", {
         method: "POST",
-        body: formDatas
+        body: formDatas,
       })
         .then((response) => response.json())
         .then((result) => {
@@ -501,7 +502,7 @@
     formDatas.append("type", "professionnel");
 
     const selectedFilesFromStorage = JSON.parse(
-      localStorage.getItem("selectedFiles")
+      localStorage.getItem("selectedFiles"),
     );
 
     if (selectedFilesFromStorage) {
@@ -522,7 +523,7 @@
           }
 
           const blob = new Blob(byteArrays, {
-            type: "application/octet-stream"
+            type: "application/octet-stream",
           });
           formDatas.append(fieldName, blob, fileData.name);
         }
@@ -533,7 +534,7 @@
 
     fetch("https://depps.leadagro.net/api/paiement/paiement", {
       method: "POST",
-      body: formDatas
+      body: formDatas,
     })
       .then((response) => response.json())
       .then((result) => {
@@ -566,7 +567,7 @@
     formDatas.append("type", "professionnel");
 
     const selectedFilesFromStorage = JSON.parse(
-      localStorage.getItem("selectedFiles")
+      localStorage.getItem("selectedFiles"),
     );
 
     if (selectedFilesFromStorage) {
@@ -587,7 +588,7 @@
           }
 
           const blob = new Blob(byteArrays, {
-            type: "application/octet-stream"
+            type: "application/octet-stream",
           });
           formDatas.append(fieldName, blob, fileData.name);
         }
@@ -596,7 +597,7 @@
 
     fetch(BASE_URL_API + "/professionnel/create", {
       method: "POST",
-      body: formDatas
+      body: formDatas,
     })
       .then((response) => response.json())
       .then((result) => {
@@ -630,7 +631,7 @@
 
     try {
       const res = await fetch(
-        `https://depps.leadagro.net/api/paiement/get/transaction/${idtransaction}`
+        `https://depps.leadagro.net/api/paiement/get/transaction/${idtransaction}`,
       );
       const data = await res.json();
       isPaiementDone = data.data;
@@ -638,7 +639,7 @@
     } catch (error) {
       console.error(
         "Erreur lors de la vérification de la transaction :",
-        error
+        error,
       );
       return false;
     }
@@ -648,7 +649,7 @@
 
     try {
       const res = await fetch(
-        `https://depps.leadagro.net/api/profession/get/status/paiement/${professionCode}`
+        `https://depps.leadagro.net/api/profession/get/status/paiement/${professionCode}`,
       );
       const data = await res.json();
       paiementStatus = data.data;
@@ -656,7 +657,7 @@
     } catch (error) {
       console.error(
         "Erreur lors de la vérification de la transaction :",
-        error
+        error,
       );
       return false;
     }
@@ -667,15 +668,15 @@
 
     try {
       const res = await fetch(
-        `https://depps.leadagro.net/api/professionnel/existe/code/${code}`
+        `https://depps.leadagro.net/api/professionnel/existe/code/${code}`,
       );
       const data = await res.json();
-       return data.data;
+      return data.data;
       return data.data; // Assurez-vous que l'API renvoie un objet avec une clé `valid`
     } catch (error) {
       console.error(
         "Erreur lors de la vérification de la transaction :",
-        error
+        error,
       );
       return false;
     }
@@ -686,43 +687,56 @@
 
     try {
       const res = await fetch(
-        `https://depps.leadagro.net/api/user/check/email/existe/${email}`
+        `https://depps.leadagro.net/api/user/check/email/existe/${email}`,
       );
       const data = await res.json();
       return data.data; // Assurez-vous que l'API renvoie un objet avec une clé `valid`
     } catch (error) {
       console.error(
         "Erreur lors de la vérification de la transaction :",
-        error
+        error,
       );
       return false;
     }
   }
   let emailCheck = false;
-  $: if(formData.profession) {
-  
+  $: if (formData.profession) {
     checkPaiementStatus(formData.profession).then((resultat) => {
-     // paiementStatus = resultat.data;
-
+      // paiementStatus = resultat.data;
     });
   }
-  let codeExisteError :string ;
-  $: if(formData.code) {
-    
+  let codeExisteError: any;
+  $: if (formData.code) {
     checkCodeVerification(formData.code).then((resultat) => {
-       codeVericationStatus = resultat;
+      codeVericationStatus = resultat;
 
-      if (codeVericationStatus == true) {
-        codeExisteError = "Ce codes de vérification existe deja";
-      }else{
+      if (
+        resultat.exsiteInProfessionnel == true &&
+        resultat.exsiteInCodeGenerateur == true
+      ) {
+        codeExisteError =
+          "l'utilisateur de ce code de vérification existe deja";
+      } else if (
+        resultat.exsiteInCodeGenerateur == true &&
+        resultat.exsiteInProfessionnel == false
+      ) {
+        codeExisteError = "";
+      } else if (
+        resultat.exsiteInProfessionnel == false &&
+        resultat.exsiteInCodeGenerateur == false
+      ) {
+        codeExisteError = "Ce code de vérification n'existe pas";
+      } else if (
+        resultat.exsiteInProfessionnel == true &&
+        resultat.exsiteInCodeGenerateur == false
+      ) {
+        codeExisteError =
+          "l'utilisateur de ce code de vérification existe deja";
+      } else {
         codeExisteError = "";
       }
-
-  
-          
-
     });
-  }else{
+  } else {
     codeExisteError = "";
   }
 
@@ -733,8 +747,6 @@
       if (emailCheck == true) {
         emailError = "Cet email existe deja";
       }
-
-      console.log("emailCheck", emailCheck);
     });
   }
 
@@ -759,35 +771,32 @@
     }
   }
 
-  /**
-   * @type {any[]}
-   */
   let objects = [
     { name: "civilite", url: "/civilite" },
-    { name: "region", url: "/region" },
+    /* { name: "region", url: "/region" },
     { name: "ville", url: "/ville" },
     { name: "district", url: "/district" },
-    { name: "commune", url: "/commune" },
+    { name: "commune", url: "/commune" }, */
     { name: "nationate", url: "/pays" },
-    { name: "situationProfessionnelle", url: "/situationProfessionnelle" }
+    { name: "situationProfessionnelle", url: "/situationProfessionnelle" },
   ];
 
   let values: {
     civilite: Civilite[];
-    region: Civilite[];
+   /*  region: Civilite[];
     district: District[];
     ville: Civilite[];
-    commune: Civilite[];
+    commune: Civilite[]; */
     nationate: Pays[];
     situationProfessionnelle: Pays[];
   } = {
     civilite: [],
     nationate: [],
     situationProfessionnelle: [],
-    ville: [],
+    /* ville: [],
     region: [],
     district: [],
-    commune: []
+    commune: [], */
   };
 
   async function fetchData() {
@@ -804,7 +813,7 @@
         } else {
           console.error(
             "Erreur lors de la récupération des données:",
-            res.statusText
+            res.statusText,
           );
         }
       });
@@ -824,18 +833,18 @@
   }
 
   onMount(async () => {
-   await fetchData();
+    await fetchData();
     getAllProfessions();
-    await loadData();
+    //await loadData();
   });
   onMount(() => {
-   /*  localStorage.setItem("reference", ""); */
+    /*  localStorage.setItem("reference", ""); */
     /* localStorage.setItem("reference", "DEPPS250304234714045"); */
     if (localStorage.getItem("reference"))
       console.log("JE VEUX", localStorage.getItem("reference")?.toString());
-  
-    console.log(isPaiementDone)  
-    console.log(paiementStatus)  
+
+    console.log(isPaiementDone);
+    console.log(paiementStatus);
 
     const savedStep = localStorage.getItem("step");
     if (savedStep) {
@@ -899,83 +908,11 @@
     { value: "Célibataire", label: "Célibataire" },
     { value: "Marié(e)", label: "Marié(e)" },
     { value: "Divorcé(e)", label: "Divorcé(e)" },
-    { value: "Veuf (Veuve)", label: "Veuf (Veuve)" }
+    { value: "Veuf (Veuve)", label: "Veuf (Veuve)" },
   ];
 
   // Fonction pour charger les données depuis une API
-  async function fetchDataChange(url: string) {
-    const response = await apiFetch(true, url);
-    if (!response) {
-      console.error("Erreur lors de la récupération des données:", url);
-      return [];
-    }
-    const data = response.data;
-    return data;
-  }
-
-  async function applyFilters() {
-    if (formData.region) {
-      await updateDistricts();
-    }
-    if (formData.district) {
-      await updateVilles();
-    }
-    if (formData.ville) {
-      await updateCommunes();
-    }
-  }
-
-  // Fonction pour charger les données nécessaires lors de l'initialisation
-  async function loadData() {
-    for (let obj of objects) {
-      const data = await fetchDataChange(obj.url);
-      values[obj.name] = data;
-    }
-
-    applyFilters();
-  }
-
-  // Fonction pour mettre à jour les districts en fonction de la région
-  async function updateDistricts() {
-    const selectedRegion = values.region.find(
-      (region) => region.id === +formData.region
-    );
-    if (selectedRegion) {
-      // Charger les districts de la région sélectionnée
-      formData.district = "";
-      formData.ville = "";
-      formData.commune = "";
-      values.district = await fetchDataChange(`/district/${formData.region}`);
-      values.ville = [];
-      values.commune = [];
-    }
-  }
-
-  // Fonction pour mettre à jour les villes en fonction du district
-  async function updateVilles() {
-    const selectedDistrict = values.district.find(
-      (district) => district.id === +formData.district
-    );
-    if (selectedDistrict) {
-      // Charger les villes du district sélectionné
-      formData.ville = "";
-      formData.commune = "";
-      values.ville = await fetchDataChange(`/ville/${formData.district}`);
-      values.commune = [];
-    }
-  }
-
-  // Fonction pour mettre à jour les communes en fonction de la ville
-  async function updateCommunes() {
-    const selectedVille = values.ville.find(
-      (ville) => ville.id === +formData.ville
-    );
-    if (selectedVille) {
-      // Charger les communes de la ville sélectionnée
-      formData.commune = "";
-      values.commune = await fetchDataChange(`/commune/${formData.ville}`);
-    }
-  }
+  
 </script>
 
 <Slide {user} />
@@ -1000,855 +937,157 @@
         >
           <!-- Étape 1 -->
           {#if step === 1}
-            <h2
-              class="text-3xl h2-baslik-anasayfa-ozel font-semibold mb-4 text-center md:text-left"
-            >
-              Informations de rapport (étape 1/6)
-            </h2>
-            <br /><br />
-            <div class="w-full mb-4" style="width:100%">
-              <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                <div class="flex flex-col form__group">
-                  <label class="text-3xl font-medium mb-1">E-mail *</label>
-                  <input
-                    required
-                    on:input={saveFormState}
-                    on:input={(e) => updateField("email", e.target.value)}
-                    type="email"
-                    class="form__input w-full"
-                    style="width:100%"
-                    bind:value={formData.email}
-                    placeholder="E-mail"
-                  />
-                  {#if emailError}
-                    <p class="text-red-500 text-sm">{emailError}</p>
-                  {/if}
-                </div>
-
-                <div class="flex flex-col form__group relative">
-                  <label class="text-3xl font-medium mb-1">Mot de passe *</label
-                  >
-
-                  <div class="flex items-center">
-                    <input
-                      on:input={saveFormState}
-                      on:input={(e) => updateField("password", e.target.value)}
-                      type={showPassword ? "text" : "password"}
-                      class="form__input w-full px-3 pr-10"
-                      style="width:100%"
-                      bind:value={formData.password}
-                      placeholder="Mot de passe"
-                    />
-
-                    <button
-                      type="button"
-                      on:click={() => (showPassword = !showPassword)}
-                      class="absolute right-3 text-black"
-                      style="color:black !important"
-                    >
-                      {#if showPassword}
-                        <svg
-                          xmlns="http://www.w3.org/2000/svg"
-                          width="24"
-                          height="24"
-                          viewBox="0 0 24 24"
-                          fill="none"
-                          stroke="currentColor"
-                          stroke-width="2"
-                          stroke-linecap="round"
-                          stroke-linejoin="round"
-                          class="feather feather-eye-off"
-                          ><path
-                            d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"
-                          ></path><line x1="1" y1="1" x2="23" y2="23"
-                          ></line></svg
-                        >
-                      {:else}
-                        <svg
-                          xmlns="http://www.w3.org/2000/svg"
-                          width="24"
-                          height="24"
-                          viewBox="0 0 24 24"
-                          fill="none"
-                          stroke="currentColor"
-                          stroke-width="2"
-                          stroke-linecap="round"
-                          stroke-linejoin="round"
-                          class="feather feather-eye"
-                          ><path
-                            d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"
-                          ></path><circle cx="12" cy="12" r="3"></circle></svg
-                        >
-                      {/if}
-                    </button>
-                  </div>
-                  {#if errors.password}
-                    <p class="text-red-500 text-sm">{errors.password}</p>
-                  {/if}
-                </div>
-                <div class="flex flex-col form__group relative">
-                  <label class="text-3xl font-medium mb-1"
-                    >Confirmer le mot de passe *</label
-                  >
-                  <div class="flex items-center">
-                    <input
-                      on:input={saveFormState}
-                      on:input={(e) =>
-                        updateField("confirmPassword", e.target.value)}
-                      type={showPasswordConfirm ? "text" : "password"}
-                      class="form__input w-full px-3 pr-10"
-                      style="width:100%"
-                      bind:value={formData.confirmPassword}
-                      placeholder="Mot de passe"
-                    />
-
-                    <button
-                      type="button"
-                      on:click={() =>
-                        (showPasswordConfirm = !showPasswordConfirm)}
-                      class="absolute right-3 text-black"
-                      style="color:black !important"
-                    >
-                      {#if showPasswordConfirm}
-                        <svg
-                          xmlns="http://www.w3.org/2000/svg"
-                          width="24"
-                          height="24"
-                          viewBox="0 0 24 24"
-                          fill="none"
-                          stroke="currentColor"
-                          stroke-width="2"
-                          stroke-linecap="round"
-                          stroke-linejoin="round"
-                          class="feather feather-eye-off"
-                          ><path
-                            d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"
-                          ></path><line x1="1" y1="1" x2="23" y2="23"
-                          ></line></svg
-                        >
-                      {:else}
-                        <svg
-                          xmlns="http://www.w3.org/2000/svg"
-                          width="24"
-                          height="24"
-                          viewBox="0 0 24 24"
-                          fill="none"
-                          stroke="currentColor"
-                          stroke-width="2"
-                          stroke-linecap="round"
-                          stroke-linejoin="round"
-                          class="feather feather-eye"
-                          ><path
-                            d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"
-                          ></path><circle cx="12" cy="12" r="3"></circle></svg
-                        >
-                      {/if}
-                    </button>
-                  </div>
-                  {#if errors.confirmPassword}
-                    <p class="text-red-500 text-sm">{errors.confirmPassword}</p>
-                  {/if}
-                </div>
-              </div>
-            </div>
+            <EtapeConnexion
+              bind:formData
+              {errors}
+              {emailError}
+              {saveFormState}
+              {showPassword}
+              {showPasswordConfirm}
+              togglePassword={() => (showPassword = !showPassword)}
+              toggleConfirmPassword={() =>
+                (showPasswordConfirm = !showPasswordConfirm)}
+            />
           {/if}
 
           <!-- Étape 2 -->
           {#if step === 2}
-            <h2
-              class="text-3xl h2-baslik-anasayfa-ozel font-semibold mb-4 text-center md:text-left"
-            >
-              Informations personnelles (étape 2/6)
-            </h2>
-            <br /><br />
-
-            <div
-              class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-2 gap-4 mb-4"
-            >
-              <TextInput
-                type="text"
-                label="Nom"
-                bind:value={formData.nom}
-                placeholder="Entrez votre nom"
-                error={errors.nom}
-                onInput={saveFormState}
-                step={2}
-              />
-
-              <TextInput
-                type="text"
-                label="Prénoms"
-                bind:value={formData.prenoms}
-                placeholder="Entrez votre prénom"
-                error={errors.prenoms}
-                onInput={saveFormState}
-                step={2}
-              />
-
-              <SelectInput
-                label="Nationnalité"
-                bind:value={formData.nationalite}
-                options={values.nationate.map((c) => ({
-                  id: String(c.id),
-                  libelle: c.libelle
-                }))}
-                placeholder="Veuillez sélectionner une nationnalité"
-                error={errors.nationalite}
-                onInput={saveFormState}
-                step={2}
-              />
-
-              <SelectInput
-                label="Civilité"
-                bind:value={formData.civilite}
-                options={values.civilite.map((c) => ({
-                  id: String(c.id),
-                  libelle: c.libelle
-                }))}
-                placeholder="Veuillez sélectionner une civilité"
-                error={errors.civilite}
-                onInput={saveFormState}
-                step={2}
-              />
-
-              <TextInput
-                type="email"
-                label="Email"
-                bind:value={formData.emailAutre}
-                placeholder="Entrez votre email"
-                error={errors.emailAutre}
-                onInput={saveFormState}
-                step={2}
-              />
-
-              <TextInput
-                type="tel"
-                label="Contact"
-                bind:value={formData.numero}
-                placeholder="07xxxxxxxx"
-                error={errors.numero}
-                onInput={saveFormState}
-                step={2}
-              />
-
-              <TextInput
-                type="date"
-                label="Date de naissance"
-                bind:value={formData.dateNaissance}
-                placeholder="Entrez votre date de naissance"
-                error={errors.dateNaissance}
-                onInput={saveFormState}
-                step={2}
-              />
-
-              <SelectInput
-                label="Situation matrimoniale"
-                bind:value={formData.situation}
-                options={situationsMatrimoniales.map((c) => ({
-                  id: String(c.value),
-                  libelle: c.label
-                }))}
-                placeholder="Veuillez sélectionner une situation matrimoniale"
-                error={errors.situation}
-                onInput={saveFormState}
-                step={2}
-              />
-            </div>
+            <Step2Form
+              {formData}
+              {errors}
+              {values}
+              {situationsMatrimoniales}
+              {saveFormState}
+            />
           {/if}
 
           <!-- Étape 3 -->
           {#if step === 3}
-            <h2
-              class="text-3xl h2-baslik-anasayfa-ozel md:text-2xl font-bold my-4 text-center md:text-left"
-            >
-              Informations professionnelles (étape 3/6)
-            </h2>
-            <br /><br />
-
-            <div class="bg-white p-6 rounded-lg shadow-m mb-4">
-              <div class="mb-4">
-                <div
-                  class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 gap-6"
-                >
-                  {#each professions as professionGP}
-                    <div class="form__group mb-4">
-                      <label class="form_label font-bold block mb-2">
-                        <big>{professionGP.libelle}</big>
-                      </label>
-
-                      {#each professionGP.professions as profession}
-                        <div class="flex items-center space-x-2">
-                          <input
-                            on:change={saveFormState}
-                            on:change={(e: any) =>
-                              updateField("profession", e.target.value)}
-                            type="radio"
-                            class="cursor-pointer"
-                            id={profession.code}
-                            name="rd_profession"
-                            checked={profession.code == formData.profession}
-                            on:change={() =>
-                              (formData.profession = profession.code)}
-                          />
-                          <label for={profession.code} class="cursor-pointer"
-                            >{profession.libelle}</label
-                          >
-                        </div>
-                      {/each}
-                    </div>
-                  {/each}
-                </div>
-                {#if errors.profession}
-                  <p class="text-red-500 text-sm">{errors.profession}</p>
-                {/if}
-              </div>
-
-              <div
-                class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 gap-12"
-              >
-                <!-- emailPro: "",
-              dateDiplome: "",
-              lieuDiplome: "",
-              datePremierDiplome: "",
-              diplome: "",
-              situationPro: "",
-              
-              profession: "",
-              poleSanitairePro: "",
-          
-              poleSanitaire: "",
-              region: "",
-              district: "",
-              ville: "",
-              commune: "",
-              quartier: "",
-              professionnel: "",
-              lieuExercicePro: "", -->
-
-                <!-- Autres champs similaires -->
-                <!-- Email Professionnel -->
-                <!-- Email Professionnel -->
-                <TextInput
-                  type="text"
-                  label="Code de vérification (Unique pour les ancien membres)"
-                  bind:value={formData.code}
-                  placeholder="Entrez votre code de vérification"
-                  error={codeExisteError}
-                  onInput={saveFormState}
-                  step={3}
-                />
-                <TextInput
-                type="email"
-                label="Adresse email professionnel"
-                bind:value={formData.emailPro}
-                placeholder="Entrez votre email professionnel"
-                error={errors.emailPro}
-                onInput={saveFormState}
-                step={3}
-              />
-
-                <!-- Date d'obtention du diplôme -->
-                <TextInput
-                  type="date"
-                  label="Date d'obtention du diplôme"
-                  bind:value={formData.dateDiplome}
-                  placeholder="Entrez la date d'obtention du diplôme"
-                  error={errors.dateDiplome}
-                  onInput={saveFormState}
-                  step={3}
-                />
-
-                <!-- Lieu d'obtention du diplôme -->
-                <TextInput
-                  type="text"
-                  label="Lieu d'obtention du diplôme"
-                  bind:value={formData.lieuDiplome}
-                  placeholder="Entrez le lieu d'obtention"
-                  error={errors.lieuDiplome}
-                  onInput={saveFormState}
-                  step={3}
-                />
-
-                <!-- Date du premier emploi -->
-                <TextInput
-                  type="date"
-                  label="Date du premier emploi"
-                  bind:value={formData.datePremierDiplome}
-                  placeholder="Entrez la date du premier emploi"
-                  error={errors.datePremierDiplome}
-                  onInput={saveFormState}
-                  step={3}
-                />
-
-                <!-- Dénomination du diplôme -->
-                <TextInput
-                  type="text"
-                  label="Dénomination du diplôme"
-                  bind:value={formData.diplome}
-                  placeholder="Entrez la dénomination du diplôme"
-                  error={errors.diplome}
-                  onInput={saveFormState}
-                  step={3}
-                />
-
-                <!-- Situation Professionnelle (Select) -->
-                <SelectInput
-                  label="Situation professionnelle"
-                  bind:value={formData.situationPro}
-                  options={values.situationProfessionnelle.map((c) => ({
-                    id: String(c.id),
-                    libelle: c.libelle
-                  }))}
-                  placeholder="Sélectionnez votre situation professionnelle"
-                  error={errors.situationPro}
-                  onInput={saveFormState}
-                  step={3}
-                />
-
-                <!-- Région (Select) -->
-
-                <div class="form__group">
-                  <label class="block text-2xl font-medium mb-1">Région sanitaire *</label
-                  >
-                  <select
-                    bind:value={formData.region}
-                    class="w-full form__input"
-                    on:change={saveFormState}
-                    on:change={updateDistricts}
-                    on:change={saveFormState}
-                  >
-                    <option value="">Sélectionnez votre Région</option>
-                    {#each values.region as region}
-                      <option value={region.id}>{region.libelle}</option>
-                    {/each}
-                  </select>
-                  {#if errors.region}
-                    <p class="text-red-500 text-sm">{errors.region}</p>
-                  {/if}
-                </div>
-
-                <div class="form__group">
-                  <label class="block text-2xl font-medium mb-1"
-                    >District sanitaire*</label
-                  >
-                  <select
-                    class="w-full form__input"
-                    bind:value={formData.district}
-                    on:change={updateVilles}
-                    on:change={saveFormState}
-                  >
-                    <option value="">Sélectionnez votre district</option>
-                    {#each values.district as district}
-                      <option value={district.id}>{district.libelle}</option>
-                    {/each}
-                  </select>
-                  {#if errors.district}
-                    <p class="text-red-500 text-sm">{errors.district}</p>
-                  {/if}
-                </div>
-
-                <div class="form__group">
-                  <label class="block text-2xl font-medium mb-1">Ville *</label>
-                  <select
-                    class="w-full form__input"
-                    bind:value={formData.ville}
-                    on:change={updateCommunes}
-                    on:change={saveFormState}
-                  >
-                    <option value="">Sélectionnez votre ville</option>
-                    {#each values.ville as ville}
-                      <option value={ville.id}>{ville.libelle}</option>
-                    {/each}
-                  </select>
-                  {#if errors.ville}
-                    <p class="text-red-500 text-sm">{errors.ville}</p>
-                  {/if}
-                </div>
-
-                <div class="form__group">
-                  <label class="block text-2xl font-medium mb-1"
-                    >Commune *</label
-                  >
-                  <select
-                    class="w-full form__input"
-                    bind:value={formData.commune}
-                    on:change={saveFormState}
-                  >
-                    <option value="">Sélectionnez votre commune</option>
-                    {#each values.commune as commune}
-                      <option value={commune.id}>{commune.libelle}</option>
-                    {/each}
-                  </select>
-                  {#if errors.commune}
-                    <p class="text-red-500 text-sm">{errors.commune}</p>
-                  {/if}
-                </div>
-
-                <!-- Quartier -->
-                <TextInput
-                  type="text"
-                  label="Quartier"
-                  bind:value={formData.quartier}
-                  placeholder="Entrez votre Quartier"
-                  error={errors.quartier}
-                  onInput={saveFormState}
-                  step={3}
-                />
-
-                <!-- Pôle Sanitaire -->
-                <TextInput
-                  type="text"
-                  label="Ilot,lot"
-                  bind:value={formData.poleSanitaire}
-                  placeholder="Entrez votre Ilot,Lot"
-                  error={errors.poleSanitaire}
-                  onInput={saveFormState}
-                  step={3}
-                />
-
-                <!-- Professionnel -->
-                <TextInput
-                  type="text"
-                  label="Structure d'exercice professionnel"
-                  bind:value={formData.professionnel}
-                  placeholder="Entrez votre Structure d'exercice professionnel"
-                  error={errors.professionnel}
-                  onInput={saveFormState}
-                  step={3}
-                />
-
-                <!-- Lieu d'exercice professionnel -->
-                <TextInput
-                  type="text"
-                  label="Lieu d'exercice professionnel"
-                  bind:value={formData.lieuExercicePro}
-                  placeholder="Entrez votre lieu d'exercice professionnel"
-                  error={errors.lieuExercicePro}
-                  onInput={saveFormState}
-                  step={3}
-                />
-                <!-- Lieu d'exercice professionnel -->
-                <!--  <TextInput
-                  type="text"
-                  label="Profession"
-                  bind:value={formData.profession}
-                  placeholder="Entrez votre profession"
-                  error={errors.profession}
-                  onInput={saveFormState}
-                /> -->
-              </div>
-            </div>
+            <EtapeProfessionnelle
+              {formData}
+              {errors}
+              {values}
+              {professions}
+              {codeExisteError}
+              {updateField}
+             
+            />
           {/if}
 
           <!-- Étape 4 -->
           {#if step === 4}
-            <h2 class="h2-baslik-anasayfa-ozel h-yazi-margin-kucuk">
-              Informations médiatiques (étape 4/6)
-            </h2>
+          <h2 class="h2-baslik-anasayfa-ozel h-yazi-margin-kucuk">
+            Informations médiatiques (étape 4/6)
+          </h2>
 
-            <div class="tablo">
-              <div class="tablo--1h-ve-2">
-                <div
-                  class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 gap-6"
-                >
-                  {#each [{ key: "photo", label: "Photo d'identité", type: "file" }, { key: "cni", label: "Copie CNI(Carte nationale d’identité)", type: "file" }, { key: "casier", label: "Extrait Casier judiciaire(Datant de moins 3 mois)", type: "file" }, { key: "diplomeFile", label: "Diplôme légalisé", type: "file" }, { key: "certificat", label: "Certificat de residence (Datant de moins 3 mois)", type: "file" }, { key: "cv", label: "CV", type: "file" }] as field}
-                    <div class="form__group">
-                      <label class="form_label">{field.label}</label>
-                      <div class="input-container">
-                        {#if fileNames[field.key]}
-                          <img
-                            src={fileNames[field.key].url}
-                            alt={fileNames[field.key].name}
-                            class="preview-image"
-                          />
-                        {/if}
-                        <input
-                          type={field.type}
-                          class="form__input"
-                          on:change={(e) => handleFileChange(e, field.key)}
-                        />
-                      </div>
+          <div class="tablo">
+            <div class="tablo--1h-ve-2">
+              <div
+                class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 gap-6"
+              >
+                {#each [{ key: "photo", label: "Photo d'identité", type: "file" }, { key: "cni", label: "Copie CNI(Carte nationale d’identité)", type: "file" }, { key: "casier", label: "Extrait Casier judiciaire(Datant de moins 3 mois)", type: "file" }, { key: "diplomeFile", label: "Diplôme légalisé", type: "file" }, { key: "certificat", label: "Certificat de residence (Datant de moins 3 mois)", type: "file" }, { key: "cv", label: "CV", type: "file" }] as field}
+                  <div class="form__group">
+                    <label class="form_label" for={field.key}>{field.label}</label>
+                    <div class="input-container">
                       {#if fileNames[field.key]}
-                        <p>
-                          {fileNames[field.key].name}
-                          <a
-                            href={fileNames[field.key].url}
-                            download={fileNames[field.key].name}
-                            class="download-link">📥 Télécharger</a
-                          >
-                        </p>
+                        <img
+                          src={fileNames[field.key].url}
+                          alt={fileNames[field.key].name}
+                          class="preview-image"
+                        />
                       {/if}
-                      {#if errors[field.key]}
-                        <p class="text-red-500 text-sm">{errors[field.key]}</p>
-                      {/if}
-                    </div>
-                  {/each}
-
-                  <style>
-                    .input-container {
-                      display: flex;
-                      align-items: center;
-                      gap: 10px; /* Espace entre l'image et le champ input */
-                    }
-
-                    .preview-image {
-                      width: 50px; /* Ajustez la taille de l'image selon vos besoins */
-                      height: 50px;
-                      border-radius: 5px;
-                      object-fit: cover;
-                    }
-
-                    .form__input {
-                      flex-grow: 1; /* Le champ input prend le reste de l'espace */
-                    }
-
-                    .download-link {
-                      margin-left: 10px;
-                      color: blue;
-                      text-decoration: none;
-                    }
-
-                    .download-link:hover {
-                      text-decoration: underline;
-                    }
-
-                    .text-red-500 {
-                      color: red;
-                    }
-                  </style>
-                </div>
-              </div>
-            </div>
-          {/if}
-
-          <!-- Étape 5 -->
-          {#if step === 5}
-            <h2 class="h2-baslik-anasayfa-ozel h-yazi-margin-kucuk">
-              Informations organisationnelles (étape 5/6)
-            </h2>
-            <div class="tablo">
-              <div class="tablo--1h-ve-2">
-                <div
-                  class="grid grid-cols-1 sm:grid-cols-1 md:grid-cols-1 lg:grid-cols-1 gap-6"
-                >
-                  <div class="form__group mb-4">
-                    <label class="form_label mb-4"
-                      >Appartenez-vous à une organisation ?</label
-                    >
-                    <div class="flex items-center space-x-4">
-                      {#each ["oui", "non"] as organisation}
-                        <div class="flex items-center space-x-2">
-                          <input
-                            on:input={saveFormState}
-                            on:input={(e: any) =>
-                              updateField(
-                                "appartenirOrganisation",
-                                e.target.value
-                              )}
-                            type="radio"
-                            class="cursor-pointer"
-                            name="rd_profession"
-                            value={organisation}
-                            id={organisation}
-                            checked={organisation ==
-                              formData.appartenirOrganisation}
-                            on:change={() =>
-                              (formData.appartenirOrganisation = organisation)}
-                          />
-                          <label
-                            for={organisation}
-                            class="cursor-pointer"
-                            style="text-transform: uppercase;"
-                            >{organisation}</label
-                          >
-                        </div>
-                      {/each}
-                    </div>
-                  </div>
-
-                  {#if formData.appartenirOrganisation == "oui"}
-                    <div class="form__group">
-                      <label class="form_label">Nom de l'organisation *</label>
                       <input
-                        on:input={saveFormState}
-                        on:input={(e: any) =>
-                          updateField("organisationNom", e.target.value)}
-                        type="text"
+                        id={field.key}
+                        type={field.type}
                         class="form__input"
-                        bind:value={formData.organisationNom}
-                        placeholder="Nom de l'organisation"
+                        on:change={(e) => handleFileChange(e, field.key)}
                       />
-                      {#if errors.organisationNom}<p class="error">
-                          {errors.organisationNom}
-                        </p>{/if}
                     </div>
-                  {/if}
-                </div>
+                    {#if fileNames[field.key]}
+                      <p>
+                        {fileNames[field.key].name}
+                        <a
+                          href={fileNames[field.key].url}
+                          download={fileNames[field.key].name}
+                          class="download-link">📥 Télécharger</a
+                        >
+                      </p>
+                    {/if}
+                    {#if errors[field.key as keyof typeof errors]}
+                      <p class="text-red-500 text-sm">{errors[field.key as keyof typeof errors]}</p>
+                    {/if}
+                  </div>
+                {/each}
+
+                <style>
+                  .input-container {
+                    display: flex;
+                    align-items: center;
+                    gap: 10px; /* Espace entre l'image et le champ input */
+                  }
+
+                  .preview-image {
+                    width: 50px; /* Ajustez la taille de l'image selon vos besoins */
+                    height: 50px;
+                    border-radius: 5px;
+                    object-fit: cover;
+                  }
+
+                  .form__input {
+                    flex-grow: 1; /* Le champ input prend le reste de l'espace */
+                  }
+
+                  .download-link {
+                    margin-left: 10px;
+                    color: blue;
+                    text-decoration: none;
+                  }
+
+                  .download-link:hover {
+                    text-decoration: underline;
+                  }
+
+                  .text-red-500 {
+                    color: red;
+                  }
+                </style>
               </div>
             </div>
-          {/if}
+          </div>
+        {/if}
+          <!-- Étape 5 -->
+          <EtapeOrganisation
+            {step}
+            {formData}
+            {updateField}
+            {errors}
+          />
 
           <!-- Étape 6 : Paiement -->
-          {#if step === 6}
-            <h2 class="h2-baslik-anasayfa-ozel h-yazi-margin-kucuk">
-              {#if !paiementStatus}
-                VEUILLEZ VALIDER POUR FINALISER VOTRE INSCRIPTION
-              {:else}
-                {#if isPaiementDone == false}
-                  VEUILLEZ PROCéDER AU PAIEMENT
-                {/if}
-                {#if isPaiementDone == true}
-                  INFORMATIONS SUR LE PAIEMENT
-                {/if}
-              {/if}
-            </h2>
-            <div class="tablo">
-              <div class="tablo--1h-ve-2">
-                <!--   on:click={clickPaiement} -->
-                <div class="grid grid-cols-1 gap-6 justify-center">
-                  <div class="">
-                    {#if !paiementStatus}
-                      <p>
-                        Vous pouvez soumettre le formulaire afin de finaliser
-                        votre inscription.
-                      </p>
-                      <br />
-                    {:else}
-                      {#if isPaiementDone == false}
-                        <p>
-                          Veillez vous rendre sur le site de votre banque et
-                          effectuer le paiement.
-                        </p>
-                        <br />
-                      {/if}
-                      {#if isPaiementDone == true}
-                        <p>
-                          Votre inscription à été effectué avec success,vous
-                          pouvez imprimer le recu de paiement <a
-                            href="javascript:void(0);"
-                            class="text-blue-500"
-                            on:click={() => {
-                              openModal(reference);
-                            }}>ICI</a
-                          >
-                        </p>
-                        <br />
-                        <p>
-                          Veillez vous connecter avec vos identifiants en
-                          cliquant sur le bouton ci-dessous
-                        </p>
-                        <br />
-                      {/if}
-                    {/if}
-
-                    <br />
-
-                    {#if messagefile != ""}
-                      <div role="alert">
-                        <div
-                          class="bg-red-500 text-white font-bold rounded-t px-4 py-2"
-                        >
-                          Erreur s'est produite
-                        </div>
-                        <div
-                          class="border border-t-0 border-red-400 rounded-b bg-red-100 px-4 py-3 text-red-700"
-                        >
-                          <p>{messagefile}</p>
-                        </div>
-                      </div>
-                    {/if}
-                  </div>
-                </div>
-              </div>
-            </div>
-          {/if}
+          <InscriptionEtapeFinale
+            {step}
+            {paiementStatus}
+            {isPaiementDone}
+            {formData}
+            {reference}
+            {openModal}
+            {messagefile}
+          />
 
           <!-- Boutons de navigation -->
-          <div class="form__group">
-            {#if step > 1}
-              <button
-                hidden={isPaiementDone == true}
-                disabled={authenticating == true || isPaiementDone == true}
-                type="button"
-                class="buton buton--kirmizi"
-                on:click={prevStep}>← RETOUR</button
-              >
-            {/if}
-
-            {#if step < 5}
-              <button
-                type="button"
-                class="buton buton--kirmizi"
-                on:click={nextStep}>SUIVANT →</button
-              >
-            {:else if step === 5}
-              <button
-                type="button"
-                class="buton buton--kirmizi"
-                on:click={nextStep}>SUIVANT →</button
-              >
-            {:else}
-              {#if isPaiementDone == false && paiementStatus == true}
-                <button
-                  type="button"
-                  on:click={clickPaiement}
-                  class="buton buton--kirmizi bg-green-500"
-                >
-                  {#if authenticating}
-                    <div class="grid grid-cols-2">
-                      <div>
-                        <Spinner />
-                      </div>
-                      <div>Effectuer le paiement</div>
-                    </div>
-                  {:else}
-                    Effectuer le paiement
-                  {/if}
-                </button>
-              {:else}
-
-              {#if isPaiementDone == false && paiementStatus == false}
-                <button
-                  type="button"
-                  on:click={clickValidation}
-                  class="buton buton--kirmizi bg-green-500"
-                >
-                  {#if authenticating}
-                    <div class="grid grid-cols-2">
-                      <div>
-                        <Spinner />
-                      </div>
-                      <div>Valider</div>
-                    </div>
-                  {:else}
-                    Valider
-                  {/if}
-                </button>
-              {/if}
-              {/if}
-              {#if isPaiementDone == true && paiementStatus == true}
-                <button
-                  type="button"
-                  on:click={connexion}
-                  class="buton buton--kirmizi bg-green-500"
-                >
-                  Connectez vous
-                </button>
-              {/if}
-            {/if}
-
-            <br />
-            <br />
-            {#if message !== ""}
-              <div
-                class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative"
-                role="alert"
-              >
-                <strong class="font-bold">Oups erreur!</strong>
-                <span class="block sm:inline">{message}</span>
-              </div>
-            {/if}
-          </div>
+          <FormButtons
+            {step}
+            {prevStep}
+            {nextStep}
+            {clickValidation}
+            {clickPaiement}
+            {connexion}
+            {authenticating}
+            {isPaiementDone}
+            {paiementStatus}
+            {formData}
+            {message}
+          />
         </form>
       </div>
     </div>

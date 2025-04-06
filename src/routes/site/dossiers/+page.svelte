@@ -210,7 +210,7 @@
           numero: apiData.personne.number || "",
           dateNaissance: formatDateForInput(apiData.personne.dateNaissance),
           situation: apiData.personne.situation || "",
-          profession: apiData.personne.profession.code || "",
+          profession: apiData.personne.profession.libelle || "",
           emailPro: apiData.personne.emailPro || "",
           dateDiplome: formatDateForInput(apiData.personne.dateDiplome),
           lieuDiplome: apiData.personne.lieuDiplome || "",
@@ -704,37 +704,18 @@
           <!-- Step 3: Informations Professionnelles -->
           {#if activeTab === "step3"}
             <div class="bg-white p-6 rounded-lg shadow-sm">
-              <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 gap-6">
-                  {#each professions as professionGP}
-                    <div class="form__group mb-4">
-                      <label class="form_label font-bold block mb-2">
-                        <big>{professionGP.libelle}</big>
-                      </label>
-
-                      {#each professionGP.professions as profession}
-                        <div class="flex items-center space-x-2">
-                          <input
-                            on:change={saveFormState}
-                            type="radio"
-                            class="cursor-pointer"
-                            id={profession.code}
-                            name="rd_profession"
-                            checked={profession.code == formData.profession}
-                            on:change={() =>
-                              (formData.profession = profession.code)}
-                          />
-                          <label for={profession.code} class="cursor-pointer"
-                            >{profession.libelle}</label
-                          >
-                        </div>
-                      {/each}
-                    </div>
-                  {/each}
-                </div>
-                {#if errors.profession}
-                  <p class="text-red-500 text-sm">{errors.profession}</p>
-                {/if}
-             <!--  </div> -->
+              <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 gap-6 mb-4">
+                 
+                          <TextInput disabled
+                          type="text"
+                          label="Profession"
+                          bind:value={formData.profession}
+                          placeholder="Profession"
+                          error={errors.profession}
+                          onInput={saveFormState}
+                          step={3}
+                        />
+              </div>
             
               <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
                 <TextInput

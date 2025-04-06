@@ -5,19 +5,20 @@
   export let placeholder: string = "";
   export let error: string | null = null;
   export let onInput: (event: Event) => void = () => {};
+  export let disabled: boolean = false;
 
   let emailError: string | null = null;
   let phoneError: string | null = null;
   let ageError: string | null = null;
-  let formData: Record<string, string> = {};
-  export let step: any; // Remplace cela par ta gestion actuelle des étapes
+  export let formData: Record<string, string> = {};
+  export let step: any; 
 
   function validateInput(event: Event) {
     const target = event.target as HTMLInputElement;
     value = target.value;
     onInput(event);
 
-    // Mise à jour de l'état local du formulaire
+   
     formData[label] = value;
     saveFormState();
 
@@ -31,6 +32,9 @@
 
     if (type === "date") {
       ageError = validateAge(value);
+    }
+    if (type === "text") {
+     error = error ? error : null;
     }
   }
 
@@ -63,16 +67,26 @@
     }
     return null;
   }
+
+  function updateField(field: any, value: any) {
+    formData[field] = value;
+    localStorage.setItem("formData", JSON.stringify(formData));
+  }
 </script>
 
 <div class="form__group">
-  <label class="block text-2xl font-medium mb-1">{label} *</label>
+  <label for="{label}" class="block text-2xl font-medium mb-1">{label} *</label>
   <input
+    id="{label}"
     type={type}
     bind:value
     class="w-full form__input"
     placeholder={placeholder}
     on:input={validateInput}
+    disabled={disabled}
+    on:input={(e) => {
+      saveFormState();
+    }}
   />
   
   {#if error}
