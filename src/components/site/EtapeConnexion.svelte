@@ -171,22 +171,85 @@
     </div>
   </div>
   <style>
-    /*  .iletisim-form-alani {
-      padding: 10rem 261px 10rem !important;
-      
-  } */
   
-    /* Removed unused CSS selector */
+  
+    .iletisim-form-alani {
+      padding: 4rem 235px 5rem !important;
+      margin-top: -20vh !important;
+      background-color: #fff;
+    }
     button:disabled {
       opacity: 0.5;
       cursor: not-allowed;
     }
-   
-   
+    .footerss p {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: start !important;
+      align-items: start !important;
+    }
+    h2.h2-baslik-footer.h-yazi-margin-kucuk,
+    .footer__list,
+    .footer__sosyal {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: start !important;
+      align-items: start !important;
+    }
+    .form {
+      max-width: 100%;
+      margin: auto;
+    }
+    .tablo {
+      display: flex;
+      flex-direction: column;
+    }
+    .row {
+      display: flex;
+      gap: 1px; /* Espacement entre les champs */
+      flex-wrap: wrap;
+    }
+  
     .form__group {
       flex: 1; /* Permet aux champs de prendre la même largeur */
       min-width: 250px; /* Empêche les champs d'être trop petits */
     }
-    
-    
+    h3 {
+      font-size: 1.5em;
+      margin-bottom: 15px;
+      color: #333;
+    }
+  
+    .error {
+      color: red;
+      font-size: 14px;
+      margin-top: 5px;
+    }
+  
+    .bouncingImage {
+      cursor: pointer;
+    }
+  
+    .bouncingImage:hover {
+      scale: 1.1;
+      duration: 2;
+    }
+  
+    button.ml-2.s-98Y-TDGwojhe {
+      position: relative !important;
+      right: 70px !important;
+    }
+  
+    svg.feather.feather-eye.s-98Y-TDGwojhe {
+      position: relative !important;
+      right: 50px !important;
+      color: gray !important;
+    }
+  
+    .download-link {
+      margin-left: 10px;
+      color: blue;
+      text-decoration: underline;
+      cursor: pointer;
+    }
   </style>
