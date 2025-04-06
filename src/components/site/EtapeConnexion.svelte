@@ -50,7 +50,7 @@
         <label for="password" class="text-3xl font-medium mb-1">Mot de passe *</label>
         <div class="flex items-center">
           <input
-            id="password"
+            id="password" style="width:100%"
             type={showPassword ? "text" : "password"}
             class="form__input w-full px-3 pr-10"
             bind:value={formData.password}
@@ -113,7 +113,7 @@
         <label for="confirm-password" class="text-3xl font-medium mb-1">Confirmer le mot de passe *</label>
         <div class="flex items-center">
           <input
-            id="confirm-password"
+            id="confirm-password" style="width:100%"
             type={showPasswordConfirm ? "text" : "password"}
             class="form__input w-full px-3 pr-10"
             bind:value={formData.confirmPassword}
