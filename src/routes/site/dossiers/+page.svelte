@@ -795,7 +795,7 @@
               <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
                 <TextInput
                 type="text"
-                label="Code"
+                label="Code d’identification"
                 bind:value={formData.code}
                 placeholder="Code"
                 error={errors.code}

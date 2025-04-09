@@ -210,7 +210,7 @@ console.log(formData.commune);
     >
         <TextInput
             type="text"
-            label="Code de vérification (Unique pour les ancien membres)"
+            label="Code d’identification"
             bind:value={formData.code}
             placeholder="Entrez votre code de vérification"
             error={codeExisteError}
