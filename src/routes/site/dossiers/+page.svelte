@@ -535,7 +535,7 @@
       });
     }
 
-    fetch(BASE_URL_API + "/professionnel/update" + user?.personneId, {
+    fetch(BASE_URL_API + "/professionnel/update/" + user?.personneId, {
       method: "POST",
       body: formDatas,
     })
