@@ -80,7 +80,7 @@
                 />
               </div>
               <div class="form__grup relative">
-                <label for="password" class="form_label">Mot de passe</label>
+                <label for="password" class="form_label">Nouveau mot de passe</label>
                 <input
                         type={showPassword ? 'text' : 'password'}
                         bind:value={password}
@@ -107,16 +107,7 @@
                 </button>
               </div>
 
-              <!-- Lien Mot de passe oublié -->
-              <div class="text-right">
-                <a
-                        href="/site/connexion/mot_de_passe_oublie"
-                        class="text-sm text-blue-600 hover:text-blue-800 hover:underline"
-                        on:click|preventDefault={redirectToForgotPassword}
-                >
-                  Mot de passe oublié ?
-                </a>
-              </div>
+
             </div>
 
             <div class="form__grup">
