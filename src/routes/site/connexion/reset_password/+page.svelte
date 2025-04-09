@@ -21,6 +21,8 @@
   
   
     async function handleSubmit(event: any) {
+
+        
       authenticating = true;
       event.preventDefault();
       try {

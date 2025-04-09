@@ -23,6 +23,9 @@
   let user = data?.user;
 
   async function handleSubmit(event: any) {
+
+    console.log("email", email);
+        console.log("token", `${$page.params.id}`);
     authenticating = true;
     event.preventDefault();
     try {
@@ -35,7 +38,7 @@
           authenticating = false;
 
           if (res.code == 200) {
-            notificationMessage = "Un email a été envoyé à votre adresse";
+            notificationMessage = "Votre mot de passe a été changé avec succès";
             notificationType = "success";
             showNotification = true;
             setTimeout(() => {
@@ -57,9 +60,7 @@
     }
   }
 
-  function redirectToForgotPassword() {
-    window.location.href = "/site/connexion/mot_de_passe_oublie";
-  }
+ 
 </script>
 
 <div id="">
@@ -184,6 +185,16 @@
                 <span class="block sm:inline">{message}</span>
               </div>
             {/if}
+
+            {#if authenticating == false && notificationMessage !== ""}
+            <div
+                    class="bg-green-500 border border-green text-black px-4 py-3 rounded relative"
+                    role="alert"
+            >
+              <strong class="font-bold">Bravo!</strong>
+              <span class="block sm:inline">{notificationMessage}</span>
+            </div>
+          {/if}
           </form>
         </div>
       </div>
