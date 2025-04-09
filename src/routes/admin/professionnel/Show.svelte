@@ -517,7 +517,7 @@
         >
           FICHE D'INSCRIPTION
         </div>
-        {#if data.personne.profession.montantRenouvellement != null || data.personne.profession.montantNouvelleDemande != null}
+        {#if data.personne.profession.montantRenouvellement != null || data.personne.profession.montantRenouvellement != ""  || data.personne.profession.montantNouvelleDemande != null || data.personne.profession.montantNouvelleDemande != "" }
           <div   on:click={() => (
             (current_data =
                 data),
