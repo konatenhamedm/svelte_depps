@@ -26,7 +26,7 @@
     authenticating = true;
     event.preventDefault();
     try {
-      await apiFetch(true, "/change/new/access", "POST", {
+      await apiFetch(true, "/resetpassword/change/new/access", "POST", {
         email: email,
         password: password,
         token: `${$page.params.id}`,
