@@ -51,6 +51,7 @@
   let currentPage = 1;
   let main_data: professionnel[] = [];
   let loading = false;
+  let searchQuery: string = "";
   $: searchQuery = "";
 
 
@@ -99,9 +100,20 @@ async function fetchData() {
   }, {});
 
   // Filtrage des données selon l'onglet actif
-  $: filteredData = main_data.filter(
-    (user) => user.personne.status === activeTab
-  );
+  $: filteredData = main_data
+          .filter((user) => user.personne.status === activeTab)
+          .filter((user) => {
+            if (!searchQuery) return true;
+            const query = searchQuery.toLowerCase();
+            return (
+                    user.personne.nom?.toLowerCase().includes(query) ||
+                    user.personne.prenoms?.toLowerCase().includes(query) ||
+                    user.personne.number?.toLowerCase().includes(query) ||
+                    user.email?.toLowerCase().includes(query) ||
+                    user.personne.profession?.libelle?.toLowerCase().includes(query) ||
+                    user.personne.code?.toLowerCase().includes(query)
+            );
+          });
 
   // Calcul du nombre total de pages
   $: totalPages = Math.max(
@@ -157,8 +169,8 @@ async function fetchData() {
     }
   };
 
-    
- 
+
+
 </script>
 
 <Entete
@@ -200,13 +212,34 @@ async function fetchData() {
           </div>
           <div class="table-responsive">
             <div class="w-full grid grid-cols-4">
-              <div>
+              <div class="relative">
                 <Input
-                  placeholder="Rechercher..."
-                  type="text"
-                  bind:value={searchQuery}
-                  class="form-input font-normal rounded block w-full border-gray-200 text-sm focus:border-gray-300 focus:ring-0 bg-white mb-4"
+                        placeholder="Rechercher..."
+                        type="text"
+                        bind:value={searchQuery}
+                        class="form-input font-normal rounded block w-full border-gray-200 text-sm focus:border-gray-300 focus:ring-0 bg-white mb-4 pl-10"
                 />
+                {#if searchQuery}
+                  <button
+                          on:click={() => (searchQuery = '')}
+                          class="absolute right-2 top-2 text-gray-500 hover:text-gray-700"
+                  >
+                    ×
+                  </button>
+                {/if}
+                <svg
+                        class="absolute left-3 top-2.5 h-5 w-5 text-gray-400"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                >
+                  <path
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                          stroke-width="2"
+                          d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+                  />
+                </svg>
               </div>
             </div>
 
