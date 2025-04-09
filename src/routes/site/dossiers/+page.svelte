@@ -127,7 +127,7 @@
   const situations = ["Célibataire", "Marié(e)", "Divorcé(e)", "Veuf(ve)"];
   const situationsPro = ["Salarié", "Indépendant", "Sans emploi", "Étudiant"];
   let authenticating = false;
-  const handleSubmit = async () => {
+  /* const handleSubmit = async () => {
     authenticating = true;
     try {
       const formDataToSend = new FormData();
@@ -177,7 +177,7 @@
       authenticating = false;
       console.error("Erreur lors de la mise à jour:", error);
     }
-  };
+  }; */
 
   function formatDateForInput(dateString: string) {
     if (!dateString) return "";
@@ -490,6 +490,76 @@
     await loadData();
     isLoading = false;
   });
+
+  function initValidation() {
+    authenticating = true;
+    // Créer un FormData pour les données du formulaire
+    let formDatas = new FormData();
+
+    Object.keys(formData).forEach((key) => {
+      formDatas.append(key, formData[key]);
+    });
+
+    const reference = localStorage.getItem("reference");
+    if (reference) {
+      formDatas.append("reference", reference);
+    }
+    formDatas.append("type", "professionnel");
+
+    const selectedFilesFromStorage = JSON.parse(
+      localStorage.getItem("selectedFiles"),
+    );
+
+    if (selectedFilesFromStorage) {
+      // Ajouter chaque fichier au FormData
+      Object.keys(selectedFilesFromStorage).forEach((fieldName) => {
+        const fileData = selectedFilesFromStorage[fieldName];
+        if (fileData && fileData.data) {
+          const byteCharacters = atob(fileData.data.split(",")[1]);
+          const byteArrays = [];
+
+          for (let offset = 0; offset < byteCharacters.length; offset += 512) {
+            const slice = byteCharacters.slice(offset, offset + 512);
+            const byteNumbers = new Array(slice.length);
+            for (let i = 0; i < slice.length; i++) {
+              byteNumbers[i] = slice.charCodeAt(i);
+            }
+            byteArrays.push(new Uint8Array(byteNumbers));
+          }
+
+          const blob = new Blob(byteArrays, {
+            type: "application/octet-stream",
+          });
+          formDatas.append(fieldName, blob, fileData.name);
+        }
+      });
+    }
+
+    fetch(BASE_URL_API + "/professionnel/update" + user?.personneId, {
+      method: "POST",
+      body: formDatas,
+    })
+      .then((response) => response.json())
+      .then((result) => {
+        authenticating = false;
+
+      })
+      .catch((error) => {
+        console.error("Erreur paiements :", error);
+       
+        authenticating = false;
+      });
+  }
+
+
+  
+
+    function clickValidation() {
+ 
+    saveFormState(); // 🔥 Sauvegarder avant de partir
+
+    initValidation();
+  }
 </script>
 
 
@@ -530,6 +600,11 @@
 {:else}
   <main  class="pb-0">
     <section class="iletisim-form-alani">
+      <form
+      class="form one_customer"
+      method="post"
+      
+    >
       <div class="w-full mx-auto p-4 content-sec">
         <!-- Tabs Navigation -->
         <div class="mb-4 border-b border-gray-200">
@@ -1053,12 +1128,12 @@
           
           <button
             type="button"
-            on:click={handleSubmit}
+            on:click={clickValidation}
             class="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
           >
             {#if authenticating}
               <div class="grid grid-cols-2">
-                <div>
+                <div >
                   <Spinner />
                 </div>
                 <div>Modifier</div>
@@ -1069,6 +1144,8 @@
           </button>
         </div>
       </div>
+
+      </form>
       <br /><br /><br /><br />
     </section>
   </main>
