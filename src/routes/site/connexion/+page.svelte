@@ -45,7 +45,7 @@
   }
 
   function redirectToForgotPassword() {
-    window.location.href = "/site/connexion/mot_de_passe_oublie";
+    window.location.href = "/site/connexion/reset_password";
   }
 </script>
 
