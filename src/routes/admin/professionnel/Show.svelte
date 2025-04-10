@@ -338,7 +338,7 @@
           />
         </div>
         <div>
-          <p>ssss {userEmail}</p> 
+          
           <InputSimple
             fieldName="userEmail"
             label="Email utilisateur"
