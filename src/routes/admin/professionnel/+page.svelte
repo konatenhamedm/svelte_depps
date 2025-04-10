@@ -395,14 +395,14 @@ async function fetchData() {
   userUpdateId={user?.id}
 />
 
-<!-- {#if openShow} -->
+{#if openShow}
   <Show
     bind:open={openShow}
     data={current_data}
     sizeModal="xl"
     userUpdateId={user.id}
   />
-<!-- {/if} -->
+{/if}
 
 <Delete bind:open={openDelete} data={current_data} />
 

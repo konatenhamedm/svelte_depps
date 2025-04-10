@@ -7,7 +7,7 @@
 
     export let open: boolean = false;
     export let sizeModal: any = "xl";
-    export let userUpdateId: any;
+    export const userUpdateId: any = null;
     export let data: any;
 
     let isLoading = false;

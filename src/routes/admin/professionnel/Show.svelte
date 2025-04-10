@@ -104,7 +104,9 @@
     numero = data.personne.number || "";
     nom = data.personne.nom || "";
     status = data.personne.status || "";
-    professionLibelle = data.personne.profession ? data.personne.profession.libelle : "";
+    professionLibelle = data.personne.profession
+      ? data.personne.profession.libelle
+      : "";
     prenoms = data.personne.prenoms || "";
     reason = data.personne.reason || "";
     professionnel = data.personne.professionnel || "";
@@ -147,18 +149,17 @@
       console.error("Impossible de récupérer la profession");
     }*/
 
-    console.log("uuu",persionneId);
-    
+    console.log("uuu", persionneId);
   }
   let valid_endUser = {
     raison: "",
-    status: "acceptation"
+    status: "acceptation",
   };
 
   let openShow: boolean = false;
   let openShowDoc: boolean = false;
   let current_data: any = {};
-  let pdfUrl: any ;
+  let pdfUrl: any;
   let showNotification = false;
   let notificationMessage = "";
   let notificationType = "info";
@@ -196,15 +197,15 @@
         {
           method: "PUT",
           headers: {
-            "Content-Type": "application/json"
+            "Content-Type": "application/json",
           },
           body: JSON.stringify({
             status: valid_endUser.status,
             raison: valid_endUser.raison,
             userUpdate: userUpdateId,
-            email: userEmail
-          })
-        }
+            email: userEmail,
+          }),
+        },
       );
 
       if (res.ok) {
@@ -232,15 +233,15 @@
         {
           method: "PUT",
           headers: {
-            "Content-Type": "application/json"
+            "Content-Type": "application/json",
           },
           body: JSON.stringify({
             status: etat,
             raison: "",
             userUpdate: userUpdateId,
-            email: userEmail
-          })
-        }
+            email: userEmail,
+          }),
+        },
       );
 
       if (res.ok) {
@@ -262,7 +263,6 @@
 
   let isModalOpen = false;
   let isModalOpenRegister = false;
-
 
   function openModal(url: any) {
     pdfUrl = url; // ✅ Met à jour la variable réactive
@@ -338,7 +338,6 @@
           />
         </div>
         <div>
-          
           <InputSimple
             fieldName="userEmail"
             label="Email utilisateur"
@@ -450,85 +449,97 @@
       </div>
       <div class="grid grid-cols-4 gap-6 mt-6">
         <!-- <div class="space-y-6"> -->
-        <div
+        <button
+          type="button"
           on:click={() => (
             (current_data = url_image + CVpath + "/" + CValt), (openShow = true)
           )}
           class="w-full h-9 flex justify-center bg-gray-700 hover:bg-gray-700 text-white font-bold py-2 pb-[1.9rem] px-4 border border-white rounded cursor-pointer"
+          aria-label="Voir le CV"
         >
           VOIR LE CV
-        </div>
-        <div
+        </button>
+        <button
+          type="button"
           on:click={() => (
             (current_data = url_image + diplomeFilePath + "/" + diplomeFileAlt),
             (openShow = true)
           )}
           class="w-full h-9 flex justify-center bg-gray-700 hover:bg-gray-700 text-white font-bold py-2 pb-[1.9rem] px-4 border border-white rounded cursor-pointer"
+          aria-label="Voir le diplôme"
         >
           VOIR LE DIPLOME
-        </div>
+        </button>
 
-        <div
+        <button
+          type="button"
           on:click={() => (
             (current_data = url_image + casierPath + "/" + casierAlt),
             (openShow = true)
           )}
           class="w-full h-9 flex justify-center bg-gray-700 hover:bg-gray-700 text-white font-bold py-2 pb-[1.9rem] px-4 border border-white rounded cursor-pointer"
+          aria-label="Voir le casier"
         >
           VOIR LE CASIER
-        </div>
+        </button>
         <!--  </div>
         <div class="space-y-6"> -->
-        <div
+        <button
+          type="button"
           on:click={() => (
             (current_data = url_image + certificatPath + "/" + certificatAlt),
             (openShow = true)
           )}
           class="w-full h-9 flex justify-center bg-gray-700 hover:bg-gray-700 text-white font-bold py-2 pb-[1.9rem] px-4 border border-white rounded cursor-pointer"
+          aria-label="Voir le certificat"
         >
           VOIR LE CERTIFICAT
-        </div>
-        <div
+        </button>
+        <button
+          type="button"
           on:click={() => (
             (current_data = url_image + Photopath + "/" + Photoalt),
             (openShow = true)
           )}
           class="w-full h-9 flex justify-center bg-gray-700 hover:bg-gray-700 text-white font-bold py-2 pb-[1.9rem] px-4 border border-white rounded cursor-pointer"
+          aria-label="Voir la photo"
         >
           VOIR LA PHOTO
-        </div>
+        </button>
 
-        <div
+        <button
+          type="button"
           on:click={() => (
             (current_data = url_image + cniPath + "/" + cniAlt),
             (isModalOpen = true)
           )}
           class="w-full h-9 flex justify-center bg-gray-700 hover:bg-gray-700 text-white font-bold py-2 pb-[1.9rem] px-4 border border-white rounded cursor-pointer"
+          aria-label="Voir la CNI"
         >
           VOIR LA CNI
-        </div>
+        </button>
 
-        <div
-                on:click={() => (
-    (current_data = data),
-    (isModalOpenRegister = true)  // Utiliser isModalOpenRegister ici au lieu de isModalOpen
-  )}
-                style="background-color: green;"
-                class="w-full h-9 flex justify-center bg-green hover:bg-green text-white font-bold py-2 pb-[1.9rem] px-4 border border-white rounded cursor-pointer"
+        <button
+          type="button"
+          on:click={() => (
+            (current_data = data), (isModalOpenRegister = true) // Utiliser isModalOpenRegister ici au lieu de isModalOpen
+          )}
+          style="background-color: green;"
+          class="w-full h-9 flex justify-center bg-green hover:bg-green text-white font-bold py-2 pb-[1.9rem] px-4 border border-white rounded"
+          aria-label="Open Fiche d'Inscription"
         >
           FICHE D'INSCRIPTION
-        </div>
-        {#if  data.personne.profession.montantRenouvellement != ""  ||  data.personne.profession.montantNouvelleDemande != "" }
-          <div   on:click={() => (
-            (current_data =
-                data),
-            (isModalOpen = true)
-        )}
+        </button>
+        {#if data.personne?.profession?.montantRenouvellement != "" || data.personne?.profession?.montantNouvelleDemande != ""}
+          <button
+            on:click={() => ((current_data = data), (isModalOpen = true))}
             style="background-color: green;"
             class="w-full h-9 flex justify-center bg-green hover:bg-green text-white font-bold py-2 pb-[1.9rem] px-4 border border-white rounded cursor-pointer"
+            aria-label="Voir le reçu de paiement"
+            role="button"
           >
             REÇU DE PAIEMENT
-          </div>
+          </button>
         {/if}
       </div>
 
@@ -715,22 +726,30 @@
           color="alternative"
           style="background-color: gray !important; color: white;"
           on:click={() => (open = false)}
-          type="submit">{"Fermer"} </Button
-        >
+          type="submit"
+          >{"Fermer"}
+        </Button>
       </div>
     </div>
   </div>
 </Modal>
 
 {#if isModalOpen == true}
-  
-  <RecuPaiement bind:open={isModalOpen} data={current_data} sizeModal="xl" userUpdateId={userUpdateId}/>
+  <RecuPaiement
+    bind:open={isModalOpen}
+    data={current_data}
+    sizeModal="xl"
+    {userUpdateId}
+  />
 {/if}
 
 {#if isModalOpenRegister == true}
-  <FicheInscription bind:open={isModalOpenRegister} data={current_data} sizeModal="xl" userUpdateId={userUpdateId}/>
+  <FicheInscription
+    bind:open={isModalOpenRegister}
+    data={current_data}
+    sizeModal="xl"
+    {userUpdateId}
+  />
 {/if}
-
-
 
 <DocShow bind:open={openShow} data={current_data} sizeModal="xl" />
