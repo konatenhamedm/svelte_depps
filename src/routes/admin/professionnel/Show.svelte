@@ -104,7 +104,7 @@
     numero = data.personne.number || "";
     nom = data.personne.nom || "";
     status = data.personne.status || "";
-    professionLibelle = data.personne.profession.libelle || "";
+    professionLibelle = data.personne.profession ? data.personne.profession.libelle : "";
     prenoms = data.personne.prenoms || "";
     reason = data.personne.reason || "";
     professionnel = data.personne.professionnel || "";
@@ -338,6 +338,7 @@
           />
         </div>
         <div>
+          <p>ssss {userEmail}</p> 
           <InputSimple
             fieldName="userEmail"
             label="Email utilisateur"
