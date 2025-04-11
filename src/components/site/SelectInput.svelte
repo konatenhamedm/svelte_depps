@@ -1,7 +1,7 @@
 <script lang="ts">
   export let label: string;
-  export let value: string = ""; 
-  export let options: { id: string; libelle: string }[] = [];
+  export let value: any = ""; 
+  export let options: { id: any; libelle: string }[] = [];
   export let placeholder: string = "Veuillez sélectionner une option";
   export let error: string | null = null;
   export let onInput: (event: Event) => void = () => {};
@@ -27,15 +27,17 @@
   <label for="select-input" class="block text-2xl font-medium mb-1">{label} *</label>
   <select
     id="select-input"
-    bind:value
+    bind:value={value}
     class="w-full form__input"
-    on:change={handleInput}
-    on:change={saveFormState}
+    on:change={(event) => {
+      handleInput(event);
+      saveFormState();
+    }}
   >
     <!-- Option vide par défaut -->
-    <option value="" disabled selected={value === ""}>{placeholder}</option>
+    <option value="" disabled>{placeholder}</option>
     {#each options as option}
-      <option value={option.id}   selected={value === option.id}>{option.libelle}</option>
+      <option value={option.id}>{option.libelle}</option>
     {/each}
   </select>
   {#if error}
