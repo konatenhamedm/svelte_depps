@@ -153,10 +153,10 @@
           nom: apiData.personne.nom || "",
           prenoms: apiData.personne.prenoms || "",
           nationalite: apiData.personne.nationate
-            ? apiData.personne.nationate.id
+            ? String(apiData.personne.nationate.id)
             : "",
           civilite: apiData.personne.civilite
-            ? apiData.personne.civilite.id
+            ? String(apiData.personne.civilite.id)
             : "",
           emailAutre: apiData.personne.email || "",
           numero: apiData.personne.number || "",
@@ -171,7 +171,7 @@
           ),
           diplome: apiData.personne.diplome || "",
           situationPro: apiData.personne.situationPro
-            ? apiData.personne.situationPro.id
+            ? String(apiData.personne.situationPro.id)
             : "",
           professionnel: apiData.personne.professionnel || "",
           region: apiData.personne.region ? apiData.personne.region.id : "",
@@ -358,7 +358,7 @@
       values[obj.name] = data;
     }
 
-    applyFilters();
+   await applyFilters();
   }
 
   // Fonction pour mettre à jour les districts en fonction de la région
@@ -1071,6 +1071,7 @@
                       {formData}
                       {errors}
                       {values}
+                      professions={[]}
                       {codeExisteError}
                       {updateField}
                       showTitle ={false}

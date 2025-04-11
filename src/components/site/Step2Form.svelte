@@ -52,7 +52,7 @@
       label="Nationalité"
       bind:value={formData.nationalite}
       options={values.nationate.map((c:any) => ({
-        id: (c.id),
+        id: String(c.id),
         libelle: c.libelle
       }))}
       placeholder="Veuillez sélectionner une nationalité"
@@ -66,7 +66,7 @@
       label="Civilité"
       bind:value={formData.civilite}
       options={values.civilite.map((c:any) => ({
-        id: (c.id),
+        id: String(c.id),
         libelle: c.libelle
       }))}
       placeholder="Veuillez sélectionner une civilité"
