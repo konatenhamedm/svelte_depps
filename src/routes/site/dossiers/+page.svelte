@@ -17,6 +17,8 @@
   import TextInput from "$components/site/TextInput.svelte";
   import SelectInput from "$components/site/SelectInput.svelte";
   import type { Civilite, District, Pays } from "../../../types";
+  import Step2Form from "$components/site/Step2Form.svelte";
+  import EtapeProfessionnelle from "$components/site/EtapeProfessionnelle.svelte";
 
   export let data;
   let user = data?.user;
@@ -125,57 +127,6 @@
   const situations = ["Célibataire", "Marié(e)", "Divorcé(e)", "Veuf(ve)"];
   const situationsPro = ["Salarié", "Indépendant", "Sans emploi", "Étudiant"];
   let authenticating = false;
-  /* const handleSubmit = async () => {
-    authenticating = true;
-    try {
-      const formDataToSend = new FormData();
-
-      // Convertir l'objet formData en FormData
-      for (const [key, value] of Object.entries(formData)) {
-        // Pour les objets avec ID (comme les sélections)
-        if (typeof value === "object" && value !== null && value.id) {
-          formDataToSend.append(key, value.id);
-        }
-        // Pour les fichiers
-        else if (value instanceof File) {
-          formDataToSend.append(key, value);
-        }
-        // Pour les dates
-        else if (key.includes("date") && value) {
-          const formattedDate = new Date(value).toISOString().split("T")[0];
-          formDataToSend.append(key, formattedDate);
-        }
-        // Pour toutes les autres valeurs
-        else if (value !== undefined && value !== null) {
-          formDataToSend.append(key, value);
-        }
-      }
-
-      console.log(formData.situation);
-
-      const userId = user?.personneId;
-      formDataToSend.append("userUpdate", userId);
-      fetch(`${BASE_URL_API}/professionnel/update/${userId}`, {
-        method: "POST",
-        body: formDataToSend
-      })
-        .then((response) => response.json())
-        .then((result) => {
-          authenticating = false;
-
-          console.log(result);
-        })
-        .catch((error) => {
-          console.error("Erreur paiements :", error);
-          authenticating = false;
-        });
-
-      console.log(formDataToSend);
-    } catch (error) {
-      authenticating = false;
-      console.error("Erreur lors de la mise à jour:", error);
-    }
-  }; */
 
   function formatDateForInput(dateString: string) {
     if (!dateString) return "";
@@ -202,10 +153,10 @@
           nom: apiData.personne.nom || "",
           prenoms: apiData.personne.prenoms || "",
           nationalite: apiData.personne.nationate
-            ? apiData.personne.nationate.id
+            ? String(apiData.personne.nationate.id)
             : "",
           civilite: apiData.personne.civilite
-            ? apiData.personne.civilite.id
+            ? String(apiData.personne.civilite.id)
             : "",
           emailAutre: apiData.personne.email || "",
           numero: apiData.personne.number || "",
@@ -220,7 +171,7 @@
           ),
           diplome: apiData.personne.diplome || "",
           situationPro: apiData.personne.situationPro
-            ? apiData.personne.situationPro.id
+            ? String(apiData.personne.situationPro.id)
             : "",
           professionnel: apiData.personne.professionnel || "",
           region: apiData.personne.region ? apiData.personne.region.id : "",
@@ -294,30 +245,6 @@
     isModalOpen = false;
   }
 
-  /* async function getProfessionLibelle(code:any) {
-    
-    try {
-      const res = await fetch(BASE_URL_API + "/profession/get/by/code/" + code);
-
-      if (res.ok) {
-        const data = await res.json();
-        if (data && data.data) {
-          console.log("Data récupérée:", data.data);
-          formData.profession = data.data;
-        
-        } else {
-          console.error("Erreur: data.data est undefined", data);
-         
-        }
-      } else {
-        console.error("Erreur HTTP:", res.status, res.statusText);
-      
-      }
-    } catch (error) {
-      console.error("Erreur lors de la récupération des données:", error);
-      
-    }
-  } */
 
   let professions: any[] = [];
 
@@ -431,7 +358,7 @@
       values[obj.name] = data;
     }
 
-    applyFilters();
+   await applyFilters();
   }
 
   // Fonction pour mettre à jour les districts en fonction de la région
@@ -575,6 +502,64 @@
     saveFormState();
     initValidation();
   }
+  async function checkCodeVerification(code: any) {
+    if (!code) return false;
+
+    try {
+      const res = await fetch(
+              `https://depps.leadagro.net/api/professionnel/existe/code/${code}`,
+      );
+      const data = await res.json();
+      return data.data;
+      return data.data; // Assurez-vous que l'API renvoie un objet avec une clé `valid`
+    } catch (error) {
+      console.error(
+              "Erreur lors de la vérification de la transaction :",
+              error,
+      );
+      return false;
+    }
+  }
+  let codeVericationStatus = false;
+
+  let codeExisteError: any;
+  $: if (formData.code) {
+    checkCodeVerification(formData.code).then((resultat) => {
+      codeVericationStatus = resultat;
+
+      if (
+              resultat.exsiteInProfessionnel == true &&
+              resultat.exsiteInCodeGenerateur == true
+      ) {
+        codeExisteError =
+                "l'utilisateur de ce code de vérification existe deja";
+      } else if (
+              resultat.exsiteInCodeGenerateur == true &&
+              resultat.exsiteInProfessionnel == false
+      ) {
+        codeExisteError = "";
+      } else if (
+              resultat.exsiteInProfessionnel == false &&
+              resultat.exsiteInCodeGenerateur == false
+      ) {
+        codeExisteError = "Ce code de vérification n'existe pas";
+      } else if (
+              resultat.exsiteInProfessionnel == true &&
+              resultat.exsiteInCodeGenerateur == false
+      ) {
+        codeExisteError =
+                "l'utilisateur de ce code de vérification existe deja";
+      } else {
+        codeExisteError = "";
+      }
+    });
+  } else {
+    codeExisteError = "";
+  }
+  function updateField(field: any, value: any) {
+    formData[field] = value;
+    localStorage.setItem("formData", JSON.stringify(formData));
+  }
 
 </script>
 
@@ -669,7 +654,7 @@
           <div class="mt-1">
             <!-- Step 2: Informations Personnelles -->
             {#if activeTab === "step2"}
-              <div class="bg-white p-2 rounded-lg shadow-sm">
+             <!-- <div class="bg-white p-2 rounded-lg shadow-sm">
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <TextInput
                     type="text"
@@ -785,12 +770,21 @@
                     step={2}
                   />
                 </div>
-              </div>
+              </div>-->
+              
+              <Step2Form
+                      {formData}
+                      {errors}
+                      {values}
+                      {situationsMatrimoniales}
+                      {saveFormState}
+                      showTitle={false}
+              />
             {/if}
 
             <!-- Step 3: Informations Professionnelles -->
             {#if activeTab === "step3"}
-              <div class="bg-white p-6 rounded-lg shadow-sm">
+             <!-- <div class="bg-white p-6 rounded-lg shadow-sm">
                 <div
                   class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 gap-6 mb-4"
                 >
@@ -826,7 +820,7 @@
                     step={3}
                   />
 
-                  <!-- Date d'obtention du diplôme -->
+                  Date d'obtention du diplôme
                   <TextInput
                     type="date"
                     label="Date d'obtention du diplôme"
@@ -837,7 +831,7 @@
                     step={3}
                   />
 
-                  <!-- Lieu d'obtention du diplôme -->
+                   Lieu d'obtention du diplôme
                   <TextInput
                     type="text"
                     label="Lieu d'obtention du diplôme"
@@ -848,7 +842,7 @@
                     step={3}
                   />
 
-                  <!-- Date du premier emploi -->
+                   Date du premier emploi
                   <TextInput
                     type="date"
                     label="Date du premier emploi"
@@ -859,7 +853,7 @@
                     step={3}
                   />
 
-                  <!-- Dénomination du diplôme -->
+                   Dénomination du diplôme
                   <TextInput
                     type="text"
                     label="Dénomination du diplôme"
@@ -870,8 +864,8 @@
                     step={3}
                   />
 
-                  <!-- Situation Professionnelle (Select) -->
-                  <!--   <SelectInput
+                   Situation Professionnelle (Select)
+                     <SelectInput
                 label="Situation professionnelle"
                 bind:value={formData.situationPro}
                 options={values.situationProfessionnelle.map((c) => ({
@@ -882,7 +876,7 @@
                 error={errors.situationPro}
                 onInput={saveFormState}
                 step={3}
-              /> -->
+              />
 
                   <div class="form__group">
                     <label class="block text-2xl font-medium mb-1"
@@ -911,7 +905,7 @@
                     {/if}
                   </div>
 
-                  <!-- Région (Select) -->
+                  Région (Select)
 
                   <div class="form__group">
                     <label class="block text-2xl font-medium mb-1"
@@ -1014,7 +1008,7 @@
                     {/if}
                   </div>
 
-                  <!-- Quartier -->
+                  Quartier
                   <TextInput
                     type="text"
                     label="Quartier"
@@ -1025,7 +1019,7 @@
                     step={3}
                   />
 
-                  <!-- Pôle Sanitaire -->
+                   Pôle Sanitaire
                   <TextInput
                     type="text"
                     label="Ilot,lot"
@@ -1036,7 +1030,7 @@
                     step={3}
                   />
 
-                  <!-- Professionnel -->
+                   Professionnel
                   <TextInput
                     type="text"
                     label="Structure d'exercice professionnel"
@@ -1047,7 +1041,7 @@
                     step={3}
                   />
 
-                  <!-- Lieu d'exercice professionnel -->
+                   Lieu d'exercice professionnel
                   <TextInput
                     type="text"
                     label="Lieu d'exercice professionnel"
@@ -1058,7 +1052,30 @@
                     step={3}
                   />
                 </div>
+              </div>-->
+              <div
+                      class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 gap-12"
+              >
+                <TextInput
+                        type="text"
+                        label="Profession"
+                        bind:value={formData.profession}
+                        error={codeExisteError}
+                        step={3}
+                        bind:formData
+                        disabled={true}
+                />
               </div>
+
+              <EtapeProfessionnelle
+                      {formData}
+                      {errors}
+                      {values}
+                      professions={[]}
+                      {codeExisteError}
+                      {updateField}
+                      showTitle ={false}
+              />
             {/if}
 
             <!-- Step 4: Documents -->
