@@ -970,7 +970,6 @@
               {professions}
               {codeExisteError}
               {updateField}
-             
             />
           {/if}
 

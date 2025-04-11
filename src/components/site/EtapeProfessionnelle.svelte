@@ -11,6 +11,7 @@
     export let professions: any[];
     export let codeExisteError: string;
     export let updateField: (key: string, value: string) => void;
+    export let showTitle: boolean = true;
     /* export let updateDistrict1s: () => void;
     export let updateVille1s: () => void;
     export let updateCommune1s: () => void; */
@@ -159,11 +160,11 @@ console.log(formData.commune);
 
 </script>
 
-<h2
-    class="text-3xl h2-baslik-anasayfa-ozel md:text-2xl font-bold my-4 text-center md:text-left"
->
-    Informations professionnelles (étape 3/6)
-</h2>
+{#if showTitle}
+    <h2 class="text-3xl h2-baslik-anasayfa-ozel md:text-2xl font-bold my-4 text-center md:text-left">
+        Informations professionnelles (étape 3/6)
+    </h2>
+{/if}
 
 <div class="bg-white p-6 rounded-lg shadow-m mb-4">
     <!-- Radios: Profession -->

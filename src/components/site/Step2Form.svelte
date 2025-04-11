@@ -7,6 +7,7 @@
     export let errors: any;
     export let saveFormState: () => void;
     export let values: any;
+    export let showTitle: boolean = true;
     export let situationsMatrimoniales: any;
     function saveFormStateComponent() {
     if (typeof window !== "undefined" && typeof localStorage !== "undefined") {
@@ -15,10 +16,14 @@
     }
   }
   </script>
-  
+
+
+{#if showTitle}
   <h2 class="text-3xl h2-baslik-anasayfa-ozel font-semibold mb-4 text-center md:text-left">
     Informations personnelles (étape 2/6)
   </h2>
+{/if}
+
   
   <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-2 gap-4 mb-4">
     <TextInput
