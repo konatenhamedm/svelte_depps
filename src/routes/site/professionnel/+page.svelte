@@ -772,13 +772,13 @@
   }
 
   let objects = [
-    { name: "civilite", url: "/civilite" },
+    { name: "civilite", url: "/civilite/" },
     /* { name: "region", url: "/region" },
     { name: "ville", url: "/ville" },
     { name: "district", url: "/district" },
     { name: "commune", url: "/commune" }, */
-    { name: "nationate", url: "/pays" },
-    { name: "situationProfessionnelle", url: "/situationProfessionnelle" },
+    { name: "nationate", url: "/pays/" },
+    { name: "situationProfessionnelle", url: "/situationProfessionnelle/" },
   ];
 
   let values: {
