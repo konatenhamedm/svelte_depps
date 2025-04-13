@@ -75,7 +75,13 @@
 </script>
 
 <div class="form__group">
-  <label for="{label}" class="block text-2xl font-medium mb-1">{label} *</label>
+  {#if label === "Code d’identification" }
+    <label for="{label}" class="block text-2xl font-medium mb-1">{label}</label>
+    {:else}
+    <label for="{label}" class="block text-2xl font-medium mb-1">{label} *</label>
+  {/if}
+  
+  
   <input
     id="{label}"
     type={type}
