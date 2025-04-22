@@ -24,18 +24,40 @@
     <link rel="stylesheet" href="/css/skin_color.css" />
     <link rel="stylesheet" href="/css/custom.css" />
  
-  {:else}
-    <!-- Styles pour le site normal -->
-    <link href="https://fonts.googleapis.com/css?family=Poppins:100,300,400,700,900" rel="stylesheet">
-    <link rel="stylesheet" href="/site/css/icon-font.css">
-    <link rel="stylesheet" href="/site/css/style.css">
-    <link rel="stylesheet" href="/site/css/animate.min.css">
-    <link rel="stylesheet" href="/site/css/fancybox.min.css">
-    <link rel="stylesheet" href="/site/css/BeerSlider.css">
-    <link rel="stylesheet" href="/site/css/BeerSlider.unmin.css">
-    <link rel="stylesheet" href="/site/css/accordion.css">
-    <link rel="shortcut icon" type="image/png" href="/site/img/favicon.png">
-    <link rel="stylesheet" href="/site/css/odometer.min.css">
+  {:else if $page.url.pathname.startsWith("/new_site")}
+
+
+  <link rel="icon" href="https://rhythm-admin-template.multipurposethemes.com/images/favicon.ico">
+
+  <title>Rhythm HTML Template</title>
+  
+<!-- Vendors Style-->
+<link rel="stylesheet" href="/new_site/css/vendors_css.css">
+      
+<!-- Revolution Slider -->		
+<link rel="stylesheet" type="text/css" href="/new_site/revolution-slider/revolution/fonts/pe-icon-7-stroke/css/pe-icon-7-stroke.css">
+<link rel="stylesheet" type="text/css" href="/new_site/revolution-slider/revolution/css/settings.css">
+<link rel="stylesheet" type="text/css" href="/new_site/revolution-slider/revolution/css/layers.css">
+<link rel="stylesheet" type="text/css" href="/new_site/revolution-slider/revolution/css/navigation.css">  
+  
+<!-- Style-->  
+<link rel="stylesheet" href="/new_site/css/style.css">
+<link rel="stylesheet" href="/new_site/css/skin_color.css">
+{:else}
+
+ <!-- Styles pour le site normal -->
+ <link href="https://fonts.googleapis.com/css?family=Poppins:100,300,400,700,900" rel="stylesheet">
+ <link rel="stylesheet" href="/site/css/icon-font.css">
+ <link rel="stylesheet" href="/site/css/style.css">
+ <link rel="stylesheet" href="/site/css/animate.min.css">
+ <link rel="stylesheet" href="/site/css/fancybox.min.css">
+ <link rel="stylesheet" href="/site/css/BeerSlider.css">
+ <link rel="stylesheet" href="/site/css/BeerSlider.unmin.css">
+ <link rel="stylesheet" href="/site/css/accordion.css">
+ <link rel="shortcut icon" type="image/png" href="/site/img/favicon.png">
+ <link rel="stylesheet" href="/site/css/odometer.min.css">
+
+
   {/if}
 </svelte:head>
 
