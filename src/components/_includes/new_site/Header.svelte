@@ -1,8 +1,6 @@
 <script lang="ts">
 
-    import type {User} from "../../../types";
 
-    export let user: User[] = [];
 </script>
 
 	<!-- The social media icon bar -->
@@ -80,9 +78,7 @@
                   </button>	
               </div>								
               <ul class="menu">
-                  {#if user}
-                      <li><a href="/site/dashboard">Tableau de bord</a></li>
-                  {/if}
+
                   <li><a href="/">Accueil</a></li>
                   <li><a href="/new_site/about">A propos</a></li>
                   <li><a href="/new_site/depps">E-DEPPS</a></li>

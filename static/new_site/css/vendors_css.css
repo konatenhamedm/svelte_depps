@@ -1,6 +1,7 @@
 /****************************/
 /** Imports Plugin css **/
 /****************************/
+@import url(../../site/css/style.css);
 @import url(../../new_site/vendor_components/bootstrap/dist/css/bootstrap.css);
 @import url(../../new_site/vendor_components/OwlCarousel2/dist/assets/owl.theme.default.min.css);
 @import url(../../new_site/vendor_components/OwlCarousel2/dist/assets/owl.carousel.css);

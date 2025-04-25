@@ -2,12 +2,11 @@
     import Footer from "$components/_includes/new_site/Footer.svelte";
     import Header from "$components/_includes/new_site/Header.svelte";
   import { onMount } from "svelte";
-    export let data; // Les données retournées par `load()`
-    let user = data.user;
+
 
 </script>
 
-<Header user={user}></Header>
+<Header></Header>
 
 <!-- Slider Section -->
 <div id="home" class="section dart-no-padding-tb">
@@ -190,9 +189,9 @@
                         La Direction des Établissements Privés et Sanitaires met tout en œuvre pour offrir des soins d'excellence,
                         en collaboration avec nos partenaires, assurant ainsi votre confiance et votre bien-être à chaque instant.
 
-                    </p>
+                    </p><br>
                     <div class="entry-button">
-                        <a href="#" class="btn btn-primary btn-sm">Voir plus → </a>
+                        <a href="#" class="buton buton--kirmizi">Voir plus → </a>
                     </div>
 
                 </div>
