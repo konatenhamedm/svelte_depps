@@ -6,7 +6,6 @@ import Footer from "$components/_includes/new_site/Footer.svelte";
 
 <Header></Header>
 
-<!---page Title --->
 <section class="bg-img pt-150 pb-20" data-overlay="7" style="background-image: url(https://rhythm-admin-template.multipurposethemes.com/images/front-end-img/background/bg-8.jpg);">
     <div class="container">
         <div class="row">
