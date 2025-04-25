@@ -159,6 +159,12 @@ Core Navigation
 	display: block;
 	position: absolute;
 	z-index: 2;
+	bottom: -20px;
+}
+
+.nav-header.right img {
+	width: 40%;
+	margin: 0 auto;
 }
 
 .core-nav .nav-header.left {

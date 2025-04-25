@@ -25147,8 +25147,8 @@ nav.core-nav.nav-core-sticky {
   border-bottom: none; }
   nav.core-nav.nav-core-sticky.on-scroll {
     background: #ffffff; }
-    nav.core-nav.nav-core-sticky.on-scroll .wrap-core-nav-list, nav.core-nav.nav-core-sticky.on-scroll .nav-header {
-      background: #ffffff; }
+   /* nav.core-nav.nav-core-sticky.on-scroll .wrap-core-nav-list, nav.core-nav.nav-core-sticky.on-scroll .nav-header {
+      background: #ffffff; }*/
 nav.nav-core-fixed .wrap-core-nav-list, nav.nav-core-fixed .nav-header {
   background: transparent; }
 nav.nav-core-sticky .wrap-core-nav-list, nav.nav-core-sticky .nav-header {
