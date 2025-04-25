@@ -12,10 +12,9 @@
 @import url(../../new_site/vendor_components/bootstrap-select/dist/css/bootstrap-select.css);
 @import url(../../new_site/vendor_plugins/timepicker/bootstrap-timepicker.min.css);
 @import url(../../new_site/vendor_components/fullcalendar/fullcalendar.min.css);
-@import "../../new_site/vendor_components/fullcalendar/fullcalendar.print.min.css" print;
 @import url(../../new_site/vendor_components/aos/aos.css);
 @import url(../../new_site/vendor_components/datatable/datatables.min.css);
 /* Menus core CSS */
-@import url("../corenav-master/coreNavigation-1.1.3.css");
+@import url(../../new_site/corenav-master/coreNavigation-1.1.3.css);
 
 /*# sourceMappingURL=vendors_css.css.map */

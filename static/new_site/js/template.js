@@ -545,15 +545,13 @@ var options = {
 }
 
 $(document).ready(function() {
-	$('body').ihavecookies(options);
+	/* $('body').ihavecookies(options); */
 
 	if ($.fn.ihavecookies.preference('marketing') === true) {
 		console.log('This should run because marketing is accepted.');
 	}
 
-	$('#ihavecookiesBtn').on('click', function(){
-		$('body').ihavecookies(options, 'reinit');
-	});
+	
 });
 
 

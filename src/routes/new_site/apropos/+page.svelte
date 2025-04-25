@@ -3,7 +3,7 @@
 import Header from "$components/_includes/new_site/Header.svelte";
 import Footer from "$components/_includes/new_site/Footer.svelte";
 export let data;
-let user = data.user;
+let user = data?.user;
 </script>
 
 

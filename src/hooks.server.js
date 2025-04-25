@@ -31,6 +31,9 @@ export async function handle({ event, resolve }) {
   if (event.url.pathname.startsWith("/site/dashboard") && !user) {
     return redirect(302, "/");
   }
+  if (event.url.pathname.startsWith("/new_site") && !user) {
+    return redirect(302, "/");
+  }
   if ((event.url.pathname.startsWith("/site/dossiers") ||
    event.url.pathname.startsWith("/site/forum") ||
      event.url.pathname.startsWith("/site/documents") ||

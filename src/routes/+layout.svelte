@@ -33,6 +33,9 @@
   
 <!-- Vendors Style-->
 <link rel="stylesheet" href="/new_site/css/vendors_css.css">
+<link rel="stylesheet" href="/icons/fontawesome/css/all.min.css">
+<link rel="stylesheet" href="/icons/line-awesome/css/line-awesome.min.css">
+<link rel="stylesheet" href="/icons/simple-line-icons/css/simple-line-icons.css">
       
 <!-- Revolution Slider -->		
 <link rel="stylesheet" type="text/css" href="/new_site/revolution-slider/revolution/fonts/pe-icon-7-stroke/css/pe-icon-7-stroke.css">

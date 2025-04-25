@@ -3,7 +3,9 @@
     import Header from "$components/_includes/new_site/Header.svelte";
   import { onMount } from "svelte";
     export let data; // Les données retournées par `load()`
-    let user = data.user;
+    let user = data?.user;
+
+    console.log("User data:", user);
 
 </script>
 
