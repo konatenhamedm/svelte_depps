@@ -1,7 +1,9 @@
 import cookie from "cookie";
 import { redirect } from "@sveltejs/kit";
+// @ts-ignore
 import { logout } from "$lib/auth";
 
+// @ts-ignore
 export async function handle({ event, resolve }) {
   const cookies = cookie.parse(event.request.headers.get("cookie") || "");
   // Lire et décoder le cookie auth
@@ -31,9 +33,9 @@ export async function handle({ event, resolve }) {
   if (event.url.pathname.startsWith("/site/dashboard") && !user) {
     return redirect(302, "/");
   }
-  if (event.url.pathname.startsWith("/new_site") && !user) {
+  /* if (event.url.pathname.startsWith("/new_site") && !user) {
     return redirect(302, "/");
-  }
+  } */
   if ((event.url.pathname.startsWith("/site/dossiers") ||
    event.url.pathname.startsWith("/site/forum") ||
      event.url.pathname.startsWith("/site/documents") ||

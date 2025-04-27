@@ -2,8 +2,15 @@
 
 import Header from "$components/_includes/new_site/Header.svelte";
 import Footer from "$components/_includes/new_site/Footer.svelte";
+    import { onMount } from "svelte";
 export let data;
 let user = data?.user;
+
+onMount(() => {
+        if (!window.location.href.includes('reloaded=true')) {
+            window.location.href = window.location.href + (window.location.href.includes('?') ? '&' : '?') + 'reloaded=true';
+        }
+    });
 </script>
 
 

@@ -56,13 +56,13 @@
         <ul class="menu">
             <!-- {#if etat == true } -->
 
-            <li><a href="/site/dashboard">Tableau de bord  </a></li>
+            <li><a href="/new_site/dashboard">Tableau de bord   </a></li>
             <!-- {/if} -->
-            <li><a href="/">Accueil</a></li>
+            <li><a href="/new_site">Accueil</a></li>
             <li><a href="/new_site/apropos">A propos</a></li>
             <li><a href="/new_site/depps">E-DEPPS</a></li>
             <li><a href="/new_site/contact">Contactez-nous</a></li>
-            <li style="margin-top: 10px;"><a style="border: 4px solid #ff9c09;padding: 5px 12px;border-radius: 32px;" href="/new_site/inscription">Inscription</a></li>
+          <!--   <li style="margin-top: 10px;"><a style="border: 4px solid #ff9c09;padding: 5px 12px;border-radius: 32px;" href="/new_site/inscription">Inscription</a></li> -->
             <!-- {#if ready && etat} -->
             <li style="margin-top: 10px;">
               <a
@@ -125,14 +125,20 @@
             
         <ul class="menu">
           
-            <li><a href="/">Accueil</a></li>
+            <li><a href="/new_site">Accueil</a></li>
             <li><a href="/new_site/apropos">A propos</a></li>
             <li><a href="/new_site/depps">E-DEPPS</a></li>
             <li><a href="/new_site/contact">Contactez-nous</a></li>
-<li
-              style="border: 4px solid #4a9d2d; padding: 5px 17px; border-radius: 32px;"
-            >
-              <a href="/new_site/connexion">Connexion</a>
+            <li style="margin-top: 10px;"><a style="border: 4px solid #ff9c09;padding: 5px 12px;border-radius: 32px;" href="/new_site/inscription">Inscription</a></li>
+            <!-- {#if ready && etat} -->
+            <li style="margin-top: 10px;">
+              <a
+                href="/new_site/connexion" 
+                
+                style="border: 4px solid red; padding: 5px 12px; border-radius: 32px; cursor: pointer;"
+              >
+                Connexion
+              </a>
             </li>
         </ul>
     </nav>

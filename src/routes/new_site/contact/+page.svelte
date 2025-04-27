@@ -1,19 +1,27 @@
 <script>
-import Header from "$components/_includes/new_site/Header.svelte";
-import Footer from "$components/_includes/new_site/Footer.svelte";
-export let data; // Les données retournées par `load()`
-let user = data?.user;
-</script>
+    import Header from "$components/_includes/new_site/Header.svelte";
+    import Footer from "$components/_includes/new_site/Footer.svelte";
+    export let data;
+    let user = data?.user;
+    import { onMount } from "svelte";
+    const etat = true;
+    
+    onMount(() => {
+        if (!window.location.href.includes('reloaded=true')) {
+            window.location.href = window.location.href + (window.location.href.includes('?') ? '&' : '?') + 'reloaded=true';
+        }
+    });
+    </script>
 
-<Header user={user}></Header>
+<Header user={user}/>
 
-<!---page Title --->
+
 <section class="bg-img pt-150 pb-20" data-overlay="7" style="background-image: url(https://rhythm-admin-template.multipurposethemes.com/images/front-end-img/background/bg-8.jpg);">
     <div class="container">
         <div class="row">
             <div class="col-12">
                 <div class="text-center">
-                    <h2 class="page-title text-white" style="font-size: 30px">Contactez-nous</h2>
+                    <h2 class="page-title text-white" style="font-size: 30px">Contactez-nous {etat}</h2>
                     <ol class="breadcrumb bg-transparent justify-content-center">
                         <li class="breadcrumb-item"><a href="#" class="text-white-50"><i class="mdi mdi-home-outline"></i></a></li>
                         <li class="breadcrumb-item text-white active" aria-current="page">Contactez-nous</li>
@@ -58,7 +66,7 @@ let user = data?.user;
                         </div>
                         <div class="col-lg-12">
                             <div class="form-group">
-                                <textarea name="message" rows="5" class="form-control" required="" placeholder="Message"></textarea>
+                                <textarea name="message" rows="5" class="form-control"  placeholder="Message"></textarea>
                             </div>
                         </div>
                         <div class="col-lg-12">

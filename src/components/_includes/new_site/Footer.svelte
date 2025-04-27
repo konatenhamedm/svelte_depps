@@ -51,7 +51,7 @@
                         <p class="text-capitalize mb-20">Sign Up to our Newsletter and get the latest offers.</p>
                         <div class="mb-20">
                             <form class="" action="#" method="post">
-                                <input name="email" required="required" class="form-control" placeholder="Your Email Address" type="email">
+                                <input name="email"  class="form-control" placeholder="Your Email Address" type="email">
                                 <button name="submit" value="Submit" type="submit" class="btn btn-primary mt-5"> Get notified </button>
                             </form>
                         </div>
@@ -87,32 +87,15 @@
         </div>
     </div>
 <!-- -->
-<script src="/new_site/js/vendors.min.js"></script>	
+<!-- Vendor JS -->
+<script src="https://rhythm-admin-template.multipurposethemes.com/front-end/js/vendors.min.js"></script>	
+<!-- Corenav Master JavaScript -->
+<script src="https://rhythm-admin-template.multipurposethemes.com/front-end/corenav-master/coreNavigation-1.1.3.js"></script>
+<script src="https://rhythm-admin-template.multipurposethemes.com/front-end/js/nav.js"></script>
+<script src="https://rhythm-admin-template.multipurposethemes.com/assets/vendor_components/bootstrap-select/dist/js/bootstrap-select.js"></script>
 
-<script src="/new_site/corenav-master/coreNavigation-1.1.3.js"></script>
-<script src="/new_site/js/nav.js"></script>
-<script src="/new_site/vendor_components/OwlCarousel2/dist/owl.carousel.js"></script>
-<script src="/new_site/vendor_components/bootstrap-select/dist/js/bootstrap-select.js"></script>
-
-
-<script type="text/javascript" src="/new_site/revolution-slider/revolution/js/jquery.themepunch.tools.min.js"></script>
-<script type="text/javascript" src="/new_site/revolution-slider/revolution/js/jquery.themepunch.revolution.min.js"></script>
-
-	
-<script type="text/javascript" src="/new_site/revolution-slider/revolution/js/extensions/revolution.extension.actions.min.js"></script>
-<script type="text/javascript" src="/new_site/revolution-slider/revolution/js/extensions/revolution.extension.carousel.min.js"></script>
-<script type="text/javascript" src="/new_site/revolution-slider/revolution/js/extensions/revolution.extension.kenburn.min.js"></script>
-<script type="text/javascript" src="/new_site/revolution-slider/revolution/js/extensions/revolution.extension.layeranimation.min.js"></script>
-<script type="text/javascript" src="/new_site/revolution-slider/revolution/js/extensions/revolution.extension.migration.min.js"></script>
-<script type="text/javascript" src="/new_site/revolution-slider/revolution/js/extensions/revolution.extension.navigation.min.js"></script>
-<script type="text/javascript" src="/new_site/revolution-slider/revolution/js/extensions/revolution.extension.parallax.min.js"></script> 
-<script type="text/javascript" src="/new_site/revolution-slider/revolution/js/extensions/revolution.extension.slideanims.min.js"></script>
-<script type="text/javascript" src="/new_site/revolution-slider/revolution/js/extensions/revolution.extension.video.min.js"></script>
-<script src="/new_site/js/revolution-slider.js" type="text/javascript"></script>
-
-
-
-<script src="/new_site/js/template.js"></script>
+<!-- Rhythm front end -->
+<script src="https://rhythm-admin-template.multipurposethemes.com/front-end/js/template.js"></script>
 </footer>
 
 
