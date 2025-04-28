@@ -1,8 +1,9 @@
-<script>
+<script lang="ts">
   import Sub_header from '$components/_includes/new_site/Sub_header.svelte';
   import Header from "$components/_includes/new_site/Header.svelte";
   import Footer from "$components/_includes/new_site/Footer.svelte";
   import { onMount } from "svelte";
+    import { loginloginUserFront } from '$lib/auth.js';
 
   export let data;
   let user = data?.user;
@@ -14,6 +15,45 @@
       window.location.href = window.location.href + (window.location.href.includes('?') ? '&' : '?') + 'reloaded=true';
     }
   });
+
+  let showNotification = false;
+  let notificationMessage = "";
+  let notificationType = "info";
+
+  let username = "";
+  let password = "";
+  let authenticating = false;
+  $: message = "";
+
+
+
+  async function handleSubmit(event: any) {
+    authenticating = true;
+    event.preventDefault();
+    try {
+      const success = await loginloginUserFront(username, password);
+
+      if (success.token != null) {
+        window.location.href = "/site/dashboard";
+      } else {
+        message = "Veuillez vérifier vos identifiants";
+        notificationMessage = "Veuillez vérifier vos identifiants";
+        showNotification = true;
+
+        setTimeout(() => {
+          message = "";
+        }, 3000);
+      }
+      authenticating = false;
+    } catch (error) {
+      authenticating = false;
+      message = "Une erreur est survenue";
+    }
+  }
+
+  function redirectToForgotPassword() {
+    window.location.href = "/site/connexion/reset_password";
+  }
 </script>
 
 <Header user={user}></Header>
@@ -32,17 +72,17 @@
             </p>
           </div>
           <div class="p-40">
-            <form action="#" method="post">
+            <form   on:submit|preventDefault={handleSubmit}>
               <div class="form-group">
                 <div class="input-group mb-15">
                   <span class="input-group-text bg-transparent"><i class="fa fa-user"></i></span>
-                  <input type="text" class="form-control ps-15 bg-transparent" placeholder="E-mail">
+                  <input  bind:value={username} type="text" class="form-control ps-15 bg-transparent" placeholder="E-mail">
                 </div>
               </div>
               <div class="form-group">
                 <div class="input-group mb-15">
                   <span class="input-group-text bg-transparent"><i class="fa fa-lock"></i></span>
-                  <input
+                  <input  bind:value={password}
                     type={showPassword ? "text" : "password"}
                     class="form-control ps-15 bg-transparent"
                     placeholder="Mot de passe"
@@ -71,11 +111,20 @@
                   </div>
                 </div>
                 <div class="col-12 text-center">
-                  <button type="submit" class="btn btn-info w-p100 mt-15">SE CONNECTER</button>
+                  <button disabled={authenticating } type="submit" class="btn btn-info w-p100 mt-15">{authenticating ? "CONNEXION..." : "SE CONNECTER"}</button>
                 </div>
               </div>
-            </form>
+            </form><br><br>
             
+            {#if authenticating == false && message !== ""}
+              <div
+                      class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative"
+                      role="alert"
+              >
+                <strong class="font-bold">Oups erreur!</strong>
+                <span class="block sm:inline">{message}</span>
+              </div>
+            {/if}
           </div>
         </div>
       </div>
