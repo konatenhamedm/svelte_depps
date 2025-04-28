@@ -63,7 +63,7 @@
     <div class="footer-bottom bg-dark3">
         <div class="container">
             <div class="row align-items-center">
-                <div class="col-md-6 col-12 text-md-start text-center"> © <script>document.write(new Date().getFullYear())</script> <span class="text-white">E-Deeps</span>  All Rights Reserved.</div>
+                <div class="col-md-6 col-12 text-md-start text-center"> © 2025<!-- <script>document.write(new Date().getFullYear())</script> --> <span class="text-white">E-Deeps</span>  All Rights Reserved.</div>
                 <div class="col-lg-6 col-md-6 mt-md-0 mt-20">
                     <ul class="payment-icon list-unstyled d-flex gap-items-1 justify-content-md-end justify-content-center">
                         <li class="ps-0">
@@ -86,16 +86,7 @@
             </div>
         </div>
     </div>
-<!-- -->
-<!-- Vendor JS -->
-<script src="https://rhythm-admin-template.multipurposethemes.com/front-end/js/vendors.min.js"></script>	
-<!-- Corenav Master JavaScript -->
-<script src="https://rhythm-admin-template.multipurposethemes.com/front-end/corenav-master/coreNavigation-1.1.3.js"></script>
-<script src="https://rhythm-admin-template.multipurposethemes.com/front-end/js/nav.js"></script>
-<script src="https://rhythm-admin-template.multipurposethemes.com/assets/vendor_components/bootstrap-select/dist/js/bootstrap-select.js"></script>
 
-<!-- Rhythm front end -->
-<script src="https://rhythm-admin-template.multipurposethemes.com/front-end/js/template.js"></script>
 </footer>
 
 

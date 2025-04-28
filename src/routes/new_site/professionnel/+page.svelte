@@ -1,4 +1,5 @@
 <script lang="ts">
+	import Sub_header from '$components/_includes/new_site/Sub_header.svelte';
     import Header from "$components/_includes/new_site/Header.svelte";
     import Footer from "$components/_includes/new_site/Footer.svelte";
 
@@ -903,23 +904,10 @@
     });
 
 </script>
-<Header></Header>
+<Header user={user}/>
 
-<section class="bg-img pt-150 pb-20" data-overlay="7" style="background-image: url(https://rhythm-admin-template.multipurposethemes.com/images/front-end-img/background/bg-8.jpg);">
-    <div class="container">
-        <div class="row">
-            <div class="col-12">
-                <div class="text-center">
-                    <h2 class="page-title text-white" style="font-size: 30px">Inscription en tant que professionnel de santé</h2>
-                    <ol class="breadcrumb bg-transparent justify-content-center">
-                        <li class="breadcrumb-item"><a href="#" class="text-white-50"><i class="mdi mdi-home-outline"></i></a></li>
-                        <li class="breadcrumb-item text-white active" aria-current="page">Inscription</li>
-                    </ol>
-                </div>
-            </div>
-        </div>
-    </div>
-</section>
+<Sub_header titre="Inscription en tant que professionnel de santé" subTitles={[{ title: "Inscription", link: "/new_site/professionnel" }]}></Sub_header>
+
 <main style="padding-top:200px">
     <!--İletişim Form Alanı-->
     <section class="iletisim-form-alani pt-0">

@@ -1,6 +1,7 @@
 <script>
     import Header from "$components/_includes/new_site/Header.svelte";
     import Footer from "$components/_includes/new_site/Footer.svelte";
+    import Sub_header from "$components/_includes/new_site/Sub_header.svelte";
     import { onMount } from "svelte";
 
     export let data; 
@@ -17,21 +18,8 @@
 <Header user={user}/>
 
 
-<section class="bg-img pt-150 pb-20" data-overlay="7" style="background-image: url(https://rhythm-admin-template.multipurposethemes.com/images/front-end-img/background/bg-8.jpg);">
-    <div class="container">
-        <div class="row">
-            <div class="col-12">
-                <div class="text-center">
-                    <h2 class="page-title text-white" style="font-size: 30px">Inscription</h2>
-                    <ol class="breadcrumb bg-transparent justify-content-center">
-                        <li class="breadcrumb-item"><a href="#" class="text-white-50"><i class="mdi mdi-home-outline"></i></a></li>
-                        <li class="breadcrumb-item text-white active" aria-current="page">Inscription</li>
-                    </ol>
-                </div>
-            </div>
-        </div>
-    </div>
-</section>
+
+<Sub_header titre="Inscription" subTitles={[{ title: "Inscription", link: "inscription" }]}></Sub_header>
 <section class="hakkimizda-bolumu-anasayfa1" style="padding-top:150px">
     <div class="tablo">
         <div class="tablo--1-ve-3 project-image reveal-effect masker wow" style="visibility: visible;">
@@ -104,24 +92,6 @@
         </div>
     </div>
 </section>
-
-
-
-<style>
-    .footerss p {
-        display: flex;
-        flex-wrap: wrap;
-        justify-content: start !important;
-        align-items: start !important;
-    }
-    h2.h2-baslik-footer.h-yazi-margin-kucuk,.footer__list,.footer__sosyal {
-        display: flex;
-        flex-wrap: wrap;
-        justify-content: start !important;
-        align-items: start !important;
-    }
-</style>
-
 
 
 <Footer></Footer>

@@ -544,14 +544,6 @@ var options = {
 	fixedCookieTypeDesc: 'These are essential for the website to work correctly.'
 }
 
-$(document).ready(function() {
-	/* $('body').ihavecookies(options); */
 
-	if ($.fn.ihavecookies.preference('marketing') === true) {
-		console.log('This should run because marketing is accepted.');
-	}
-
-	
-});
 
 

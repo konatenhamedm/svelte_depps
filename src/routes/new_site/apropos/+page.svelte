@@ -1,4 +1,5 @@
 <script lang="ts">
+	import  Sub_header  from '$components/_includes/new_site/Sub_header.svelte';
 
 import Header from "$components/_includes/new_site/Header.svelte";
 import Footer from "$components/_includes/new_site/Footer.svelte";
@@ -16,22 +17,9 @@ onMount(() => {
 
 <Header user={user}></Header>
 
-<!---page Title --->
-<section class="bg-img pt-150 pb-50" data-overlay="7" style="background-image: url(https://rhythm-admin-template.multipurposethemes.com/images/front-end-img/background/bg-8.jpg);">
-    <div class="container">
-        <div class="row">
-            <div class="col-12">
-                <div class="text-center">
-                    <h2 class="page-title text-white">About us</h2>
-                    <ol class="breadcrumb bg-transparent justify-content-center">
-                        <li class="breadcrumb-item"><a href="#" class="text-white-50"><i class="mdi mdi-home-outline"></i></a></li>
-                        <li class="breadcrumb-item text-white active" aria-current="page">About us</li>
-                    </ol>
-                </div>
-            </div>
-        </div>
-    </div>
-</section>
+
+<Sub_header titre="A propos de nous" subTitles={[{ title: "A propos de nous", link: "/new_site/apropos" }]}></Sub_header>
+
 <!--Page content -->
 <section class="py-50 about-area">
     <div class="container-fluid p-0">
