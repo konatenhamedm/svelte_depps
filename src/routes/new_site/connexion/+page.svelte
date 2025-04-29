@@ -3,7 +3,7 @@
   import Header from "$components/_includes/new_site/Header.svelte";
   import Footer from "$components/_includes/new_site/Footer.svelte";
   import { onMount } from "svelte";
-    import { loginloginUserFront } from '$lib/auth.js';
+  import { loginloginUserFront } from '$lib/auth.js';
 
   export let data;
   let user = data?.user;
@@ -34,7 +34,7 @@
       const success = await loginloginUserFront(username, password);
 
       if (success.token != null) {
-        window.location.href = "/site/dashboard";
+        window.location.href = "/new_site/dashboard";
       } else {
         message = "Veuillez vérifier vos identifiants";
         notificationMessage = "Veuillez vérifier vos identifiants";
@@ -134,3 +134,25 @@
 
 <Footer></Footer>
 
+<style>
+  input.form-control.ps-15.bg-transparent {
+    width: 90%;
+  }
+
+  button.btn.btn-outline-secondary.s-KuO4HJeldt-u {
+    position: absolute;
+    right: 0;
+  }
+
+  .btn-outline-secondary:hover {
+    background: none !important;
+    color: black;
+    background-color: #6c757d;
+    border-color: #6c757d;
+    box-shadow: none !important;
+  }
+
+  button.btn.btn-outline-secondary.s-KuO4HJeldt-u {
+    border-style: none !important;
+  }
+</style>

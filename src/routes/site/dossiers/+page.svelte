@@ -1,13 +1,11 @@
 <script lang="ts">
   import { onMount } from "svelte";
   import Slide from "$components/Slide.svelte";
-  import Header from "$components/Header.svelte";
   import Footer from "$components/Footer.svelte";
   import {
     apiFetch,
     BASE_URL_API,
     BASE_URL_API_UPLOAD,
-    BASE_URL_API_V2,
   } from "$lib/api";
   import SkeletonLoader from "$components/_skeletons/SkeletonLoader.svelte";
   import Spinner from "$components/_skeletons/Spinner.svelte";

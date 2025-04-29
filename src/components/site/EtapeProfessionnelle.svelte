@@ -166,7 +166,7 @@ console.log(formData.commune);
     </h2>
 {/if}
 
-<div class="bg-white p-6 rounded-lg shadow-m mb-4">
+<div class=" p-6 rounded-lg shadow-m mb-4">
     <!-- Radios: Profession -->
     <div
         class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 gap-6 mb-4"
