@@ -16,7 +16,7 @@
   export let data: Record<string, string> = {};
   const dispatch = createEventDispatcher();
 
-  const url_image = "https://app.mydepps.net/uploads/";
+  const url_image = "https://prodmydepps.leadagro.net/uploads/";
   let datas = {
     personne: {
       id: "",

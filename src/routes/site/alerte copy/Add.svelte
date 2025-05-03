@@ -30,7 +30,7 @@
     async function SaveFunction() {
         isLoad = true;
         try {
-            const res = await fetch("https://app.mydepps.net/api/alerte/create", {
+            const res = await fetch("https://prodmydepps.leadagro.net/api/alerte/create", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",

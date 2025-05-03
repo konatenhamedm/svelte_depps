@@ -377,7 +377,7 @@ function submitForm() {
 
         authenticating = true;
 
-        fetch("https://app.mydepps.net/api/paiement/paiement", {
+        fetch("https://prodmydepps.leadagro.net/api/paiement/paiement", {
             method: "POST",
             body: formDatas
         })
@@ -459,7 +459,7 @@ function initPaiement() {
         });
     }
 
-    fetch("https://app.mydepps.net/api/paiement/paiement", {
+    fetch("https://prodmydepps.leadagro.net/api/paiement/paiement", {
         method: "POST",
         body: formDatas
     })
@@ -489,7 +489,7 @@ async function checkTransactionID(idtransaction: any) {
 
     try {
         const res = await fetch(
-            `https://app.mydepps.net/api/paiement/get/transaction/${idtransaction}`
+            `https://prodmydepps.leadagro.net/api/paiement/get/transaction/${idtransaction}`
         );
         const data = await res.json();
         return data.data; // Assurez-vous que l'API renvoie un objet avec une clé `valid`

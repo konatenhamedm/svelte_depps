@@ -26,7 +26,7 @@
     };
 
     try {
-      /* const url = "https://app.mydepps.net/api/alerte/create"; */
+      /* const url = "https://prodmydepps.leadagro.net/api/alerte/create"; */
 
       await apiFetch(
         true,

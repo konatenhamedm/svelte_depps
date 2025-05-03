@@ -22,7 +22,7 @@
 
   let professionLibelle: string = "";
 
-  const url_image = "https://app.mydepps.net/uploads/";
+  const url_image = "https://prodmydepps.leadagro.net/uploads/";
   let persionneId = "";
   let numero = "";
   let nom = "";

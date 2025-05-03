@@ -12,7 +12,7 @@
 
     let isLoading = false;
     let pdfUrl = "";
-    const url_image = "https://app.mydepps.net/uploads/";
+    const url_image = "https://prodmydepps.leadagro.net/uploads/";
 
     // Formatage des données
     let formattedData = {

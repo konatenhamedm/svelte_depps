@@ -9,7 +9,7 @@
     export let sizeModal: string = "lg";
     export let data: Record<string, any> = {};
     
-    const url_image = "https://app.mydepps.net/uploads/";
+    const url_image = "https://prodmydepps.leadagro.net/uploads/";
 
     let montant = "";
     let reference = "";
