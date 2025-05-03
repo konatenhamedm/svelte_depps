@@ -331,7 +331,7 @@ function validateStep() {
     data.append("email", formData.email);
     data.append("numero", formData.numero);
 
-    fetch("https://depps.leadagro.net/api/paiement/paiement", {
+    fetch("https://app.mydepps.net/api/paiement/paiement", {
       method: "POST",
       body: data
     })
@@ -355,7 +355,7 @@ function validateStep() {
 
     try {
       const res = await fetch(
-        `https://depps.leadagro.net/api/paiement/get/transaction/${idtransaction}`
+        `https://app.mydepps.net/api/paiement/get/transaction/${idtransaction}`
       );
       const data = await res.json();
       return data.data; // Assurez-vous que l'API renvoie un objet avec une clé `valid`

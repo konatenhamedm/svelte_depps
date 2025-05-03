@@ -12,7 +12,7 @@ import {
 export let open: boolean = false;
 export let sizeModal: any = "lg";
 export let data: Record < string, string > = {};
- const  url_image = "https://depps.leadagro.net/uploads/";
+ const  url_image = "https://app.mydepps.net/uploads/";
 let number = "";
 let nom = "";
 let prenoms = "";

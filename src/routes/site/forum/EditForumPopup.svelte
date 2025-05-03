@@ -30,7 +30,7 @@
  
     loading = true;
     try {
-      /* const url = "https://depps.leadagro.net/api/alerte/create"; */
+      /* const url = "https://app.mydepps.net/api/alerte/create"; */
 
       await apiFetch(true, "/forum/update/" +forum?.id, "POST", updatedForum).then((res) => {
         if (res) {

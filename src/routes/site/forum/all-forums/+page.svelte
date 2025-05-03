@@ -44,7 +44,7 @@
   async function fetchForums() {
     try {
       const response = await fetch(
-        "https://depps.leadagro.net/api/forum/actif"
+        "https://app.mydepps.net/api/forum/actif"
       );
       const result = await response.json();
 
@@ -87,7 +87,7 @@
     if (selectedTopic && newComment.trim() !== "") {
       try {
         const response = await fetch(
-          "https://depps.leadagro.net/api/avis/create",
+          "https://app.mydepps.net/api/avis/create",
           {
             method: "POST",
             headers: {

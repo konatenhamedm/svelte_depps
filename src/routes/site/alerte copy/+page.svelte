@@ -34,7 +34,7 @@
 
     async function getDestinataire() {
         try {
-            const response = await fetch('https://depps.leadagro.net/api/destinateur/');
+            const response = await fetch('https://app.mydepps.net/api/destinateur/');
             if (!response.ok) {
                 throw new Error('Échec de la récupération des destinataires');
             }
@@ -73,8 +73,8 @@
         loading = true;
         try {
             const url = isEditMode
-                ? `https://depps.leadagro.net/api/alerte/update/${current_data.id}`
-                : "https://depps.leadagro.net/api/alerte/create";
+                ? `https://app.mydepps.net/api/alerte/update/${current_data.id}`
+                : "https://app.mydepps.net/api/alerte/create";
 
             const method = isEditMode ? "PUT" : "POST";
 

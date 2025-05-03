@@ -505,7 +505,7 @@
 
     try {
       const res = await fetch(
-              `https://depps.leadagro.net/api/professionnel/existe/code/${code}`,
+              `https://app.mydepps.net/api/professionnel/existe/code/${code}`,
       );
       const data = await res.json();
       return data.data;

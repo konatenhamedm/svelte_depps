@@ -50,7 +50,7 @@
 
     async function fetchData() {
         try {
-            const response = await fetch(`https://depps.leadagro.net/api/notification/nombre/${user.id}`);
+            const response = await fetch(`https://app.mydepps.net/api/notification/nombre/${user.id}`);
             if (response.ok) {
                 const result = await response.json();
                 if (result.code === 200 && result.data) {
