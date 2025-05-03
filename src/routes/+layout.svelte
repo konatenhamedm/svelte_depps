@@ -32,6 +32,9 @@
     <link rel="stylesheet" href="/css/custom.css" />
 
     <style>
+      .theme-success.light-skin .sidebar-menu > li.treeview .treeview-menu li a {
+    color: white !important;
+}
 
 p{
   font-size: 1.4rem !important;
