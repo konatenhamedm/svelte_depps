@@ -87,7 +87,7 @@
 
                 <div class="lg:w-1/3 md:w-2/3 w-full p-4 shadow-sm border rounded bg-white cursor-pointer" onClick={() => {goto('/site/profil')}}>
                     <div class="grid grid-cols-5">
-                        <a href="/site/notification" class="relative text-blue-500 hover:text-blue-700 flex items-center">
+                        <a href="/new_site/notification" class="relative text-blue-500 hover:text-blue-700 flex items-center">
                             <i class="fas fa-bell text-4xl"></i>
                             {#if notificationCount > 0}
                                 <span class="absolute -top-2 right-0 inline-flex items-center justify-center px-2 py-1 text-xs font-bold text-white bg-red-600 rounded-full">
