@@ -35,6 +35,7 @@
       .theme-success.light-skin .sidebar-menu > li.treeview .treeview-menu li a {
     color: white !important;
 }
+
 .theme-primary .main-header {
     background: #343437 !important;
 }

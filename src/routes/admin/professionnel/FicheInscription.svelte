@@ -212,7 +212,7 @@ yPos += logoHeight + 10;
     });
 
     // Fermer la modal parente quand celle-ci s'ouvre
-    $: if (open) {
+  /*   $: if (open) {
         const parentModal = document.querySelector('.modale_general');
         if (parentModal) {
             parentModal.style.display = 'none';
@@ -225,7 +225,13 @@ yPos += logoHeight + 10;
             parentModal.style.display = 'block';
         }
         open = false;
+    } */
+
+    function handleModalClose(event: Event) {
+    if (isLoading) {
+      event.preventDefault();
     }
+  }
 </script>
 
 <Modal
@@ -233,7 +239,7 @@ yPos += logoHeight + 10;
         title=""
         size={sizeModal}
         class="m-4"
-        on:close={handleClose}
+        on:close={handleModalClose}
 >
     <div class="space-y-6 p-4">
         {#if isLoading}
@@ -255,14 +261,14 @@ yPos += logoHeight + 10;
         <Button
                 color="alternative"
                 style="background-color: gray !important; color: white;"
-                on:click={handleClose}
+                on:click={handleModalClose}
         >
             Fermer
         </Button>
     </div>
 </Modal>
 
-<style>
+<!-- <style>
     /* Masquer la modal parente quand celle-ci est ouverte */
     .modal-backdrop {
         z-index: 9999 !important;
@@ -270,4 +276,4 @@ yPos += logoHeight + 10;
     .modal-container {
         z-index: 10000 !important;
     }
-</style>
+</style> -->

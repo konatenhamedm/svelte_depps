@@ -176,7 +176,7 @@ $(function () {
             },
           }
         },
-        colors: ["#0d6efd" , "#04a08b"],
+        colors: ["#0d6efd" , "#4d7cff"],
         stroke: {
           show: true,
           width: 0,
@@ -281,7 +281,7 @@ $(function () {
           width: [3,3,3],
           curve: 'smooth',
         },
-        colors:["#0d6efd","#04a08b","#FC4438"],  
+        colors:["#0d6efd","#4d7cff","#FC4438"],  
         title: {
           text: '',
           align: 'left'
