@@ -217,15 +217,12 @@ yPos += logoHeight + 10;
         if (parentModal) {
             parentModal.style.display = 'none';
         }
-    }
+    }*/
 
     function handleClose() {
-        const parentModal = document.querySelector('.modale_general');
-        if (parentModal) {
-            parentModal.style.display = 'block';
-        }
+       
         open = false;
-    } */
+    } 
 
     function handleModalClose(event: Event) {
     if (isLoading) {
@@ -238,7 +235,7 @@ yPos += logoHeight + 10;
         bind:open
         title=""
         size={sizeModal}
-        class="m-4"
+        class="m-4 "
         on:close={handleModalClose}
 >
     <div class="space-y-6 p-4">
@@ -261,7 +258,7 @@ yPos += logoHeight + 10;
         <Button
                 color="alternative"
                 style="background-color: gray !important; color: white;"
-                on:click={handleModalClose}
+                on:click={handleClose}
         >
             Fermer
         </Button>

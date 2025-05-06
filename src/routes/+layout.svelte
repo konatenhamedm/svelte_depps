@@ -40,6 +40,12 @@
     background: #343437 !important;
 }
 
+
+    .dark\:border-gray-600 {
+        --tw-border-opacity: 1;
+        background-color: white !important;
+    }
+
 p{
   font-size: 1.4rem !important;
 }

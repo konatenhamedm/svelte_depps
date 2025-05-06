@@ -338,7 +338,7 @@
           />
         </div>
         <div>
-          <p>ssss {userEmail}</p>
+          
           <InputSimple
             fieldName="userEmail"
             label="Email utilisateur"
@@ -501,7 +501,7 @@
         <div
           on:click={() => (
             (current_data = url_image + cniPath + "/" + cniAlt),
-            (isModalOpen = true)
+            (openShow = true)
           )}
           class="w-full h-9 flex justify-center bg-gray-700 hover:bg-gray-700 text-white font-bold py-2 pb-[1.9rem] px-4 border border-white rounded cursor-pointer"
         >

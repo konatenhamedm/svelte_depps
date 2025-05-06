@@ -151,8 +151,8 @@
                 <Input
                   placeholder="Rechercher..."
                   type="text"
-                  bind:value={searchQuery}
-                  class="form-input font-normal rounded block w-full border-gray-200 text-sm focus:border-gray-300 focus:ring-0 bg-white mb-4"
+                  bind:value={searchQuery} 
+                  class="form-input font-normal rounded block w-full border-black text-sm focus:border-black focus:ring-0 bg-white mb-4"
                 />
               </div>
             </div>
