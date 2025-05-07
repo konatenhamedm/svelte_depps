@@ -39,7 +39,10 @@
 .theme-primary .main-header {
     background: #343437 !important;
 }
-
+.dark\:bg-gray-800 {
+       
+       background-color: white !important;
+   }
 
     .dark\:border-gray-600 {
         --tw-border-opacity: 1;
