@@ -40,7 +40,10 @@
     background: #343437 !important;
 }
 
-
+.dark\:bg-gray-800 {
+        --tw-bg-opacity: 1;
+        background-color: white !important;
+    }
     .dark\:border-gray-600 {
         --tw-border-opacity: 1;
         background-color: white !important;
