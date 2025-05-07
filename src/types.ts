@@ -240,6 +240,15 @@ export interface District {
     libelle: string;
   };
 }
+export interface Region {
+  id: number;
+  libelle: string;
+  code: string;
+  direction: {
+    id: number;
+    libelle: string;
+  };
+}
 export interface Commune {
   id: number;
   libelle: string;

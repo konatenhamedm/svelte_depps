@@ -6,6 +6,7 @@
   import Header from "$components/Header.svelte";
   import Slide from "$components/Slide.svelte";
   import { loginloginUserFront } from "$lib/auth";
+    import { onMount } from "svelte";
 
   let showNotification = false;
   let notificationMessage = "";
@@ -47,6 +48,10 @@
   function redirectToForgotPassword() {
     window.location.href = "/site/connexion/reset_password";
   }
+  onMount(() => {
+    localStorage.clear();
+   
+  });
 </script>
 
 <div id="">

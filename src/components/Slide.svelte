@@ -10,6 +10,8 @@
   async function logout() {
     await fetch("/auth/logout", { method: "POST" });
     goto("/"); // Redirection après déconnexion
+    localStorage.clear();
+
   }
 
   let hasNotifications = false;

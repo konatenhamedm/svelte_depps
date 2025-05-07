@@ -1,82 +1,66 @@
 <script lang="ts">
-  import Spinner from "$components/_skeletons/Spinner.svelte";
   import InputSimple from "$components/inputs/InputSimple.svelte";
   import { BASE_URL_API } from "$lib/api";
   import { Button, Input, Label, Modal, Textarea } from "flowbite-svelte";
+  import Notification from "$components/_includes/Notification.svelte";
   import InputTextArea from "$components/inputs/InputTextArea.svelte";
-    import { onMount } from "svelte";
-    import InputSelect from "$components/inputs/InputSelect.svelte";
 
-  export let open: boolean = false; // modal control
-  let isLoad = false;
-  let code: string = "";
-  let libelle: string = "";
-  let direction: any = "";
-  let directions: any = [];
+  let showNotification = false;
+  let notificationMessage = "";
+  let notificationType = "info";
 
-  export let sizeModal: any = "lg";
   export let userUpdateId: any;
+  export let open: boolean = false;
+  let isLoad = false;
+
+  let direction: any = {
+    libelle: ""
+  };
+  export let sizeModal: any = "lg";
 
   export let data: Record<string, string> = {};
 
-  // Initialize form data with the provided record
-  function init(form: HTMLFormElement) {
-    code = data?.code;
-    libelle = data?.libelle;
-    direction = data?.direction.id;
-  }
+  function init(form: HTMLFormElement) {}
 
   async function SaveFunction() {
     isLoad = true;
-
     try {
-      const res = await fetch(BASE_URL_API + "/region/update/" + data?.id, {
+      const res = await fetch(BASE_URL_API + "/direction/create", {
         method: "POST",
         headers: {
           "Content-Type": "application/json"
         },
         body: JSON.stringify({
-          code: code,
-          libelle: libelle,
-          direction: direction,
-          userUpdate: userUpdateId
+          userUpdate: userUpdateId,
+          libelle: direction.libelle
         })
       });
 
       if (res.ok) {
         isLoad = false;
-        open = false; // Close the modal
+        open = false;
+        notificationMessage = "direction créé avec succès!";
+        notificationType = "success";
+        showNotification = true;
       }
     } catch (error) {
+      notificationMessage = "Une erreur crée lors de l enregistrement";
+      notificationType = "error";
+      showNotification = true;
       console.error("Error saving:", error);
     }
   }
 
   function handleModalClose(event: Event) {
     if (isLoad) {
-      event.preventDefault();
+      event.preventDefault(); // Prevent modal from closing if loading
     }
   }
-  async function getData() {
-    try {
-      const res = await fetch(BASE_URL_API + "/direction/");
-      const data = await res.json();
-      directions = data.data;
-    } catch (error) {
-      console.error("Error fetching directions:", error);
-    }
-  }
-
-  onMount(async() => {
-   await getData();
-  });
 </script>
 
 <Modal
   bind:open
-  title={Object.keys(data).length
-    ? "Modification de region"
-    : "Modification de region"}
+  title={Object.keys(data).length ? "Ajouter un direction " : "Ajouter un direction"}
   size={sizeModal}
   class="m-4 modale_general"
   on:close={handleModalClose}
@@ -90,31 +74,13 @@
   <div class="space-y-6 p-0">
     <form action="#" use:init>
       <div class="grid grid-cols-1">
-        <div class="grid grid-cols-1">
-          <InputSimple
-            fieldName="code"
-            label="Code"
-            bind:field={code}
-            placeholder="entrez le code"
-            class="w-full"
-          ></InputSimple>
-          <InputSimple
-            fieldName="libelle"
-            label="Libelle"
-            bind:field={libelle}
-            placeholder="entrez le libelle"
-            class="w-full"
-          ></InputSimple>
-
-          <InputSelect
-          label="Direction"
-          bind:selectedId={direction}
-          datas={directions}
-          id="direction"
-        
-        ></InputSelect>
-         
-        </div>
+        <InputSimple
+          fieldName="libelle"
+          label="Libelle"
+          bind:field={direction.libelle}
+          placeholder="entrez le libelle"
+          class="w-full"
+        ></InputSimple>
       </div>
     </form>
   </div>
@@ -126,7 +92,7 @@
         <Button
           disabled={true}
           color="blue"
-          style="background-color: #55a1ff;"
+          style="background-color: blue;"
           type="submit"
         >
           <div class="flex flex-row gap-2">
@@ -143,14 +109,22 @@
         </Button>
       {:else}
         <button
-          type="button"
           style="background-color: #55a1ff;"
+          type="button"
           class="bg-[#55a1ff] text-white px-4 py-2 rounded-md shadow-sm hover:bg-[#008020]"
           on:click={SaveFunction}
         >
-          Modifier
+          Enregistrer
         </button>
       {/if}
     </div>
   </div>
 </Modal>
+
+{#if showNotification}
+  <Notification
+    message={notificationMessage}
+    type={notificationType}
+    duration={5000}
+  />
+{/if}

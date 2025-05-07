@@ -4,43 +4,33 @@
   import { BASE_URL_API } from "$lib/api";
   import { Button, Input, Label, Modal, Textarea } from "flowbite-svelte";
   import InputTextArea from "$components/inputs/InputTextArea.svelte";
-    import { onMount } from "svelte";
-    import InputSelect from "$components/inputs/InputSelect.svelte";
 
   export let open: boolean = false; // modal control
   let isLoad = false;
   let code: string = "";
   let libelle: string = "";
-  let direction: any = "";
-  let directions: any = [];
 
   export let sizeModal: any = "lg";
-  export let userUpdateId: any;
 
+  export let userUpdateId: any;
   export let data: Record<string, string> = {};
 
   // Initialize form data with the provided record
   function init(form: HTMLFormElement) {
     code = data?.code;
     libelle = data?.libelle;
-    direction = data?.direction.id;
   }
 
   async function SaveFunction() {
     isLoad = true;
 
     try {
-      const res = await fetch(BASE_URL_API + "/region/update/" + data?.id, {
+      const res = await fetch(BASE_URL_API + "/direction/update/" + data?.id, {
         method: "POST",
         headers: {
           "Content-Type": "application/json"
         },
-        body: JSON.stringify({
-          code: code,
-          libelle: libelle,
-          direction: direction,
-          userUpdate: userUpdateId
-        })
+        body: JSON.stringify({ libelle: libelle, userUpdate: userUpdateId })
       });
 
       if (res.ok) {
@@ -57,26 +47,13 @@
       event.preventDefault();
     }
   }
-  async function getData() {
-    try {
-      const res = await fetch(BASE_URL_API + "/direction/");
-      const data = await res.json();
-      directions = data.data;
-    } catch (error) {
-      console.error("Error fetching directions:", error);
-    }
-  }
-
-  onMount(async() => {
-   await getData();
-  });
 </script>
 
 <Modal
   bind:open
   title={Object.keys(data).length
-    ? "Modification de region"
-    : "Modification de region"}
+    ? "Modification de direction"
+    : "Modification de direction"}
   size={sizeModal}
   class="m-4 modale_general"
   on:close={handleModalClose}
@@ -92,28 +69,12 @@
       <div class="grid grid-cols-1">
         <div class="grid grid-cols-1">
           <InputSimple
-            fieldName="code"
-            label="Code"
-            bind:field={code}
-            placeholder="entrez le code"
-            class="w-full"
-          ></InputSimple>
-          <InputSimple
             fieldName="libelle"
             label="Libelle"
             bind:field={libelle}
             placeholder="entrez le libelle"
             class="w-full"
           ></InputSimple>
-
-          <InputSelect
-          label="Direction"
-          bind:selectedId={direction}
-          datas={directions}
-          id="direction"
-        
-        ></InputSelect>
-         
         </div>
       </div>
     </form>

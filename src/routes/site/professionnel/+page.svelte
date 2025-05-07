@@ -212,9 +212,9 @@
         ? ""
         : "La situation est requise";
 
-      errors.poleSanitaire = formData.poleSanitaire
+     /*  errors.poleSanitaire = formData.poleSanitaire
         ? ""
-        : "Le pole sanitaire est requis";
+        : "Le pole sanitaire est requis"; */
       errors.lieuExercicePro = formData.lieuExercicePro
         ? ""
         : "Le lieu d'exercice est requis";
@@ -585,6 +585,8 @@
           console.log(result.errors);
         } else {
           connexion();
+          localStorage.clear();
+
         }
       })
       .catch((error) => {
