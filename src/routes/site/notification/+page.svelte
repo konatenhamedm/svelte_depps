@@ -10,9 +10,48 @@
     let notificationsnotRead = [];
     let isLoading = true;
 
+    let currentPage = 1;
+    const itemsPerPage = 3;
+
     let searchQuery = "";
     let totalNotifications = 0;
     let totalNotificationsNoRead = 0;
+
+    $: paginatedalertes = notifications.slice(
+        (currentPage - 1) * itemsPerPage,
+        currentPage * itemsPerPage
+    );
+
+    // Calcul du nombre total de pages
+    export let totalPages = 10;
+
+    // Calcul du nombre total de pages
+    $: totalPages = Math.ceil(notifications.length / itemsPerPage);
+
+    // Fonction pour changer de page
+    function goToPage(page: any) {
+        if (page >= 1 && page <= totalPages) {
+            currentPage = page;
+        }
+    }
+
+
+    function getPageNumbers() {
+        let pages = [];
+        if (totalPages <= 7) {
+            // Affiche toutes les pages si <= 7 pages
+            for (let i = 1; i <= totalPages; i++) {
+                pages.push(i);
+            }
+        } else {
+            if (currentPage > 3) pages.push(1, '...');
+            for (let i = Math.max(1, currentPage - 2); i <= Math.min(totalPages, currentPage + 2); i++) {
+                pages.push(i);
+            }
+            if (currentPage < totalPages - 2) pages.push('...', totalPages);
+        }
+        return pages;
+    }
 
     export let data;
     let user = data?.user;
@@ -135,59 +174,134 @@
     </button>
     <span>/</span>
     <span class="text-gray-800">Liste des notifications</span> <!-- Nom de la page actuelle -->
-  </div><br>
-<main class="mx-auto px-8 py-8 main-divoo"style="padding-top:250px;padding-bottom:142px;">
-    <div class="max-w-[125rem] mx-auto p-6">
-        <div class="bg-white rounded-lg shadow-sm overflow-hidden">
-            <!-- Notification Header -->
-            <div class="p-4 border-b flex justify-between items-center">
-                <h1 class="text-xl font-semibold">{totalNotificationsNoRead} non lus sur {totalNotifications} {totalNotifications > 0 ? 'Notifications':'Notification' }</h1>
-                <div class="relative">
-                    <input
-                            type="text"
-                            placeholder="Search by Name Product"
-                            class="pl-10 pr-4 py-2 border rounded-full bg-gray-100 w-64"
-                            bind:value={searchQuery}
-                    />
-                    <svg class="absolute left-3 top-3 w-4 h-4 text-gray-500" fill="none" stroke="currentColor"
-                         viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                              d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
-                    </svg>
-                </div>
-            </div>
+  </div><br><br><br><br><br><br><br><br><br><br><br>
 
-            <!-- Notification List -->
-            <div class="divide-y">
-                {#if isLoading}
-                    <NotificationSkeleton count={5} />
-                {:else}
-                    {#each notifications as notification (notification.id)}
+<main style="background-color: #fff" class="pb-20">
+    <style>
+        .entete {
+            width: 80% !important;
+        }
+        .tablo:not(:last-child) {
+            margin-bottom: 35px;
+        }
+        .dropify-wrapper .dropify-message p {
+            text-align: center;
+        }
+        .dropify-wrapper .dropify-message span.file-icon {
+            font-size: 50px;
+            color: #ccc;
+            display: none;
+        }
+        .dropify-wrapper {
+            height: 100px !important;
+        }
+        .col-md-3 {
+            margin-top: 15px !important;
+        }
+        .iletisim-form-alani {
+            padding: 20rem 157px 10rem !important;
+
+            background-color: #fff;
+        }
+        .main-div {
+            margin-top: -10px;
+            margin-bottom: 130px;
+            /* border: 1px solid #e5e7eb; */
+            background: transparent;
+            border-radius: 10px;
+            padding: 20rem 316px 10rem !important;
+        }
+
+        .file-ariane {
+            position: absolute;
+            width: 100%;
+            top: 96px;
+            background: #4292cecc;
+            padding: 22px;
+            color: white;
+            font-size: 14px;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .file-ariane span {
+            color: white;
+            margin: 0 5px;
+        }
+        .pagination-controls {
+            /* display: flex; */
+            justify-content: center;
+            align-items: center;
+            margin-top: 20px;
+        }
+        .pagination-controls button {
+            margin: 0 10px;
+            padding: 5px 10px;
+            background-color: #f57f30;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .pagination-controls button:disabled {
+            background-color: #ccc;
+            cursor: not-allowed;
+        }
+
+        .pagination-controls span {
+            margin: 0 10px;
+        }
+
+
+
+    </style>
+    <link
+            rel="stylesheet"
+            href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
+            integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN"
+            crossorigin="anonymous"
+    />
+    <link
+            rel="stylesheet"
+            href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
+            integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A=="
+            crossorigin="anonymous"
+            referrerpolicy="no-referrer"
+    />
+    <section class="hakkimizda-bolumu-anasayfa1 iletisim-form-alani" style="padding-top:120px">
+        <div class="container">
+            <div class="masqueur à effet de révélation d'image de projet wow">
+
+                {#if notifications.length > 0}
+                    {#each notifications as notification, index}
                         <div
                                 class="services-kutu2 project-image reveal-effect masker wow"
-                                style="cursor: pointer; visibility: visible; width: 100%; margin-bottom: 15px; {!notification.isRead ? 'background-color: #f8f9fa !important;' : ''}"
+                                style="cursor: pointer; visibility: visible; width: 100%; margin-bottom: 15px;"
                         >
                             <div class="row">
                                 <div class="col-md-1">
-                                    {#if !notification.isRead}
-                                        <i style="font-size: 25px; margin-top: 12px; color: #f57f30;" class="fa fa-bell"></i>
-                                    {:else}
-                                        <i style="font-size: 25px; margin-top: 12px; color: #ccc;" class="fa fa-bell-o"></i>
-                                    {/if}
+                                    <i
+                                            style="font-size: 25px; margin-top: 12px; color: #f57f30;"
+                                            class="fa fa-bell"
+                                    ></i>
                                 </div>
-                                <div class="col-md-8">
-                                    <p style="margin-top: 12px; margin-bottom: 5px;">
-                                        {notification.libelle}
+                                <div class="col-md-6">
+                                    <p style="margin-top: 12px;">
+                                        {notification.createdAt}
                                     </p>
-                                    <p class="text-xs text-gray-500" style="font-size: 12px;">{notification.createdAt}</p>
                                 </div>
-                                <div class="col-md-3 d-none d-sm-block">
+                                <div class="col-md-3">
+                                    {notification.libelle}
+                                </div>
+                                <div class="col-md-2 d-none d-sm-block">
                                     <form action="#" class="delete_alerte">
+
                                         <button
-                                                style="height: 50px; width: 50px; background: red !important; padding: 0; float: right;"
+                                                on:click={() => deleteNotification(notification.id)}
+                                                style="height: 50px; width: 50px; background: red !important; padding: 0;"
                                                 class="buton buton--kirmizi"
                                                 id="three_customer"
-                                                on:click|stopPropagation={() => deleteNotification(notification.id)}
                                         >
                                             <i class="fa fa-trash"></i>
                                         </button>
@@ -196,11 +310,58 @@
                             </div>
                         </div>
                     {/each}
+                {:else}
+                    <div
+                            class="services-kutu2 project-image reveal-effect masker wow"
+                            style="cursor: pointer; visibility: visible; width: 100%;"
+                    >
+                        <div class="row">
+                            <div class="col-md-12 text-center">
+                                <p style="margin: auto; text-align: center;">
+                                    Aucune notification pour l'instant
+                                </p>
+                            </div>
+                        </div>
+                    </div>
                 {/if}
 
+                <!-- Contrôles de pagination -->
+                {#if notifications.length > itemsPerPage}
+                    <div class="pagination-controls">
+
+                        <button on:click={() => goToPage(1)} disabled={currentPage === 1}>
+                            Premier
+                        </button>
+                        <button on:click={() => goToPage(currentPage - 1)} disabled={currentPage === 1}>
+                            Précédent
+                        </button>
+                        {#each getPageNumbers() as page}
+                            {#if page === '...'}
+                                <span class="dots">...</span>
+                            {:else}
+                                <button
+                                        on:click={() => goToPage(page)}
+                                        class:active={page === currentPage}
+                                >
+                                    {page}
+                                </button>
+                            {/if}
+                        {/each}
+                        <button on:click={() => goToPage(currentPage + 1)} disabled={currentPage === totalPages}>
+                            Suivant
+                        </button>
+
+
+                        <button on:click={() => goToPage(totalPages)} disabled={currentPage === totalPages}>
+                            Dernier
+                        </button>
+                    </div>
+
+                {/if}
+                <br /><br /><br /><br /><br /><br /> <br /><br /><br /><br /><br /><br /> <br /><br /><br />
             </div>
         </div>
-    </div>
+    </section>
 </main>
 
 <!-- Popup pour afficher la notification -->
