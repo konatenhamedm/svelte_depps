@@ -4,11 +4,15 @@
   import { BASE_URL_API } from "$lib/api";
   import { Button, Input, Label, Modal, Textarea } from "flowbite-svelte";
   import InputTextArea from "$components/inputs/InputTextArea.svelte";
+    import { onMount } from "svelte";
+    import InputSelect from "$components/inputs/InputSelect.svelte";
 
   export let open: boolean = false; // modal control
   let isLoad = false;
   let code: string = "";
   let libelle: string = "";
+  let direction: any = "";
+  let directions: any = [];
 
   export let sizeModal: any = "lg";
   export let userUpdateId: any;
@@ -19,6 +23,7 @@
   function init(form: HTMLFormElement) {
     code = data?.code;
     libelle = data?.libelle;
+    direction = data?.direction.id;
   }
 
   async function SaveFunction() {
@@ -33,6 +38,7 @@
         body: JSON.stringify({
           code: code,
           libelle: libelle,
+          direction: direction,
           userUpdate: userUpdateId
         })
       });
@@ -51,6 +57,19 @@
       event.preventDefault();
     }
   }
+  async function getData() {
+    try {
+      const res = await fetch(BASE_URL_API + "/direction/");
+      const data = await res.json();
+      directions = data.data;
+    } catch (error) {
+      console.error("Error fetching directions:", error);
+    }
+  }
+
+  onMount(async() => {
+   await getData();
+  });
 </script>
 
 <Modal
@@ -87,6 +106,13 @@
             class="w-full"
           ></InputSimple>
 
+          <InputSelect
+          label="Direction"
+          bind:selectedId={direction}
+          datas={directions}
+          id="direction"
+        
+        ></InputSelect>
          
         </div>
       </div>

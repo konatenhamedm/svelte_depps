@@ -11,7 +11,7 @@ export async function apiFetch(
   data: any = null,
   options: RequestInit = {}
 ): Promise<any> {
-  // Définition des headers par défaut
+  // Définition des headers par défautjjk
   const headers: HeadersInit = {
     ...options.headers,
     ...(method !== "GET" ? { "Content-Type": "application/json" /* ,'Access-Control-Allow-Origin':'https://depps.leadagro.net' */} : {}),

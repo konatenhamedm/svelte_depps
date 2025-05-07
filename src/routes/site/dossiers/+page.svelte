@@ -1,14 +1,8 @@
 <script lang="ts">
   import { onMount } from "svelte";
   import Slide from "$components/Slide.svelte";
-  import Header from "$components/Header.svelte";
   import Footer from "$components/Footer.svelte";
-  import {
-    apiFetch,
-    BASE_URL_API,
-    BASE_URL_API_UPLOAD,
-    BASE_URL_API_V2,
-  } from "$lib/api";
+  import { apiFetch, BASE_URL_API, BASE_URL_API_UPLOAD } from "$lib/api";
   import SkeletonLoader from "$components/_skeletons/SkeletonLoader.svelte";
   import Spinner from "$components/_skeletons/Spinner.svelte";
   import { goto } from "$app/navigation";
@@ -19,6 +13,7 @@
   import type { Civilite, District, Pays } from "../../../types";
   import Step2Form from "$components/site/Step2Form.svelte";
   import EtapeProfessionnelle from "$components/site/EtapeProfessionnelle.svelte";
+  import { is } from "date-fns/locale";
 
   export let data;
   let user = data?.user;
@@ -140,73 +135,76 @@
   }
 
   async function getUserInfos() {
+    isLoading = true;
     try {
       const userId = user?.personneId;
-      const response = await apiFetch(true, `/professionnel/get/one/${userId}`);
-      console.log("response before condition", response);
-      if (response.data) {
-        const apiData = response.data;
-        console.log("content api data", apiData);
+      const response = await apiFetch(true, `/professionnel/get/one/${userId}`)
+        .then((res) => {
+          const apiData = res.data;
 
-        formData = {
-          code: apiData.personne.code ? apiData.personne.code : "",
-          nom: apiData.personne.nom || "",
-          prenoms: apiData.personne.prenoms || "",
-          nationalite: apiData.personne.nationate
-            ? String(apiData.personne.nationate.id)
-            : "",
-          civilite: apiData.personne.civilite
-            ? String(apiData.personne.civilite.id)
-            : "",
-          emailAutre: apiData.personne.email || "",
-          numero: apiData.personne.number || "",
-          dateNaissance: formatDateForInput(apiData.personne.dateNaissance),
-          situation: apiData.personne.situation || "",
-          profession: apiData.personne.profession.libelle || "",
-          emailPro: apiData.personne.emailPro || "",
-          dateDiplome: formatDateForInput(apiData.personne.dateDiplome),
-          lieuDiplome: apiData.personne.lieuDiplome || "",
-          datePremierDiplome: formatDateForInput(
-            apiData.personne.datePremierDiplome,
-          ),
-          diplome: apiData.personne.diplome || "",
-          situationPro: apiData.personne.situationPro
-            ? String(apiData.personne.situationPro.id)
-            : "",
-          professionnel: apiData.personne.professionnel || "",
-          region: apiData.personne.region ? apiData.personne.region.id : "",
-          poleSanitaire: apiData.personne.poleSanitaire
-            ? apiData.personne.poleSanitaire
-            : "",
-          district: apiData.personne.district
-            ? apiData.personne.district.id
-            : "",
-          commune: apiData.personne.commune ? apiData.personne.commune.id : "",
-          ville: apiData.personne.ville ? apiData.personne.ville.id : "",
-          quartier: apiData.personne.quartier ? apiData.personne.quartier : "",
-          lieuExercicePro: apiData.personne.lieuExercicePro || "",
-
-          /*  poleSanitairePro: apiData.personne.poleSanitairePro || "",*/
-          photo: apiData.personne.photo || "",
-          cni: apiData.personne.cni || "",
-          casier: apiData.personne.casier || "",
-          diplomeFile: apiData.personne.diplomeFile || "",
-          certificat: apiData.personne.certificat || "",
-          cv: apiData.personne.cv || "",
-          // Organisation
-          appartenirOrganisation: apiData.personne.appartenirOrganisation,
-          organisationNom:
-            apiData.personne.appartenirOrganisation == "oui"
-              ? apiData.personne.organisationNom || ""
+          formData = {
+            code: apiData.personne.code ? apiData.personne.code : "",
+            nom: apiData.personne.nom || "",
+            prenoms: apiData.personne.prenoms || "",
+            nationalite: apiData.personne.nationate
+              ? String(apiData.personne.nationate.id)
               : "",
-        };
+            civilite: apiData.personne.civilite
+              ? String(apiData.personne.civilite.id)
+              : "",
+            emailAutre: apiData.personne.email || "",
+            numero: apiData.personne.number || "",
+            dateNaissance: formatDateForInput(apiData.personne.dateNaissance),
+            situation: apiData.personne.situation || "",
+            profession: apiData.personne.profession.libelle || "",
+            emailPro: apiData.personne.emailPro || "",
+            dateDiplome: formatDateForInput(apiData.personne.dateDiplome),
+            lieuDiplome: apiData.personne.lieuDiplome || "",
+            datePremierDiplome: formatDateForInput(
+              apiData.personne.datePremierDiplome,
+            ),
+            diplome: apiData.personne.diplome || "",
+            situationPro: apiData.personne.situationPro
+              ? String(apiData.personne.situationPro.id)
+              : "",
+            professionnel: apiData.personne.professionnel || "",
+            region: apiData.personne.region ? apiData.personne.region.id : "",
+            poleSanitaire: apiData.personne.poleSanitaire
+              ? apiData.personne.poleSanitaire
+              : "",
+            district: apiData.personne.district
+              ? apiData.personne.district.id
+              : "",
+            commune: apiData.personne.commune
+              ? apiData.personne.commune.id
+              : "",
+            ville: apiData.personne.ville ? apiData.personne.ville.id : "",
+            quartier: apiData.personne.quartier
+              ? apiData.personne.quartier
+              : "",
+            lieuExercicePro: apiData.personne.lieuExercicePro || "",
 
-        /* await getProfessionLibelle(apiData.personne.profession.code); */
-      } else {
-        console.error("Erreur API", response.status);
-      }
+            /*  poleSanitairePro: apiData.personne.poleSanitairePro || "",*/
+            photo: apiData.personne.photo || "",
+            cni: apiData.personne.cni || "",
+            casier: apiData.personne.casier || "",
+            diplomeFile: apiData.personne.diplomeFile || "",
+            certificat: apiData.personne.certificat || "",
+            cv: apiData.personne.cv || "",
+            // Organisation
+            appartenirOrganisation: apiData.personne.appartenirOrganisation,
+            organisationNom:
+              apiData.personne.appartenirOrganisation == "oui"
+                ? apiData.personne.organisationNom || ""
+                : "",
+          };
+        })
+        .finally(() => {
+          isLoading = false;
+        });
     } catch (error) {
       console.error("Erreur de récupération des données", error);
+      isLoading = false;
     }
   }
 
@@ -244,7 +242,6 @@
   function closeModal() {
     isModalOpen = false;
   }
-
 
   let professions: any[] = [];
 
@@ -358,7 +355,7 @@
       values[obj.name] = data;
     }
 
-   await applyFilters();
+    await applyFilters();
   }
 
   // Fonction pour mettre à jour les districts en fonction de la région
@@ -405,17 +402,15 @@
     }
   }
 
-  onMount(async () => {
-    isLoading = true;
-    await fetchData();
-    await loadReferenceData();
-    await getUserInfos();
-    await getAllProfessions();
+  onMount(() => {
+    fetchData();
+    loadReferenceData();
 
-    console.log("YEEEE", formData);
+    getUserInfos();
 
-    await loadData();
-    isLoading = false;
+    getAllProfessions();
+
+    loadData();
   });
 
   function initValidation() {
@@ -435,7 +430,7 @@
 
     // Append files from localStorage
     const selectedFilesFromStorage = JSON.parse(
-      localStorage.getItem("selectedFiles") || "{}"
+      localStorage.getItem("selectedFiles") || "{}",
     );
     appendFilesToFormData(formDatas, selectedFilesFromStorage);
 
@@ -448,7 +443,10 @@
     sendFormData(formDatas);
   }
 
-  function appendFormDataFields(formDatas: FormData, formData: Record<string, any>) {
+  function appendFormDataFields(
+    formDatas: FormData,
+    formData: Record<string, any>,
+  ) {
     for (const [key, value] of Object.entries(formData)) {
       if (value !== undefined && value !== null) {
         formDatas.append(key, value);
@@ -456,7 +454,10 @@
     }
   }
 
-  function appendFilesToFormData(formDatas: FormData, selectedFiles: Record<string, any>) {
+  function appendFilesToFormData(
+    formDatas: FormData,
+    selectedFiles: Record<string, any>,
+  ) {
     for (const [fieldName, fileData] of Object.entries(selectedFiles)) {
       if (fileData && fileData.data) {
         const blob = base64ToBlob(fileData.data, "application/octet-stream");
@@ -507,15 +508,15 @@
 
     try {
       const res = await fetch(
-              `https://depps.leadagro.net/api/professionnel/existe/code/${code}`,
+        `https://depps.leadagro.net/api/professionnel/existe/code/${code}`,
       );
       const data = await res.json();
       return data.data;
       return data.data; // Assurez-vous que l'API renvoie un objet avec une clé `valid`
     } catch (error) {
       console.error(
-              "Erreur lors de la vérification de la transaction :",
-              error,
+        "Erreur lors de la vérification de la transaction :",
+        error,
       );
       return false;
     }
@@ -528,27 +529,27 @@
       codeVericationStatus = resultat;
 
       if (
-              resultat.exsiteInProfessionnel == true &&
-              resultat.exsiteInCodeGenerateur == true
+        resultat.exsiteInProfessionnel == true &&
+        resultat.exsiteInCodeGenerateur == true
       ) {
         codeExisteError =
-                "l'utilisateur de ce code de vérification existe deja";
+          "l'utilisateur de ce code de vérification existe deja";
       } else if (
-              resultat.exsiteInCodeGenerateur == true &&
-              resultat.exsiteInProfessionnel == false
+        resultat.exsiteInCodeGenerateur == true &&
+        resultat.exsiteInProfessionnel == false
       ) {
         codeExisteError = "";
       } else if (
-              resultat.exsiteInProfessionnel == false &&
-              resultat.exsiteInCodeGenerateur == false
+        resultat.exsiteInProfessionnel == false &&
+        resultat.exsiteInCodeGenerateur == false
       ) {
         codeExisteError = "Ce code de vérification n'existe pas";
       } else if (
-              resultat.exsiteInProfessionnel == true &&
-              resultat.exsiteInCodeGenerateur == false
+        resultat.exsiteInProfessionnel == true &&
+        resultat.exsiteInCodeGenerateur == false
       ) {
         codeExisteError =
-                "l'utilisateur de ce code de vérification existe deja";
+          "";
       } else {
         codeExisteError = "";
       }
@@ -560,7 +561,6 @@
     formData[field] = value;
     localStorage.setItem("formData", JSON.stringify(formData));
   }
-
 </script>
 
 <Slide {user} />
@@ -601,617 +601,213 @@
   <main class="pb-0">
     <section class="iletisim-form-alani">
       <!-- <form class="form one_customer" method="post"> -->
-        <div class="w-full mx-auto p-4 content-sec">
-          <!-- Tabs Navigation -->
-          <div class="mb-4 border-b border-gray-200">
-            <ul
-              class="flex flex-wrap -mb-px text-3xl font-medium text-center border border-gray-200 bg-white"
-            >
-              <li class="mr-[0.5px] border-2 border-r-white">
-                <button
-                  class="inline-block p-4 btn-tabs {activeTab === 'step2'
-                    ? 'text-white-600 border-b-2 border-blue-600 bg-blue-400 '
-                    : 'hover:text-gray-600 hover:border-gray-300'}"
-                  on:click={() => (activeTab = "step2")}
-                >
-                  Informations Personnelles
-                </button>
-              </li>
-              <li class="mr-[0.5px] border-2 border-r-white">
-                <button
-                  class="inline-block p-4 btn-tabs {activeTab === 'step3'
-                    ? 'text-white border-b-2 border-blue-600 bg-blue-400'
-                    : 'hover:text-gray-600 hover:border-gray-300'}"
-                  on:click={() => (activeTab = "step3")}
-                >
-                  Informations Professionnelles
-                </button>
-              </li>
-              <li class="mx-[0.5px] border-2 border-r-white">
-                <button
-                  class="inline-block p-4 btn-tabs {activeTab === 'step4'
-                    ? 'text-white border-b-2 border-blue-600 bg-blue-400'
-                    : 'hover:text-gray-600 hover:border-gray-300'}"
-                  on:click={() => (activeTab = "step4")}
-                >
-                  Documents
-                </button>
-              </li>
-              <li class="mx-[0.5px] border-2 border-rl-white">
-                <button
-                  class="inline-block btn-tabs p-4 {activeTab === 'step5'
-                    ? 'text-white border-b-2 border-blue-600 bg-blue-400'
-                    : 'hover:text-gray-600 hover:border-gray-300'}"
-                  on:click={() => (activeTab = "step5")}
-                >
-                  Organisation
-                </button>
-              </li>
-            </ul>
-          </div>
-
-          <!-- Tab Contents -->
-          <div class="mt-1">
-            <!-- Step 2: Informations Personnelles -->
-            {#if activeTab === "step2"}
-             <!-- <div class="bg-white p-2 rounded-lg shadow-sm">
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <TextInput
-                    type="text"
-                    label="Nom"
-                    bind:value={formData.nom}
-                    placeholder="Entrez votre nom"
-                    error={errors.nom}
-                    onInput={saveFormState}
-                    step={2}
-                  />
-
-                  <TextInput
-                    type="text"
-                    label="Prénoms"
-                    bind:value={formData.prenoms}
-                    placeholder="Entrez votre prénom"
-                    error={errors.prenoms}
-                    onInput={saveFormState}
-                    step={2}
-                  />
-
-                  <div class="form__group">
-                    <label class="block text-2xl font-medium mb-1"
-                      >Nationalité *</label
-                    >
-                    <select
-                      on:change={saveFormState}
-                      class="w-full form__input"
-                      name=""
-                      id=""
-                      bind:value={formData.nationalite}
-                    >
-                      <option value="" selected={!formData.nationalite}
-                        >Veuillez sélectionner une option</option
-                      >
-                      {#each values.nationate as nationate}
-                        <option
-                          value={nationate.id}
-                          selected={formData.nationalite === nationate.id}
-                          >{nationate.libelle}</option
-                        >
-                      {/each}
-                    </select>
-                    {#if errors.nationalite}<p class="text-red-500 text-sm">
-                        {errors.nationalite}
-                      </p>{/if}
-                  </div>
-
-                  <div class="form__group">
-                    <label class="block text-2xl font-medium mb-1"
-                      >Civilité *</label
-                    >
-                    <select
-                      on:input={saveFormState}
-                      bind:value={formData.civilite}
-                      class="w-full form__input"
-                    >
-                      <option value="" selected={!formData.civilite}
-                        >Veuillez sélectionner une option</option
-                      >
-                      {#each values.civilite as civilite}
-                        <option
-                          selected={civilite.id === +formData.civilite}
-                          value={civilite.id}>{civilite.libelle}</option
-                        >
-                      {/each}
-                    </select>
-                    {#if errors.civilite}<p class="text-red-500 text-sm">
-                        {errors.civilite}
-                      </p>{/if}
-                  </div>
-
-                  <TextInput
-                    type="email"
-                    label="Email"
-                    bind:value={formData.emailAutre}
-                    placeholder="Entrez votre email"
-                    error={errors.emailAutre}
-                    onInput={saveFormState}
-                    step={2}
-                  />
-
-                  <TextInput
-                    type="tel"
-                    label="Contact"
-                    bind:value={formData.numero}
-                    placeholder="07xxxxxxxx"
-                    error={errors.numero}
-                    onInput={saveFormState}
-                    step={2}
-                  />
-
-                  <TextInput
-                    type="date"
-                    label="Date de naissance"
-                    bind:value={formData.dateNaissance}
-                    placeholder="Entrez votre date de naissance"
-                    error={errors.dateNaissance}
-                    onInput={saveFormState}
-                    step={2}
-                  />
-
-                  <SelectInput
-                    label="Situation matrimoniale"
-                    bind:value={formData.situation}
-                    options={situationsMatrimoniales.map((c) => ({
-                      id: String(c.value),
-                      libelle: c.label,
-                    }))}
-                    placeholder="Veuillez sélectionner une situation matrimoniale"
-                    error={errors.situation}
-                    onInput={saveFormState}
-                    step={2}
-                  />
-                </div>
-              </div>-->
-              
-              <Step2Form
-                      {formData}
-                      {errors}
-                      {values}
-                      {situationsMatrimoniales}
-                      {saveFormState}
-                      showTitle={false}
-              />
-            {/if}
-
-            <!-- Step 3: Informations Professionnelles -->
-            {#if activeTab === "step3"}
-             <!-- <div class="bg-white p-6 rounded-lg shadow-sm">
-                <div
-                  class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 gap-6 mb-4"
-                >
-                  <TextInput
-                    disabled
-                    type="text"
-                    label="Profession"
-                    bind:value={formData.profession}
-                    placeholder="Profession"
-                    error={errors.profession}
-                    onInput={saveFormState}
-                    step={3}
-                  />
-                </div>
-
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                  <TextInput
-                    type="text"
-                    label="Code d’identification"
-                    bind:value={formData.code}
-                    placeholder="Code"
-                    error={errors.code}
-                    onInput={saveFormState}
-                    step={3}
-                  />
-                  <TextInput
-                    type="email"
-                    label="Adresse email professionnel"
-                    bind:value={formData.emailPro}
-                    placeholder="Entrez votre email professionnel"
-                    error={errors.emailPro}
-                    onInput={saveFormState}
-                    step={3}
-                  />
-
-                  Date d'obtention du diplôme
-                  <TextInput
-                    type="date"
-                    label="Date d'obtention du diplôme"
-                    bind:value={formData.dateDiplome}
-                    placeholder="Entrez la date d'obtention du diplôme"
-                    error={errors.dateDiplome}
-                    onInput={saveFormState}
-                    step={3}
-                  />
-
-                   Lieu d'obtention du diplôme
-                  <TextInput
-                    type="text"
-                    label="Lieu d'obtention du diplôme"
-                    bind:value={formData.lieuDiplome}
-                    placeholder="Entrez le lieu d'obtention"
-                    error={errors.lieuDiplome}
-                    onInput={saveFormState}
-                    step={3}
-                  />
-
-                   Date du premier emploi
-                  <TextInput
-                    type="date"
-                    label="Date du premier emploi"
-                    bind:value={formData.datePremierDiplome}
-                    placeholder="Entrez la date du premier emploi"
-                    error={errors.datePremierDiplome}
-                    onInput={saveFormState}
-                    step={3}
-                  />
-
-                   Dénomination du diplôme
-                  <TextInput
-                    type="text"
-                    label="Dénomination du diplôme"
-                    bind:value={formData.diplome}
-                    placeholder="Entrez la dénomination du diplôme"
-                    error={errors.diplome}
-                    onInput={saveFormState}
-                    step={3}
-                  />
-
-                   Situation Professionnelle (Select)
-                     <SelectInput
-                label="Situation professionnelle"
-                bind:value={formData.situationPro}
-                options={values.situationProfessionnelle.map((c) => ({
-                  id: String(c.id),
-                  libelle: c.libelle
-                }))}
-                placeholder="Sélectionnez votre situation professionnelle"
-                error={errors.situationPro}
-                onInput={saveFormState}
-                step={3}
-              />
-
-                  <div class="form__group">
-                    <label class="block text-2xl font-medium mb-1"
-                      >Situation professionnelle *</label
-                    >
-                    <select
-                      bind:value={formData.situationPro}
-                      class="w-full form__input"
-                      on:change={saveFormState}
-                      on:change={updateDistricts}
-                      on:change={saveFormState}
-                    >
-                      <option value="" selected={!formData.situation}
-                        >Sélectionnez votre Région</option
-                      >
-                      {#each values.situationProfessionnelle as situation}
-                        <option
-                          value={situation.id}
-                          selected={situation.id === +formData.situationPro}
-                          >{situation.libelle}</option
-                        >
-                      {/each}
-                    </select>
-                    {#if errors.situationPro}
-                      <p class="text-red-500 text-sm">{errors.situationPro}</p>
-                    {/if}
-                  </div>
-
-                  Région (Select)
-
-                  <div class="form__group">
-                    <label class="block text-2xl font-medium mb-1"
-                      >Région sanitaire *</label
-                    >
-                    <select
-                      bind:value={formData.region}
-                      class="w-full form__input"
-                      on:change={saveFormState}
-                      on:change={updateDistricts}
-                    >
-                      <option value="" selected={!formData.region}
-                        >Sélectionnez votre Région</option
-                      >
-                      {#each values.region as region}
-                        <option
-                          value={region.id}
-                          selected={region.id === +formData.region}
-                          >{region.libelle}</option
-                        >
-                      {/each}
-                    </select>
-                    {#if errors.region}
-                      <p class="text-red-500 text-sm">{errors.region}</p>
-                    {/if}
-                  </div>
-
-                  <div class="form__group">
-                    <label class="block text-2xl font-medium mb-1"
-                      >District sanitaire *</label
-                    >
-                    <select
-                      class="w-full form__input"
-                      bind:value={formData.district}
-                      on:change={updateVilles}
-                      on:change={saveFormState}
-                    >
-                      <option value="" selected={formData.district == ""}
-                        >Sélectionnez votre district</option
-                      >
-                      {#each values.district as district}
-                        <option value={district.id} selected={district.id === 1}
-                          >{district.libelle}</option
-                        >
-                      {/each}
-                    </select>
-                    {#if errors.district}
-                      <p class="text-red-500 text-sm">{errors.district}</p>
-                    {/if}
-                  </div>
-
-                  <div class="form__group">
-                    <label class="block text-2xl font-medium mb-1"
-                      >Ville *</label
-                    >
-                    <select
-                      class="w-full form__input"
-                      bind:value={formData.ville}
-                      on:change={updateCommunes}
-                      on:change={saveFormState}
-                    >
-                      <option value="" selected={!formData.ville}
-                        >Sélectionnez votre ville</option
-                      >
-                      {#each values.ville as ville}
-                        <option
-                          value={ville.id}
-                          selected={ville.id === +formData.ville}
-                          >{ville.libelle}</option
-                        >
-                      {/each}
-                    </select>
-                    {#if errors.ville}
-                      <p class="text-red-500 text-sm">{errors.ville}</p>
-                    {/if}
-                  </div>
-
-                  <div class="form__group">
-                    <label class="block text-2xl font-medium mb-1"
-                      >Commune *</label
-                    >
-                    <select
-                      class="w-full form__input"
-                      bind:value={formData.commune}
-                      on:change={saveFormState}
-                    >
-                      <option value="" selected={!formData.commune}
-                        >Sélectionnez votre commune</option
-                      >
-                      {#each values.commune as commune}
-                        <option
-                          value={commune.id}
-                          selected={commune.id === +formData.commune}
-                          >{commune.libelle}</option
-                        >
-                      {/each}
-                    </select>
-                    {#if errors.commune}
-                      <p class="text-red-500 text-sm">{errors.commune}</p>
-                    {/if}
-                  </div>
-
-                  Quartier
-                  <TextInput
-                    type="text"
-                    label="Quartier"
-                    bind:value={formData.quartier}
-                    placeholder="Entrez votre Quartier"
-                    error={errors.quartier}
-                    onInput={saveFormState}
-                    step={3}
-                  />
-
-                   Pôle Sanitaire
-                  <TextInput
-                    type="text"
-                    label="Ilot,lot"
-                    bind:value={formData.poleSanitaire}
-                    placeholder="Entrez votre Ilot,Lot"
-                    error={errors.poleSanitaire}
-                    onInput={saveFormState}
-                    step={3}
-                  />
-
-                   Professionnel
-                  <TextInput
-                    type="text"
-                    label="Structure d'exercice professionnel"
-                    bind:value={formData.professionnel}
-                    placeholder="Entrez votre Structure d'exercice professionnel"
-                    error={errors.professionnel}
-                    onInput={saveFormState}
-                    step={3}
-                  />
-
-                   Lieu d'exercice professionnel
-                  <TextInput
-                    type="text"
-                    label="Lieu d'exercice professionnel"
-                    bind:value={formData.lieuExercicePro}
-                    placeholder="Entrez votre lieu d'exercice professionnel"
-                    error={errors.lieuExercicePro}
-                    onInput={saveFormState}
-                    step={3}
-                  />
-                </div>
-              </div>-->
-              <div
-                      class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 gap-12"
+      <div class="w-full mx-auto p-4 content-sec">
+        <!-- Tabs Navigation -->
+        <div class="mb-4 border-b border-gray-200">
+          <ul
+            class="flex flex-wrap -mb-px text-3xl font-medium text-center border border-gray-200 bg-white"
+          >
+            <li class="mr-[0.5px] border-2 border-r-white">
+              <button
+                class="inline-block p-4 btn-tabs {activeTab === 'step2'
+                  ? 'text-white-600 border-b-2 border-blue-600 bg-blue-400 '
+                  : 'hover:text-gray-600 hover:border-gray-300'}"
+                on:click={() => (activeTab = "step2")}
               >
-                <TextInput
-                        type="text"
-                        label="Profession"
-                        bind:value={formData.profession}
-                        error={codeExisteError}
-                        step={3}
-                        bind:formData
-                        disabled={true}
-                />
-              </div>
+                Informations Personnelles
+              </button>
+            </li>
+            <li class="mr-[0.5px] border-2 border-r-white">
+              <button
+                class="inline-block p-4 btn-tabs {activeTab === 'step3'
+                  ? 'text-white border-b-2 border-blue-600 bg-blue-400'
+                  : 'hover:text-gray-600 hover:border-gray-300'}"
+                on:click={() => (activeTab = "step3")}
+              >
+                Informations Professionnelles
+              </button>
+            </li>
+            <li class="mx-[0.5px] border-2 border-r-white">
+              <button
+                class="inline-block p-4 btn-tabs {activeTab === 'step4'
+                  ? 'text-white border-b-2 border-blue-600 bg-blue-400'
+                  : 'hover:text-gray-600 hover:border-gray-300'}"
+                on:click={() => (activeTab = "step4")}
+              >
+                Documents
+              </button>
+            </li>
+            <li class="mx-[0.5px] border-2 border-rl-white">
+              <button
+                class="inline-block btn-tabs p-4 {activeTab === 'step5'
+                  ? 'text-white border-b-2 border-blue-600 bg-blue-400'
+                  : 'hover:text-gray-600 hover:border-gray-300'}"
+                on:click={() => (activeTab = "step5")}
+              >
+                Organisation
+              </button>
+            </li>
+          </ul>
+        </div>
 
-              <EtapeProfessionnelle
-                      {formData}
-                      {errors}
-                      {values}
-                      professions={[]}
-                      {codeExisteError}
-                      {updateField}
-                      showTitle ={false}
+        <!-- Tab Contents -->
+        <div class="mt-1">
+          <!-- Step 2: Informations Personnelles -->
+          {#if activeTab === "step2"}
+           
+
+            <Step2Form
+              {formData}
+              {errors}
+              {values}
+              {situationsMatrimoniales}
+              {saveFormState}
+              showTitle={false}
+            />
+          {/if}
+
+          <!-- Step 3: Informations Professionnelles -->
+          {#if activeTab === "step3"}
+            
+            <div
+              class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 gap-12 p-8"
+            >
+              <TextInput
+                type="text"
+                label="Profession"
+                bind:value={formData.profession}
+                error={""}
+                step={3}
+                bind:formData
+                disabled={true}
               />
-            {/if}
+            </div>
 
-            <!-- Step 4: Documents -->
-            {#if activeTab === "step4"}
-              <div class="bg-white p-6 rounded-lg shadow-sm">
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  {#each ["photo", "cni", "casier", "diplomeFile", "certificat", "cv"] as field}
-                    <div class="space-y-2">
-                      <label class="block text-3xl font-medium text-black">
-                        {field.toUpperCase()}
-                      </label>
+            <EtapeProfessionnelle
+              {formData}
+              {errors}
+              {values}
+              professions={[]}
+              {codeExisteError}
+              {updateField}
+              showTitle={false}
+            />
+          {/if}
 
-                      {#if formData[field] && formData[field].url}
-                        <div class="flex items-center mb-2">
-                          <span class="text-3xl text-gray-500">
-                            Fichier : {formData[field].alt}
-                          </span>
-                          <a
-                            on:click={() =>
-                              openModal(
-                                BASE_URL_API_UPLOAD + formData[field].url,
-                              )}
-                            href="javascript:void(0)"
-                            download="document"
-                            class="ml-4 text-blue-600 hover:underline"
-                          >
-                            Télécharger
-                          </a>
-                        </div>
-                      {/if}
+          <!-- Step 4: Documents -->
+          {#if activeTab === "step4"}
+            <div class="bg-white p-6 rounded-lg shadow-sm">
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                {#each ["photo", "cni", "casier", "diplomeFile", "certificat", "cv"] as field}
+                  <div class="space-y-2">
+                    <label class="block text-3xl font-medium text-black">
+                      {field.toUpperCase()}
+                    </label>
 
-                      <input
-                        type="file"
-                        on:change={(e) => (formData[field] = e.target.files[0])}
-                        class="w-full form__input"
-                      />
-                    </div>
-                  {/each}
-                </div>
-              </div>
-            {/if}
+                    {#if formData[field] && formData[field].url}
+                      <div class="flex items-center mb-2">
+                        <span class="text-3xl text-gray-500">
+                          Fichier : {formData[field].alt}
+                        </span>
+                        <a
+                          on:click={() =>
+                            openModal(
+                              BASE_URL_API_UPLOAD + formData[field].url,
+                            )}
+                          href="javascript:void(0)"
+                          download="document"
+                          class="ml-4 text-blue-600 hover:underline"
+                        >
+                          Télécharger
+                        </a>
+                      </div>
+                    {/if}
 
-            <!-- Step 5: Organisation -->
-            {#if activeTab === "step5"}
-              <div class="bg-white p-6 rounded-lg shadow-sm">
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <div class="col-span-2 space-y-2">
-                    <label class="block text-3xl font-medium text-black"
-                      >Appartenir à une organisation ?</label
-                    >
-                    <div class="flex space-x-4">
-                      <label class="inline-flex items-center">
-                        <input
-                          type="radio"
-                          bind:group={formData.appartenirOrganisation}
-                          value="oui"
-                          disabled
-                          class="form-radio text-white"
-                          checked={formData.appartenirOrganisation === "oui"}
-                        />
-                        <span class="ml-2">Oui</span>
-                      </label>
-                      <label class="inline-flex items-center">
-                        <input
-                          type="radio"
-                          bind:group={formData.appartenirOrganisation}
-                          value="non"
-                          disabled
-                          class="form-radio text-white"
-                          checked={formData.appartenirOrganisation === "non"}
-                        />
-                        <span class="ml-2">Non</span>
-                      </label>
-                    </div>
+                    <input
+                      type="file"
+                      on:change={(e) => (formData[field] = e.target.files[0])}
+                      class="w-full form__input"
+                    />
                   </div>
+                {/each}
+              </div>
+            </div>
+          {/if}
 
-                  {#if formData.appartenirOrganisation == "oui"}
-                    <div class="space-y-2">
-                      <label class="block text-3xl font-medium text-black"
-                        >Nom de l'organisation</label
-                      >
+          <!-- Step 5: Organisation -->
+          {#if activeTab === "step5"}
+            <div class="bg-white p-6 rounded-lg shadow-sm">
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div class="col-span-2 space-y-2">
+                  <label class="block text-3xl font-medium text-black"
+                    >Appartenir à une organisation ?</label
+                  >
+                  <div class="flex space-x-4">
+                    <label class="inline-flex items-center">
                       <input
-                        type="text"
-                        bind:value={formData.organisationNom}
-                        class="w-full form__input"
+                        type="radio"
+                        bind:group={formData.appartenirOrganisation}
+                        value="oui"
+                        disabled
+                        class="form-radio text-white"
+                        checked={formData.appartenirOrganisation === "oui"}
                       />
-                    </div>
+                      <span class="ml-2">Oui</span>
+                    </label>
+                    <label class="inline-flex items-center">
+                      <input
+                        type="radio"
+                        bind:group={formData.appartenirOrganisation}
+                        value="non"
+                        disabled
+                        class="form-radio text-white"
+                        checked={formData.appartenirOrganisation === "non"}
+                      />
+                      <span class="ml-2">Non</span>
+                    </label>
+                  </div>
+                </div>
 
-                    <!--  <div class="space-y-2">
+                {#if formData.appartenirOrganisation == "oui"}
+                  <div class="space-y-2">
                     <label class="block text-3xl font-medium text-black"
-                      >Numéro de l'organisation</label
+                      >Nom de l'organisation</label
                     >
                     <input
                       type="text"
-                      bind:value={formData.organisationNumero}
+                      bind:value={formData.organisationNom}
                       class="w-full form__input"
                     />
                   </div>
 
-                  <div class="space-y-2">
-                    <label class="block text-3xl font-medium text-black"
-                      >Année d'adhésion</label
-                    >
-                    <input
-                      type="number"
-                      bind:value={formData.organisationAnnee}
-                      class="w-full form__input"
-                    /> -->
-                    <!--   </div> -->
-                  {/if}
-                </div>
+                 
+                {/if}
               </div>
-            {/if}
-          </div>
-
-          <!-- Submit Button -->
-          <div class="mt-6 flex justify-end">
-            <button
-              type="button"
-              on:click={clickValidation}
-              class="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
-            >
-              {#if authenticating}
-                <div class="grid grid-cols-2">
-                  <div>
-                    <Spinner />
-                  </div>
-                  <div>Modifier</div>
-                </div>
-              {:else}
-                Modifier
-              {/if}
-            </button>
-          </div>
+            </div>
+          {/if}
         </div>
-     <!--  </form> -->
+
+        <!-- Submit Button -->
+        <div class="mt-6 flex justify-end">
+          <button
+            type="button"
+            on:click={clickValidation}
+            class="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+          >
+            {#if authenticating}
+              <div class="grid grid-cols-2">
+                <div>
+                  <Spinner />
+                </div>
+                <div>Modifier</div>
+              </div>
+            {:else}
+              Modifier
+            {/if}
+          </button>
+        </div>
+      </div>
+      <!--  </form> -->
       <br /><br /><br /><br />
     </section>
   </main>
@@ -1221,23 +817,7 @@
 <Modal isOpen={isModalOpen} {pdfUrl} onClose={closeModal} />
 
 <style>
-    /* .form__input {
-    border: 1px solid #ccc;
-    padding: 0.5rem;
-    border-radius: 4px;
-    width: 100%;
-  }
-
-  .btn-tabs {
-    color: black;
-    font-size: 14px;
-    padding: 0.5rem 1rem;
-    cursor: pointer;
-  }
-
-  .btn-tabs:hover {
-    background-color: #f0f0f0;
-  } */
+  
   .iletisim-form-alani {
     padding: 20rem 157px 10rem !important;
 

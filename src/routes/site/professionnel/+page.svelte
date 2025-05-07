@@ -1,30 +1,16 @@
 <script lang="ts">
   import { onMount } from "svelte";
   import Footer from "$components/Footer.svelte";
-  import Header from "$components/Header.svelte";
   import Slide from "$components/Slide.svelte";
 
-  import { apiFetch, BASE_URL_API, BASE_URL_API_V2 } from "$lib/api";
-  import type {
-    Civilite,
-    District,
-    Genre,
-    Pays,
-    Specialite,
-    Ville,
-  } from "../../../types.js";
-  import { getProfessions } from "$lib/constants";
-  import Spinner from "$components/_skeletons/Spinner.svelte";
+  import { apiFetch, BASE_URL_API } from "$lib/api";
+  import type Civilite from "../../../types.js";
+  import type Pays from "../../../types.js";
   import { goto } from "$app/navigation";
   import Modal from "./Modal.svelte";
-  import { P } from "flowbite-svelte";
-  import TextInput from "$components/site/TextInput.svelte";
-  import SelectInput from "$components/site/SelectInput.svelte";
-  import TextInputCode from "$components/site/TextInputCode.svelte";
   import FormButtons from "$components/site/FormButtons.svelte";
   import InscriptionEtapeFinale from "$components/site/InscriptionEtapeFinale.svelte";
   import EtapeOrganisation from "$components/site/EtapeOrganisation.svelte";
-  import EtapeMedia from "$components/site/EtapeMedia.svelte";
   import EtapeProfessionnelle from "$components/site/EtapeProfessionnelle.svelte";
   import Step2Form from "$components/site/Step2Form.svelte";
   import EtapeConnexion from "$components/site/EtapeConnexion.svelte";
@@ -41,16 +27,7 @@
     return regex.test(email);
   }
 
-  let isValid = true;
-  let isValidContact = true;
   let isValidPhoneOrganisation = true;
-
-  function validatePhone() {
-    const regex = /^(07|01|05)\d{8}$/;
-    isValid = regex.test(formData.numero);
-
-    console.log(isValid);
-  }
 
   $: emailError =
     formData.email && !validateEmail(formData.email)
@@ -235,9 +212,9 @@
         ? ""
         : "La situation est requise";
 
-      errors.poleSanitaire = formData.poleSanitaire
+     /*  errors.poleSanitaire = formData.poleSanitaire
         ? ""
-        : "Le pole sanitaire est requis";
+        : "Le pole sanitaire est requis"; */
       errors.lieuExercicePro = formData.lieuExercicePro
         ? ""
         : "Le lieu d'exercice est requis";
@@ -608,6 +585,8 @@
           console.log(result.errors);
         } else {
           connexion();
+          localStorage.clear();
+
         }
       })
       .catch((error) => {

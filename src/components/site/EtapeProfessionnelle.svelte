@@ -64,12 +64,12 @@ async function applyFilters() {
     if (formData.region) {
         await updateDistricts();
     }
-    if (formData.district) {
+    /* if (formData.district) {
         await updateVilles();
     }
     if (formData.ville) {
         await updateCommunes();
-    }
+    } */
 }
 
 // Fonction pour charger les données nécessaires lors de l'initialisation
@@ -98,28 +98,24 @@ async function updateDistricts() {
         // Charger les districts de la région sélectionnée
         try {
             values.district = await fetchDataChange(`/district/${formData.region}`);
-            values.ville = [];
-            values.commune = [];
+           /*  values.ville = [];
+            values.commune = []; */
         } catch (error) {
             console.error("Erreur lors du chargement des districts:", error);
             values.district = [];
-            values.ville = [];
-            values.commune = [];
+            /* values.ville = [];
+            values.commune = []; */
         }
     }
 }
 
 // Fonction pour mettre à jour les villes en fonction du district
-async function updateVilles() {
+/* async function updateVilles() {
     const selectedDistrict = values.district.find(
         (district:any) => district.id === +formData.district
     );
     if (selectedDistrict) {
-        // Réinitialiser les autres sélections
-        /* formData.ville = "";
-        formData.commune = ""; */
-
-        // Charger les villes du district sélectionné
+       
         try {
             values.ville = await fetchDataChange(`/ville/${formData.district}`);
             values.commune = [];
@@ -129,18 +125,15 @@ async function updateVilles() {
             values.commune = [];
         }
     }
-}
+} */
 
 // Fonction pour mettre à jour les communes en fonction de la ville
-async function updateCommunes() {
+/* async function updateCommunes() {
     const selectedVille = values.ville.find(
         (ville:any) => ville.id === +formData.ville
     );
     if (selectedVille) {
-        // Réinitialiser les autres sélections
-        /* formData.commune = ""; */
-
-        // Charger les communes de la ville sélectionnée
+        
         try {
             values.commune = await fetchDataChange(`/commune/${formData.ville}`);
         } catch (error) {
@@ -148,13 +141,13 @@ async function updateCommunes() {
             values.commune = [];
         }
     }
-}
+} */
 
 // Chargement des données au montage du composant (par exemple, dans onMount)
 onMount(async () => {
     await loadData();
     console.log(formData.district);
-console.log(formData.ville);
+console.log(values.ville);
 console.log(formData.commune);
 });
 
@@ -166,7 +159,7 @@ console.log(formData.commune);
     </h2>
 {/if}
 
-<div class="bg-white p-6 rounded-lg shadow-m mb-4">
+<div class=" p-6 rounded-lg shadow-m mb-4">
     <!-- Radios: Profession -->
     <div
         class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 gap-6 mb-4"
@@ -326,7 +319,7 @@ console.log(formData.commune);
                 bind:value={formData.district}
                 on:change={() => {
                     saveFormStateComponent();
-                    updateVilles();
+                    //updateVilles();
                 }}
             >
                 <option value=""   selected={formData.district === ""}>Sélectionnez votre district </option>
@@ -352,7 +345,7 @@ console.log(formData.commune);
                 bind:value={formData.ville}
                 on:change={() => {
                     saveFormStateComponent();
-                    updateCommunes();
+                   // updateCommunes();
                 }}
             >
                 <option value="" selected={formData.ville === ""}>Sélectionnez votre ville</option>

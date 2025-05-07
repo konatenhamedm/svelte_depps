@@ -14,7 +14,7 @@
     id="{id}"
     disabled={disabled}
     bind:value={selectedId}
-    class="select2 w-full form-input font-normal rounded block border-gray-200 text-sm focus:border-gray-300 focus:ring-0 bg-white"
+    class="select2 w-full form-input font-normal rounded block border-gray-200 text-sm text-black focus:border-gray-300 focus:ring-0 bg-white"
   >
     <option value="" selected>Veuillez sélectionner {label}</option>
     {#each datas as data (data.id)}

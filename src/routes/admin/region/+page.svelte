@@ -19,7 +19,7 @@
   import Pagination from "../../../components/_includes/Pagination.svelte";
   // Importer le store pageSize
   import { get } from "svelte/store";
-  import type { Permission, User } from "../../../types";
+  import type { Permission, Region, User } from "../../../types";
   import { apiFetch } from "$lib/api";
   import { pageSize } from "../../../store"; // Importer le store pageSize
   import { onMount } from "svelte";
@@ -30,7 +30,7 @@
   import { getAuthCookie } from "$lib/auth";
   import DropdownMenu from "$components/DropdownMenu.svelte";
 
-  let main_data: Permission[] = [];
+  let main_data: Region[] = [];
   let searchQuery = ""; // Pour la recherche par texte
   let selectedService: any = ""; // Pour filtrer par service
   let selectedStatus: any = ""; // Pour filtrer par status
@@ -53,7 +53,7 @@
       const res = await apiFetch(true, "/region/");
 
       if (res) {
-        main_data = res.data as Permission[];
+        main_data = res.data as Region[];
       } else {
         console.error(
           "Erreur lors de la récupération des données:",

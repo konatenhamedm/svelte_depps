@@ -338,6 +338,7 @@
           />
         </div>
         <div>
+          
           <InputSimple
             fieldName="userEmail"
             label="Email utilisateur"
@@ -511,7 +512,7 @@
           type="button"
           on:click={() => (
             (current_data = url_image + cniPath + "/" + cniAlt),
-            (isModalOpen = true)
+            (openShow = true)
           )}
           class="w-full h-9 flex justify-center bg-gray-700 hover:bg-gray-700 text-white font-bold py-2 pb-[1.9rem] px-4 border border-white rounded cursor-pointer"
           aria-label="Voir la CNI"
@@ -519,19 +520,17 @@
           VOIR LA CNI
         </button>
 
-        <button
-          type="button"
+        <div
           on:click={() => (
             (current_data = data), (isModalOpenRegister = true) // Utiliser isModalOpenRegister ici au lieu de isModalOpen
           )}
           style="background-color: green;"
-          class="w-full h-9 flex justify-center bg-green hover:bg-green text-white font-bold py-2 pb-[1.9rem] px-4 border border-white rounded"
-          aria-label="Open Fiche d'Inscription"
+          class="w-full h-9 flex justify-center bg-green hover:bg-green text-white font-bold py-2 pb-[1.9rem] px-4 border border-white rounded cursor-pointer"
         >
           FICHE D'INSCRIPTION
-        </button>
-        {#if data.personne?.profession?.montantRenouvellement != "" || data.personne?.profession?.montantNouvelleDemande != ""}
-          <button
+        </div>
+        {#if data.personne.profession.montantRenouvellement != "" || data.personne.profession.montantNouvelleDemande != ""}
+          <div
             on:click={() => ((current_data = data), (isModalOpen = true))}
             style="background-color: green;"
             class="w-full h-9 flex justify-center bg-green hover:bg-green text-white font-bold py-2 pb-[1.9rem] px-4 border border-white rounded cursor-pointer"
@@ -539,7 +538,7 @@
             role="button"
           >
             REÇU DE PAIEMENT
-          </button>
+      </div>
         {/if}
       </div>
 

@@ -8,6 +8,8 @@ import { goto } from '$app/navigation';
 async function logout() {
     await fetch('/auth/logout', { method: 'POST' });
     goto('/login'); // Redirection après déconnexion
+    localStorage.clear();
+
 }
   
 </script>

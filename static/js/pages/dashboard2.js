@@ -636,7 +636,7 @@ var o = c3.generate({
       left: 0
     }
     },
-    colors: ['#04a08b'],
+    colors: ['#4d7cff'],
     tooltip: {
      theme: 'dark',
     x: {

@@ -4,10 +4,13 @@
   import { Button, Input, Label, Modal, Textarea } from "flowbite-svelte";
   import Notification from "$components/_includes/Notification.svelte";
   import InputTextArea from "$components/inputs/InputTextArea.svelte";
+    import InputSelect from "$components/inputs/InputSelect.svelte";
+    import { onMount } from "svelte";
 
   let showNotification = false;
   let notificationMessage = "";
   let notificationType = "info";
+  let directions: any = [];
 
   export let open: boolean = false;
   let isLoad = false;
@@ -34,6 +37,7 @@
         body: JSON.stringify({
           code: icons.code,
           libelle: icons.libelle,
+          direction: icons.direction,
           userUpdate: userUpdateId
         })
       });
@@ -58,6 +62,20 @@
       event.preventDefault(); // Prevent modal from closing if loading
     }
   }
+
+  async function getData() {
+    try {
+      const res = await fetch(BASE_URL_API + "/direction/");
+      const data = await res.json();
+      directions = data.data;
+    } catch (error) {
+      console.error("Error fetching directions:", error);
+    }
+  }
+
+  onMount(async() => {
+   await getData();
+  });
 </script>
 
 <Modal
@@ -93,6 +111,14 @@
           placeholder="entrez le libelle"
           class="w-full"
         ></InputSimple>
+
+        <InputSelect
+        label="Direction"
+        bind:selectedId={icons.direction}
+        datas={directions}
+        id="direction"
+      
+      ></InputSelect>
         
       </div>
     </form>
