@@ -10,3 +10,7 @@
 .theme-primary.light-skin .sidebar-menu li a:hover {
         color: #4d7cff !important;
       }
+      .dark\:bg-gray-800 {
+       
+        background-color: white !important;
+    }
