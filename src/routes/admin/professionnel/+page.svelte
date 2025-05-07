@@ -91,7 +91,7 @@ async function fetchData() {
     { key: "a_jour", label: "À jour" }
   ];
   let statusCounts: { [key: string]: number } = {};
-  // Filtrage des données selon l'onglet actif
+  // Filtrage des données selon l'onglet actifn,j
   // Filtrage des données selon l'onglet actif
   // Précalcul du nombre d'éléments par statut
   $: statusCounts = main_data.reduce((acc, user) => {
