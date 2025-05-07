@@ -89,6 +89,7 @@
           receiptData.amount = response.data.montant;
           receiptData.paymentMethod = response.data.channel;
           receiptData.receiptNumber = response.data.reference;
+          receiptData.residence = response.data.user.personne.quartier;
           receiptData.name = response.data.user.typeUser == "PROFESSIONNEL" 
             ? response.data.user.personne.nom + " "+ response.data.user.personne.prenoms 
             : response.data.user.personne.nomEntreprise;
