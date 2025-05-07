@@ -163,38 +163,37 @@
                     <NotificationSkeleton count={5} />
                 {:else}
                     {#each notifications as notification (notification.id)}
-                        <div class="flex items-start p-4 hover:bg-gray-50 relative cursor-pointer {!notification.isRead ? 'bg-gray-100' : ''}">
-                            {#if !notification.isRead}
-                                <div class="h-2 w-2 rounded-full bg-green-400 absolute left-2 top-6"></div>
-                            {/if}
-
-                            <div class="mr-3 flex-shrink-0">
-                                <div class="w-8 h-8 bg-gray-200 rounded-lg flex items-center justify-center">
-                                    <svg class="w-5 h-5 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"
-                                         xmlns="http://www.w3.org/2000/svg">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                              d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
-                                    </svg>
+                        <div
+                                class="services-kutu2 project-image reveal-effect masker wow"
+                                style="cursor: pointer; visibility: visible; width: 100%; margin-bottom: 15px; {!notification.isRead ? 'background-color: #f8f9fa !important;' : ''}"
+                        >
+                            <div class="row">
+                                <div class="col-md-1">
+                                    {#if !notification.isRead}
+                                        <i style="font-size: 25px; margin-top: 12px; color: #f57f30;" class="fa fa-bell"></i>
+                                    {:else}
+                                        <i style="font-size: 25px; margin-top: 12px; color: #ccc;" class="fa fa-bell-o"></i>
+                                    {/if}
+                                </div>
+                                <div class="col-md-8">
+                                    <p style="margin-top: 12px; margin-bottom: 5px;">
+                                        {notification.libelle}
+                                    </p>
+                                    <p class="text-xs text-gray-500" style="font-size: 12px;">{notification.createdAt}</p>
+                                </div>
+                                <div class="col-md-3 d-none d-sm-block">
+                                    <form action="#" class="delete_alerte">
+                                        <button
+                                                style="height: 50px; width: 50px; background: red !important; padding: 0; float: right;"
+                                                class="buton buton--kirmizi"
+                                                id="three_customer"
+                                                on:click|stopPropagation={() => deleteNotification(notification.id)}
+                                        >
+                                            <i class="fa fa-trash"></i>
+                                        </button>
+                                    </form>
                                 </div>
                             </div>
-                            <div class="flex-grow" on:click={() => {
-                                goto(`/site/suivi`);
-                            }}>
-                                <p class="text-sm text-gray-800 mb-1">{notification.libelle}</p>
-                                <p class="text-xs text-gray-500">{notification.createdAt}</p>
-                            </div>
-                            <button
-                                    class="text-red-500 ml-3"
-                                    style="color: red !important;"
-                                    on:click={() => deleteNotification(notification.id)}
-                            >
-                                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"
-                                     xmlns="http://www.w3.org/2000/svg">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                          d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
-                                </svg>
-                            </button>
-
                         </div>
                     {/each}
                 {/if}
