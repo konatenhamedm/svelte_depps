@@ -70,6 +70,8 @@ async function fetchData() {
         res.statusText
       );
     }
+
+    loading = false; // Désactive le spinner de chargement
   } catch (error) {
     console.error("Erreur lors de la récupération des données:", error);
   } finally {

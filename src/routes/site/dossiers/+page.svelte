@@ -169,9 +169,9 @@
               : "",
             professionnel: apiData.personne.professionnel || "",
             region: apiData.personne.region ? apiData.personne.region.id : "",
-            /* poleSanitaire: apiData.personne.poleSanitaire
+            poleSanitaire: apiData.personne.poleSanitaire
               ? apiData.personne.poleSanitaire
-              : "", */
+              : "",
             district: apiData.personne.district
               ? apiData.personne.district.id
               : "",
