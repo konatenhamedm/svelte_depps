@@ -75,7 +75,13 @@
 </script>
 
 <div class="form__group">
-  <label for="{label}" class="block text-2xl font-medium mb-1">{label} *</label>
+  <label for="{label}" class="block text-2xl font-medium mb-1">
+    {#if label == "Ilot,lot"}
+    {label}
+    {:else}
+    {label} *
+    {/if}
+   </label>
   <input
     id="{label}"
     type={type}
