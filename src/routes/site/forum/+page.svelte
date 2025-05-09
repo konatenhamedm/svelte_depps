@@ -213,7 +213,7 @@
               <div class="row">
                 <div class="col-md-12 text-center">
                   <p style="margin: auto; text-align: center;">
-                    Aucun article pour l'instant
+                    Aucun articles pour l'instant
                   </p>
                 </div>
               </div>
