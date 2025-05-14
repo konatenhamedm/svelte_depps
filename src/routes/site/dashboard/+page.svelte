@@ -30,7 +30,7 @@
     { icon: 'fas fa-bell', text: 'Alertes', link: 'alerte' },
     { icon: 'fas fa-tasks', text: 'suivi de mon dossier', link: 'suivi' },/* 
     { icon: 'fas fa-comments', text: 'MyDEPPS chat', link: 'chatbox' }, */
-    { icon: 'fas fa-book', text: 'Historique paiements', link: 'paiements' },
+    { icon: 'fas fa-book', text: 'Historique paiement et Renouvellement', link: 'paiements' },
     { icon: 'fas fa-file-pdf', text: "Documenthèque", link: "guide-utilisateur" },
     { icon: 'fas fa-users', text: 'Forum', link: 'forum' }
   ];
