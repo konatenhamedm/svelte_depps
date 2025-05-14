@@ -3,7 +3,7 @@
   import Slide from "$components/Slide.svelte";
   import Footer from "$components/Footer.svelte";
   import { onMount } from "svelte";
-  import { apiFetch } from "$lib/api";
+  import { apiFetch, BASE_URL_API } from "$lib/api";
   import { EyeOutline } from "flowbite-svelte-icons";
   import { goto } from "$app/navigation";
 
@@ -19,6 +19,11 @@ let showEditPopup = false;
 let showDeletePopup = false;
 let selectedForum: any = null;
 let loading = false;
+let  info = {
+  expire: false,
+  finRenouvellement: "",
+  montant: "",
+}
 
 async function fetchData(userId: number) {
     loading = true;
@@ -39,6 +44,18 @@ async function fetchData(userId: number) {
 
 onMount(async () => {
     await fetchData(user?.id);
+
+    fetch(BASE_URL_API + "/paiement/status/renouvellement/" + user?.id)
+      .then((response) => response.json())
+      .then((result) => {
+        
+        info.expire = result.data.expire;
+        info.finRenouvellement = result.data.finRenouvellement;
+        info.montant = result.data.montant;
+        console.log("content main_data", info);
+
+        
+      })
 });
 
 // Calcul des paiementData paginés
@@ -87,6 +104,10 @@ function openAddPopup() {
 function closeAddPopup() {
     showAddPopup = false;
 }
+function formatDatePaiement(dateString:any) {
+    const options = { year: 'numeric', month: '2-digit', day: '2-digit' };
+    return new Date(dateString).toLocaleDateString('fr-FR', options);
+  }
 
 function openEditPopup(forum: any) {
     selectedForum = forum;
@@ -249,6 +270,21 @@ function navigateToDashboard() {
   />
   <section class="hakkimizda-bolumu-anasayfa1 iletisim-form-alani" style="padding-top:120px">
     <div class="container">
+
+      {#if info.expire == true }
+
+      <button on:click={()=>{
+        goto("/site/renouvellement");
+     }} class="buton buton--kirmizi">
+       <small>FAITE LE RENOUVELLEMENT</small> <i class="fa fa-plus"></i>
+     </button>
+      {/if}
+     
+      
+      <br><br>
+
+      <!-- <p>{user?.expire}</p>
+      <p>{user?.finRenouvellement}</p> -->
       <div class="masqueur à effet de révélation d'image de projet wow">
        <!-- 
         <div class="row  text-centerf"  >
@@ -283,9 +319,9 @@ function navigateToDashboard() {
             >
               <div class="row  text-center"  >
               
-                <div class="col-md-1">
+                <div class="col-md-2">
                   <p  style="margin-top: 16px;">
-                    {index + 1}
+                    {formatDatePaiement(item.createdAt)}
 
                   </p>
                   
@@ -297,8 +333,12 @@ function navigateToDashboard() {
                   </p>
                   
                 </div>
-                <div class="col-md-3">
-                  {item.montant} 
+                <div class="col-md-2">
+                  
+                  <p  style="margin-top: 16px;">
+
+                    {item.montant} 
+                  </p>
                 </div>
                 <div class="col-md-3">
                   {item.reference} 
@@ -307,6 +347,7 @@ function navigateToDashboard() {
                 <div class="col-md-3">
                   {item.channel}
                 </div>
+               
                 
               </div>
             </div>

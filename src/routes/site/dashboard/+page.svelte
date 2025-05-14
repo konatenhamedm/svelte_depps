@@ -6,7 +6,7 @@
   import type { User } from "../../../types";
   import { page } from "$app/stores";
   import { goto } from "$app/navigation";
-  import { BASE_URL_API_UPLOAD } from "$lib/api";
+  import { BASE_URL_API, BASE_URL_API_UPLOAD } from "$lib/api";
 
   function handleLogout() {
     logout();
@@ -17,61 +17,107 @@
 
   export let data;
   let user = data?.user;
-  let cards:any = [];
+  let cards: any = [];
 
+  let expire: boolean = false;
+  let info = {
+    expire: false,
+    finRenouvellement: "",
+    montant: "",
+  };
   async function logout() {
     await fetch("/auth/logout", { method: "POST" });
     goto("/");
   }
 
-  if(user.type == "PROFESSIONNEL"){
-     cards = [
-    { icon: 'fas fa-folder-open', text: 'Mise à jour du dossier', link: 'dossiers' },
-    { icon: 'fas fa-bell', text: 'Alertes', link: 'alerte' },
-    { icon: 'fas fa-tasks', text: 'suivi de mon dossier', link: 'suivi' },/* 
-    { icon: 'fas fa-comments', text: 'MyDEPPS chat', link: 'chatbox' }, */
-    { icon: 'fas fa-book', text: 'Historique paiement et Renouvellement', link: 'paiements' },
-    { icon: 'fas fa-file-pdf', text: "Documenthèque", link: "guide-utilisateur" },
-    { icon: 'fas fa-users', text: 'Forum', link: 'forum' }
-  ];
-  }else{
-     cards = [
-    { icon: 'fas fa-folder-open', text: 'Mise à jour du dossier', link: 'dossiers_etablissement' },
-    { icon: 'fas fa-bell', text: 'Alertes', link: 'alerte' },
-    { icon: 'fas fa-tasks', text: 'suivi de mon dossier', link: 'suivi' },
-    /* { icon: 'fas fa-comments', text: 'MyDEPPS chat', link: 'chatbox' }, */
-    { icon: 'fas fa-book', text: 'Historique paiements', link: 'paiements' },
-    { icon: 'fas fa-file-pdf', text: "Documenthèque", link: "guide-utilisateur" },
-    { icon: 'fas fa-users', text: 'Forum', link: 'forum' }
-  ];
-  }
-
 
   async function fetchData() {
-        try {
-            const response = await fetch(`https://prodmydepps.leadagro.net/api/notification/nombre/${user.id}`);
-            if (response.ok) {
-                const result = await response.json();
-                if (result.code === 200 && result.data) {
-                  notificationCount = result.data.length;
-                  
-                } else {
-                    console.error("Erreur dans la réponse de l'API:", result.message);
-                }
-            } else {
-                console.error("Erreur de récupération:", response.statusText);
-            }
-        } catch (error) {
-            console.error("Erreur API:", error);
-        }finally {
-          
+    try {
+      const response = await fetch(
+        BASE_URL_API + `/notification/nombre/${user.id}`,
+      );
+      if (response.ok) {
+        const result = await response.json();
+        if (result.code === 200 && result.data) {
+          notificationCount = result.data.length;
+        } else {
+          console.error("Erreur dans la réponse de l'API:", result.message);
         }
+      } else {
+        console.error("Erreur de récupération:", response.statusText);
+      }
+    } catch (error) {
+      console.error("Erreur API:", error);
+    } finally {
     }
+  }
 
-    onMount(async () => {
-        await fetchData();
-    });
- 
+  async function fetchDataInfo() {
+    try {
+      await fetch(BASE_URL_API + "/paiement/status/renouvellement/" + user?.id)
+        .then((response) => response.json())
+        .then((result) => {
+          info.expire = result.data.expire;
+          expire = result.data.expire;
+          info.finRenouvellement = result.data.finRenouvellement;
+          info.montant = result.data.montant;
+          console.log("content main_data", info);
+        });
+    } catch (error) {
+      console.error("Erreur API:", error);
+    } finally {
+    }
+  }
+
+  onMount(async () => {
+    await fetchData();
+    await fetchDataInfo();
+
+  if (user.type == "PROFESSIONNEL") {
+    cards = [
+      {
+        icon: "fas fa-folder-open",
+        text: "Mise à jour du dossier",
+        link: "dossiers",
+      },
+      { icon: "fas fa-bell", text: "Alertes", link: "alerte" ,isProtected: info.expire},
+      { icon: "fas fa-tasks", text: "suivi de mon dossier", link: "suivi", isProtected: info.expire },
+      {
+        icon: "fas fa-book",
+        text: "Historique paiement et Renouvellement",
+        link: "paiements",
+      },
+      {
+        icon: "fas fa-file-pdf",
+        text: "Documenthèque",
+        link: "guide-utilisateur",
+        isProtected: info.expire,
+      },
+      { icon: "fas fa-users", text: "Forum", link: "forum", isProtected: info.expire },
+      
+    ];
+  } else {
+    cards = [
+      {
+        icon: "fas fa-folder-open",
+        text: "Mise à jour du dossier",
+        link: "dossiers_etablissement",
+      },
+      { icon: "fas fa-bell", text: "Alertes", link: "alerte" },
+      { icon: "fas fa-tasks", text: "suivi de mon dossier", link: "suivi" },
+      { icon: "fas fa-book", text: "Historique paiements", link: "paiements" },
+      {
+        icon: "fas fa-file-pdf",
+        text: "Documenthèque",
+        link: "guide-utilisateur",
+        isProtected: true,
+      },
+      { icon: "fas fa-users", text: "Forum", link: "forum", isProtected: true },
+    ];
+  }
+  });
+
+  
 </script>
 
 <!-- <div
@@ -83,8 +129,7 @@
         style="border-color: rgb(113, 88, 190); transform: translate(228px, 635px);"
 ></div> -->
 <div id="">
-  
-  <Slide user={user} /><br><br><br><br><br><br>
+  <Slide {user} /><br /><br /><br /><br /><br /><br />
   <style>
     .tablo:not(:last-child) {
       margin-bottom: 35px;
@@ -179,98 +224,128 @@
     }
   </style>
   <link
-          rel="stylesheet"
-          href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
-          integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN"
-          crossorigin="anonymous"
+    rel="stylesheet"
+    href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
+    integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN"
+    crossorigin="anonymous"
   />
   <link
-          rel="stylesheet"
-          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
-          integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A=="
-          crossorigin="anonymous"
-          referrerpolicy="no-referrer"
+    rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
+    integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A=="
+    crossorigin="anonymous"
+    referrerpolicy="no-referrer"
   />
   <section class="hakkimizda-bolumu-anasayfa1 py-5">
     <div class="container">
-      <div class="tablo--1-ve-2 masqueur effet-revelation wow animated" style="visibility: visible;">
+      <div
+        class="tablo--1-ve-2 masqueur effet-revelation wow animated"
+        style="visibility: visible;"
+      >
         <div class="row align-items-center">
           <div class="col-lg-8 col-md-12 text-center text-lg-start">
             <h1 class="h2-baslik-anasayfa-ozel h-yazi-margin-kucuk fw-bold">
               Bienvenue sur la<br />
-              plateforme MyDEPPS
+              plateforme MyDEPPS {expire}
             </h1>
           </div>
-          
-          <div class="col-lg-4 col-md-8 mx-auto p-3 shadow-sm border rounded bg-light cursor-pointer" >
+
+          <div
+            class="col-lg-4 col-md-8 mx-auto p-3 shadow-sm border rounded bg-light cursor-pointer"
+          >
             <div class="grid grid-cols-5">
-            <!--   <li class="relative mr-4"> -->
-              <a href="/site/notification" class="relative text-blue-500 hover:text-blue-700 flex items-center">
+              <!--   <li class="relative mr-4"> -->
+              <a
+                href="/site/notification"
+                class="relative text-blue-500 hover:text-blue-700 flex items-center"
+              >
                 <i class="fas fa-bell text-5xl"></i>
                 {#if notificationCount > 0}
-                  <span 
-                    class="absolute  inline-flex items-center justify-center px-2 py-1 
-                           text-xs font-bold text-white bg-red-600 rounded-full transform -translate-y-1/2 translate-x-1/2">
+                  <span
+                    class="absolute inline-flex items-center justify-center px-2 py-1
+                           text-xs font-bold text-white bg-red-600 rounded-full transform -translate-y-1/2 translate-x-1/2"
+                  >
                     {notificationCount}
                   </span>
                 {/if}
               </a>
-             <!--  </li> -->
+              <!--  </li> -->
 
-              <div class="d-flex align-items-center col-span-4" on:click={()=>{
-                goto('/site/profil')
-              }}>
+              <div
+                class="d-flex align-items-center col-span-4"
+                on:click={() => {
+                  goto("/site/profil");
+                }}
+              >
                 <div class="flex-grow-1">
                   <h4 class="h2-baslik-anasayfa-ozel h-yazi-margin-kucuk my-2">
                     {user?.nom}
                   </h4>
                   <p class="fs-5 text-secondary">
                     {#if user?.type == "PROFESSIONNEL"}
-                    PROFESSIONNEL DE SANTE
+                      PROFESSIONNEL DE SANTE
                     {:else}
-                    ETABLISSEMENT DE SANTE
+                      ETABLISSEMENT DE SANTE {info.expire}
                     {/if}
                   </p>
                 </div>
                 <div class="ms-3">
-                  <div class="avatar rounded-circle shadow-sm"
+                  <div
+                    class="avatar rounded-circle shadow-sm"
                     style="width: 80px; height: 80px; background-size: cover; background-position: center;
-                    background-image: url({user?.avatar ? BASE_URL_API_UPLOAD + user?.avatar : 'https://static.vecteezy.com/system/resources/thumbnails/009/292/244/small/default-avatar-icon-of-social-media-user-vector.jpg'});">
-                  </div>
+                    background-image: url({user?.avatar
+                      ? BASE_URL_API_UPLOAD + user?.avatar
+                      : 'https://static.vecteezy.com/system/resources/thumbnails/009/292/244/small/default-avatar-icon-of-social-media-user-vector.jpg'});"
+                  ></div>
                 </div>
               </div>
             </div>
-         
           </div>
         </div>
-  
+
         <br />
-  
+
         <div class="row g-4">
-          {#each cards as { icon, text, link }}
-          <div class="col-lg-4 col-md-6 col-sm-12">
-            <a href={link} class="text-decoration-none">
-              <div class="card card-custom hover:bg-blue-100 hover:text-white">
-                <i class={icon}></i>
-                <div class="card-text">{text}</div>
-              </div>
-            </a>
-          </div>
+          {#each cards as { icon, text, link, isProtected }}
+            <div class="col-lg-4 col-md-6 col-sm-12">
+              {#if !isProtected }
+                <a href={link} class="text-decoration-none">
+                  <div
+                    class="card card-custom hover:bg-blue-100 hover:text-white"
+                  >
+                    <i class={icon}></i>
+                    <div class="card-text">{text}</div>
+                  </div>
+                </a>
+              {:else}
+                <div
+                  class="card card-custom text-gray-400 cursor-not-allowed relative opacity-50"
+                >
+                  <i class={icon}></i>
+                  <div class="card-text">{text}</div>
+                  <div class="absolute top-2 right-2 text-xl text-gray-600">
+                    🔒
+                  </div>
+                </div>
+              {/if}
+            </div>
           {/each}
         </div>
       </div>
     </div>
   </section>
-  
+
   <style>
     /* Conteneurs adaptatifs */
     .container {
       max-width: 1200px;
     }
-  
+
     /* Cartes adaptatives */
     .card-custom {
-      transition: transform 0.3s ease, background-color 0.3s ease;
+      transition:
+        transform 0.3s ease,
+        background-color 0.3s ease;
       display: flex;
       flex-direction: column;
       align-items: center;
@@ -282,16 +357,16 @@
       box-shadow: 3px 3px 10px rgba(0, 0, 0, 0.2);
       height: 200px;
     }
-  
+
     .card-custom:hover {
       transform: scale(1.05);
     }
-  
+
     .card-custom i {
       font-size: 4rem;
       margin-bottom: 10px;
     }
-  
+
     .card-custom .card-text {
       font-size: 1.2rem;
       font-weight: bold;
@@ -300,31 +375,30 @@
       overflow: hidden;
       white-space: nowrap;
     }
-  
+
     /* Avatar */
     .avatar {
       width: 80px;
       height: 80px;
       border-radius: 50%;
     }
-  
+
     /* Responsive ajustements */
     @media (max-width: 768px) {
       .h2-baslik-anasayfa-ozel {
         font-size: 2.5rem;
       }
-  
+
       .card-custom {
         height: auto;
         padding: 15px;
       }
-  
+
       .card-custom i {
         font-size: 3rem;
       }
     }
   </style>
-  
+
   <Footer />
 </div>
-

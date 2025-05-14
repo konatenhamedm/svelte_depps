@@ -20,11 +20,11 @@ export async function login(username_field: string, password: string) {
           throw new Error(jsonData.message || 'Erreur lors de la connexion');
       }
 
-      const { token, data: { id, username, role, type, status, payement, avatar,personneId,nom } } = jsonData;
+      const { token, data: { id, username, role, type, status, payement, avatar,personneId,nom,finRenouvellement,expire } } = jsonData;
 
       // Stocker l'objet utilisateur dans un cookie accessible côté client
       document.cookie = `auth=${encodeURIComponent(JSON.stringify({
-          id, username, role, token, type, status, payement, avatar,personneId,nom
+          id, username, role, token, type, status, payement, avatar,personneId,nom,finRenouvellement,expire
       }))}; path=/; max-age=${60 * 60 * 24}; secure=${location.protocol === 'https:' ? 'true' : 'false'}`;
 
       return jsonData;
@@ -49,11 +49,11 @@ export async function loginloginUserFront(username_field: string, password: stri
           throw new Error(jsonData.message || 'Erreur lors de la connexion');
       }
 
-      const { token, data: { id, username, role, type, status, payement, avatar,personneId,nom } } = jsonData;
+      const { token, data: { id, username, role, type, status, payement, avatar,personneId,nom,finRenouvellement,expire } } = jsonData;
 
       // Stocker l'objet utilisateur dans un cookie accessible côté client
       document.cookie = `auth=${encodeURIComponent(JSON.stringify({
-          id, username, role, token, type, status, payement, avatar,personneId,nom
+          id, username, role, token, type, status, payement, avatar,personneId,nom,finRenouvellement,expire
       }))}; path=/; max-age=${60 * 60 * 24}; secure=${location.protocol === 'https:' ? 'true' : 'false'}`;
 
       return jsonData;
