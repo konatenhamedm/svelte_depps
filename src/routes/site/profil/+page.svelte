@@ -286,7 +286,7 @@ async function logout() {
 
 <style>
   .entete {
-    width: 30% !important;
+    width: 80% !important;
   }
     .main-div {
     margin-top: 30px;
