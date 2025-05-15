@@ -75,7 +75,13 @@
 </script>
 
 <div class="form__group">
-  <label for="{label}" class="block text-2xl font-medium mb-1">{label} *</label>
+  <label for="{label}" class="block text-2xl font-medium mb-1">
+    {#if label == "Ilot,lot" || label == "Code d’identification"}
+    {label}
+    {:else}
+    {label} *
+    {/if}
+   </label>
   <input
     id="{label}"
     type={type}
@@ -87,6 +93,13 @@
     on:input={(e) => {
       saveFormState();
     }}
+    on:keypress={(e) => {
+      if (type === 'tel' && !/[0-9]/.test(e.key)) {
+        e.preventDefault();
+      }
+    }}
+    required={type === 'tel'}
+    pattern={type === 'tel' ? "^(07|01|05)[0-9]{8}$" : ""}
   />
   
   {#if error}

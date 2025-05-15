@@ -16,6 +16,11 @@
   let professionnels: any[] = [];
   let professionnelsAjour: any[] = [];
   let etablissements: any[] = [];
+  let professions: any[] = [];
+  let selectedProfession: string = '';
+  let filteredProfessionnels: any[] = [];
+  let filteredProfessionnelsAjour: any[] = [];
+  let filteredEtablissements: any[] = [];
 
   // Date et heure
   let currentDate = new Date();
@@ -29,18 +34,23 @@
   async function fetchInitialData() {
     loading = true;
     try {
-      const [statsRes, proRes, etabRes] = await Promise.all([
+      const [statsRes, proRes, etabRes, profRes] = await Promise.all([
         apiFetch(true, "/statistique/info-dashboard"),
         apiFetch(true, "/professionnel/"),
-        apiFetch(true, "/professionnel/")
+        apiFetch(true, "/professionnel/"),
+        apiFetch(true, "/profession/")
       ]);
 
       if (statsRes) main_data = statsRes.data;
       if (proRes) {
+
+        console.log("Professionnels:", proRes.data);
         professionnels = proRes.data || [];
         professionnelsAjour = professionnels.filter(p => p.personne?.status === 'a_jour');
+        updateFilteredData();
       }
       if (etabRes) etablissements = etabRes.data || [];
+      if (profRes) professions = profRes.data || [];
     } catch (error) {
       console.error("Erreur de chargement:", error);
     } finally {
@@ -48,65 +58,48 @@
     }
   }
 
+  function updateFilteredData() {
+    if (selectedProfession === '') {
+      filteredProfessionnels = professionnels;
+      filteredProfessionnelsAjour = professionnelsAjour;
+      filteredEtablissements = etablissements;
+    } else {
+
+      console.log("<dddddd",professionnels)
+      filteredProfessionnels = professionnels.filter(p =>
+              p.personne.profession?.id === selectedProfession ||
+              p.personne.profession?.libelle === selectedProfession
+      );
+
+      filteredProfessionnelsAjour = professionnelsAjour.filter(p =>
+              p.personne.profession?.id === selectedProfession ||
+              p.personne.profession?.libelle === selectedProfession
+      );
+
+      // Pour les établissements, filtrer par profession peut nécessiter une logique différente
+      // selon la structure de vos données. Voici une approche supposée:
+      filteredEtablissements = etablissements.filter(e =>
+              e.personne.profession?.id === selectedProfession ||
+              e.personne.profession?.libelle === selectedProfession
+      );
+    }
+  }
+
+  function handleProfessionChange(event:any) {
+    selectedProfession = event.target.value;
+    updateFilteredData();
+    currentPage = 1; // Réinitialiser à la première page après filtrage
+  }
+
   function handleCardClick(type: 'professionnel' | 'etablissement' | 'pro') {
     activeTab = type;
     currentPage = 1;
-  }
-  async function downloadPDF() {
-    let dataToExport;
-    let title;
-    let headers;
-
-    if (activeTab === 'professionnel') {
-      dataToExport = professionnels;
-      title = 'Liste des professionnels';
-      headers = ['Nom', 'Prénoms', 'Téléphone', 'Email'];
-    } else if (activeTab === 'etablissement') {
-      dataToExport = etablissements;
-      title = 'Liste des établissements';
-      headers = ['Nom', 'Adresse', 'Téléphone', 'Email'];
-    } else {
-      dataToExport = professionnelsAjour;
-      title = 'Liste des professionnels à jour';
-      headers = ['Nom', 'Prénoms', 'Téléphone', 'Email'];
-    }
-
-    const { jsPDF } = await import("jspdf");
-    const doc = new jsPDF();
-
-    // Titre
-    doc.setFontSize(18);
-    doc.text(title, 14, 16);
-
-    // En-têtes
-    doc.setFontSize(12);
-    headers.forEach((header, i) => {
-      doc.text(header, 14 + (i * 45), 26);
-    });
-
-    // Données
-    doc.setFontSize(10);
-    dataToExport.forEach((item, index) => {
-      const y = 36 + (index * 10);
-
-      if (activeTab === 'professionnel' || activeTab === 'pro') {
-        doc.text(item.personne?.nom || 'N/A', 14, y);
-        doc.text(item.personne?.prenoms || 'N/A', 14 + 45, y);
-        doc.text(item.personne?.number || 'N/A', 14 + 90, y);
-        doc.text(item.personne?.email || 'N/A', 14 + 135, y);
-      } else {
-        doc.text(item.username || 'N/A', 14, y);
-        doc.text(item.adresse || 'N/A', 14 + 45, y);
-        doc.text(item.number || 'N/A', 14 + 90, y);
-        doc.text(item.email || 'N/A', 14 + 135, y);
-      }
-    });
-
-    doc.save(`${title}.pdf`);
+    // On garde le filtre de profession quand on change d'onglet
+    updateFilteredData();
   }
 
-  onMount(async ()=> {
-    await fetchInitialData();
+  onMount(() => {
+    fetchInitialData();
 
     const timer = setInterval(() => {
       const now = new Date();
@@ -118,10 +111,13 @@
       });
     }, 1000);
 
-
-
     return () => clearInterval(timer);
   });
+
+  $: {
+    // Réagir aux changements d'onglet ou de profession sélectionnée
+    updateFilteredData();
+  }
 </script>
 
 <div class="p-4">
@@ -203,23 +199,39 @@
 
     <!-- Tableau de données -->
     <div class="bg-white rounded-lg shadow overflow-hidden">
-      <!-- Dans votre premier composant, remplacez la partie du bouton PDF par : -->
-      <div class="flex justify-end p-4">
+      <div class="flex justify-between items-center p-4">
+        <!-- Sélecteur de profession - présent sur tous les onglets -->
+        <div class="w-64">
+          <label for="profession" class="block text-sm font-medium text-gray-700 mb-1">Filtrer par profession</label>
+          <select
+                  id="profession"
+                  class="block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+                  bind:value={selectedProfession}
+                  on:change={handleProfessionChange}
+          >
+            <option value="">Toutes les professions</option>
+            {#each professions as profession}
+              <option value={profession.id}>{profession.libelle}</option>
+            {/each}
+          </select>
+        </div>
+
+        <!-- Bouton PDF -->
         <Pdf
-                title={activeTab === 'professionnel' ? 'Liste des professionnels' :
-              activeTab === 'etablissement' ? 'Liste des établissements' :
-              'Liste des professionnels à jour'}
+                title={activeTab === 'professionnel' ? (selectedProfession ? `Liste des professionnels - ${professions.find(p => p.id === selectedProfession)?.libelle || ''}` : 'Liste des professionnels') :
+              activeTab === 'etablissement' ? (selectedProfession ? `Liste des établissements - ${professions.find(p => p.id === selectedProfession)?.libelle || ''}` : 'Liste des établissements') :
+              (selectedProfession ? `Liste des professionnels à jour - ${professions.find(p => p.id === selectedProfession)?.libelle || ''}` : 'Liste des professionnels à jour')}
                 headers={activeTab === 'professionnel' || activeTab === 'pro' ?
-                ['Nom', 'Prénoms', 'Téléphone', 'Email'] :
-                ['Nom', 'Adresse', 'Téléphone', 'Email']}
-                data={activeTab === 'professionnel' ? professionnels :
-              activeTab === 'etablissement' ? etablissements :
-              professionnelsAjour}
+              ['Nom', 'Prénoms', 'Téléphone', 'Email', 'Profession'] :
+              ['Nom', 'Adresse', 'Téléphone', 'Email', 'Profession']}
+                data={activeTab === 'professionnel' ? filteredProfessionnels :
+              activeTab === 'etablissement' ? filteredEtablissements :
+              filteredProfessionnelsAjour}
                 type={activeTab}
         />
       </div>
-    <!-- Tableau de données -->
-    <div class="bg-white rounded-lg shadow overflow-hidden">
+
+      <!-- Tableau -->
       {#if loading}
         <div class="p-8 text-center">
           <svg class="animate-spin -ml-1 mr-3 h-5 w-5 text-blue-500 inline-block" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
@@ -237,19 +249,21 @@
               <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">Prénoms</th>
               <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">Téléphone</th>
               <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">Email</th>
+              <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">Profession</th>
             </tr>
             </thead>
             <tbody class="bg-white divide-y divide-gray-200">
-            {#each professionnels.slice((currentPage-1)*itemsPerPage, currentPage*itemsPerPage) as item}
+            {#each filteredProfessionnels.slice((currentPage-1)*itemsPerPage, currentPage*itemsPerPage) as item}
               <tr class="hover:bg-gray-50">
                 <td class="px-4 py-3 whitespace-nowrap text-sm">{item.personne?.nom ?? 'N/A'}</td>
                 <td class="px-4 py-3 whitespace-nowrap text-sm">{item.personne?.prenoms ?? 'N/A'}</td>
                 <td class="px-4 py-3 whitespace-nowrap text-sm">{item.personne?.number ?? 'N/A'}</td>
                 <td class="px-4 py-3 whitespace-nowrap text-sm">{item.personne?.email ?? 'N/A'}</td>
+                <td class="px-4 py-3 whitespace-nowrap text-sm">{item.personne.profession?.libelle ?? 'N/A'}</td>
               </tr>
             {:else}
               <tr>
-                <td colspan="4" class="px-4 py-3 text-center text-sm text-gray-500">Aucun professionnel trouvé</td>
+                <td colspan="5" class="px-4 py-3 text-center text-sm text-gray-500">Aucun professionnel trouvé</td>
               </tr>
             {/each}
             </tbody>
@@ -262,19 +276,21 @@
               <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">Adresse</th>
               <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">Téléphone</th>
               <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">Email</th>
+              <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">Profession</th>
             </tr>
             </thead>
             <tbody class="bg-white divide-y divide-gray-200">
-            {#each etablissements.slice((currentPage-1)*itemsPerPage, currentPage*itemsPerPage) as item}
+            {#each filteredEtablissements.slice((currentPage-1)*itemsPerPage, currentPage*itemsPerPage) as item}
               <tr class="hover:bg-gray-50">
                 <td class="px-4 py-3 whitespace-nowrap text-sm">{item.username ?? 'N/A'}</td>
                 <td class="px-4 py-3 whitespace-nowrap text-sm">{item.adresse ?? 'N/A'}</td>
                 <td class="px-4 py-3 whitespace-nowrap text-sm">{item.number ?? 'N/A'}</td>
                 <td class="px-4 py-3 whitespace-nowrap text-sm">{item.email ?? 'N/A'}</td>
+                <td class="px-4 py-3 whitespace-nowrap text-sm">{item.personne.profession?.libelle ?? 'N/A'}</td>
               </tr>
             {:else}
               <tr>
-                <td colspan="4" class="px-4 py-3 text-center text-sm text-gray-500">Aucun établissement trouvé</td>
+                <td colspan="5" class="px-4 py-3 text-center text-sm text-gray-500">Aucun établissement trouvé</td>
               </tr>
             {/each}
             </tbody>
@@ -287,19 +303,21 @@
               <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">Prénoms</th>
               <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">Téléphone</th>
               <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">Email</th>
+              <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">Profession</th>
             </tr>
             </thead>
             <tbody class="bg-white divide-y divide-gray-200">
-            {#each professionnelsAjour.slice((currentPage-1)*itemsPerPage, currentPage*itemsPerPage) as item}
+            {#each filteredProfessionnelsAjour.slice((currentPage-1)*itemsPerPage, currentPage*itemsPerPage) as item}
               <tr class="hover:bg-gray-50">
                 <td class="px-4 py-3 whitespace-nowrap text-sm">{item.personne?.nom ?? 'N/A'}</td>
                 <td class="px-4 py-3 whitespace-nowrap text-sm">{item.personne?.prenoms ?? 'N/A'}</td>
                 <td class="px-4 py-3 whitespace-nowrap text-sm">{item.personne?.number ?? 'N/A'}</td>
                 <td class="px-4 py-3 whitespace-nowrap text-sm">{item.personne?.email ?? 'N/A'}</td>
+                <td class="px-4 py-3 whitespace-nowrap text-sm">{item.personne.profession?.libelle ?? 'N/A'}</td>
               </tr>
             {:else}
               <tr>
-                <td colspan="4" class="px-4 py-3 text-center text-sm text-gray-500">Aucun professionnel à jour trouvé</td>
+                <td colspan="5" class="px-4 py-3 text-center text-sm text-gray-500">Aucun professionnel à jour trouvé</td>
               </tr>
             {/each}
             </tbody>
@@ -309,14 +327,14 @@
     </div>
 
     <!-- Pagination -->
-    {#if (activeTab === 'professionnel' && professionnels.length > itemsPerPage) ||
-    (activeTab === 'etablissement' && etablissements.length > itemsPerPage) ||
-    (activeTab === 'pro' && professionnelsAjour.length > itemsPerPage)}
+    {#if (activeTab === 'professionnel' && filteredProfessionnels.length > itemsPerPage) ||
+    (activeTab === 'etablissement' && filteredEtablissements.length > itemsPerPage) ||
+    (activeTab === 'pro' && filteredProfessionnelsAjour.length > itemsPerPage)}
       <div class="flex justify-center mt-4">
         {#each Array(Math.ceil(
-                activeTab === 'professionnel' ? professionnels.length/itemsPerPage :
-                        activeTab === 'etablissement' ? etablissements.length/itemsPerPage :
-                                professionnelsAjour.length/itemsPerPage
+                activeTab === 'professionnel' ? filteredProfessionnels.length/itemsPerPage :
+                        activeTab === 'etablissement' ? filteredEtablissements.length/itemsPerPage :
+                                filteredProfessionnelsAjour.length/itemsPerPage
         )) as _, i}
           <button
                   on:click={() => currentPage = i+1}

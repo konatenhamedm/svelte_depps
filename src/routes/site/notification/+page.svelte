@@ -157,24 +157,32 @@
 <Header/>
 <Slide/>
 
-<div class="file-ariane flex items-center space-x-2 text-sm text-gray-600 mb-4">
-    <button on:click={navigateToDashboard} class="flex items-center hover:text-blue-600">
+<div
+    class="file-ariane flex items-center space-x-2 text-sm text-gray-600 mb-8"
+  >
+    <div class="flex items-center hover:text-blue-600 entete">
+      <button
+      on:click={navigateToDashboard}
+      class="flex items-center hover:text-blue-600"
+    >
       <!-- Icône SVG pour "Tableau de bord" -->
       <svg
-              xmlns="http://www.w3.org/2000/svg"
-              class="w-4 h-4 mr-1"
-              viewBox="0 0 20 20"
-              fill="currentColor"
+        xmlns="http://www.w3.org/2000/svg"
+        class="w-4 h-4 mr-1"
+        viewBox="0 0 20 20"
+        fill="currentColor"
       >
         <path
-                d="M10.707 2.293a1 1 0 00-1.414 0l-7 7a1 1 0 001.414 1.414L4 10.414V17a1 1 0 001 1h2a1 1 0 001-1v-2a1 1 0 011-1h2a1 1 0 011 1v2a1 1 0 001 1h2a1 1 0 001-1v-6.586l.293.293a1 1 0 001.414-1.414l-7-7z"
+          d="M10.707 2.293a1 1 0 00-1.414 0l-7 7a1 1 0 001.414 1.414L4 10.414V17a1 1 0 001 1h2a1 1 0 001-1v-2a1 1 0 011-1h2a1 1 0 011 1v2a1 1 0 001 1h2a1 1 0 001-1v-6.586l.293.293a1 1 0 001.414-1.414l-7-7z"
         />
       </svg>
       Tableau de bord
     </button>
     <span>/</span>
-    <span class="text-gray-800">Liste des notifications</span> <!-- Nom de la page actuelle -->
-  </div><br><br><br><br><br><br><br><br><br><br><br>
+    <span class="text-gray-800">Liste des notifications</span>
+    </div>
+    <!-- Nom de la page actuelle -->
+  </div><br><br><br /><br /><br /><br><br><br /><br /><br />
 
 <main style="background-color: #fff" class="pb-20">
     <style>
@@ -270,12 +278,12 @@
             referrerpolicy="no-referrer"
     />
     <section class="hakkimizda-bolumu-anasayfa1 iletisim-form-alani" style="padding-top:120px">
-        <div class="container">
+        <div class="container"><br /><br /> <br /><br /><br />
             <div class="masqueur à effet de révélation d'image de projet wow">
 
                 {#if notifications.length > 0}
                     {#each notifications as notification, index}
-                        <div
+                        <div on:click={() => markAsRead(notification.id)}
                                 class="services-kutu2 project-image reveal-effect masker wow"
                                 style="cursor: pointer; visibility: visible; width: 100%; margin-bottom: 15px;"
                         >
@@ -358,7 +366,7 @@
                     </div>
 
                 {/if}
-                <br /><br /><br /><br /><br /><br /> <br /><br /><br /><br /><br /><br /> <br /><br /><br />
+                <br /><br /><br /><br /><br /><br /> <br /><br /><br /><br /><br /><br /> <br /><br /><br /><br /><br /> <br /><br /><br />
             </div>
         </div>
     </section>

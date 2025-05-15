@@ -312,7 +312,7 @@ console.log(formData.commune);
         <!-- District -->
         <div class="form__group">
             <label class="block text-2xl font-medium mb-1"
-                >District sanitaire {formData.district}*</label
+                >District sanitaire *</label
             >
             <select
                 class="w-full form__input"

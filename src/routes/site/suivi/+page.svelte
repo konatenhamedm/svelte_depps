@@ -285,7 +285,7 @@ function goToPage(page: any) {
             <div class="row">
               <div class="col-md-12 text-center">
                 <p style="margin: auto; text-align: center;">
-                  Aucune alerte pour l'instant
+                  Aucun suivi pour l'instant
                 </p>
               </div>
             </div>

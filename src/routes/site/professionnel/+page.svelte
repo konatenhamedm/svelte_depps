@@ -422,7 +422,7 @@
 
       authenticating = true;
 
-      fetch("https://prodmydepps.leadagro.net/api/paiement/paiement", {
+      fetch(BASE_URL_API +"/paiement/paiement", {
         method: "POST",
         body: formDatas,
       })
@@ -509,7 +509,7 @@
 
     console.log(formDatas);
 
-    fetch("https://prodmydepps.leadagro.net/api/paiement/paiement", {
+    fetch(BASE_URL_API +"/paiement/paiement", {
       method: "POST",
       body: formDatas,
     })
@@ -609,8 +609,7 @@
     if (!idtransaction) return false;
 
     try {
-      const res = await fetch(
-        `https://prodmydepps.leadagro.net/api/paiement/get/transaction/${idtransaction}`,
+      const res = await fetch(BASE_URL_API + `/paiement/get/transaction/${idtransaction}`,
       );
       const data = await res.json();
       isPaiementDone = data.data;
@@ -627,8 +626,7 @@
     if (!professionCode) return false;
 
     try {
-      const res = await fetch(
-        `https://prodmydepps.leadagro.net/api/profession/get/status/paiement/${professionCode}`,
+      const res = await fetch(BASE_URL_API + `/profession/get/status/paiement/${professionCode}`,
       );
       const data = await res.json();
       paiementStatus = data.data;
@@ -647,7 +645,7 @@
 
     try {
       const res = await fetch(
-        `https://prodmydepps.leadagro.net/api/professionnel/existe/code/${code}`,
+        BASE_URL_API + `/professionnel/existe/code/${code}`,
       );
       const data = await res.json();
       return data.data;
@@ -666,7 +664,7 @@
 
     try {
       const res = await fetch(
-        `https://prodmydepps.leadagro.net/api/user/check/email/existe/${email}`,
+        BASE_URL_API +`/user/check/email/existe/${email}`,
       );
       const data = await res.json();
       return data.data; // Assurez-vous que l'API renvoie un objet avec une clé `valid`

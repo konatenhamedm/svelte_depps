@@ -169,58 +169,41 @@
             {/each}
        <!--    </div> -->
         {:else}
-          {#if paginatedForums.length > 0}
-            {#each paginatedForums as forum}
-              <div class="col-md-4">
-                <div
-                        class="post wow fadeInUp"
-                        data-wow-delay="0.60s"
-                        style="cursor:pointer;"
-                >
-                  <div class="datesection">
+          {#each paginatedForums as forum}
+            <div class="col-md-4">
+              <div
+                class="post wow fadeInUp"
+                data-wow-delay="0.60s"
+                style="cursor:pointer;"
+              >
+                <div class="datesection">
                   <span class="date">{formatDateForInput(forum.createdAt)}</span
                   >&nbsp;<span class="tt">-</span>&nbsp;<span class="category">
                     {#if forum.user.typeUser == "PROFESSIONNEL"}
                       {forum.user.personne.nom +
-                      " " +
-                      forum.user.personne.prenoms}
+                        " " +
+                        forum.user.personne.prenoms}
                     {:else}
                       {forum.user.email}
                     {/if}
                   </span>
-                  </div>
-                  <h3 class="baslik-3 h-yazi-margin-kucuk">{forum.titre}</h3>
-                  <p class="post-kutu--yazi">
-                    {truncate(forum.contenu, 80)} ...
-                  </p>
-                  <div class="h-yazi-ortalama h-yazi-margin-4">
-                    <a
-                            href="javascript:void(0);"
-                            on:click={() => {
+                </div>
+                <h3 class="baslik-3 h-yazi-margin-kucuk">{forum.titre}</h3>
+                <p class="post-kutu--yazi">
+                  {truncate(forum.contenu, 80)} ...
+                </p>
+                <div class="h-yazi-ortalama h-yazi-margin-4">
+                  <a
+                    href="javascript:void(0);"
+                    on:click={() => {
                       goto("/site/forum/details/" + forum.id);
                     }}
-                            class="buton buton--kirmizi buton--animasyon">Voir plus</a
-                    >
-                  </div>
-                </div>
-              </div>
-            {/each}
-          {:else}
-            <div
-                    class="services-kutu2 project-image reveal-effect masker wow"
-                    style="cursor: pointer; visibility: visible; width: 100%;"
-            >
-              <div class="row">
-                <div class="col-md-12 text-center">
-                  <p style="margin: auto; text-align: center;">
-                    Aucun article pour l'instant
-                  </p>
+                    class="buton buton--kirmizi buton--animasyon">Voir plus</a
+                  >
                 </div>
               </div>
             </div>
-          {/if}
-
-
+          {/each}
         {/if}
       </div>
     </div>
