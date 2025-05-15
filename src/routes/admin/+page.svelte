@@ -43,14 +43,22 @@
 
       if (statsRes) main_data = statsRes.data;
       if (proRes) {
-
         console.log("Professionnels:", proRes.data);
         professionnels = proRes.data || [];
         professionnelsAjour = professionnels.filter(p => p.personne?.status === 'a_jour');
-        updateFilteredData();
       }
       if (etabRes) etablissements = etabRes.data || [];
-      if (profRes) professions = profRes.data || [];
+      if (profRes) {
+        console.log("Professions reçues:", profRes.data);
+        professions = profRes.data || [];
+        // Log pour vérifier la structure des professions
+        if (professions.length > 0) {
+          console.log("Structure d'une profession:", JSON.stringify(professions[0], null, 2));
+        }
+      }
+
+      // On initialise les données filtrées après avoir chargé toutes les données
+      updateFilteredData();
     } catch (error) {
       console.error("Erreur de chargement:", error);
     } finally {
@@ -59,34 +67,61 @@
   }
 
   function updateFilteredData() {
-    if (selectedProfession === '') {
+    console.log("Mise à jour des données filtrées avec profession:", selectedProfession);
+    console.log("Type de selectedProfession:", typeof selectedProfession);
+
+    // Debug: Affichons la structure des professionnels pour comprendre le problème
+    if (professionnels.length > 0) {
+      console.log("Structure d'un professionnel:", JSON.stringify(professionnels[0], null, 2));
+    }
+
+    if (!selectedProfession || selectedProfession === '') {
+      // Aucun filtre sélectionné
       filteredProfessionnels = professionnels;
       filteredProfessionnelsAjour = professionnelsAjour;
       filteredEtablissements = etablissements;
+      console.log("Aucun filtre - tous les professionnels:", professionnels.length);
     } else {
+      console.log("Recherche de la profession avec ID:", selectedProfession);
 
-      console.log("<dddddd",professionnels)
-      filteredProfessionnels = professionnels.filter(p =>
-              p.personne.profession?.id === selectedProfession ||
-              p.personne.profession?.libelle === selectedProfession
-      );
+      // Filtrage adapté à la structure exacte des données
+      filteredProfessionnels = professionnels.filter(p => {
+        if (!p.personne) return false;
+        if (!p.personne.profession) return false;
 
-      filteredProfessionnelsAjour = professionnelsAjour.filter(p =>
-              p.personne.profession?.id === selectedProfession ||
-              p.personne.profession?.libelle === selectedProfession
-      );
+        // Convertir en string pour garantir la correspondance du type
+        const profId = String(p.personne.profession.id);
+        const selectedId = String(selectedProfession);
 
-      // Pour les établissements, filtrer par profession peut nécessiter une logique différente
-      // selon la structure de vos données. Voici une approche supposée:
-      filteredEtablissements = etablissements.filter(e =>
-              e.personne.profession?.id === selectedProfession ||
-              e.personne.profession?.libelle === selectedProfession
-      );
+        console.log(`Comparaison: ${profId} === ${selectedId}`, profId === selectedId);
+        return profId === selectedId;
+      });
+
+      filteredProfessionnelsAjour = professionnelsAjour.filter(p => {
+        if (!p.personne || !p.personne.profession) return false;
+        return String(p.personne.profession.id) === String(selectedProfession);
+      });
+
+      filteredEtablissements = etablissements.filter(e => {
+        if (!e.personne || !e.personne.profession) return false;
+        return String(e.personne.profession.id) === String(selectedProfession);
+      });
     }
+
+    console.log("Profession sélectionnée:", selectedProfession);
+    console.log("Professionnels filtrés:", filteredProfessionnels.length);
+    console.log("Professionnels à jour filtrés:", filteredProfessionnelsAjour.length);
   }
 
-  function handleProfessionChange(event:any) {
+  function handleProfessionChange(event) {
     selectedProfession = event.target.value;
+    console.log("Nouvelle profession sélectionnée (valeur brute):", event.target.value);
+    console.log("Nouvelle profession sélectionnée (après affectation):", selectedProfession);
+
+    // Vérifier si l'élément sélectionné existe dans la liste des professions
+    const professionFound = professions.find(p => String(p.id) === String(selectedProfession));
+    console.log("Profession trouvée:", professionFound);
+
     updateFilteredData();
     currentPage = 1; // Réinitialiser à la première page après filtrage
   }
@@ -114,10 +149,15 @@
     return () => clearInterval(timer);
   });
 
+  // Définir un gestionnaire pour la réactivité
   $: {
-    // Réagir aux changements d'onglet ou de profession sélectionnée
-    updateFilteredData();
+    if (selectedProfession !== undefined) {
+      // Ne pas appeler updateFilteredData() ici pour éviter les boucles infinies
+      console.log("La valeur de selectedProfession a changé:", selectedProfession);
+    }
   }
+
+  // Pas besoin de réagir aux changements, nous gérons cela dans handleProfessionChange
 </script>
 
 <div class="p-4">
@@ -206,12 +246,11 @@
           <select
                   id="profession"
                   class="block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
-                  bind:value={selectedProfession}
                   on:change={handleProfessionChange}
           >
-            <option value="">Toutes les professions</option>
+            <option value="" selected={selectedProfession === ""}>Toutes les professions</option>
             {#each professions as profession}
-              <option value={profession.id}>{profession.libelle}</option>
+              <option value={profession.id} selected={selectedProfession === profession.id}>{profession.libelle}</option>
             {/each}
           </select>
         </div>
@@ -259,7 +298,7 @@
                 <td class="px-4 py-3 whitespace-nowrap text-sm">{item.personne?.prenoms ?? 'N/A'}</td>
                 <td class="px-4 py-3 whitespace-nowrap text-sm">{item.personne?.number ?? 'N/A'}</td>
                 <td class="px-4 py-3 whitespace-nowrap text-sm">{item.personne?.email ?? 'N/A'}</td>
-                <td class="px-4 py-3 whitespace-nowrap text-sm">{item.personne.profession?.libelle ?? 'N/A'}</td>
+                <td class="px-4 py-3 whitespace-nowrap text-sm">{item.personne?.profession?.libelle ?? 'N/A'}</td>
               </tr>
             {:else}
               <tr>
@@ -286,7 +325,7 @@
                 <td class="px-4 py-3 whitespace-nowrap text-sm">{item.adresse ?? 'N/A'}</td>
                 <td class="px-4 py-3 whitespace-nowrap text-sm">{item.number ?? 'N/A'}</td>
                 <td class="px-4 py-3 whitespace-nowrap text-sm">{item.email ?? 'N/A'}</td>
-                <td class="px-4 py-3 whitespace-nowrap text-sm">{item.personne.profession?.libelle ?? 'N/A'}</td>
+                <td class="px-4 py-3 whitespace-nowrap text-sm">{item.personne?.profession?.libelle ?? 'N/A'}</td>
               </tr>
             {:else}
               <tr>
@@ -313,7 +352,7 @@
                 <td class="px-4 py-3 whitespace-nowrap text-sm">{item.personne?.prenoms ?? 'N/A'}</td>
                 <td class="px-4 py-3 whitespace-nowrap text-sm">{item.personne?.number ?? 'N/A'}</td>
                 <td class="px-4 py-3 whitespace-nowrap text-sm">{item.personne?.email ?? 'N/A'}</td>
-                <td class="px-4 py-3 whitespace-nowrap text-sm">{item.personne.profession?.libelle ?? 'N/A'}</td>
+                <td class="px-4 py-3 whitespace-nowrap text-sm">{item.personne?.profession?.libelle ?? 'N/A'}</td>
               </tr>
             {:else}
               <tr>

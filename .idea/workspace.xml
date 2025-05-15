@@ -1,0 +1,502 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="4fc344a7-af60-41fd-b027-db3365e0382a" name="Changes" comment="fix(new) : new update for the design">
+      <change beforePath="$PROJECT_DIR$/src/routes/admin/+page.svelte" beforeDir="false" afterPath="$PROJECT_DIR$/src/routes/admin/+page.svelte" afterDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="Add" />
+        <option value="Edit" />
+        <option value="userList" />
+        <option value="SkeletonLoader" />
+        <option value="AddForumPopup" />
+        <option value="EditForumPopup" />
+        <option value="all-forums" />
+        <option value="NotificationSkeleton" />
+        <option value="Add.svelte" />
+        <option value="Delete.svelte" />
+        <option value="Edit.svelte" />
+        <option value="+page.svelte" />
+      </list>
+    </option>
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_BRANCH_BY_REPOSITORY">
+      <map>
+        <entry key="$PROJECT_DIR$" value="production" />
+      </map>
+    </option>
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="GitHubPullRequestSearchHistory">{
+  &quot;lastFilter&quot;: {
+    &quot;state&quot;: &quot;OPEN&quot;,
+    &quot;assignee&quot;: &quot;danJ05&quot;
+  }
+}</component>
+  <component name="GithubPullRequestsUISettings">{
+  &quot;selectedUrlAndAccountId&quot;: {
+    &quot;url&quot;: &quot;https://github.com/konatenhamedm/svelte_depps.git&quot;,
+    &quot;accountId&quot;: &quot;f287e0d7-e493-475f-888d-941d218fcb0b&quot;
+  }
+}</component>
+  <component name="ProjectColorInfo">{
+  &quot;associatedIndex&quot;: 7
+}</component>
+  <component name="ProjectId" id="2svcxUHPRK3Gx7SpWQ7xbR41QxO" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "RunOnceActivity.git.unshallow": "true",
+    "git-widget-placeholder": "production",
+    "last_opened_file_path": "/Users/danj/svelte_depps/src/routes/new_site/forum",
+    "node.js.detected.package.eslint": "true",
+    "node.js.detected.package.tslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "nodejs_package_manager_path": "npm",
+    "settings.editor.selected.configurable": "vcs.Git",
+    "ts.external.directory.path": "/Users/danj/svelte_depps/node_modules/typescript/lib",
+    "vue.rearranger.settings.migration": "true"
+  }
+}]]></component>
+  <component name="RecentsManager">
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/src/routes/new_site/forum" />
+      <recent name="$PROJECT_DIR$/static/site/img" />
+      <recent name="$PROJECT_DIR$/static/new_site" />
+      <recent name="$PROJECT_DIR$/src/routes/site" />
+      <recent name="$PROJECT_DIR$/src/components/pdf" />
+    </key>
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/src/routes/site/connexion/nouveau_mot_de_passe" />
+      <recent name="$PROJECT_DIR$/src/routes/site/connexion" />
+      <recent name="$PROJECT_DIR$/src/routes/site/forum/all-forums" />
+      <recent name="$PROJECT_DIR$/src/routes/site/guide-utilisateur" />
+      <recent name="$PROJECT_DIR$/static/_files" />
+    </key>
+  </component>
+  <component name="SharedIndexes">
+    <attachedChunks>
+      <set>
+        <option value="bundled-js-predefined-d6986cc7102b-1632447f56bf-JavaScript-WS-243.26053.12" />
+      </set>
+    </attachedChunks>
+  </component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="4fc344a7-af60-41fd-b027-db3365e0382a" name="Changes" comment="" />
+      <created>1739339736134</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1739339736134</updated>
+      <workItem from="1739339737234" duration="10232000" />
+      <workItem from="1739361388501" duration="6906000" />
+      <workItem from="1739399543871" duration="10075000" />
+      <workItem from="1739535057878" duration="2991000" />
+      <workItem from="1739595999156" duration="5348000" />
+      <workItem from="1739662075971" duration="30708000" />
+      <workItem from="1739877311960" duration="2067000" />
+      <workItem from="1739960143056" duration="11528000" />
+      <workItem from="1740045542438" duration="7999000" />
+      <workItem from="1740072317000" duration="8668000" />
+      <workItem from="1740218975170" duration="23000" />
+      <workItem from="1740579154846" duration="4811000" />
+      <workItem from="1740655520911" duration="8897000" />
+      <workItem from="1740997819910" duration="222000" />
+      <workItem from="1741014793126" duration="4289000" />
+      <workItem from="1741085296585" duration="2925000" />
+      <workItem from="1741278039196" duration="30000" />
+      <workItem from="1741790723317" duration="3006000" />
+      <workItem from="1741796114689" duration="368000" />
+      <workItem from="1741864935040" duration="6495000" />
+      <workItem from="1741952838144" duration="7004000" />
+      <workItem from="1742033425621" duration="2806000" />
+      <workItem from="1742474937182" duration="3473000" />
+      <workItem from="1742807432406" duration="7060000" />
+      <workItem from="1742837176693" duration="3443000" />
+      <workItem from="1742858196815" duration="2855000" />
+      <workItem from="1742973725108" duration="3801000" />
+      <workItem from="1743162185968" duration="6751000" />
+      <workItem from="1743463793444" duration="4743000" />
+      <workItem from="1743605919033" duration="9359000" />
+      <workItem from="1744019470601" duration="454000" />
+      <workItem from="1744218009485" duration="9634000" />
+      <workItem from="1744367007138" duration="23000" />
+      <workItem from="1744369137087" duration="7800000" />
+      <workItem from="1744908583500" duration="6364000" />
+      <workItem from="1745241870113" duration="10274000" />
+      <workItem from="1745410130782" duration="9465000" />
+      <workItem from="1745491088941" duration="18612000" />
+      <workItem from="1745833648482" duration="715000" />
+      <workItem from="1745837957805" duration="12483000" />
+      <workItem from="1745927620896" duration="8221000" />
+      <workItem from="1746032695340" duration="903000" />
+      <workItem from="1746136278665" duration="20000" />
+      <workItem from="1746226727038" duration="6253000" />
+      <workItem from="1746629393178" duration="5047000" />
+      <workItem from="1746789252030" duration="1835000" />
+      <workItem from="1746806175375" duration="593000" />
+      <workItem from="1746807205629" duration="20000" />
+      <workItem from="1747055227495" duration="138000" />
+      <workItem from="1747238351731" duration="1572000" />
+      <workItem from="1747316532581" duration="1588000" />
+      <workItem from="1747322822721" duration="1649000" />
+    </task>
+    <task id="LOCAL-00001" summary="features(contact) : create page contact with his content">
+      <option name="closed" value="true" />
+      <created>1739346369410</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1739346369410</updated>
+    </task>
+    <task id="LOCAL-00002" summary="features(contact) : create page about with his content">
+      <option name="closed" value="true" />
+      <created>1739349413988</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1739349413988</updated>
+    </task>
+    <task id="LOCAL-00003" summary="fix(contact and about) : add header and fix beug">
+      <option name="closed" value="true" />
+      <created>1739350189650</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1739350189650</updated>
+    </task>
+    <task id="LOCAL-00004" summary="fix(chatbot) : update chatbot design">
+      <option name="closed" value="true" />
+      <created>1739377453376</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1739377453376</updated>
+    </task>
+    <task id="LOCAL-00005" summary="features(guide-user pdf) : add user guide page">
+      <option name="closed" value="true" />
+      <created>1739401419191</created>
+      <option name="number" value="00005" />
+      <option name="presentableId" value="LOCAL-00005" />
+      <option name="project" value="LOCAL" />
+      <updated>1739401419191</updated>
+    </task>
+    <task id="LOCAL-00006" summary="features(historique) : add history page">
+      <option name="closed" value="true" />
+      <created>1739470372202</created>
+      <option name="number" value="00006" />
+      <option name="presentableId" value="LOCAL-00006" />
+      <option name="project" value="LOCAL" />
+      <updated>1739470372202</updated>
+    </task>
+    <task id="LOCAL-00007" summary="features(chatbot and alert) : add api to chatbot and alert">
+      <option name="closed" value="true" />
+      <created>1739805664746</created>
+      <option name="number" value="00007" />
+      <option name="presentableId" value="LOCAL-00007" />
+      <option name="project" value="LOCAL" />
+      <updated>1739805664746</updated>
+    </task>
+    <task id="LOCAL-00008" summary="features(chatbot and alert) : add api to chatbot and alert">
+      <option name="closed" value="true" />
+      <created>1739976928657</created>
+      <option name="number" value="00008" />
+      <option name="presentableId" value="LOCAL-00008" />
+      <option name="project" value="LOCAL" />
+      <updated>1739976928657</updated>
+    </task>
+    <task id="LOCAL-00009" summary="fix(alert) : update style and content of alert page">
+      <option name="closed" value="true" />
+      <created>1739980825827</created>
+      <option name="number" value="00009" />
+      <option name="presentableId" value="LOCAL-00009" />
+      <option name="project" value="LOCAL" />
+      <updated>1739980825827</updated>
+    </task>
+    <task id="LOCAL-00010" summary="features(dossier) : add design and content folder page">
+      <option name="closed" value="true" />
+      <created>1739982731904</created>
+      <option name="number" value="00010" />
+      <option name="presentableId" value="LOCAL-00010" />
+      <option name="project" value="LOCAL" />
+      <updated>1739982731904</updated>
+    </task>
+    <task id="LOCAL-00011" summary="features(dossier) : connect api">
+      <option name="closed" value="true" />
+      <created>1740137503044</created>
+      <option name="number" value="00011" />
+      <option name="presentableId" value="LOCAL-00011" />
+      <option name="project" value="LOCAL" />
+      <updated>1740137503044</updated>
+    </task>
+    <task id="LOCAL-00012" summary="features(dossier) : update">
+      <option name="closed" value="true" />
+      <created>1740163958809</created>
+      <option name="number" value="00012" />
+      <option name="presentableId" value="LOCAL-00012" />
+      <option name="project" value="LOCAL" />
+      <updated>1740163958809</updated>
+    </task>
+    <task id="LOCAL-00013" summary="features(new) : update">
+      <option name="closed" value="true" />
+      <created>1740683503295</created>
+      <option name="number" value="00013" />
+      <option name="presentableId" value="LOCAL-00013" />
+      <option name="project" value="LOCAL" />
+      <updated>1740683503295</updated>
+    </task>
+    <task id="LOCAL-00014" summary="features(new) : add api forum">
+      <option name="closed" value="true" />
+      <created>1741017931415</created>
+      <option name="number" value="00014" />
+      <option name="presentableId" value="LOCAL-00014" />
+      <option name="project" value="LOCAL" />
+      <updated>1741017931415</updated>
+    </task>
+    <task id="LOCAL-00015" summary="features(new) : add reload tchat">
+      <option name="closed" value="true" />
+      <created>1741024608134</created>
+      <option name="number" value="00015" />
+      <option name="presentableId" value="LOCAL-00015" />
+      <option name="project" value="LOCAL" />
+      <updated>1741024608134</updated>
+    </task>
+    <task id="LOCAL-00016" summary="features(new) : add api notification">
+      <option name="closed" value="true" />
+      <created>1741952926269</created>
+      <option name="number" value="00016" />
+      <option name="presentableId" value="LOCAL-00016" />
+      <option name="project" value="LOCAL" />
+      <updated>1741952926269</updated>
+    </task>
+    <task id="LOCAL-00017" summary="features(new) : add api notification">
+      <option name="closed" value="true" />
+      <created>1742033700196</created>
+      <option name="number" value="00017" />
+      <option name="presentableId" value="LOCAL-00017" />
+      <option name="project" value="LOCAL" />
+      <updated>1742033700196</updated>
+    </task>
+    <task id="LOCAL-00018" summary="features(new) : add api file ariane">
+      <option name="closed" value="true" />
+      <created>1742481117147</created>
+      <option name="number" value="00018" />
+      <option name="presentableId" value="LOCAL-00018" />
+      <option name="project" value="LOCAL" />
+      <updated>1742481117147</updated>
+    </task>
+    <task id="LOCAL-00019" summary="features(new) : add api file dashboard">
+      <option name="closed" value="true" />
+      <created>1742835781841</created>
+      <option name="number" value="00019" />
+      <option name="presentableId" value="LOCAL-00019" />
+      <option name="project" value="LOCAL" />
+      <updated>1742835781842</updated>
+    </task>
+    <task id="LOCAL-00020" summary="features(new) : add api file dashboard">
+      <option name="closed" value="true" />
+      <created>1742863698284</created>
+      <option name="number" value="00020" />
+      <option name="presentableId" value="LOCAL-00020" />
+      <option name="project" value="LOCAL" />
+      <updated>1742863698284</updated>
+    </task>
+    <task id="LOCAL-00021" summary="features(new) : add btn export pdf">
+      <option name="closed" value="true" />
+      <created>1743012753023</created>
+      <option name="number" value="00021" />
+      <option name="presentableId" value="LOCAL-00021" />
+      <option name="project" value="LOCAL" />
+      <updated>1743012753023</updated>
+    </task>
+    <task id="LOCAL-00022" summary="features(new) : add design state pdf user">
+      <option name="closed" value="true" />
+      <created>1743508526016</created>
+      <option name="number" value="00022" />
+      <option name="presentableId" value="LOCAL-00022" />
+      <option name="project" value="LOCAL" />
+      <updated>1743508526016</updated>
+    </task>
+    <task id="LOCAL-00023" summary="features(new) : add export button pdf">
+      <option name="closed" value="true" />
+      <created>1743616972682</created>
+      <option name="number" value="00023" />
+      <option name="presentableId" value="LOCAL-00023" />
+      <option name="project" value="LOCAL" />
+      <updated>1743616972682</updated>
+    </task>
+    <task id="LOCAL-00024" summary="fix(new) : update pagination component">
+      <option name="closed" value="true" />
+      <created>1743700959309</created>
+      <option name="number" value="00024" />
+      <option name="presentableId" value="LOCAL-00024" />
+      <option name="project" value="LOCAL" />
+      <updated>1743700959309</updated>
+    </task>
+    <task id="LOCAL-00025" summary="fix(new) : feedback client">
+      <option name="closed" value="true" />
+      <created>1744223548128</created>
+      <option name="number" value="00025" />
+      <option name="presentableId" value="LOCAL-00025" />
+      <option name="project" value="LOCAL" />
+      <updated>1744223548128</updated>
+    </task>
+    <task id="LOCAL-00026" summary="fix(new) : update-feedback">
+      <option name="closed" value="true" />
+      <created>1744384449159</created>
+      <option name="number" value="00026" />
+      <option name="presentableId" value="LOCAL-00026" />
+      <option name="project" value="LOCAL" />
+      <updated>1744384449159</updated>
+    </task>
+    <task id="LOCAL-00027" summary="fix(new) : update-feedback">
+      <option name="closed" value="true" />
+      <created>1745241910104</created>
+      <option name="number" value="00027" />
+      <option name="presentableId" value="LOCAL-00027" />
+      <option name="project" value="LOCAL" />
+      <updated>1745241910104</updated>
+    </task>
+    <task id="LOCAL-00028" summary="fix(new) : update-feedback">
+      <option name="closed" value="true" />
+      <created>1745579650026</created>
+      <option name="number" value="00028" />
+      <option name="presentableId" value="LOCAL-00028" />
+      <option name="project" value="LOCAL" />
+      <updated>1745579650027</updated>
+    </task>
+    <task id="LOCAL-00029" summary="fix(new) : update-feedback">
+      <option name="closed" value="true" />
+      <created>1745605773610</created>
+      <option name="number" value="00029" />
+      <option name="presentableId" value="LOCAL-00029" />
+      <option name="project" value="LOCAL" />
+      <updated>1745605773610</updated>
+    </task>
+    <task id="LOCAL-00030" summary="fix(new) : new update">
+      <option name="closed" value="true" />
+      <created>1745608526963</created>
+      <option name="number" value="00030" />
+      <option name="presentableId" value="LOCAL-00030" />
+      <option name="project" value="LOCAL" />
+      <updated>1745608526963</updated>
+    </task>
+    <task id="LOCAL-00031" summary="fix(new) : new update for the design">
+      <option name="closed" value="true" />
+      <created>1745946873181</created>
+      <option name="number" value="00031" />
+      <option name="presentableId" value="LOCAL-00031" />
+      <option name="project" value="LOCAL" />
+      <updated>1745946873181</updated>
+    </task>
+    <task id="LOCAL-00032" summary="fix(new) : new update for the design">
+      <option name="closed" value="true" />
+      <created>1746232694470</created>
+      <option name="number" value="00032" />
+      <option name="presentableId" value="LOCAL-00032" />
+      <option name="project" value="LOCAL" />
+      <updated>1746232694470</updated>
+    </task>
+    <task id="LOCAL-00033" summary="fix(new) : new update for the design">
+      <option name="closed" value="true" />
+      <created>1746442444069</created>
+      <option name="number" value="00033" />
+      <option name="presentableId" value="LOCAL-00033" />
+      <option name="project" value="LOCAL" />
+      <updated>1746442444069</updated>
+    </task>
+    <task id="LOCAL-00034" summary="fix(new) : new update for the design">
+      <option name="closed" value="true" />
+      <created>1746638021092</created>
+      <option name="number" value="00034" />
+      <option name="presentableId" value="LOCAL-00034" />
+      <option name="project" value="LOCAL" />
+      <updated>1746638021092</updated>
+    </task>
+    <task id="LOCAL-00035" summary="fix(new) : new update for the design">
+      <option name="closed" value="true" />
+      <created>1746641131920</created>
+      <option name="number" value="00035" />
+      <option name="presentableId" value="LOCAL-00035" />
+      <option name="project" value="LOCAL" />
+      <updated>1746641131920</updated>
+    </task>
+    <task id="LOCAL-00036" summary="fix(new) : new update for the design">
+      <option name="closed" value="true" />
+      <created>1746806740394</created>
+      <option name="number" value="00036" />
+      <option name="presentableId" value="LOCAL-00036" />
+      <option name="project" value="LOCAL" />
+      <updated>1746806740394</updated>
+    </task>
+    <task id="LOCAL-00037" summary="fix(new) : new update for the design">
+      <option name="closed" value="true" />
+      <created>1747323127209</created>
+      <option name="number" value="00037" />
+      <option name="presentableId" value="LOCAL-00037" />
+      <option name="project" value="LOCAL" />
+      <updated>1747323127209</updated>
+    </task>
+    <option name="localTasksCounter" value="38" />
+    <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="3" />
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State />
+          </value>
+        </entry>
+      </map>
+    </option>
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="features(contact) : create page contact with his content" />
+    <MESSAGE value="features(contact) : create page about with his content" />
+    <MESSAGE value="fix(contact and about) : add header and fix beug" />
+    <MESSAGE value="fix(chatbot) : update chatbot design" />
+    <MESSAGE value="features(guide-user pdf) : add user guide page" />
+    <MESSAGE value="features(historique) : add history page" />
+    <MESSAGE value="features(chatbot and alert) : add api to chatbot and alert" />
+    <MESSAGE value="fix(alert) : update style and content of alert page" />
+    <MESSAGE value="features(dossier) : add design and content folder page" />
+    <MESSAGE value="features(dossier) : connect api" />
+    <MESSAGE value="features(dossier) : update" />
+    <MESSAGE value="features(new) : update" />
+    <MESSAGE value="features(new) : add api forum" />
+    <MESSAGE value="features(new) : add reload tchat" />
+    <MESSAGE value="features(new) : add api notification" />
+    <MESSAGE value="features(new) : add api file ariane" />
+    <MESSAGE value="features(new) : add api file dashboard" />
+    <MESSAGE value="features(new) : add btn export pdf" />
+    <MESSAGE value="features(new) : add design state pdf user" />
+    <MESSAGE value="features(new) : add export button pdf" />
+    <MESSAGE value="fix(new) : update pagination component" />
+    <MESSAGE value="fix(new) : feedback client" />
+    <MESSAGE value="fix(new) : update-feedback" />
+    <MESSAGE value="fix(new) : new update" />
+    <MESSAGE value="fix(new) : new update for the design" />
+    <option name="LAST_COMMIT_MESSAGE" value="fix(new) : new update for the design" />
+  </component>
+</project>
