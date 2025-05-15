@@ -196,7 +196,7 @@ async function logout() {
                       type="text"
                       class="form__input"
                       bind:value={user_data.password}
-                      placeholder="Nom utilisateur"
+                      placeholder="Ancien mot de passe"
                     />
                   </div>
                   <!--  </div> -->
@@ -207,7 +207,7 @@ async function logout() {
                         type="password"
                         class="form__input"
                         bind:value={user_data.newPassword}
-                        placeholder="Mot de passe"
+                        placeholder="Nouveau Mot de passe"
                       />
                     </div>
                   </div>
