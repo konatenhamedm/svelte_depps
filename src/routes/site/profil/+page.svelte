@@ -146,7 +146,10 @@ async function logout() {
     <span>/</span>
     <span class="text-gray-800">Profil</span> 
   </div>
-</div><br><br><br><br><br>
+</div>
+
+
+<br><br><br><br><br>
 
 <main style="background-color: #fff" class="pb-20 main-div">
  
@@ -338,7 +341,7 @@ async function logout() {
   }
   .dropify-preview {
     display: block;
-    margin-top: 10px;
+    margin-top: 0px;
   }
 
   .dropify-wrapper {

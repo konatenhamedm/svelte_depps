@@ -12,7 +12,7 @@
     logout();
     window.location.href = "/";
   }
-  let hasNotifications = false;
+  let isLoad = false;
   let notificationCount = 0;
 
   export let data;
@@ -29,7 +29,6 @@
     await fetch("/auth/logout", { method: "POST" });
     goto("/");
   }
-
 
   async function fetchData() {
     try {
@@ -70,54 +69,78 @@
   }
 
   onMount(async () => {
+    isLoad = true;
     await fetchData();
     await fetchDataInfo();
 
-  if (user.type == "PROFESSIONNEL") {
-    cards = [
-      {
-        icon: "fas fa-folder-open",
-        text: "Mise à jour du dossier",
-        link: "dossiers",
-      },
-      { icon: "fas fa-bell", text: "Alertes", link: "alerte" ,isProtected: info.expire},
-      { icon: "fas fa-tasks", text: "suivi de mon dossier", link: "suivi", isProtected: info.expire },
-      {
-        icon: "fas fa-book",
-        text: "Historique paiement et Renouvellement",
-        link: "paiements",
-      },
-      {
-        icon: "fas fa-file-pdf",
-        text: "Documenthèque",
-        link: "guide-utilisateur",
-        isProtected: info.expire,
-      },
-      { icon: "fas fa-users", text: "Forum", link: "forum", isProtected: info.expire },
-      
-    ];
-  } else {
-    cards = [
-      {
-        icon: "fas fa-folder-open",
-        text: "Mise à jour du dossier",
-        link: "dossiers_etablissement",
-      },
-      { icon: "fas fa-bell", text: "Alertes", link: "alerte" },
-      { icon: "fas fa-tasks", text: "suivi de mon dossier", link: "suivi" },
-      { icon: "fas fa-book", text: "Historique paiements", link: "paiements" },
-      {
-        icon: "fas fa-file-pdf",
-        text: "Documenthèque",
-        link: "guide-utilisateur",
-        isProtected: true,
-      },
-      { icon: "fas fa-users", text: "Forum", link: "forum", isProtected: true },
-    ];
-  }
+    if (user.type == "PROFESSIONNEL") {
+      cards = [
+        {
+          icon: "fas fa-folder-open",
+          text: "Mise à jour du dossier",
+          link: "dossiers",
+          isProtected: info.expire,
+        },
+        {
+          icon: "fas fa-bell",
+          text: "Alertes",
+          link: "alerte",
+          isProtected: info.expire,
+        },
+        {
+          icon: "fas fa-tasks",
+          text: "suivi de mon dossier",
+          link: "suivi",
+          isProtected: info.expire,
+        },
+        {
+          icon: "fas fa-book",
+          text: "Historique paiement et Renouvellement",
+          link: "paiements",
+        },
+        {
+          icon: "fas fa-file-pdf",
+          text: "Documenthèque",
+          link: "guide-utilisateur",
+          isProtected: info.expire,
+        },
+        {
+          icon: "fas fa-users",
+          text: "Forum",
+          link: "forum",
+          isProtected: info.expire,
+        },
+      ];
+    } else {
+      cards = [
+        {
+          icon: "fas fa-folder-open",
+          text: "Mise à jour du dossier",
+          link: "dossiers_etablissement",
+        },
+        { icon: "fas fa-bell", text: "Alertes", link: "alerte" },
+        { icon: "fas fa-tasks", text: "suivi de mon dossier", link: "suivi" },
+        {
+          icon: "fas fa-book",
+          text: "Historique paiements",
+          link: "paiements",
+        },
+        {
+          icon: "fas fa-file-pdf",
+          text: "Documenthèque",
+          link: "guide-utilisateur",
+          isProtected: true,
+        },
+        {
+          icon: "fas fa-users",
+          text: "Forum",
+          link: "forum",
+          isProtected: true,
+        },
+      ];
+    }
+    isLoad = false;
   });
-
-  
 </script>
 
 <!-- <div
@@ -246,7 +269,7 @@
           <div class="col-lg-8 col-md-12 text-center text-lg-start">
             <h1 class="h2-baslik-anasayfa-ozel h-yazi-margin-kucuk fw-bold">
               Bienvenue sur la<br />
-              plateforme MyDEPPS {expire}
+              plateforme MyDEPPS
             </h1>
           </div>
 
@@ -306,30 +329,51 @@
         <br />
 
         <div class="row g-4">
-          {#each cards as { icon, text, link, isProtected }}
-            <div class="col-lg-4 col-md-6 col-sm-12">
-              {#if !isProtected }
-                <a href={link} class="text-decoration-none">
-                  <div
-                    class="card card-custom hover:bg-blue-100 hover:text-white"
-                  >
-                    <i class={icon}></i>
-                    <div class="card-text">{text}</div>
-                  </div>
-                </a>
-              {:else}
+          {#if isLoad}
+          {#each Array(6) as _, i}
+          <div class="col-lg-4 col-md-6 col-sm-12">
                 <div
-                  class="card card-custom text-gray-400 cursor-not-allowed relative opacity-50"
+                  class="card card-custom text-gray-400 cursor-not-allowed relative opacity-50 animate-pulse"
                 >
-                  <i class={icon}></i>
-                  <div class="card-text">{text}</div>
-                  <div class="absolute top-2 right-2 text-xl text-gray-600">
+                  <!-- Icône simulée -->
+                  <div class="w-10 h-10 bg-gray-300 rounded mb-2"></div>
+
+                  <!-- Texte simulé -->
+                  <div class="card-text w-3/4 h-4 bg-gray-300 rounded"></div>
+
+                  <!-- Icône verrou -->
+                  <div class="absolute top-2 right-2 text-xl text-gray-400">
                     🔒
                   </div>
                 </div>
-              {/if}
-            </div>
-          {/each}
+              </div>
+              {/each}
+          {:else}
+            {#each cards as { icon, text, link, isProtected }}
+              <div class="col-lg-4 col-md-6 col-sm-12">
+                {#if !isProtected}
+                  <a href={link} class="text-decoration-none">
+                    <div
+                      class="card card-custom hover:bg-blue-100 hover:text-white"
+                    >
+                      <i class={icon}></i>
+                      <div class="card-text">{text}</div>
+                    </div>
+                  </a>
+                {:else}
+                  <div
+                    class="card card-custom text-gray-400 cursor-not-allowed relative opacity-50"
+                  >
+                    <i class={icon}></i>
+                    <div class="card-text">{text}</div>
+                    <div class="absolute top-2 right-2 text-xl text-gray-600">
+                      🔒
+                    </div>
+                  </div>
+                {/if}
+              </div>
+            {/each}
+          {/if}
         </div>
       </div>
     </div>
