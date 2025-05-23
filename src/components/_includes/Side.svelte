@@ -41,7 +41,7 @@
 				<li><a href="/admin/civilite"><i class="icon-Commit"><span class="path1"></span><span class="path2"></span></i>Civilités</a></li>  
 				 <li><a href="/admin/pays"><i class="icon-Commit"><span class="path1"></span><span class="path2"></span></i>Pays </a></li> 
 				 <li><a href="/admin/genre"><i class="icon-Commit"><span class="path1"></span><span class="path2"></span></i>Genres</a></li>         
-				 <li><a href="/admin/specialite"><i class="icon-Commit"><span class="path1"></span><span class="path2"></span></i>Spécialités</a></li>         
+				<!--  <li><a href="/admin/specialite"><i class="icon-Commit"><span class="path1"></span><span class="path2"></span></i>Spécialités</a></li>   -->       
 				 <li><a href="/admin/type_profession"><i class="icon-Commit"><span class="path1"></span><span class="path2"></span></i>Types  profession</a></li>         
 				 <li><a href="/admin/profession"><i class="icon-Commit"><span class="path1"></span><span class="path2"></span></i>Profession</a></li>         
 				 <li><a href="/admin/situation_professionnelle"><i class="icon-Commit"><span class="path1"></span><span class="path2"></span></i>Situation professionnelle</a></li>         

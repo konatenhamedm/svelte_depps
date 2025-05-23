@@ -62,7 +62,9 @@
     // organization informations
 
     appartenirOrganisation: "non",
+    appartenirOrdre: "non",
     organisationNom: "",
+    numeroInscription: "",
   };
   let errors = {
     nom: "",
@@ -105,9 +107,11 @@
 
     // Organization informations
     appartenirOrganisation: "",
+    appartenirOrdre: "",
     organisationNom: "",
     organisationNumero: "",
     organisationAnnee: "",
+    numeroInscription: "",
 
     // Paiement informations
   };
@@ -193,9 +197,14 @@
             cv: apiData.personne.cv || "",
             // Organisation
             appartenirOrganisation: apiData.personne.appartenirOrganisation,
+            appartenirOrdre: apiData.personne.appartenirOrdre,
             organisationNom:
               apiData.personne.appartenirOrganisation == "oui"
                 ? apiData.personne.organisationNom || ""
+                : "",
+            numeroInscription:
+              apiData.personne.appartenirOrdre == "oui"
+                ? apiData.personne.numeroInscription || ""
                 : "",
           };
         })
@@ -740,7 +749,7 @@
               <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div class="col-span-2 space-y-2">
                   <label class="block text-3xl font-medium text-black"
-                    >Appartenez-vous à une organisation ??</label
+                    >Appartenez-vous à une organisation ?</label
                   >
                   <div class="flex space-x-4">
                     <label class="inline-flex items-center">
@@ -776,6 +785,52 @@
                     <input
                       type="text"
                       bind:value={formData.organisationNom}
+                      class="w-full form__input"
+                    />
+                  </div>
+
+                 
+                {/if}
+              </div>
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div class="col-span-2 space-y-2">
+                  <label class="block text-3xl font-medium text-black"
+                    >Appartenez-vous à un ordre ?</label
+                  >
+                  <div class="flex space-x-4">
+                    <label class="inline-flex items-center">
+                      <input
+                        type="radio"
+                        bind:group={formData.appartenirOrdre}
+                        value="oui"
+                        disabled
+                        class="form-radio text-white"
+                        checked={formData.appartenirOrdre === "oui"}
+                      />
+                      <span class="ml-2">Oui</span>
+                    </label>
+                    <label class="inline-flex items-center">
+                      <input
+                        type="radio"
+                        bind:group={formData.appartenirOrdre}
+                        value="non"
+                        disabled
+                        class="form-radio text-white"
+                        checked={formData.appartenirOrdre === "non"}
+                      />
+                      <span class="ml-2">Non</span>
+                    </label>
+                  </div>
+                </div>
+
+                {#if formData.appartenirOrdre == "oui"}
+                  <div class="space-y-2">
+                    <label class="block text-3xl font-medium text-black"
+                      >Numéro d'inscription</label
+                    >
+                    <input
+                      type="text"
+                      bind:value={formData.numeroInscription}
                       class="w-full form__input"
                     />
                   </div>

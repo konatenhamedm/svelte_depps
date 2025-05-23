@@ -91,6 +91,8 @@
 
     appartenirOrganisation: "non",
     organisationNom: "",
+    appartenirOrdre: "non",
+    numeroInscription: "",
   };
 
   let errors = {
@@ -142,6 +144,8 @@
     // Organization informations
     appartenirOrganisation: "",
     organisationNom: "",
+    appartenirOrdre: "",
+    numeroInscription: "",
     organisationNumero: "",
     organisationAnnee: "",
 
@@ -259,6 +263,14 @@
           : "Le nom de l'organisation est requis";
 
         valid = !errors.organisationNom && isValidPhoneOrganisation;
+      }
+
+      if (formData.appartenirOrdre == "oui") {
+        errors.numeroInscription = formData.numeroInscription
+          ? ""
+          : "Le numero d'inscription est requis";
+
+        valid = !errors.numeroInscription ;
       }
     }
 

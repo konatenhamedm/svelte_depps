@@ -668,7 +668,7 @@
         </div>
       {:else}
         <div class="col-span-2">
-          {#if status == "accepte" || status == "valide" || status == "renouvellement"}
+          {#if status == "accepte" /* || status == "valide" */ || status == "renouvellement"}
             {#if isLoad}
               <Button
                 disabled={true}
@@ -695,11 +695,9 @@
                 on:click={() =>
                   status === "accepte"
                     ? SaveFunctionSingleMethode("validation")
-                    : status === "valide"
-                      ? SaveFunctionSingleMethode("renouvellement")
                       : SaveFunctionSingleMethode("mis_a_jour")}
                 type="submit"
-                >{#if status === "accepte"}{"Valider l'inscription"}{:else if status === "valide"}{"Renouveller l'inscription"}{:else if status === "renouvellement"}{"Mise au jour de l'inscription"}{/if}</Button
+                >{#if status === "accepte"}{"Valider l'inscription"}{:else if status === "renouvellement"}{"Mise au jour de l'inscription"}{/if}</Button
               >
             {/if}
           {/if}
