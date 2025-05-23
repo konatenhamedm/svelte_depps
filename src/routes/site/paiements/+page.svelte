@@ -6,12 +6,13 @@
   import { apiFetch, BASE_URL_API } from "$lib/api";
   import { EyeOutline } from "flowbite-svelte-icons";
   import { goto } from "$app/navigation";
-
+    import RecuPaiement from "./RecuPaiement.svelte";
+  
   let paiementData: any[] = [];
 
 export let data;
 let user = data?.user;
-
+let current_data: any = {};
 let currentPage = 1;
 const itemsPerPage = 3;
 let showAddPopup = false;
@@ -32,6 +33,7 @@ async function fetchData(userId: number) {
         if (res) {
             paiementData = res.data;
             console.log("content main_data", paiementData);
+            
         } else {
             console.error("Erreur de récupération:", res.statusText);
         }
@@ -144,6 +146,20 @@ $: if (showAddPopup == false || showEditPopup == false || showDeletePopup == fal
 function navigateToDashboard() {
     goto("/site/dashboard");
 }
+let pdfUrl: any;
+
+
+let isModalOpen = false;
+  let isModalOpenRegister = false;
+
+  function openModal(url: any) {
+    pdfUrl = url; // ✅ Met à jour la variable réactive
+    isModalOpen = true;
+  }
+
+  function closeModal() {
+    isModalOpen = false;
+  }
 </script>
 
 <Slide {user} /> <br /><br /><br /><br /><br /><br />
@@ -344,10 +360,22 @@ function navigateToDashboard() {
                   {item.reference} 
                 </div>
 
-                <div class="col-md-3">
+                <div class="col-md-2">
                   {item.channel}
                 </div>
-               
+                <div class="col-md-1 d-none d-sm-block">
+                  <form action="#" class="delete_alerte">
+                  
+                    <button
+                    on:click={() => ((current_data = item), (isModalOpen = true))}
+                      style="height: 50px; width: 50px; background: green !important; padding: 0;"
+                      class="buton buton--kirmizi"
+                      id="three_customer"
+                    >
+                      <i class="fa fa-print"></i>
+                    </button>
+                  </form>
+                </div>
                 
               </div>
             </div>
@@ -405,6 +433,14 @@ function navigateToDashboard() {
     </div>
   </section>
 </main>
-
+{#if isModalOpen == true}
+  <RecuPaiement
+    bind:open={isModalOpen}
+    data={current_data}
+    sizeModal="md"
+    userUpdateId =  {"userUpdateId"}
+   
+  />
+{/if}
 
 <Footer />

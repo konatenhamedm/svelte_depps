@@ -11,7 +11,7 @@ export async function handle({ event, resolve }) {
   if (cookies.auth) {
     try {
       const auth = JSON.parse(cookies.auth);
-      user = { id: auth.id, role: auth.role, token: auth.token, username: auth.username, type: auth.type, status: auth.status, payement: auth.payement, avatar: auth.avatar };
+      user = { id: auth.id, role: auth.role, token: auth.token, username: auth.username, type: auth.type, status: auth.status, payement: auth.payement, avatar: auth.avatar,expire: auth.expire };
   
    
     } catch (e) {
@@ -50,6 +50,19 @@ export async function handle({ event, resolve }) {
        !user) {
     return redirect(302, "/");
   }
+  if ((event.url.pathname.startsWith("/site/dossiers") ||
+   event.url.pathname.startsWith("/site/forum") ||
+     event.url.pathname.startsWith("/site/documents") ||
+      event.url.pathname.startsWith("/site/chatbox") ||
+          event.url.pathname.startsWith("/site/forum/all-forums") ||
+            event.url.pathname.startsWith("/site/faq") ||
+     event.url.pathname.startsWith("/site/alerte") ||
+      event.url.pathname.startsWith("/site/profil")) &&
+      user?.expire == true) {
+    return redirect(302, "/site/dashboard");
+  }
+
+  
 /*   if (user && !user.role.includes("ROLE_ADMIN")) {
     const response = new Response(null, {
       status: 302,
