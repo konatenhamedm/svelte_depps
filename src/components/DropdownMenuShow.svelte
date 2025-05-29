@@ -62,14 +62,13 @@
         on:click={() => {onAction('view', item); isOpen = false;}}>
         <EyeOutline size="sm" class="mr-2" /> Traiter
       </button>
-      {/if}
-  <!-- {:else if user.type == "ADMINISTRATEUR" } -->
+  {:else if user.type == "INSTRUCTEUR" }
  <button class="menu-item  hover:text-white"
       on:click={() => {onAction('imputation', item); isOpen = false;}}>
       <EditOutline size="sm" class="mr-2" /> Imputation
     </button>
 
- 
+  {/if}
      
      
     </div>
