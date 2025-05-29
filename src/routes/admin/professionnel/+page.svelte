@@ -32,6 +32,7 @@
   import Delete from "./Delete.svelte";
   import DropdownMenu from "$components/DropdownMenu.svelte";
   import DropdownMenuShow from "$components/DropdownMenuShow.svelte";
+  import Imputation from "./Imputation.svelte";
   export let data; // Les données retournées par `load()`
   let user = data.user;
 
@@ -44,6 +45,7 @@
   let openEdit: boolean = false;
   let openAdd: boolean = false;
   let openShow: boolean = false;
+  let openImputation: boolean = false;
   let current_data: any = {};
   let activeTab = "attente"; // Valeur par défaut : "En attente"
 
@@ -87,6 +89,7 @@ async function fetchData() {
     /* { key: "all", label: "Tous" }, */
     { key: "attente", label: "En attente" },
     { key: "accepte", label: "Accepté" },
+    { key: "rejete", label: "Rejeté" },
     { key: "valide", label: "Validé" },
     { key: "refuse", label: "Refusé" },
     { key: "renouvellement", label: "Renouvellement" },
@@ -156,7 +159,7 @@ async function fetchData() {
   }
 
   // Rafraîchir les données après fermeture des modales
-  $: if (!openAdd || !openEdit || !openDelete || !openShow) {
+  $: if (!openAdd || !openEdit || !openDelete || !openShow  || !openImputation ) {
     refreshDataIfNeeded();
   }
 
@@ -168,6 +171,9 @@ async function fetchData() {
       openEdit = false;
     } else if (action === "delete") {
       openDelete = false;
+    
+    } else if (action === "imputation") {
+      openImputation = true;
     }
   };
 
@@ -249,15 +255,17 @@ async function fetchData() {
               <TableHead
                 class="border-y border-gray-200 bg-gray-100 dark:border-gray-700"
               >
+               
+
                 {#if activeTab === "valide"}
-                  {#each ["nom", "prénoms", "Téléphone", "email","professionnel de santé ", "Code", "Action"] as title}
+                  {#each ["nom", "prénoms", "Téléphone", "email","professionnel de santé ", "Code","imputation", "Action"] as title}
                     <TableHeadCell
                       class="ps-4 font-normal border border-gray-300"
                       >{title}</TableHeadCell
                     >
                   {/each}
                 {:else}
-                  {#each ["nom", "prénoms", "Téléphone", "email", "professionnel de santé ", "Action"] as title}
+                  {#each ["nom", "prénoms", "Téléphone", "email", "professionnel de santé ","imputation", "Action"] as title}
                     <TableHeadCell
                       class="ps-4 font-normal border border-gray-300"
                       >{title} </TableHeadCell
@@ -326,10 +334,23 @@ async function fetchData() {
                         <TableBodyCell class="p-4 border border-gray-300"
                           >{item.personne.code}</TableBodyCell
                         >
-                      {/if}
+                        {/if}
+
+                        <TableBodyCell class="p-4 border border-gray-300"
+                          >
+                          {#if item.personne.imputationData }
+                          {item.personne.imputationData.username}
+                          
+                          {:else}
+                          {item.personne.imputationData}
+                          {/if}
+                          
+                          </TableBodyCell
+                        >
+
 
                       <TableBodyCell class="p-2 w-8 border border-gray-300">
-                        <DropdownMenuShow {item} onAction={handleAction} />
+                        <DropdownMenuShow {item} onAction={handleAction} user={user} />
                       </TableBodyCell>
 
                       <!-- <Button
@@ -402,6 +423,14 @@ async function fetchData() {
     bind:open={openShow}
     data={current_data}
     sizeModal="xl"
+    userUpdateId={user.id}
+  />
+{/if}
+{#if openImputation}
+  <Imputation
+    bind:open={openImputation}
+    data={current_data}
+    sizeModal="md"
     userUpdateId={user.id}
   />
 {/if}

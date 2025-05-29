@@ -1,5 +1,5 @@
 <script>
-
+export let user;
 </script>
 
 <aside class="main-sidebar">
