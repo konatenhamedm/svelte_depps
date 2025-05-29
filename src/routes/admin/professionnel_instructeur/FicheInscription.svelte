@@ -117,7 +117,7 @@ yPos += logoHeight + 10;
         yPos += 10;
 
         doc.setFontSize(11);
-        doc.setFont('helvetica', 'bold');
+        doc.setFont('helvetica', 'normal');
         doc.setTextColor(0, 0, 0);
 
         // Colonnes pour les informations
@@ -127,20 +127,16 @@ yPos += logoHeight + 10;
    
 
         // Première colonne
-        doc.text(`Nom et Prénoms: ${formattedData.nom} ${formattedData.prenoms}`, col1, yPos);
-        doc.text(`Nationalité: ${formattedData.nationalite.libelle}`, col1, yPos + lineHeight);
-        doc.text(`Email: ${formattedData.userEmail}`, col1, yPos + (lineHeight * 2));
-       // doc.text(`Contact: ${formattedData.numero}`,  col1, yPos + lineHeight);
-        /* doc.text(`Nom: ${formattedData.nom}`, col1, yPos + lineHeight);
+        doc.text(`Contact: ${formattedData.numero}`, col1, yPos);
+        doc.text(`Nom: ${formattedData.nom}`, col1, yPos + lineHeight);
+        doc.text(`Prénoms: ${formattedData.prenoms}`, col1, yPos + (lineHeight * 2));
         doc.text(`Civilité: ${formattedData.civilite.libelle}`, col1, yPos + (lineHeight * 3));
-        doc.text(`Prénoms: ${formattedData.prenoms}`, col1, yPos + (lineHeight * 2)); */
 
         // Deuxième colonne
         doc.text(`Date de naissance: ${formattedData.dateNaissance}`, col2, yPos);
-        doc.text(`Contact: ${formattedData.numero}`, col2, yPos + lineHeight);
-       // doc.text(`Email: ${formattedData.userEmail}`, col2, yPos + (lineHeight * 2));
-        doc.text(`Situation matrimoniale: ${formattedData.situation}`,  col2, yPos + (lineHeight * 2));
-       // doc.text(`Situation matrimoniale: ${formattedData.situation}`, col2, yPos + (lineHeight * 3));
+        doc.text(`Nationalité: ${formattedData.nationalite.libelle}`, col2, yPos + lineHeight);
+        doc.text(`Email: ${formattedData.userEmail}`, col2, yPos + (lineHeight * 2));
+        doc.text(`Situation matrimoniale: ${formattedData.situation}`, col2, yPos + (lineHeight * 3));
 
         yPos += (lineHeight * 4) + 10;
 

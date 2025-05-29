@@ -1,16 +1,27 @@
 <script lang="ts">
     import { onMount } from "svelte";
-    import type { StatsDashboard } from "../../types";
     import { apiFetch } from "$lib/api";
+    import type {StatsDashboard} from "../../../types";
     import Pdf from "$components/pdf/Pdf.svelte";
     import {getAuthCookie} from "$lib/auth";
 
-    export let data;
-    let user = data.user;
+    // Nouvelle structure pour les stats
+    let stats = {
+        atttente: 0,
+        accepte: 0,
+        rejete: 0,
+        valide: 0,
+        refuse: 0,
+        renouvelle: 0,
+        a_jour: 0
+    };
+
+    let user = null;
+    let userType = '';
+    let userId = '';
 
     // Données réactives
     let main_data: StatsDashboard | null = null;
-    let loading = false;
     let activeTab: 'professionnel' | 'etablissement' | 'pro' = 'professionnel';
     let currentPage = 1;
     const itemsPerPage = 10;
@@ -23,14 +34,18 @@
     let filteredProfessionnelsAjour: any[] = [];
     let filteredEtablissements: any[] = [];
 
-    // Stats pour les cards
-    let stats = {
-        attente: 0,
-        accepte: 0,
-        rejete: 0,
-        valide: 0,
-        refuse: 0
-    };
+    // Filtre par statut
+    let selectedStatus: string = '';
+    let statusOptions = [
+        { value: '', label: 'Tous les statuts' },
+        { value: 'attente', label: 'En attente' },
+        { value: 'accepte', label: 'Accepté' },
+        { value: 'rejete', label: 'Rejeté' },
+        { value: 'valide', label: 'Validé' },
+        { value: 'refuse', label: 'Refusé' },
+        { value: 'renouvelle', label: 'Renouvelé' },
+        { value: 'a_jour', label: 'À jour' }
+    ];
 
     // Date et heure
     let currentDate = new Date();
@@ -41,20 +56,43 @@
     });
     let currentTime = currentDate.toLocaleTimeString('fr-FR');
 
-    async function fetchStats() {
-        try {
-            if (user && user.type && user.id) {
-                const response = await apiFetch(
-                    true,
-                    `/statistique/info-dashboard/by/typeuser/${user.type}/${user.id}`
-                );
+    onMount(() => {
+        user = getAuthCookie();
+        console.log("User from cookie:", user);
 
-                if (response && response.data) {
-                    stats = {
-                        ...stats,
-                        ...response.data
-                    };
-                }
+        if (user) {
+            userType = user.type;
+            userId = user.id;
+            fetchUserStats();
+        }
+
+        fetchInitialData();
+
+        const timer = setInterval(() => {
+            const now = new Date();
+            currentTime = now.toLocaleTimeString('fr-FR');
+            formattedDate = now.toLocaleDateString('fr-FR', {
+                day: '2-digit',
+                month: 'long',
+                year: 'numeric'
+            });
+        }, 1000);
+
+        return () => clearInterval(timer);
+    });
+
+    async function fetchUserStats() {
+        try {
+            const response = await apiFetch(
+                true,
+                `/statistique/info-dashboard/by/typeuser/${userType}/${userId}`
+            );
+console.log("UUUUUU",response.data)
+            if (response && response.data) {
+                stats = {
+                    ...stats,
+                    ...response.data
+                };
             }
         } catch (error) {
             console.error("Erreur lors de la récupération des stats:", error);
@@ -64,25 +102,34 @@
     async function fetchInitialData() {
         loading = true;
         try {
-            // Récupérer les stats en premier
-            await fetchStats();
+            let statsUrl = "/statistique/info-dashboard";
+            if (userType && userId) {
+                statsUrl = `/statistique/info-dashboard/by/typeuser/${userType}/${userId}`;
+            }
 
-            const [proRes, etabRes, profRes] = await Promise.all([
-                apiFetch(true, "/professionnel/"),
-                apiFetch(true, "/professionnel/"),
+            const [statsRes, proRes, etabRes, profRes] = await Promise.all([
+                apiFetch(true, statsUrl),
+                apiFetch(true, `/professionnel/imputation/list/${userId}`),
+                apiFetch(true, `/professionnel/imputation/list/${userId}`),
                 apiFetch(true, "/profession/")
             ]);
 
+            if (statsRes) {
+                if (statsRes.data) {
+                    stats = {
+                        ...stats,
+                        ...statsRes.data
+                    };
+                }
+                main_data = statsRes.data;
+            }
+
             if (proRes) {
                 console.log("Professionnels:", proRes.data);
-                // Filtrer par imputation = userId
-                professionnels = (proRes.data || []).filter(p => p.imputation === user.id);
-                professionnelsAjour = professionnels.filter(p => p.personne?.status === 'a_jour');
+                professionnels = proRes.data || [];
+                professionnelsAjour = professionnels.filter(p => p.personne?.status === 'a_jour' &&   p.personne?.imputation == userId);
             }
-            if (etabRes) {
-                // Filtrer par imputation = userId
-                etablissements = (etabRes.data || []).filter(e => e.imputation === user.id);
-            }
+            if (etabRes) etablissements = etabRes.data || [];
             if (profRes) {
                 console.log("Professions reçues:", profRes.data);
                 professions = profRes.data || [];
@@ -100,32 +147,53 @@
     }
 
     function updateFilteredData() {
-        console.log("Mise à jour des données filtrées avec profession:", selectedProfession);
 
-        if (!selectedProfession || selectedProfession === '') {
-            filteredProfessionnels = professionnels;
-            filteredProfessionnelsAjour = professionnelsAjour;
-            filteredEtablissements = etablissements;
-        } else {
-            filteredProfessionnels = professionnels.filter(p => {
-                if (!p.personne || !p.personne.profession) return false;
-                return String(p.personne.profession.id) === String(selectedProfession);
-            });
+        //alert(userId)
+        // Filtre par profession
+        let tempProfessionnels = professionnels.filter(
+            (p)=> p.personne?.imputation === userId
+        );
+        let tempProfessionnelsAjour = professionnelsAjour;
+        let tempEtablissements = etablissements;
 
-            filteredProfessionnelsAjour = professionnelsAjour.filter(p => {
-                if (!p.personne || !p.personne.profession) return false;
-                return String(p.personne.profession.id) === String(selectedProfession);
-            });
-
-            filteredEtablissements = etablissements.filter(e => {
-                if (!e.personne || !e.personne.profession) return false;
-                return String(e.personne.profession.id) === String(selectedProfession);
-            });
+        if (selectedProfession) {
+            tempProfessionnels = tempProfessionnels.filter(p =>
+                p.personne?.profession?.id === selectedProfession &&   p.personne?.imputation === userId
+            );
+            tempProfessionnelsAjour = tempProfessionnelsAjour.filter(p =>
+                p.personne?.profession?.id === selectedProfession &&   p.personne?.imputation === userId
+            );
+            tempEtablissements = tempEtablissements.filter(e =>
+                e.personne?.profession?.id === selectedProfession 
+            );
         }
+
+        // Filtre par statut si sélectionné
+        if (selectedStatus) {
+            tempProfessionnels = tempProfessionnels.filter(p =>
+                p.personne?.status === selectedStatus &&   p.personne?.imputation === userId
+            );
+            tempProfessionnelsAjour = tempProfessionnelsAjour.filter(p =>
+                p.personne?.status === selectedStatus &&   p.personne?.imputation === userId
+            );
+            tempEtablissements = tempEtablissements.filter(e =>
+                e.personne?.status === selectedStatus 
+            );
+        }
+
+        filteredProfessionnels = tempProfessionnels;
+        filteredProfessionnelsAjour = tempProfessionnelsAjour;
+        filteredEtablissements = tempEtablissements;
     }
 
     function handleProfessionChange(event) {
         selectedProfession = event.target.value;
+        updateFilteredData();
+        currentPage = 1;
+    }
+
+    function handleStatusChange(event) {
+        selectedStatus = event.target.value;
         updateFilteredData();
         currentPage = 1;
     }
@@ -136,28 +204,28 @@
         updateFilteredData();
     }
 
-    onMount(() => {
-        fetchInitialData();
+    function updateTime() {
+        const now = new Date();
+        currentTime = now.toLocaleTimeString('fr-FR', {
+            hour: '2-digit',
+            minute: '2-digit',
+            second: '2-digit',
+        });
+    }
 
-        const timer = setInterval(() => {
-            const now = new Date();
-            currentTime = now.toLocaleTimeString('fr-FR');
-            formattedDate = now.toLocaleDateString('fr-FR', {
-                day: '2-digit',
-                month: 'long',
-                year: 'numeric'
-            });
-        }, 1000);
+    let loading = false;
 
-        return () => clearInterval(timer);
-    });
+    $: {
+        if (selectedProfession !== undefined) {
+            console.log("La valeur de selectedProfession a changé:", selectedProfession);
+        }
+    }
 </script>
 
 <div class="p-4">
     <section class="content">
-        <!-- Grille des cartes -->
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4 mb-6">
-            <!-- Carte Dossiers en attente -->
+            <!-- En attente -->
             <div class="bg-white rounded-lg shadow p-4 border border-gray-100 flex flex-col">
                 <div class="flex items-center justify-between">
                     <div class="text-sm font-medium text-gray-500">Dossiers en attente</div>
@@ -166,10 +234,10 @@
                     </svg>
                 </div>
                 <div class="text-xs text-gray-400 mt-1">Statistique actuelle</div>
-                <div class="text-lg font-semibold mt-2 text-blue-500">{stats.attente}</div>
+                <div class="text-lg font-semibold mt-2 text-blue-500">{stats.atttente }</div>
             </div>
 
-            <!-- Carte Dossiers acceptés -->
+            <!-- Acceptés -->
             <div class="bg-white rounded-lg shadow p-4 border border-gray-100 flex flex-col">
                 <div class="flex items-center justify-between">
                     <div class="text-sm font-medium text-gray-500">Dossiers acceptés</div>
@@ -181,7 +249,7 @@
                 <div class="text-lg font-semibold mt-2 text-green-500">{stats.accepte}</div>
             </div>
 
-            <!-- Carte Dossiers rejetés -->
+            <!-- Rejetés -->
             <div class="bg-white rounded-lg shadow p-4 border border-gray-100 flex flex-col">
                 <div class="flex items-center justify-between">
                     <div class="text-sm font-medium text-gray-500">Dossiers rejetés</div>
@@ -193,69 +261,76 @@
                 <div class="text-lg font-semibold mt-2 text-red-500">{stats.rejete}</div>
             </div>
 
-            <!-- Carte Professionnels à jour -->
-            <button
-                    on:click={() => handleCardClick('pro')}
-                    class={`text-left bg-white rounded-lg shadow p-4 border transition-all flex flex-col
-                ${activeTab === 'pro' ? 'border-blue-500' : 'border-gray-100 hover:border-blue-300'}`}
-            >
+            <!-- Validés -->
+            <div class="bg-white rounded-lg shadow p-4 border border-gray-100 flex flex-col">
                 <div class="flex items-center justify-between">
-                    <div class="text-sm font-medium text-gray-500">Professionnel(s)</div>
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
+                    <div class="text-sm font-medium text-gray-500">Dossiers validés</div>
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-green-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
                     </svg>
                 </div>
-                <div class="text-xs text-gray-400 mt-1">à jour</div>
-                <div class="text-lg font-semibold mt-2 text-blue-500">{professionnelsAjour.length}</div>
-            </button>
+                <div class="text-xs text-gray-400 mt-1">Statistique actuelle</div>
+                <div class="text-lg font-semibold mt-2 text-green-500">{stats.valide}</div>
+            </div>
 
-            <!-- Carte Date/Heure -->
-            <div class="bg-blue-500 text-white rounded-lg shadow p-4 flex flex-col">
+            <!-- À jour -->
+            <div class="bg-white rounded-lg shadow p-4 border border-gray-100 flex flex-col">
                 <div class="flex items-center justify-between">
-                    <div class="text-sm font-medium">Date & Heure</div>
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 opacity-80" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    <div class="text-sm font-medium text-gray-500">Dossiers à jour</div>
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-blue-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
                     </svg>
                 </div>
-                <div class="text-xs opacity-90 mt-1">à {currentTime}</div>
-                <div class="text-lg font-semibold mt-2">{formattedDate}</div>
+                <div class="text-xs text-gray-400 mt-1">Statistique actuelle</div>
+                <div class="text-lg font-semibold mt-2 text-blue-500">{stats.a_jour}</div>
             </div>
         </div>
 
-        <!-- Tableau de données -->
         <div class="bg-white rounded-lg shadow overflow-hidden">
             <div class="flex justify-between items-center p-4">
-                <!-- Sélecteur de profession -->
-                <div class="w-64">
-                    <label for="profession" class="block text-sm font-medium text-gray-700 mb-1">Filtrer par profession</label>
-                    <select
-                            id="profession"
-                            class="block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
-                            on:change={handleProfessionChange}
-                    >
-                        <option value="">Toutes les professions</option>
-                        {#each professions as profession}
-                            <option value={profession.id}>{profession.libelle}</option>
-                        {/each}
-                    </select>
+                <div class="flex space-x-4">
+                    <div class="w-64">
+                        <label for="profession" class="block text-sm font-medium text-gray-700 mb-1">Filtrer par profession</label>
+                        <select
+                                id="profession"
+                                class="block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+                                on:change={handleProfessionChange}
+                        >
+                            <option value="">Toutes les professions</option>
+                            {#each professions as profession}
+                                <option value={profession.id}>{profession.libelle}</option>
+                            {/each}
+                        </select>
+                    </div>
+
+                    <div class="w-64">
+                        <label for="status" class="block text-sm font-medium text-gray-700 mb-1">Filtrer par statut</label>
+                        <select
+                                id="status"
+                                class="block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+                                on:change={handleStatusChange}
+                        >
+                            {#each statusOptions as option}
+                                <option value={option.value}>{option.label}</option>
+                            {/each}
+                        </select>
+                    </div>
                 </div>
 
-                <!-- Bouton PDF -->
                 <Pdf
                         title={activeTab === 'professionnel' ? (selectedProfession ? `Liste des professionnels - ${professions.find(p => p.id === selectedProfession)?.libelle || ''}` : 'Liste des professionnels') :
-                    activeTab === 'etablissement' ? (selectedProfession ? `Liste des établissements - ${professions.find(p => p.id === selectedProfession)?.libelle || ''}` : 'Liste des établissements') :
-                    (selectedProfession ? `Liste des professionnels à jour - ${professions.find(p => p.id === selectedProfession)?.libelle || ''}` : 'Liste des professionnels à jour')}
+          activeTab === 'etablissement' ? (selectedProfession ? `Liste des établissements - ${professions.find(p => p.id === selectedProfession)?.libelle || ''}` : 'Liste des établissements') :
+          (selectedProfession ? `Liste des professionnels à jour - ${professions.find(p => p.id === selectedProfession)?.libelle || ''}` : 'Liste des professionnels à jour')}
                         headers={activeTab === 'professionnel' || activeTab === 'pro' ?
-                    ['Nom', 'Prénoms', 'Téléphone', 'Email', 'Profession'] :
-                    ['Nom', 'Adresse', 'Téléphone', 'Email', 'Profession']}
+          ['Nom', 'Prénoms', 'Téléphone', 'Email', 'Profession', 'Statut'] :
+          ['Nom', 'Adresse', 'Téléphone', 'Email', 'Profession', 'Statut']}
                         data={activeTab === 'professionnel' ? filteredProfessionnels :
-                    activeTab === 'etablissement' ? filteredEtablissements :
-                    filteredProfessionnelsAjour}
+          activeTab === 'etablissement' ? filteredEtablissements :
+          filteredProfessionnelsAjour}
                         type={activeTab}
                 />
             </div>
 
-            <!-- Tableau -->
             {#if loading}
                 <div class="p-8 text-center">
                     <svg class="animate-spin -ml-1 mr-3 h-5 w-5 text-blue-500 inline-block" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
@@ -274,6 +349,7 @@
                             <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">Téléphone</th>
                             <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">Email</th>
                             <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">Profession</th>
+                            <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">Statut</th>
                         </tr>
                         </thead>
                         <tbody class="bg-white divide-y divide-gray-200">
@@ -284,10 +360,11 @@
                                 <td class="px-4 py-3 whitespace-nowrap text-sm">{item.personne?.number ?? 'N/A'}</td>
                                 <td class="px-4 py-3 whitespace-nowrap text-sm">{item.personne?.email ?? 'N/A'}</td>
                                 <td class="px-4 py-3 whitespace-nowrap text-sm">{item.personne?.profession?.libelle ?? 'N/A'}</td>
+                                <td class="px-4 py-3 whitespace-nowrap text-sm">{item.personne?.status ?? 'N/A'}</td>
                             </tr>
                         {:else}
                             <tr>
-                                <td colspan="5" class="px-4 py-3 text-center text-sm text-gray-500">Aucun professionnel trouvé</td>
+                                <td colspan="6" class="px-4 py-3 text-center text-sm text-gray-500">Aucun professionnel trouvé</td>
                             </tr>
                         {/each}
                         </tbody>
@@ -301,6 +378,7 @@
                             <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">Téléphone</th>
                             <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">Email</th>
                             <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">Profession</th>
+                            <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">Statut</th>
                         </tr>
                         </thead>
                         <tbody class="bg-white divide-y divide-gray-200">
@@ -311,10 +389,11 @@
                                 <td class="px-4 py-3 whitespace-nowrap text-sm">{item.number ?? 'N/A'}</td>
                                 <td class="px-4 py-3 whitespace-nowrap text-sm">{item.email ?? 'N/A'}</td>
                                 <td class="px-4 py-3 whitespace-nowrap text-sm">{item.personne?.profession?.libelle ?? 'N/A'}</td>
+                                <td class="px-4 py-3 whitespace-nowrap text-sm">{item.personne?.status ?? 'N/A'}</td>
                             </tr>
                         {:else}
                             <tr>
-                                <td colspan="5" class="px-4 py-3 text-center text-sm text-gray-500">Aucun établissement trouvé</td>
+                                <td colspan="6" class="px-4 py-3 text-center text-sm text-gray-500">Aucun établissement trouvé</td>
                             </tr>
                         {/each}
                         </tbody>
@@ -328,6 +407,7 @@
                             <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">Téléphone</th>
                             <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">Email</th>
                             <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">Profession</th>
+                            <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">Statut</th>
                         </tr>
                         </thead>
                         <tbody class="bg-white divide-y divide-gray-200">
@@ -338,10 +418,11 @@
                                 <td class="px-4 py-3 whitespace-nowrap text-sm">{item.personne?.number ?? 'N/A'}</td>
                                 <td class="px-4 py-3 whitespace-nowrap text-sm">{item.personne?.email ?? 'N/A'}</td>
                                 <td class="px-4 py-3 whitespace-nowrap text-sm">{item.personne?.profession?.libelle ?? 'N/A'}</td>
+                                <td class="px-4 py-3 whitespace-nowrap text-sm">{item.personne?.status ?? 'N/A'}</td>
                             </tr>
                         {:else}
                             <tr>
-                                <td colspan="5" class="px-4 py-3 text-center text-sm text-gray-500">Aucun professionnel à jour trouvé</td>
+                                <td colspan="6" class="px-4 py-3 text-center text-sm text-gray-500">Aucun professionnel à jour trouvé</td>
                             </tr>
                         {/each}
                         </tbody>
@@ -350,7 +431,6 @@
             {/if}
         </div>
 
-        <!-- Pagination -->
         {#if (activeTab === 'professionnel' && filteredProfessionnels.length > itemsPerPage) ||
         (activeTab === 'etablissement' && filteredEtablissements.length > itemsPerPage) ||
         (activeTab === 'pro' && filteredProfessionnelsAjour.length > itemsPerPage)}
@@ -371,6 +451,3 @@
         {/if}
     </section>
 </div>
-<style>
-
-</style>

@@ -61,7 +61,7 @@
 async function fetchData() {
   loading = true; // Active le spinner de chargement
   try {
-    const res = await apiFetch(true, "/professionnel/");
+    const res = await apiFetch(true, `/professionnel/imputation/list/${user.id}`);
     if (res) {
       main_data = res.data as professionnel[];
 
@@ -257,7 +257,7 @@ async function fetchData() {
               >
                
               {#if activeTab === "valide"}
-              {#each ["nom", "prénoms", "Téléphone", "email", "professionnel de santé", "Code", "imputation",user.type === "SOUS-DIRECTEUR" ? null : "Action"] as title}
+              {#each ["nom", "prénoms", "Téléphone", "email", "professionnel de santé", "Code", "imputation","Action"] as title}
                 {#if title}
                   <TableHeadCell class="ps-4 font-normal border border-gray-300">
                     {title}
@@ -265,7 +265,7 @@ async function fetchData() {
                 {/if}
               {/each}
             {:else}
-              {#each ["nom", "prénoms", "Téléphone", "email", "professionnel de santé", "imputation", (user.type === "SOUS-DIRECTEUR" && activeTab != "attente") ? null : "Action"] as title}
+              {#each ["nom", "prénoms", "Téléphone", "email", "professionnel de santé", "imputation", "Action"] as title}
                 {#if title}
                   <TableHeadCell class="ps-4 font-normal border border-gray-300">
                     {title}
@@ -350,18 +350,11 @@ async function fetchData() {
                           </TableBodyCell
                         >
 
-                       {#if item?.personne?.status == "attente" && user.type == "SOUS-DIRECTEUR"  }
+                      
                       <TableBodyCell class="p-2 w-8 border border-gray-300">
                         <DropdownMenuShow {item} onAction={handleAction} user={user} />
                       </TableBodyCell>
-
-                      {/if}
-                      {#if  user.type == "ADMINISTRATEUR"  }
-                      <TableBodyCell class="p-2 w-8 border border-gray-300">
-                        <DropdownMenuShow {item} onAction={handleAction} user={user} />
-                      </TableBodyCell>
-
-                      {/if}
+                    
 
                       <!-- <Button
                             color="green"

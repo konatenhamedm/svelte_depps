@@ -176,7 +176,7 @@
           datas={typeUser}
           id="typeUser"
         />
-        <span>valeur-{admin.typeUser}</span>
+       <!--  <span>valeur-{admin.typeUser}</span> -->
       </div>
     </form>
   </div>
