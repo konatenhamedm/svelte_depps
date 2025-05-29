@@ -1,5 +1,5 @@
 import axios from 'axios';
-import cookie from "cookie";
+import * as cookie from "cookie";
 import type { User } from '../types';
 import { BASE_URL_API } from './api';
 

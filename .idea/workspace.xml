@@ -5,7 +5,9 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="4fc344a7-af60-41fd-b027-db3365e0382a" name="Changes" comment="fix(new) : new update for the design">
-      <change beforePath="$PROJECT_DIR$/src/routes/admin/+page.svelte" beforeDir="false" afterPath="$PROJECT_DIR$/src/routes/admin/+page.svelte" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/routes/admin/comptable-dashboard/+page.svelte" beforeDir="false" afterPath="$PROJECT_DIR$/src/routes/admin/comptable-dashboard/+page.svelte" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/routes/admin/instructeur-dashboard/+page.svelte" beforeDir="false" afterPath="$PROJECT_DIR$/src/routes/admin/instructeur-dashboard/+page.svelte" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -62,7 +64,7 @@
   "keyToString": {
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "RunOnceActivity.git.unshallow": "true",
-    "git-widget-placeholder": "production",
+    "git-widget-placeholder": "NEW-DASBOARD",
     "last_opened_file_path": "/Users/danj/svelte_depps/src/routes/new_site/forum",
     "node.js.detected.package.eslint": "true",
     "node.js.detected.package.tslint": "true",
@@ -156,7 +158,9 @@
       <workItem from="1747055227495" duration="138000" />
       <workItem from="1747238351731" duration="1572000" />
       <workItem from="1747316532581" duration="1588000" />
-      <workItem from="1747322822721" duration="1649000" />
+      <workItem from="1747322822721" duration="2219000" />
+      <workItem from="1748344828822" duration="16954000" />
+      <workItem from="1748425801629" duration="19760000" />
     </task>
     <task id="LOCAL-00001" summary="features(contact) : create page contact with his content">
       <option name="closed" value="true" />
