@@ -7,7 +7,7 @@
 
     // Nouvelle structure pour les stats
     let stats = {
-        attente: 0,
+        atttente: 0,
         accepte: 0,
         rejete: 0,
         valide: 0,
@@ -87,7 +87,7 @@
                 true,
                 `/statistique/info-dashboard/by/typeuser/${userType}/${userId}`
             );
-
+console.log("UUUUUU",response.data)
             if (response && response.data) {
                 stats = {
                     ...stats,
@@ -230,7 +230,7 @@
                     </svg>
                 </div>
                 <div class="text-xs text-gray-400 mt-1">Statistique actuelle</div>
-                <div class="text-lg font-semibold mt-2 text-blue-500">{stats.attente}</div>
+                <div class="text-lg font-semibold mt-2 text-blue-500">{stats.atttente }</div>
             </div>
 
             <!-- Acceptés -->

@@ -21,7 +21,7 @@
 
   // Initialize form data with the provided record
   function init(form: HTMLFormElement) {
-    imputation = data?.imputation;
+    imputation = data?.personne?.imputation;
    
   }
 

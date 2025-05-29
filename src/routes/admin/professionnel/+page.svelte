@@ -256,22 +256,24 @@ async function fetchData() {
                 class="border-y border-gray-200 bg-gray-100 dark:border-gray-700"
               >
                
-
-                {#if activeTab === "valide"}
-                  {#each ["nom", "prénoms", "Téléphone", "email","professionnel de santé ", "Code","imputation", "Action"] as title}
-                    <TableHeadCell
-                      class="ps-4 font-normal border border-gray-300"
-                      >{title}</TableHeadCell
-                    >
-                  {/each}
-                {:else}
-                  {#each ["nom", "prénoms", "Téléphone", "email", "professionnel de santé ","imputation", "Action"] as title}
-                    <TableHeadCell
-                      class="ps-4 font-normal border border-gray-300"
-                      >{title} </TableHeadCell
-                    >
-                  {/each}
+              {#if activeTab === "valide"}
+              {#each ["nom", "prénoms", "Téléphone", "email", "professionnel de santé", "Code", "imputation",user.type === "SOUS-DIRECTEUR" ? null : "Action"] as title}
+                {#if title}
+                  <TableHeadCell class="ps-4 font-normal border border-gray-300">
+                    {title}
+                  </TableHeadCell>
                 {/if}
+              {/each}
+            {:else}
+              {#each ["nom", "prénoms", "Téléphone", "email", "professionnel de santé", "imputation", (user.type === "SOUS-DIRECTEUR" && activeTab != "attente") ? null : "Action"] as title}
+                {#if title}
+                  <TableHeadCell class="ps-4 font-normal border border-gray-300">
+                    {title}
+                  </TableHeadCell>
+                {/if}
+              {/each}
+            {/if}
+            
               </TableHead>
               <TableBody>
                 {#if loading && paginatedProducts.length === 0}
@@ -348,10 +350,12 @@ async function fetchData() {
                           </TableBodyCell
                         >
 
-
+                       {#if item?.personne?.status == "attente" && user.type == "SOUS-DIRECTEUR"  }
                       <TableBodyCell class="p-2 w-8 border border-gray-300">
                         <DropdownMenuShow {item} onAction={handleAction} user={user} />
                       </TableBodyCell>
+
+                      {/if}
 
                       <!-- <Button
                             color="green"
