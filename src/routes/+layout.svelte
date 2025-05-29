@@ -1,7 +1,7 @@
 
 
 
-<script lang="ts" >
+<script lang="ts">
   
 
 
@@ -11,10 +11,15 @@
   import Side from "../components/_includes/Side.svelte";
   import Footer from "../components/_includes/Footer.svelte";
   import Header from "$components/_includes/Header.svelte";
- 
+  import { onMount } from "svelte";
+  import type { User } from "../types";
+  import { getAuthCookie } from "$lib/auth";
+
 
   let { children,data } = $props();
   let currentYear = new Date().getFullYear();
+
+
 
 </script>
 
@@ -368,7 +373,7 @@ img {
     <div id="loader"></div>
 
     <Header />
-    <Side />
+    <Side user={data.user}/>
     <div class="content-wrapper">
       {@render children()}
       

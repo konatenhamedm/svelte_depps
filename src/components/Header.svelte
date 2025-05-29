@@ -1,12 +1,13 @@
 <script lang="ts">
   import { goto } from "$app/navigation";
-  import { logoutKIte } from "$lib/auth";
+  import { getAuthCookie, logoutKIte } from "$lib/auth";
+  import { onMount } from "svelte";
   import type { User } from "../types";
  
 
   
 
-  export let user:User[] =  [];
+   let user: any;
 
   async function logout() {
     await fetch('/auth/logout', { method: 'POST' });
@@ -14,6 +15,11 @@
     localStorage.clear();
 
 }
+
+
+    user = getAuthCookie();
+    console.log("TTT",user);
+ 
 
   let notificationCount = 0;
   

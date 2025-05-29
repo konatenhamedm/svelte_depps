@@ -1,13 +1,5 @@
 <script>
-	import {onMount} from "svelte";
-	import {getAuthCookie} from "$lib/auth";
-
-	let user = null;
-	onMount( () => {
-		 user =  getAuthCookie();
-		console.log("content user",user);
-	});
-
+export let user;
 </script>
 
 <aside class="main-sidebar">
