@@ -34,6 +34,14 @@
     {
       id: "INSTRUCTEUR",
       libelle: "INSTRUCTEUR"
+    },
+    {
+      id: "SOUS-DIRECTEUR",
+      libelle: "SOUS-DIRECTEUR"
+    },
+    {
+      id: "COMPTABLE",
+      libelle: "COMPTABLE"
     }
   ];
 
@@ -44,34 +52,41 @@
   async function SaveFunction() {
     isLoad = true;
     try {
+      // Créer un objet FormData
+      const formData = new FormData();
+      formData.append('nom', admin.nom);
+      formData.append('prenoms', admin.prenoms);
+      formData.append('username', admin.username);
+      formData.append('password', admin.password);
+      formData.append('confirmPassword', admin.confirmPassword);
+      formData.append('email', admin.email);
+      formData.append('userUpdate', userUpdateId);
+      formData.append('typeUser', admin.typeUser);
+
       const res = await fetch(BASE_URL_API + "/user/admin/create", {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json"
-        },
-        body: JSON.stringify({
-          nom: admin.nom,
-          prenoms: admin.prenoms,
-          username: admin.username,
-          password: admin.password,
-          confirmPassword: admin.confirmPassword,
-          email: admin.email,
-          userUpdate: userUpdateId,
-          typeUser: admin.typeUser
-        })
+        body: formData
       });
 
       if (res.ok) {
         isLoad = false;
         open = false;
-        notificationMessage = "admin créé avec succès!";
+        notificationMessage = "Admin créé avec succès!";
         notificationType = "success";
         showNotification = true;
+      } else {
+        // Gérer les erreurs de réponse HTTP
+        const errorData = await res.json();
+        notificationMessage = errorData.message || "Erreur lors de l'enregistrement";
+        notificationType = "error";
+        showNotification = true;
+        isLoad = false;
       }
     } catch (error) {
-      notificationMessage = "Une erreur crée lors de l enregistrement";
+      notificationMessage = "Une erreur est survenue lors de l'enregistrement";
       notificationType = "error";
       showNotification = true;
+      isLoad = false;
       console.error("Error saving:", error);
     }
   }
@@ -161,6 +176,7 @@
           datas={typeUser}
           id="typeUser"
         />
+        <span>valeur-{admin.typeUser}</span>
       </div>
     </form>
   </div>
