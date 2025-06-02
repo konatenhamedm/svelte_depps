@@ -60,7 +60,7 @@
             <span class="pull-right-container"> </span>
           </a>
         </li>
-        <li class="path1">
+        <!-- <li class="path1">
           <a href="/admin/etablissements">
             <svg
               fill="none"
@@ -90,7 +90,7 @@
             <span>Etablissements sante</span>
             <span class="pull-right-container"> </span>
           </a>
-        </li>
+        </li> -->
         <li class="path1">
           <a href="/admin/historique_paiement">
             <svg

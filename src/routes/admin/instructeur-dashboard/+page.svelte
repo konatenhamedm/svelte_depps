@@ -43,7 +43,7 @@
         { value: 'rejete', label: 'Rejeté' },
         { value: 'valide', label: 'Validé' },
         { value: 'refuse', label: 'Refusé' },
-        { value: 'renouvelle', label: 'Renouvelé' },
+        { value: 'renouvellement', label: 'Renouvelé' },
         { value: 'a_jour', label: 'À jour' }
     ];
 
@@ -107,10 +107,12 @@ console.log("UUUUUU",response.data)
                 statsUrl = `/statistique/info-dashboard/by/typeuser/${userType}/${userId}`;
             }
 
-            const [statsRes, proRes, etabRes, profRes] = await Promise.all([
+            const [statsRes, listeProfessionnels,  profRes] = await Promise.all([
                 apiFetch(true, statsUrl),
-                apiFetch(true, `/professionnel/imputation/list/${userId}`),
-                apiFetch(true, `/professionnel/imputation/list/${userId}`),
+                apiFetch(true, `/professionnel/`),
+              /*   apiFetch(true, `/professionnel/`), */
+               /*  apiFetch(true, `/professionnel/imputation/list/${userId}`),
+                apiFetch(true, `/professionnel/imputation/list/${userId}`), */
                 apiFetch(true, "/profession/")
             ]);
 
@@ -121,15 +123,15 @@ console.log("UUUUUU",response.data)
                         ...statsRes.data
                     };
                 }
-                main_data = statsRes.data;
+                //main_data = statsRes.data;
             }
 
-            if (proRes) {
-                console.log("Professionnels:", proRes.data);
-                professionnels = proRes.data || [];
-                professionnelsAjour = professionnels.filter(p => p.personne?.status === 'a_jour' &&   p.personne?.imputation == userId);
+            if (listeProfessionnels) {
+                console.log("Professionnels:", listeProfessionnels.data);
+                professionnels = listeProfessionnels.data || [];
+              //  professionnelsAjour = professionnels.filter(p => p.personne?.status === 'a_jour');
             }
-            if (etabRes) etablissements = etabRes.data || [];
+         /*    if (etabRes) etablissements = etabRes.data || []; */
             if (profRes) {
                 console.log("Professions reçues:", profRes.data);
                 professions = profRes.data || [];
@@ -147,52 +149,53 @@ console.log("UUUUUU",response.data)
     }
 
     function updateFilteredData() {
+    //alert(userId)
+    // Filtre par profession
+    let tempProfessionnels = professionnels;
+    let tempProfessionnelsAjour = professionnelsAjour;
+    let tempEtablissements = etablissements;
 
-        //alert(userId)
-        // Filtre par profession
-        let tempProfessionnels = professionnels.filter(
-            (p)=> p.personne?.imputation === userId
-        );
-        let tempProfessionnelsAjour = professionnelsAjour;
-        let tempEtablissements = etablissements;
+    if (selectedProfession) {
+      const selectedProfessionId = Number(selectedProfession);
+      tempProfessionnels = tempProfessionnels.filter(
+        (p) => p.personne?.profession?.id === selectedProfessionId
+      );
 
-        if (selectedProfession) {
-            tempProfessionnels = tempProfessionnels.filter(p =>
-                p.personne?.profession?.id === selectedProfession &&   p.personne?.imputation === userId
-            );
-            tempProfessionnelsAjour = tempProfessionnelsAjour.filter(p =>
-                p.personne?.profession?.id === selectedProfession &&   p.personne?.imputation === userId
-            );
-            tempEtablissements = tempEtablissements.filter(e =>
-                e.personne?.profession?.id === selectedProfession 
-            );
-        }
+      /*  tempProfessionnelsAjour = tempProfessionnelsAjour.filter(p =>
+        p.personne?.profession?.id === selectedProfession 
+    ); */
+      /* tempEtablissements = tempEtablissements.filter(e =>
+        e.personne?.profession?.id === selectedProfession 
+    ); */
+    } else if(selectedStatus) {
+   
+      tempProfessionnels = tempProfessionnels.filter(
+        (p) => p.personne?.status === selectedStatus
+      );
 
-        // Filtre par statut si sélectionné
-        if (selectedStatus) {
-            tempProfessionnels = tempProfessionnels.filter(p =>
-                p.personne?.status === selectedStatus &&   p.personne?.imputation === userId
-            );
-            tempProfessionnelsAjour = tempProfessionnelsAjour.filter(p =>
-                p.personne?.status === selectedStatus &&   p.personne?.imputation === userId
-            );
-            tempEtablissements = tempEtablissements.filter(e =>
-                e.personne?.status === selectedStatus 
-            );
-        }
-
-        filteredProfessionnels = tempProfessionnels;
-        filteredProfessionnelsAjour = tempProfessionnelsAjour;
-        filteredEtablissements = tempEtablissements;
+     /*  tempProfessionnelsAjour = tempProfessionnelsAjour.filter(
+        (p) => p.personne?.status === selectedStatus
+      );
+      tempEtablissements = tempEtablissements.filter(
+        (e) => e.personne?.status === selectedStatus
+      ); */
+    } else {
+      filteredProfessionnels = professionnels;
     }
 
-    function handleProfessionChange(event) {
+     filteredProfessionnels = tempProfessionnels;
+/*filteredProfessionnelsAjour = tempProfessionnelsAjour;
+filteredEtablissements = tempEtablissements; */
+  }
+
+    function handleProfessionChange(event:any) {
         selectedProfession = event.target.value;
+        console.log("VGGGG",selectedProfession)
         updateFilteredData();
         currentPage = 1;
     }
 
-    function handleStatusChange(event) {
+    function handleStatusChange(event:any) {
         selectedStatus = event.target.value;
         updateFilteredData();
         currentPage = 1;
@@ -297,7 +300,7 @@ console.log("UUUUUU",response.data)
                                 on:change={handleProfessionChange}
                         >
                             <option value="">Toutes les professions</option>
-                            {#each professions as profession}
+                            {#each professions as profession }
                                 <option value={profession.id}>{profession.libelle}</option>
                             {/each}
                         </select>
@@ -344,6 +347,7 @@ console.log("UUUUUU",response.data)
                     <table class="min-w-full divide-y divide-gray-200">
                         <thead class="bg-gray-50">
                         <tr>
+                            <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">N°</th>
                             <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">Nom</th>
                             <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">Prénoms</th>
                             <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">Téléphone</th>
@@ -353,8 +357,9 @@ console.log("UUUUUU",response.data)
                         </tr>
                         </thead>
                         <tbody class="bg-white divide-y divide-gray-200">
-                        {#each filteredProfessionnels.slice((currentPage-1)*itemsPerPage, currentPage*itemsPerPage) as item}
+                        {#each filteredProfessionnels.slice((currentPage-1)*itemsPerPage, currentPage*itemsPerPage) as item,key}
                             <tr class="hover:bg-gray-50">
+                                <td class="px-4 py-3 whitespace-nowrap text-sm">{key + 1}</td>
                                 <td class="px-4 py-3 whitespace-nowrap text-sm">{item.personne?.nom ?? 'N/A'}</td>
                                 <td class="px-4 py-3 whitespace-nowrap text-sm">{item.personne?.prenoms ?? 'N/A'}</td>
                                 <td class="px-4 py-3 whitespace-nowrap text-sm">{item.personne?.number ?? 'N/A'}</td>
@@ -402,7 +407,7 @@ console.log("UUUUUU",response.data)
                     <table class="min-w-full divide-y divide-gray-200">
                         <thead class="bg-gray-50">
                         <tr>
-                            <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">Nom</th>
+                            <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">Nomnjhh</th>
                             <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">Prénoms</th>
                             <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">Téléphone</th>
                             <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">Email</th>

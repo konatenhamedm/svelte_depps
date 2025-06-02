@@ -77,7 +77,14 @@ export async function handle({ event, resolve }) {
   } */
   // Continuer la requête si tout va bien
 
+  if (event.url.pathname === '/.well-known/appspecific/com.chrome.devtools.json') {
+    return new Response('Not found', { status: 204 });
+  }
+ /*  return resolve(event); */
+
   event.locals.user = cookies.auth ? JSON.parse(cookies.auth) : null;
   const response = await resolve(event);
   return response;
+
+  
 }

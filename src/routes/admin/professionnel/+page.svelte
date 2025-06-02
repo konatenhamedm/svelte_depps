@@ -257,7 +257,7 @@ async function fetchData() {
               >
                
               {#if activeTab === "valide"}
-              {#each ["nom", "prénoms", "Téléphone", "email", "professionnel de santé", "Code", "imputation",user.type === "SOUS-DIRECTEUR" ? null : "Action"] as title}
+              {#each ["nom", "prénoms", "Téléphone", "email", "professionnel de santé", "Code", "imputation"] as title}
                 {#if title}
                   <TableHeadCell class="ps-4 font-normal border border-gray-300">
                     {title}
@@ -265,7 +265,7 @@ async function fetchData() {
                 {/if}
               {/each}
             {:else}
-              {#each ["nom", "prénoms", "Téléphone", "email", "professionnel de santé", "imputation", (user.type === "SOUS-DIRECTEUR" && activeTab != "attente") ? null : "Action"] as title}
+              {#each ["nom", "prénoms", "Téléphone", "email", "professionnel de santé", "imputation", (user.type === "SOUS-DIRECTEUR" && activeTab == "attente") ? "Action" : null] as title}
                 {#if title}
                   <TableHeadCell class="ps-4 font-normal border border-gray-300">
                     {title}
@@ -356,12 +356,12 @@ async function fetchData() {
                       </TableBodyCell>
 
                       {/if}
-                      {#if  user.type == "ADMINISTRATEUR"  }
+                   <!--    {#if  user.type == "ADMINISTRATEUR"  }
                       <TableBodyCell class="p-2 w-8 border border-gray-300">
                         <DropdownMenuShow {item} onAction={handleAction} user={user} />
                       </TableBodyCell>
 
-                      {/if}
+                      {/if} -->
 
                       <!-- <Button
                             color="green"
