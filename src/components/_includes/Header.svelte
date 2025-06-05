@@ -1,8 +1,4 @@
 <script lang="ts">
-  import { onMount } from "svelte";
-import type { User } from "../../types";
-
-
 import { goto } from '$app/navigation';
 
 async function logout() {
@@ -11,7 +7,9 @@ async function logout() {
     localStorage.clear();
 
 }
-  
+
+    export let user;
+
 </script>
 
 <header class="main-header">
@@ -84,10 +82,11 @@ async function logout() {
                     </label>
                 </li>
                 <li class="dropdown notifications-menu btn-group ">
-                     <a id="dropdownDefaultButton" data-dropdown-toggle="dropdown" class="btn-primary-light svg-bt-icon hover:text-white hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-3 py-3 text-center inline-flex items-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800" title="Notifications" type="button"><div class="absolute inline-flex items-center justify-center w-6 h-6 text-xs font-bold text-white bg-red-500 border-2 border-white rounded-full top-[1.4rem] end-[0.7rem] dark:border-gray-900">8</div><i data-feather="bell"></i><div class="pulse-wave"></div>
-                     </a>
+                    {user.username}
+                   <!--  <a id="dropdownDefaultButton" data-dropdown-toggle="dropdown" class="btn-primary-light svg-bt-icon hover:text-white hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-3 py-3 text-center inline-flex items-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800" title="Notifications" type="button"><div class="absolute inline-flex items-center justify-center w-6 h-6 text-xs font-bold text-white bg-red-500 border-2 border-white rounded-full top-[1.4rem] end-[0.7rem] dark:border-gray-900">8</div><i data-feather="bell"></i><div class="pulse-wave"></div>
+                     </a>-->
 
-                     <!-- Dropdown menu -->
+                     <!-- Dropdown menu
                      <div id="dropdown" class="dropdown-menu z-10 hidden bg-white divide-y divide-gray-100 rounded-lg shadow !w-max dark:bg-gray-700">
                              <ul class="py-2 text-sm text-gray-700 dark:text-gray-200" aria-labelledby="dropdownDefaultButton">
                                  <li class="header">
@@ -107,13 +106,15 @@ async function logout() {
                                      <a href="component_notification.html">View all</a>
                                 </li>
                              </ul>
-                     </div>
+                     </div>-->
                 </li>
-               
-           
+
+
                 <!-- User Account-->
                 <li class="btn-group d-xl-inline-flex d-none">
-                     <a href="#" id="dropdownDividerButton" data-dropdown-toggle="dropdownDivider-2" class="justify-center btn-primary-light hover:text-white svg-bt-icon hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm !px-px !py-px text-center inline-flex items-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800" type="button"><img src="../../../images/avatar/avatar-6.png" class="avatar rounded-full !h-11 !w-11 mt-1" alt="" /></a>
+                     <a href="#" id="dropdownDividerButton" data-dropdown-toggle="dropdownDivider-2" class="justify-center btn-primary-light hover:text-white svg-bt-icon hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm !px-px !py-px text-center inline-flex items-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800" type="button">
+                         <img src="../../../images/avatar/avatar-6.png" class="avatar rounded-full !h-11 !w-11 mt-1" alt="" />
+                     </a>
                      <!-- Dropdown menu -->
                      <div id="dropdownDivider-2" class="z-10 hidden bg-white divide-y divide-gray-100 rounded-lg shadow w-44 dark:bg-gray-700 dark:divide-gray-600">
                              <ul class="py-2 text-sm text-gray-700 dark:text-gray-200 drop-shadow-lg" aria-labelledby="dropdownDividerButton">
@@ -122,9 +123,16 @@ async function logout() {
                                      <a on:click={logout} href="javascript:void(0)" class="items-center m-0 text-base flex px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"><i class="fa fa-user-circle-o me-3 text-xl" aria-hidden="true" > </i>Se déconnecter</a>
                                  </li>
                              </ul>
-                     </div>  
+                     </div>
                 </li>
              </ul>
         </div>
     </nav>
 </header>
+
+<style>
+    li.dropdown.notifications-menu.btn-group {
+        padding-top: 35px !important;
+        color: white !important;
+    }
+</style>

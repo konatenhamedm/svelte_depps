@@ -372,7 +372,7 @@ img {
   <div class="wrapper">
     <div id="loader"></div>
 
-    <Header />
+    <Header user={data.user} />
     <Side user={data.user}/>
     <div class="content-wrapper">
       {@render children()}

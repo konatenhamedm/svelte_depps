@@ -21,6 +21,8 @@ body{
         display: table;
     }
 }
+
+
 body{
     overflow-x: hidden;
     overflow-y: auto;
@@ -1202,4 +1204,8 @@ button:focus {
 }	
 small, .small {	
     font-weight: 400;	
+}
+
+.w-40 {
+  width: 100px !important;
 }
