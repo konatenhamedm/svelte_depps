@@ -34,6 +34,7 @@
   import DropdownMenu from "$components/DropdownMenu.svelte";
   import DropdownOnlyShow from "$components/DropdownOnlyShow.svelte";
   import Pdf from "$components/pdf/Pdf.svelte";
+  import RecuPaiement from "./RecuPaiement.svelte";
 
   export let data; // Les données retournées par `load()`
   let user = data.user;
@@ -51,15 +52,11 @@
   let openEdit: boolean = false;
   let openAdd: boolean = false;
   let openShow: boolean = false;
+  let openDoc: boolean = false;
   let current_data: any = {};
 
   // Options statiques pour le filtre de montant
-  const amountOptions = [
-    { value: "", label: "Tous les montants" },
-    { value: "5000", label: "5 000 FCFA" },
-    { value: "25000", label: "25 000 FCFA" },
-    { value: "50000", label: "50 000 FCFA" }
-  ];
+  let amountOptions:any  = [];
 
   async function fetchData() {
     loading = true; // Active le spinner de chargement
@@ -81,9 +78,29 @@
       loading = false; // Désactive le spinner de chargement
     }
   }
+  async function fetchMontant() {
+    
+    try {
+      const res = await apiFetch(true, "/profession/api/montants");
+      
+      if (res) {
+        amountOptions = res.data ;
+      } else {
+        console.error(
+                "Erreur lors de la récupération des données:",
+                res.statusText
+        );
+      }
+    } catch (error) {
+      console.error("Erreur lors de la récupération des données:", error);
+    } finally {
+      
+    }
+  }
 
   onMount(async () => {
     await fetchData();
+    await fetchMontant();
   });
 
   $: filteredData = main_data.filter((item) => {
@@ -150,7 +167,7 @@
     if (action === "view") {
       openShow = true;
     } else if (action === "edit") {
-      openEdit = false;
+      openEdit = true;
     } else if (action === "delete") {
       openDelete = false;
     }
@@ -202,7 +219,7 @@
           <Pdf
                   title="Historique_Paiements"
                   headers={["Reference", "Type", "Email", "Etat", "Montant", "Date"]}
-                  data={main_data}
+                  data={filteredData}
                   type="paiement"
           />
         </div>
@@ -246,7 +263,7 @@
               <TableHead
                       class="border-y border-gray-200 bg-gray-100 dark:border-gray-700"
               >
-                {#each ["Nom","Prénoms","Profession","Contacts","Reference", "type","moyens de paiement", "email","Etat paiement", "Montant", "Date"] as title}
+                {#each ["Nom","Prénoms","Profession","Contacts","Reference", "type","moyens de paiement", "email","Etat paiement", "Montant", "Date","Action"] as title}
                   <TableHeadCell class="ps-4 font-normal border border-gray-300"
                   >{title}</TableHeadCell
                   >
@@ -342,10 +359,10 @@
                       <!--  <TableBodyCell class="p-4 border border-gray-300">{item.sous_menu.libelle}</TableBodyCell>
                                    -->
 
-                      <!-- <TableBodyCell class="p-2 w-8 border border-gray-300">
-                         Utilisation de <details> pour gérer l'ouverture/fermeture au clic
+                      <TableBodyCell class="p-2 w-8 border border-gray-300">
+                       
                            <DropdownOnlyShow {item} onAction={handleAction} />
-                       </TableBodyCell>-->
+                       </TableBodyCell>
                     </TableBodyRow>
                   {/each}
                 {/if}
@@ -388,4 +405,5 @@
 
 <!-- Modales -->
 <Show bind:open={openShow} data={current_data} sizeModal="xl" />
+<RecuPaiement bind:open={openEdit} data={current_data} sizeModal="xl" userUpdateId= {"userUpdateId"}/>
 <Delete bind:open={openDelete} data={current_data} />

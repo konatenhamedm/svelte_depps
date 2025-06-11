@@ -1,5 +1,5 @@
 <script>
-  import { EditOutline, EyeOutline, TrashBinSolid } from "flowbite-svelte-icons";
+  import { EditOutline, EyeOutline, PrinterOutline, TrashBinSolid } from "flowbite-svelte-icons";
   import { openMenu } from "../menuStore"; // Store global pour gérer un seul menu ouvert
 
   export let item;
@@ -58,6 +58,10 @@
         on:click={() => {onAction('view', item); isOpen = false;}}>
         <EyeOutline size="sm" class="mr-2" /> Voir
       </button>
+      <button class="menu-item  hover:text-white"
+        on:click={() => {onAction('edit', item); isOpen = false;}}>
+        <PrinterOutline size="sm" class="mr-2" /> Réçu
+      </button>
      
     </div>
   {/if}
@@ -72,9 +76,11 @@
     box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
     z-index: 1000; /* Assure que le menu est bien au-dessus */
     top: var(--top);
-    left: var(--left);
-    width: 150px;
+    right: 21px !important;
+    /* left: var(--left); */
+    width: 120px;
   }
+
 
   .menu-item {
     display: flex;
