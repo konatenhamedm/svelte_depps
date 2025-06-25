@@ -3,6 +3,7 @@
     export let formData:any;
     export let errors;
     export let emailError;
+    export let emailPassword;
     export let saveFormState;
     export let showPassword;
     export let showPasswordConfirm;
@@ -43,6 +44,7 @@
         {#if emailError}
           <p class="text-red-500 text-sm">{emailError}</p>
         {/if}
+       
       </div>
   
       <!-- Mot de passe -->
@@ -106,6 +108,9 @@
         {#if errors.password}
           <p class="text-red-500 text-sm">{errors.password}</p>
         {/if}
+        {#if emailPassword}
+        <p class="text-red-500 text-sm">{emailPassword}</p>
+      {/if}
       </div>
   
       <!-- Confirmation mot de passe -->

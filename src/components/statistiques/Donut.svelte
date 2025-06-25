@@ -61,7 +61,23 @@
             name: 'Autres',
             y: 13.23
           }]
-        }]
+        }],   exporting: {
+          enabled: true,
+          buttons: {
+            contextButton: {
+              menuItems: [
+                'downloadPNG',
+                'downloadJPEG',
+                'downloadPDF',
+                'downloadSVG',
+                'separator',
+                'downloadCSV',     // ✅ Ajout CSV
+                'downloadXLS',     // ✅ Ajout Excel
+                'viewData'         // ✅ Voir les données sous forme de tableau
+              ]
+            }
+          }
+        }
       });
     });
   </script>

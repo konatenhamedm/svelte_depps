@@ -31,6 +31,7 @@
     residence: 'XX',
     phone: '0564924282',
     receiptNumber: '1730738267',
+    profession: 'profession',
     amount: '10000 XOF',
     footerText: 'Ce document ne tient pas lieu d’autorisation d’exercice',
   };
@@ -65,7 +66,8 @@
      /*  { label: "Lieu de résidence:", value: receiptData.residence }, */
       { label: "Numéro de téléphone:", value: receiptData.phone },
       { label: "Réference paiement:", value: `N° ${receiptData.receiptNumber}` },
-      { label: "Paiement:", value: `${receiptData.amount}` }
+      { label: "Paiement:", value: `${receiptData.amount}` },
+      { label: "Profession:", value: `${receiptData.profession}` }
     ];
 
     let yPos = startY;
@@ -96,11 +98,13 @@ async function getTransactionInfos() {
   try {
 
     if(data.id){
-      await apiFetch(true, "/paiement/info/transaction/last/transaction/"+data.id).then((response) => {
+      await apiFetch(true, "/paiement/info/transaction/last/transaction/formatter/"+data.id).then((response) => {
       console.log(response);
       if (response.code === 200) {
+        receiptData.title = "Reçu de Paiement - " + response.data.type;
         receiptData.amount = response.data.montant;
         receiptData.paymentMethod = response.data.channel;
+        receiptData.profession = response.data.user.personne.profession.libelle;
         receiptData.receiptNumber = response.data.reference;
         receiptData.name = response.data.user.typeUser == "PROFESSIONNEL" 
           ? response.data.user.personne.nom + " "+ response.data.user.personne.prenoms 

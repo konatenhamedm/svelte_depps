@@ -34,6 +34,8 @@
   let poleSanitairePro = "";
   let organisationNom = "";
   let lieuExercicePro = "";
+  let appartenirOrdre = "";
+  let numeroInscription = "";
   let profession = "";
   let civilite = "";
   let dateNaissance = "";
@@ -136,6 +138,8 @@
     cniPath = data.personne.cni.path || "";
     cniAlt = data.personne.cni.alt || "";
     casierPath = data.personne.casier.path || "";
+    appartenirOrdre = data.personne.appartenirOrdre || "";
+    numeroInscription = data.personne.numeroInscription || "";
     casierAlt = data.personne.casier.alt || "";
     certificatPath = data.personne.certificat.path || "";
     certificatAlt = data.personne.certificat.alt || "";
@@ -561,6 +565,46 @@
               fieldName="organisation"
               label="Nom de l'organisation"
               field={organisationNom}
+              disabled={true}
+            />
+          </div>
+          <!-- </div> -->
+        {/if}
+      </div>
+
+      <div class="grid grid-cols-2 gap-6 mt-6 mb-2">
+        <div class="space-y-6">
+          <div class="flex items-center justify-between space-x-2">
+            <fieldset>
+              <legend style="color: black;"
+                >Appartenez-vous à un ordre ?</legend
+              >
+              <div class="flex items-center">
+                <div class="mr-2">
+                  <InputCheck
+                    checked={appartenirOrdre === "non" ? true : false}
+                    label="Non"
+                    disabled={true}
+                  />
+                </div>
+                <div>
+                  <InputCheck
+                    checked={appartenirOrdre === "oui" ? true : false}
+                    label="Oui"
+                    disabled={true}
+                  />
+                </div>
+              </div>
+            </fieldset>
+          </div>
+        </div>
+        {#if appartenirOrdre === "oui"}
+          <!-- <div class="grid grid-cols-1 gap-6 mt-6"> -->
+          <div class="space-y-6">
+            <InputSimple
+              fieldName="numeroInscription"
+              label="Numéro d'inscription"
+              field={numeroInscription}
               disabled={true}
             />
           </div>

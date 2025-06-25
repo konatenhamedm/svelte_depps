@@ -1,10 +1,8 @@
-
 <script lang="ts">
   import { onMount } from 'svelte';
   import Highcharts from 'highcharts';
   import Exporting from 'highcharts/modules/exporting';
   import ExportData from 'highcharts/modules/export-data';
-  
 
   export let data: any = [];
 
@@ -12,11 +10,9 @@
 
   onMount(() => {
     if (typeof window !== 'undefined') {
+      // Initialise les modules d'export
       Exporting(Highcharts);
       ExportData(Highcharts);
-      /*
-      ExportData(Highcharts); */
-   /*    pdfMake.vfs = pdfFonts.pdfMake.vfs; */
 
       pie3 = Highcharts.chart('container3', {
         chart: {
@@ -56,7 +52,16 @@
           enabled: true,
           buttons: {
             contextButton: {
-              menuItems: ['downloadPNG', 'downloadJPEG', 'downloadPDF', 'downloadSVG']
+              menuItems: [
+                'downloadPNG',
+                'downloadJPEG',
+                'downloadPDF',
+                'downloadSVG',
+                'separator',
+                'downloadCSV',     // ✅ Ajout CSV
+                'downloadXLS',     // ✅ Ajout Excel
+                'viewData'         // ✅ Voir les données sous forme de tableau
+              ]
             }
           }
         }
@@ -64,9 +69,11 @@
     }
   });
 
+  // Met à jour les données si elles changent
   $: if (pie3 && data.length > 0) {
     pie3.series[0].setData(data);
   }
 </script>
 
-<div id="container3" style="width:100%; height:400px;"></div>
+<!-- Conteneur du graphique -->
+<div id="container3" style="width: 100%; height: 400px;"></div>

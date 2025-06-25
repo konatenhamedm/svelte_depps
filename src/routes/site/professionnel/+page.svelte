@@ -24,12 +24,20 @@
 
     return regex.test(email);
   }
+  function validatePassword (password: string) : boolean {
+    const regex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{6,}$/;
+    return regex.test(password);
+  };
 
   let isValidPhoneOrganisation = true;
 
   $: emailError =
     formData.email && !validateEmail(formData.email)
       ? "Veuillez entrer un email valide"
+      : "";
+  $: emailPassword =
+    formData.email && !validatePassword(formData.password)
+      ? "Le mot de passe doit contenir au moins 6 caractères, une majuscule, une minuscule et un chiffre."
       : "";
 
   $: emailProError =
@@ -166,7 +174,7 @@
         !errors.confirmPassword &&
         !errors.email &&
         !emailError &&
-        !emailCheck;
+        !emailCheck && !emailPassword;
     }
 
     if (step === 2) {
@@ -928,6 +936,7 @@
               bind:formData
               {errors}
               {emailError}
+              {emailPassword}
               {saveFormState}
               {showPassword}
               {showPasswordConfirm}
