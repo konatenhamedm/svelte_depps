@@ -274,71 +274,7 @@
     
   </div>
   
-  <div class="row mb-[233px]">
-    <div class="col-12">
-      <div class="grid grid-cols-2 gap-2">
-        <div class="col-span-1 p-4 ">
-          <div class="box h-[32rem]">
-            <div
-              class="box-header with-border flex justify-between items-center"
-            >
-              <h4 class="box-title text-xl font-medium">
-                Répartition par Spécialité
-              </h4>
-            </div>
-            <!-- /.box-header -->
-            <div class="box-body">
-              <div class="table-responsive">
-                <div class="w-full grid grid-cols-4 justify-between">
-                  <div>
-                    <Input
-                      placeholder="Rechercher..."
-                      type="text"
-                      bind:value={searchQuery}
-                      class="form-input font-normal rounded block w-full border-gray-200 text-sm focus:border-gray-300 focus:ring-0 bg-white mb-4"
-                    />
-                  </div>
-                  <div class="ml-2">
-<!--                     <select
-                      bind:value={genreField}
-                      on:change={refreshDataIfNeeded}
-                      id="role"
-                      class="form-input font-normal rounded block w-full border-gray-200 text-sm focus:border-gray-300 focus:ring-0 bg-white mb-4"
-                    >
-                      <option value="" disabled selected
-                        >Choisir un genre</option
-                      >
-                      <option value="tout">Tout</option>
-                      <option value="Masculin">Masculin</option>
-                      <option value="Féminin">Féminin</option>
-                    </select> -->
-                  </div>
-                </div>
-                <!-- ici lespace -->
 
-               
-              </div>
-            </div>
-            <!-- /.box-body -->
-          </div>
-        </div>
-        <div class=" p-4 h-32">
-          <div class="box">
-           
-            <div class="box-body">
-              <div class="table-responsive">
-                <div class="w-full grid grid-cols-4"></div>
-
-                <Pie data={stats} />
-              </div>
-            </div>
-         
-          </div>
-        </div>
-      </div>
-    </div>
-    
-  </div>
 
 
 </section>
