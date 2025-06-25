@@ -2,10 +2,7 @@
   import { onMount } from "svelte";
   import Footer from "$components/Footer.svelte";
   import Slide from "$components/Slide.svelte";
-
   import { apiFetch, BASE_URL_API } from "$lib/api";
-  import type Civilite from "../../../types.js";
-  import type Pays from "../../../types.js";
   import { goto } from "$app/navigation";
   import Modal from "./Modal.svelte";
   import FormButtons from "$components/site/FormButtons.svelte";
@@ -14,6 +11,7 @@
   import EtapeProfessionnelle from "$components/site/EtapeProfessionnelle.svelte";
   import Step2Form from "$components/site/Step2Form.svelte";
   import EtapeConnexion from "$components/site/EtapeConnexion.svelte";
+  import type { Civilite, Pays } from "../../../types";
 
   export let data;
   let user = data?.user;
@@ -991,7 +989,7 @@
                         on:change={(e) => handleFileChange(e, field.key)}
                       />
                     </div>
-                    {#if fileNames[field.key]}
+                   <!--  {#if fileNames[field.key]}
                       <p>
                         {fileNames[field.key].name}
                         <a
@@ -1000,7 +998,7 @@
                           class="download-link">📥 Télécharger</a
                         >
                       </p>
-                    {/if}
+                    {/if} -->
                     {#if errors[field.key as keyof typeof errors]}
                       <p class="text-red-500 text-sm">{errors[field.key as keyof typeof errors]}</p>
                     {/if}

@@ -1,83 +1,67 @@
 <script lang="ts">
-	import Imputation from './Imputation.svelte';
-  import Spinner from "$components/_skeletons/Spinner.svelte";
   import InputSimple from "$components/inputs/InputSimple.svelte";
   import { BASE_URL_API } from "$lib/api";
   import { Button, Input, Label, Modal, Textarea } from "flowbite-svelte";
+  import Notification from "$components/_includes/Notification.svelte";
   import InputTextArea from "$components/inputs/InputTextArea.svelte";
-  import InputSelect from "$components/inputs/InputSelect.svelte";
-  import { onMount } from "svelte";
-  import InputSelectUser from '$components/inputs/InputSelectUser.svelte';
 
-  export let open: boolean = false; // modal control
+  let showNotification = false;
+  let notificationMessage = "";
+  let notificationType = "info";
+
+  export let open: boolean = false;
   let isLoad = false;
-  let imputation: any = "";
-  let imputations: any = [];
 
+  let icons: any = {
+    libelle: ""
+  };
   export let sizeModal: any = "lg";
   export let userUpdateId: any;
 
   export let data: Record<string, string> = {};
 
-  // Initialize form data with the provided record
-  function init(form: HTMLFormElement) {
-    imputation = data?.personne?.imputation;
-   
-  }
+  function init(form: HTMLFormElement) {}
 
   async function SaveFunction() {
     isLoad = true;
-
     try {
-      const res = await fetch(BASE_URL_API + "/professionnel/update/imputation/" + data?.personne?.id, {
+      const res = await fetch(BASE_URL_API + "/genre/create", {
         method: "POST",
         headers: {
           "Content-Type": "application/json"
         },
         body: JSON.stringify({
-          imputation: imputation,
+          code: icons.code,
+          libelle: icons.libelle,
           userUpdate: userUpdateId
         })
       });
 
       if (res.ok) {
         isLoad = false;
-        open = false; // Close the modal
+        open = false;
+        notificationMessage = "icone créé avec succès!";
+        notificationType = "success";
+        showNotification = true;
       }
     } catch (error) {
+      notificationMessage = "Une erreur crée lors de l enregistrement";
+      notificationType = "error";
+      showNotification = true;
       console.error("Error saving:", error);
     }
   }
 
   function handleModalClose(event: Event) {
     if (isLoad) {
-      event.preventDefault();
+      event.preventDefault(); // Prevent modal from closing if loading
     }
   }
-
-
-  async function getData() {
-    try {
-      const res = await fetch(BASE_URL_API + "/user/liste/instructeur");
-      const data = await res.json();
-      imputations = data.data;
-
-      console.log("Imputations fetched:", imputations);
-    } catch (error) {
-      console.error("Error fetching villes:", error);
-    }
-  }
-
-  onMount(async () => {
-   await getData();
-  });
 </script>
 
 <Modal
   bind:open
-  title={Object.keys(data).length
-    ? "Imputation"
-    : "Imputation"}
+  title={Object.keys(data).length ? "Ajouter une icone " : "Ajouter une icone"}
   size={sizeModal}
   class="m-4 modale_general"
   on:close={handleModalClose}
@@ -91,15 +75,13 @@
   <div class="space-y-6 p-0">
     <form action="#" use:init>
       <div class="grid grid-cols-1">
-        <div class="grid grid-cols-1">
-          <InputSelectUser
-          label="instructeur"
-          bind:selectedId={imputation}
-          datas={imputations}
-          id="imputation"
-        
-        ></InputSelectUser>
-        </div>
+        <InputSimple
+          fieldName="libelle"
+          label="Libelle"
+          bind:field={icons.libelle}
+          placeholder="entrez le libelle"
+          class="w-full"
+        ></InputSimple>
       </div>
     </form>
   </div>
@@ -111,7 +93,7 @@
         <Button
           disabled={true}
           color="blue"
-          style="background-color: #55a1ff;"
+          style="background-color: blue;"
           type="submit"
         >
           <div class="flex flex-row gap-2">
@@ -128,14 +110,22 @@
         </Button>
       {:else}
         <button
-          type="button"
           style="background-color: #55a1ff;"
+          type="button"
           class="bg-[#55a1ff] text-white px-4 py-2 rounded-md shadow-sm hover:bg-[#008020]"
           on:click={SaveFunction}
         >
-          Modifier
+          Enregistrer
         </button>
       {/if}
     </div>
   </div>
 </Modal>
+
+{#if showNotification}
+  <Notification
+    message={notificationMessage}
+    type={notificationType}
+    duration={5000}
+  />
+{/if}

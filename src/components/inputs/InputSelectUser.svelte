@@ -2,7 +2,7 @@
   type Select = { id: number, email: string };
   
   export let label: string;
-  export let datas: Select[] = [];
+  export let datas;
   export let id: string;
   export let selectedId: number | null = null;
   export let disabled: boolean = false;
@@ -18,7 +18,7 @@
   >
     <option value="" selected>Veuillez sélectionner {label}</option>
     {#each datas as data (data.id)}
-      <option value="{data.id}">{data.email}</option>
+      <option value="{data.id}">{data.personne.nom} {data.personne.prenoms}</option>
     {/each}
   </select>
 </div>

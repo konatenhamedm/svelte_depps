@@ -33,6 +33,7 @@
   import DropdownMenu from "$components/DropdownMenu.svelte";
   import DropdownMenuShow from "$components/DropdownMenuShow.svelte";
   import Imputation from "./Imputation.svelte";
+  import ShowDetails from "./ShowDetails.svelte";
   export let data; // Les données retournées par `load()`
   let user = data.user;
 
@@ -45,6 +46,7 @@
   let openEdit: boolean = false;
   let openAdd: boolean = false;
   let openShow: boolean = false;
+  let openShowDetails: boolean = false;
   let openImputation: boolean = false;
   let current_data: any = {};
   let activeTab = "attente"; // Valeur par défaut : "En attente"
@@ -174,6 +176,9 @@ async function fetchData() {
     
     } else if (action === "imputation") {
       openImputation = true;
+    
+    } else if (action === "details") {
+      openShowDetails = true;
     }
   };
 
@@ -265,7 +270,7 @@ async function fetchData() {
                 {/if}
               {/each}
             {:else}
-              {#each ["nom", "prénoms", "Téléphone", "email", "professionnel de santé", "imputation", (user.type === "SOUS-DIRECTEUR" && activeTab == "attente") ? "Action" : null] as title}
+              {#each ["nom", "prénoms", "Téléphone", "email", "professionnel de santé", "imputation", /* (user.type === "SOUS-DIRECTEUR" && activeTab == "attente") ? */ "Action" ] as title}
                 {#if title}
                   <TableHeadCell class="ps-4 font-normal border border-gray-300">
                     {title}
@@ -350,7 +355,7 @@ async function fetchData() {
                           </TableBodyCell
                         >
 
-                       {#if item?.personne?.status == "attente" && user.type == "SOUS-DIRECTEUR"  }
+                       {#if  user.type == "SOUS-DIRECTEUR"  }
                       <TableBodyCell class="p-2 w-8 border border-gray-300">
                         <DropdownMenuShow {item} onAction={handleAction} user={user} />
                       </TableBodyCell>
@@ -431,6 +436,14 @@ async function fetchData() {
 {#if openShow}
   <Show
     bind:open={openShow}
+    data={current_data}
+    sizeModal="xl"
+    userUpdateId={user.id}
+  />
+{/if}
+{#if openShowDetails}
+  <ShowDetails
+    bind:open={openShowDetails}
     data={current_data}
     sizeModal="xl"
     userUpdateId={user.id}

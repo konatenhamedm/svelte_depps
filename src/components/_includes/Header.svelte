@@ -19,7 +19,7 @@ async function logout() {
      
         <a href="/admin" class="logo">
             <!-- logo-->
-             <div class="logo-mini w-40">
+             <div class="logo-mini w-70">
                  <span class="light-logo"><img src="/_files/logo-depps.png" alt="logo"></span>
                  <span class="dark-logo"><img src="" alt="logo"></span>
              </div>
@@ -117,8 +117,11 @@ async function logout() {
                      </a>
                      <!-- Dropdown menu -->
                      <div id="dropdownDivider-2" class="z-10 hidden bg-white divide-y divide-gray-100 rounded-lg shadow w-44 dark:bg-gray-700 dark:divide-gray-600">
-                             <ul class="py-2 text-sm text-gray-700 dark:text-gray-200 drop-shadow-lg" aria-labelledby="dropdownDividerButton">
+                             <ul class="py-2 text-sm text-gray-700e dark:text-gray-200 drop-shadow-lg" aria-labelledby="dropdownDividerButton">
                                 <!-- dlmjdk -->
+                                 <li >
+                                     <a href="/admin/modification_passe_word"  class="items-center m-0 text-base flex px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"><i class="fa fa-edit me-3 text-xl" aria-hidden="true" > </i>Modifier mot de passe</a>
+                                 </li>
                                  <li on:click={logout}>
                                      <a on:click={logout} href="javascript:void(0)" class="items-center m-0 text-base flex px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"><i class="fa fa-user-circle-o me-3 text-xl" aria-hidden="true" > </i>Se déconnecter</a>
                                  </li>

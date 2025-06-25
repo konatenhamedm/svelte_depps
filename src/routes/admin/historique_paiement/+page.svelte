@@ -64,7 +64,7 @@
       const res = await apiFetch(true, "/paiement/historique");
       console.log(res);
       if (res) {
-        main_data = res.data as Transaction[];
+        main_data = res.data ;
         console.log("content main", main_data);
       } else {
         console.error(
@@ -101,11 +101,19 @@
   onMount(async () => {
     await fetchData();
     await fetchMontant();
+
+   // console.log("user", user);
+    
   });
 
   $: filteredData = main_data.filter((item) => {
     // Filtre par recherche texte
-    const textMatch = item.reference.toLowerCase().includes(searchQuery.toLowerCase());
+    const textMatch = item.reference.toLowerCase().includes(searchQuery.toLowerCase()) 
+      || item.personne?.nom.toLowerCase().includes(searchQuery.toLowerCase())
+      || item.personne?.prenoms.toLowerCase().includes(searchQuery.toLowerCase())
+      || item.email.toLowerCase().includes(searchQuery.toLowerCase())
+      || item.type.toLowerCase().includes(searchQuery.toLowerCase())
+      || item.personne.profession.libelle.toLowerCase().includes(searchQuery.toLowerCase());
 
     // Filtre par montant
     let amountMatch = true;
@@ -235,13 +243,17 @@
                         class="form-input font-normal rounded block w-full border-gray-200 text-sm focus:border-gray-300 focus:ring-0 bg-white"
                 />
               </div>
-              <div>
+
+              {#if user.type != "INSTRUCTEUR"}
+ <div>
                 <Select bind:value={selectedAmount}>
                   {#each amountOptions as option}
                     <option value={option.value}>{option.label}</option>
                   {/each}
                 </Select>
               </div>
+              {/if}
+             
               <div>
                 <Input
                         type="date"
@@ -263,11 +275,19 @@
               <TableHead
                       class="border-y border-gray-200 bg-gray-100 dark:border-gray-700"
               >
-                {#each ["Nom","Prénoms","Profession","Contacts","Reference", "type","moyens de paiement", "email","Etat paiement", "Montant", "Date","Action"] as title}
+              {#if user.type != "INSTRUCTEUR"}
+                {#each ["Nom","Prénoms","Profession","Contacts","Reference", "type","moyens de paiement", "email","Etat paiement",  "Montant", "Date","Action"] as title}
                   <TableHeadCell class="ps-4 font-normal border border-gray-300"
                   >{title}</TableHeadCell
                   >
                 {/each}
+              {:else}
+                {#each ["Nom","Prénoms","Profession","Contacts","Reference", "type","moyens de paiement", "email","Etat paiement", "Date","Action"] as title}
+                  <TableHeadCell class="ps-4 font-normal border border-gray-300"
+                  >{title}</TableHeadCell
+                  >
+                {/each}
+              {/if}  
               </TableHead>
               <TableBody>
                 {#if loading && paginatedProducts.length === 0}
@@ -312,16 +332,16 @@
                   {#each paginatedProducts as item}
                     <TableBodyRow class="text-base border border-gray-300">
                       <TableBodyCell class="p-4 border border-gray-300"
-                      >{item?.user?.personne?.nom}</TableBodyCell
+                      >{item?.personne?.nom}</TableBodyCell
                       >
                       <TableBodyCell class="p-4 border border-gray-300"
-                      >{item?.user?.personne?.prenoms}</TableBodyCell
+                      >{item?.personne?.prenoms}</TableBodyCell
                       >
                       <TableBodyCell class="p-4 border border-gray-300"
-                      >{item?.user?.personne?.profession}</TableBodyCell
+                      >{item?.personne?.profession.libelle}</TableBodyCell
                       >
                       <TableBodyCell class="p-4 border border-gray-300"
-                      >{item?.user?.personne?.number}</TableBodyCell
+                      >{item?.personne?.number}</TableBodyCell
                       >
                       <TableBodyCell class="p-4 border border-gray-300"
                       >{item?.reference}</TableBodyCell
@@ -334,7 +354,7 @@
                       >
 
                       <TableBodyCell class="p-4 border border-gray-300"
-                      >{item.user.email}</TableBodyCell
+                      >{item.email}</TableBodyCell
                       >
 
                       <TableBodyCell class="p-4 border border-gray-300"
@@ -347,12 +367,14 @@
 
                       </TableBodyCell
                       >
+                      {#if user.type != "INSTRUCTEUR"}
                       <TableBodyCell
                               class="p-4 border border-gray-300 justify-end text-right"
                       >{formatAmount(
                               parseInt(item.montant, 10)
                       )}</TableBodyCell
                       >
+                      {/if}
                       <TableBodyCell class="p-4 border border-gray-300"
                       >{formatDate(item.createdAt)}</TableBodyCell
                       >

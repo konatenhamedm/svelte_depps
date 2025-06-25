@@ -204,9 +204,9 @@ console.log(formData.commune);
     >
         <TextInput
             type="text"
-            label="Code d’identification"
+            label="Numéro d'inscription au registre"
             bind:value={formData.code}
-            placeholder="Entrez votre code de vérification"
+            placeholder="Entrez le numéro d'inscription au registre"
             error={codeExisteError}
             onInput={saveFormStateComponent}
             step={3}
