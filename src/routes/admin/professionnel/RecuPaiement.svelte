@@ -104,7 +104,7 @@ async function getTransactionInfos() {
         receiptData.title = "Reçu de Paiement - " + response.data.type;
         receiptData.amount = response.data.montant;
         receiptData.paymentMethod = response.data.channel;
-        receiptData.profession = response.data.user.personne.profession.libelle;
+        receiptData.profession = response.data.user.personne?.profession?.libelle;
         receiptData.receiptNumber = response.data.reference;
         receiptData.name = response.data.user.typeUser == "PROFESSIONNEL" 
           ? response.data.user.personne.nom + " "+ response.data.user.personne.prenoms 

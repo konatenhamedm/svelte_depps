@@ -108,12 +108,13 @@
 
   $: filteredData = main_data.filter((item) => {
     // Filtre par recherche texte
+   // console.log("ITEMMMMMMMMM =====", item.personne.profession.libelle);
     const textMatch = item.reference.toLowerCase().includes(searchQuery.toLowerCase()) 
       || item.personne?.nom.toLowerCase().includes(searchQuery.toLowerCase())
       || item.personne?.prenoms.toLowerCase().includes(searchQuery.toLowerCase())
       || item.email.toLowerCase().includes(searchQuery.toLowerCase())
       || item.type.toLowerCase().includes(searchQuery.toLowerCase())
-      || item.personne.profession.libelle.toLowerCase().includes(searchQuery.toLowerCase());
+      || item.personne?.profession?.libelle.toLowerCase().includes(searchQuery.toLowerCase());
 
     // Filtre par montant
     let amountMatch = true;
@@ -338,7 +339,7 @@
                       >{item?.personne?.prenoms}</TableBodyCell
                       >
                       <TableBodyCell class="p-4 border border-gray-300"
-                      >{item?.personne?.profession.libelle}</TableBodyCell
+                      >{item?.personne?.profession?.libelle}</TableBodyCell
                       >
                       <TableBodyCell class="p-4 border border-gray-300"
                       >{item?.personne?.number}</TableBodyCell

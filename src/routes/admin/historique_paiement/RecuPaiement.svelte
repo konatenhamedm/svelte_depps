@@ -19,12 +19,12 @@
 
   // Initialize form data with the provided record
   function init(form: HTMLFormElement) {
- 
+   alert("Form initialized with data: " + JSON.stringify(data.type));
   }
 
   let receiptData = {
     logo: 'https://mydepps.pages.dev/_files/logo-depps.png', // URL du logo
-    title: 'Reçu de Paiement - Renouvellement',
+    title: 'Reçu de Paiement - '+ data.type,
     date: '04 novembre 2024 à 16:39:59',
     name: 'Kra Rita',
     paymentMethod: 'OMCIV2',
@@ -33,6 +33,7 @@
     receiptNumber: '1730738267',
     amount: '10000 XOF',
     footerText: 'Ce document ne tient pas lieu d’autorisation d’exercice',
+    profession: 'profession',
   };
 
   function generatePDF() {
@@ -60,16 +61,17 @@
 
     const fields = [
       { label: "Date d'édition:", value: formatDate(data.createdAt) },
-      { label: "Nom complet:", value: data.user.typeUser == "PROFESSIONNEL" 
-          ? data.user.personne.nom + " "+ data.user.personne.prenoms 
-          : data.user.personne.nomEntreprise },
+      { label: "Nom complet:", value: data.typeUser == "PROFESSIONNEL" 
+          ? data.personne?.nom + " "+ data.personne?.prenoms 
+          : data.personne?.nomEntreprise },
       { label: "Mode de paiement:", value: data.channel },
      /*  { label: "Lieu de résidence:", value: receiptData.residence }, */
-      { label: "Numéro de téléphone:", value: data.user.typeUser == "PROFESSIONNEL" 
-          ? data.user.personne.number 
-          : data.user.personne.contactEntreprise },
+      { label: "Numéro de téléphone:", value: data.typeUser == "PROFESSIONNEL" 
+          ? data.personne?.number 
+          : data.personne?.contactEntreprise },
       { label: "Réference paiement:", value: `N° ${data.reference}` },
-      { label: "Paiement:", value: `${data.montant}` }
+      { label: "Paiement:", value: `${data.montant}` },
+      { label: "Profession:", value: `${data.personne?.profession?.libelle}` }
     ];
 
     let yPos = startY;
@@ -106,12 +108,12 @@
         receiptData.amount = response.data.montant;
         receiptData.paymentMethod = response.data.channel;
         receiptData.receiptNumber = response.data.reference;
-        receiptData.name = response.data.user.typeUser == "PROFESSIONNEL" 
-          ? response.data.user.personne.nom + " "+ response.data.user.personne.prenoms 
-          : response.data.user.personne.nomEntreprise;
-        receiptData.phone = response.data.user.typeUser == "PROFESSIONNEL" 
-          ? response.data.user.personne.number 
-          : response.data.user.personne.contactEntreprise;
+        receiptData.name = response.data.typeUser == "PROFESSIONNEL" 
+          ? response.data.personne.nom + " "+ response.data.personne.prenoms 
+          : response.data.personne.nomEntreprise;
+        receiptData.phone = response.data.typeUser == "PROFESSIONNEL" 
+          ? response.data.personne.number 
+          : response.data.personne.contactEntreprise;
         receiptData.date = formatDate(response.data.createdAt);
       } });
     }

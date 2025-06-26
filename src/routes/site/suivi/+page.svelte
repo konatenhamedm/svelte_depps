@@ -257,8 +257,8 @@ function goToPage(page: any) {
                 </div>
                 <div class="col-md-2">
                   <p style="margin-top: 16px;">
-                    {item.personne.nom}
-                    {item.personne.prenoms}
+                   <!--  {item.personne.nom}
+                    {item.personne.prenoms} -->
                   </p>
                 </div>
                 <div class="col-md-3">
