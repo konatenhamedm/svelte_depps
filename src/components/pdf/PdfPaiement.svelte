@@ -6,6 +6,7 @@
   export let title = "";
   export let headers = [];
   export let data = [];
+  export let typeUser = ""; // 'INSTRUCTEUR' | 'PROFESSIONNEL' | 'PRO'
   export let type = "professionnel"; // 'professionnel' | 'etablissement' | 'pro'
 
   function addHeader(doc, logoImage) {
@@ -55,13 +56,15 @@
       currency: 'XOF'
     }).format(montant);
   }
+
+  function formatMontantPerso(montant) {
+  return montant.toLocaleString('fr-FR') + ' FCFA';
+}
   function formatDatePaiement(dateString) {
     const options = { year: 'numeric', month: '2-digit', day: '2-digit' };
     return new Date(dateString).toLocaleDateString('fr-FR', options);
   }
-  function formatMontantPerso(montant) {
-  return montant.toLocaleString('fr-FR') + ' FCFA';
-}
+
   function exportToPDF() {
     const doc = new jsPDF();
 
@@ -71,15 +74,30 @@
       const head = [headers];
 
       const body = data.map((item) => {
+        
         if (type === "paiement") {
+        if (typeUser != "INSTRUCTEUR") {
           return [
             item.reference || "N/A",
             item.type || "N/A",
-            item.user?.email || "N/A",
+            item.email || "N/A",
             getStatus(item.state),
             formatMontantPerso(item.montant),
             formatDatePaiement(item.createdAt)
           ];
+        }else{
+          return [
+            item.reference || "N/A",
+            item.type || "N/A",
+            item.email || "N/A",
+            getStatus(item.state),
+            item.channel || "N/A",
+            formatDatePaiement(item.createdAt)
+          ];
+        }
+          
+          
+         
         } else if (type === "professionnel" || type === "pro") {
           // ... (garder la logique existante)
         } else {

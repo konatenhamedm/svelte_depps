@@ -8,44 +8,41 @@
     TableBodyRow,
     TableHead,
     TableHeadCell,
-    Select
-  } from "flowbite-svelte";
-  import {
-    EditOutline,
-    EyeOutline,
-    TrashBinSolid
-  } from "flowbite-svelte-icons";
-  import Entete from "../../../components/_includes/Entete.svelte";
-  import MessageError from "../../../components/MessageError.svelte";
-  import Pagination from "../../../components/_includes/Pagination.svelte";
+    Select,
+  } from 'flowbite-svelte';
+  import {EditOutline, EyeOutline, TrashBinSolid} from 'flowbite-svelte-icons';
+  import Entete from '../../../components/_includes/Entete.svelte';
+  import MessageError from '../../../components/MessageError.svelte';
+  import Pagination from '../../../components/_includes/Pagination.svelte';
   // Importer le store pageSize
-  import { get } from "svelte/store";
-  import type { professionnel, Transaction, User } from "../../../types";
-  import { apiFetch } from "$lib/api";
-  import { pageSize } from "../../../store"; // Importer le store pageSize
-  import { onMount } from "svelte";
+  import {get} from 'svelte/store';
+  import type {professionnel, Transaction, User} from '../../../types';
+  import {apiFetch} from '$lib/api';
+  import {pageSize} from '../../../store'; // Importer le store pageSize
+  import {onMount} from 'svelte';
 
-  import { getAuthCookie } from "$lib/auth";
-  import Show from "./Show.svelte";
-  import Delete from "./Delete.svelte";
-  import { formatDate } from "$lib/dateUtils";
-  import { formatAmount } from "$lib/formatAmount";
-  import DropdownMenuShow from "$components/DropdownMenuShow.svelte";
-  import DropdownMenu from "$components/DropdownMenu.svelte";
-  import DropdownOnlyShow from "$components/DropdownOnlyShow.svelte";
-  import Pdf from "$components/pdf/Pdf.svelte";
-  import RecuPaiement from "./RecuPaiement.svelte";
+  import {getAuthCookie} from '$lib/auth';
+  import Show from './Show.svelte';
+  import Delete from './Delete.svelte';
+  import {formatDate} from '$lib/dateUtils';
+  import {formatAmount} from '$lib/formatAmount';
+  import DropdownMenuShow from '$components/DropdownMenuShow.svelte';
+  import DropdownMenu from '$components/DropdownMenu.svelte';
+  import DropdownOnlyShow from '$components/DropdownOnlyShow.svelte';
+  import Pdf from '$components/pdf/Pdf.svelte';
+  import RecuPaiement from './RecuPaiement.svelte';
+  import PdfPaiement from '$components/pdf/PdfPaiement.svelte';
 
   export let data; // Les données retournées par `load()`
   let user = data.user;
 
   let main_data: Transaction[] = [];
-  let searchQuery = ""; // Pour la recherche par texte
-  let selectedService: any = ""; // Pour filtrer par service
-  let selectedStatus: any = ""; // Pour filtrer par status
+  let searchQuery = ''; // Pour la recherche par texte
+  let selectedService: any = ''; // Pour filtrer par service
+  let selectedStatus: any = ''; // Pour filtrer par status
   let startDate: any | null = null; // Date de début
   let endDate: any | null = null; // Date de fin
-  let selectedAmount: any = ""; // Pour filtrer par montant
+  let selectedAmount: any = ''; // Pour filtrer par montant
   let currentPage = 1;
   let loading = false;
   let openDelete: boolean = false;
@@ -56,45 +53,43 @@
   let current_data: any = {};
 
   // Options statiques pour le filtre de montant
-  let amountOptions:any  = [];
+  let amountOptions: any = [];
 
   async function fetchData() {
     loading = true; // Active le spinner de chargement
     try {
-      const res = await apiFetch(true, "/paiement/historique");
+      const res = await apiFetch(true, '/paiement/historique');
       console.log(res);
       if (res) {
-        main_data = res.data ;
-        console.log("content main", main_data);
+        main_data = res.data;
+        console.log('content main', main_data);
       } else {
         console.error(
-                "Erreur lors de la récupération des données:",
-                res.statusText
+          'Erreur lors de la récupération des données:',
+          res.statusText
         );
       }
     } catch (error) {
-      console.error("Erreur lors de la récupération des données:", error);
+      console.error('Erreur lors de la récupération des données:', error);
     } finally {
       loading = false; // Désactive le spinner de chargement
     }
   }
   async function fetchMontant() {
-    
     try {
-      const res = await apiFetch(true, "/profession/api/montants");
-      
+      const res = await apiFetch(true, '/profession/api/montants');
+
       if (res) {
-        amountOptions = res.data ;
+        amountOptions = res.data;
       } else {
         console.error(
-                "Erreur lors de la récupération des données:",
-                res.statusText
+          'Erreur lors de la récupération des données:',
+          res.statusText
         );
       }
     } catch (error) {
-      console.error("Erreur lors de la récupération des données:", error);
+      console.error('Erreur lors de la récupération des données:', error);
     } finally {
-      
     }
   }
 
@@ -102,19 +97,23 @@
     await fetchData();
     await fetchMontant();
 
-   // console.log("user", user);
-    
+    // console.log("user", user);
   });
 
   $: filteredData = main_data.filter((item) => {
     // Filtre par recherche texte
-   // console.log("ITEMMMMMMMMM =====", item.personne.profession.libelle);
-    const textMatch = item.reference.toLowerCase().includes(searchQuery.toLowerCase()) 
-      || item.personne?.nom.toLowerCase().includes(searchQuery.toLowerCase())
-      || item.personne?.prenoms.toLowerCase().includes(searchQuery.toLowerCase())
-      || item.email.toLowerCase().includes(searchQuery.toLowerCase())
-      || item.type.toLowerCase().includes(searchQuery.toLowerCase())
-      || item.personne?.profession?.libelle.toLowerCase().includes(searchQuery.toLowerCase());
+    // console.log("ITEMMMMMMMMM =====", item.personne.profession.libelle);
+    const textMatch =
+      item.reference.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      item.personne?.nom.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      item.personne?.prenoms
+        .toLowerCase()
+        .includes(searchQuery.toLowerCase()) ||
+      item.email.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      item.type.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      item.personne?.profession?.libelle
+        .toLowerCase()
+        .includes(searchQuery.toLowerCase());
 
     // Filtre par montant
     let amountMatch = true;
@@ -144,12 +143,12 @@
 
   //$: paginatedProducts = filteredData.slice((currentPage - 1) * get(pageSize), currentPage * get(pageSize));
   $: paginatedProducts =
-          filteredData.length > 0
-                  ? filteredData.slice(
-                          (currentPage - 1) * get(pageSize),
-                          currentPage * get(pageSize)
-                  )
-                  : [];
+    filteredData.length > 0
+      ? filteredData.slice(
+          (currentPage - 1) * get(pageSize),
+          currentPage * get(pageSize)
+        )
+      : [];
 
   $: startRange = currentPage;
   $: endRange = Math.min(currentPage + get(pageSize), totalPages);
@@ -173,11 +172,11 @@
 
   const handleAction = (action: any, item: any) => {
     current_data = item;
-    if (action === "view") {
+    if (action === 'view') {
       openShow = true;
-    } else if (action === "edit") {
+    } else if (action === 'edit') {
       openEdit = true;
-    } else if (action === "delete") {
+    } else if (action === 'delete') {
       openDelete = false;
     }
   };
@@ -190,32 +189,30 @@
   function getBgColor(color: number): string {
     switch (color) {
       case 1:
-        return "bg-success border-success";
+        return 'bg-success border-success';
       case 0:
-        return "bg-danger border-danger";
+        return 'bg-danger border-danger';
       default:
-        return "bg-gray-300";
+        return 'bg-gray-300';
     }
   }
-
 
   function getStatus(status: number): string {
     switch (status) {
       case 1:
-        return "Paiement effectué";
+        return 'Paiement effectué';
       case 0:
-        return "Paiement échoué";
+        return 'Paiement échoué';
       default:
-        return "Inconnu";
+        return 'Inconnu';
     }
   }
-
 </script>
 
 <Entete
-        libelle="Liste des historiques de paiement"
-        parent="Parametres"
-        descr="Liste des historiques de paiement"
+  libelle="Liste des historiques de paiement"
+  parent="Parametres"
+  descr="Liste des historiques de paiement"
 />
 <section class="content">
   <div class="row">
@@ -225,12 +222,31 @@
           <h4 class="box-title text-xl font-medium">
             Liste des historiques de paiement
           </h4>
-          <Pdf
-                  title="Historique_Paiements"
-                  headers={["Reference", "Type", "Email", "Etat", "Montant", "Date"]}
-                  data={filteredData}
-                  type="paiement"
-          />
+
+          {#if user.type != 'INSTRUCTEUR'}
+            <PdfPaiement
+              title="Historique_Paiements"
+              headers={[
+                'Reference',
+                'Type',
+                'Email',
+                'Etat',
+                'Montant',
+                'Date',
+              ]}
+              data={filteredData}
+              type="paiement"
+              typeUser={user.type}
+            />
+          {:else}
+            <PdfPaiement
+              title="Historique_Paiements"
+              headers={['Reference', 'Type', 'Email', 'Etat','moyens de paiement' ,'Date']}
+              data={filteredData}
+              type="paiement"
+              typeUser={user.type}
+            />
+          {/if}
         </div>
         <!-- /.box-header -->
         <div class="box-body">
@@ -238,76 +254,78 @@
             <div class="w-full grid grid-cols-4 gap-4 mb-4">
               <div>
                 <Input
-                        placeholder="Rechercher..."
-                        type="text"
-                        bind:value={searchQuery}
-                        class="form-input font-normal rounded block w-full border-gray-200 text-sm focus:border-gray-300 focus:ring-0 bg-white"
+                  placeholder="Rechercher..."
+                  type="text"
+                  bind:value={searchQuery}
+                  class="form-input font-normal rounded block w-full border-gray-200 text-sm focus:border-gray-300 focus:ring-0 bg-white"
                 />
               </div>
 
-              {#if user.type != "INSTRUCTEUR"}
- <div>
-                <Select bind:value={selectedAmount}>
-                  {#each amountOptions as option}
-                    <option value={option.value}>{option.label}</option>
-                  {/each}
-                </Select>
-              </div>
+              {#if user.type != 'INSTRUCTEUR'}
+                <div>
+                  <Select bind:value={selectedAmount}>
+                    {#each amountOptions as option}
+                      <option value={option.value}>{option.label}</option>
+                    {/each}
+                  </Select>
+                </div>
               {/if}
-             
+
               <div>
                 <Input
-                        type="date"
-                        bind:value={startDate}
-                        class="form-input font-normal rounded block w-full border-gray-200 text-sm focus:border-gray-300 focus:ring-0 bg-white"
-                        placeholder="Date de début"
+                  type="date"
+                  bind:value={startDate}
+                  class="form-input font-normal rounded block w-full border-gray-200 text-sm focus:border-gray-300 focus:ring-0 bg-white"
+                  placeholder="Date de début"
                 />
               </div>
               <div>
                 <Input
-                        type="date"
-                        bind:value={endDate}
-                        class="form-input font-normal rounded block w-full border-gray-200 text-sm focus:border-gray-300 focus:ring-0 bg-white"
-                        placeholder="Date de fin"
+                  type="date"
+                  bind:value={endDate}
+                  class="form-input font-normal rounded block w-full border-gray-200 text-sm focus:border-gray-300 focus:ring-0 bg-white"
+                  placeholder="Date de fin"
                 />
               </div>
             </div>
             <Table class="border border-gray-300">
               <TableHead
-                      class="border-y border-gray-200 bg-gray-100 dark:border-gray-700"
+                class="border-y border-gray-200 bg-gray-100 dark:border-gray-700"
               >
-              {#if user.type != "INSTRUCTEUR"}
-                {#each ["Nom","Prénoms","Profession","Contacts","Reference", "type","moyens de paiement", "email","Etat paiement",  "Montant", "Date","Action"] as title}
-                  <TableHeadCell class="ps-4 font-normal border border-gray-300"
-                  >{title}</TableHeadCell
-                  >
-                {/each}
-              {:else}
-                {#each ["Nom","Prénoms","Profession","Contacts","Reference", "type","moyens de paiement", "email","Etat paiement", "Date","Action"] as title}
-                  <TableHeadCell class="ps-4 font-normal border border-gray-300"
-                  >{title}</TableHeadCell
-                  >
-                {/each}
-              {/if}  
+                {#if user.type != 'INSTRUCTEUR'}
+                  {#each ['Nom', 'Prénoms', 'Profession', 'Contacts', 'Reference', 'type', 'moyens de paiement', 'email', 'Etat paiement', 'Montant', 'Date', 'Action'] as title}
+                    <TableHeadCell
+                      class="ps-4 font-normal border border-gray-300"
+                      >{title}</TableHeadCell
+                    >
+                  {/each}
+                {:else}
+                  {#each ['Nom', 'Prénoms', 'Profession', 'Contacts', 'Reference', 'type', 'moyens de paiement', 'email', 'Etat paiement', 'Date', 'Action'] as title}
+                    <TableHeadCell
+                      class="ps-4 font-normal border border-gray-300"
+                      >{title}</TableHeadCell
+                    >
+                  {/each}
+                {/if}
               </TableHead>
               <TableBody>
                 {#if loading && paginatedProducts.length === 0}
                   <TableBodyRow class="border border-gray-300">
                     <TableBodyCell
-                            colspan={6}
-                            class="text-center items-center p-4 text-gray-500 border border-gray-300"
+                      colspan={6}
+                      class="text-center items-center p-4 text-gray-500 border border-gray-300"
                     >
                       <div
-                              class="flex flex-row gap-2 items-center justify-center"
+                        class="flex flex-row gap-2 items-center justify-center"
                       >
                         <div
-                                class="w-4 h-4 rounded-full bg-blue-600 animate-bounce"
+                          class="w-4 h-4 rounded-full bg-blue-600 animate-bounce"
                         ></div>
                         <div
-                                class="w-4 h-4 rounded-full bg-blue-600 animate-bounce"
+                          class="w-4 h-4 rounded-full bg-blue-600 animate-bounce"
                         ></div>
                         <div
-                                class="w-4 h-4 rounded-full bg-blue-600 animate-bounce"
+                          class="w-4 h-4 rounded-full bg-blue-600 animate-bounce"
                         ></div>
                       </div>
                     </TableBodyCell>
@@ -315,14 +333,14 @@
                 {:else if paginatedProducts.length === 0}
                   <TableBodyRow class="border border-gray-300">
                     <TableBodyCell
-                            colspan={6}
-                            class="text-center items-center p-4 text-gray-500 border border-gray-300"
+                      colspan={6}
+                      class="text-center items-center p-4 text-gray-500 border border-gray-300"
                     >
                       <div class="flex flex-row items-center justify-center">
                         <div class="grid grid-cols-1">
                           <img
-                                  src="/search_notfound.svg"
-                                  alt="Aucun résultat trouvé"
+                            src="/search_notfound.svg"
+                            alt="Aucun résultat trouvé"
                           /><br />
                           <h1 class="text-2xl font-bold">Aucun résultat</h1>
                         </div>
@@ -333,59 +351,54 @@
                   {#each paginatedProducts as item}
                     <TableBodyRow class="text-base border border-gray-300">
                       <TableBodyCell class="p-4 border border-gray-300"
-                      >{item?.personne?.nom}</TableBodyCell
+                        >{item?.personne?.nom}</TableBodyCell
                       >
                       <TableBodyCell class="p-4 border border-gray-300"
-                      >{item?.personne?.prenoms}</TableBodyCell
+                        >{item?.personne?.prenoms}</TableBodyCell
                       >
                       <TableBodyCell class="p-4 border border-gray-300"
-                      >{item?.personne?.profession?.libelle}</TableBodyCell
+                        >{item?.personne?.profession?.libelle}</TableBodyCell
                       >
                       <TableBodyCell class="p-4 border border-gray-300"
-                      >{item?.personne?.number}</TableBodyCell
+                        >{item?.personne?.number}</TableBodyCell
                       >
                       <TableBodyCell class="p-4 border border-gray-300"
-                      >{item?.reference}</TableBodyCell
+                        >{item?.reference}</TableBodyCell
                       >
                       <TableBodyCell class="p-4 border border-gray-300"
-                      >{item.type}</TableBodyCell
+                        >{item.type}</TableBodyCell
                       >
                       <TableBodyCell class="p-4 border border-gray-300"
-                      >{item.channel}</TableBodyCell
+                        >{item.channel}</TableBodyCell
                       >
 
                       <TableBodyCell class="p-4 border border-gray-300"
-                      >{item.email}</TableBodyCell
+                        >{item.email}</TableBodyCell
                       >
 
                       <TableBodyCell class="p-4 border border-gray-300"
-                      ><span
-                              class={`py-[0.1875rem] px-[0.8125rem] text-xs rounded-[1.25rem] text-white w-[77px] leading-[1.5] ${getBgColor(item.state)}`}
-                      >{getStatus(
-                              item.state,
-                      )}</span
-                      >
-
-                      </TableBodyCell
-                      >
-                      {#if user.type != "INSTRUCTEUR"}
-                      <TableBodyCell
-                              class="p-4 border border-gray-300 justify-end text-right"
-                      >{formatAmount(
-                              parseInt(item.montant, 10)
-                      )}</TableBodyCell
-                      >
+                        ><span
+                          class={`py-[0.1875rem] px-[0.8125rem] text-xs rounded-[1.25rem] text-white w-[77px] leading-[1.5] ${getBgColor(item.state)}`}
+                          >{getStatus(item.state)}</span
+                        >
+                      </TableBodyCell>
+                      {#if user.type != 'INSTRUCTEUR'}
+                        <TableBodyCell
+                          class="p-4 border border-gray-300 justify-end text-right"
+                          >{formatAmount(
+                            parseInt(item.montant, 10)
+                          )}</TableBodyCell
+                        >
                       {/if}
                       <TableBodyCell class="p-4 border border-gray-300"
-                      >{formatDate(item.createdAt)}</TableBodyCell
+                        >{formatDate(item.createdAt)}</TableBodyCell
                       >
                       <!--  <TableBodyCell class="p-4 border border-gray-300">{item.sous_menu.libelle}</TableBodyCell>
                                    -->
 
                       <TableBodyCell class="p-2 w-8 border border-gray-300">
-                       
-                           <DropdownOnlyShow {item} onAction={handleAction} />
-                       </TableBodyCell>
+                        <DropdownOnlyShow {item} onAction={handleAction} />
+                      </TableBodyCell>
                     </TableBodyRow>
                   {/each}
                 {/if}
@@ -395,24 +408,24 @@
             <div class="w-full grid grid-cols-4">
               <div class="col-span-3 p-2">
                 <span
-                        class="text-sm font-normal text-gray-500 dark:text-gray-400"
+                  class="text-sm font-normal text-gray-500 dark:text-gray-400"
                 >
                   Affichage
                   <span class="font-semibold text-gray-900 dark:text-white"
-                  >{startRange}-{endRange}</span
+                    >{startRange}-{endRange}</span
                   >
                   sur un total de
                   <span class="font-semibold text-gray-900 dark:text-white"
-                  >{filteredData.length}</span
+                    >{filteredData.length}</span
                   >
                 </span>
               </div>
               <div class="flex p-2 justify-end">
                 {#if totalPages > 1}
                   <Pagination
-                          {currentPage}
-                          {totalPages}
-                          on:changePage={handlePageChange}
+                    {currentPage}
+                    {totalPages}
+                    on:changePage={handlePageChange}
                   />
                 {/if}
               </div>
@@ -428,5 +441,10 @@
 
 <!-- Modales -->
 <Show bind:open={openShow} data={current_data} sizeModal="xl" />
-<RecuPaiement bind:open={openEdit} data={current_data} sizeModal="xl" userUpdateId= {"userUpdateId"}/>
+<RecuPaiement
+  bind:open={openEdit}
+  data={current_data}
+  sizeModal="xl"
+  userUpdateId={'userUpdateId'}
+/>
 <Delete bind:open={openDelete} data={current_data} />
