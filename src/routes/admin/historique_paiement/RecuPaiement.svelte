@@ -8,36 +8,36 @@
   import jsPDF from 'jspdf';
   import { onMount } from "svelte";
 
-  export let open: boolean = false; // modal control
-  let isLoad = false;
-   let pdfUrlAffiche ="";
-
+  export let open: boolean = false;
   export let sizeModal: any = "lg";
   export let userUpdateId: any;
-
   export let data: Record<string, string> = {};
 
-  let titre = "";
+  export let titre :any;
+  let isLoad = false;
+  let pdfUrlAffiche = "";
+  let isLoading = false;
 
-  // Initialize form data with the provided record
   function init(form: HTMLFormElement) {
-   //alert("Form initialized with data: " + JSON.stringify(data.type));
-   titre = data.type;
+   
   }
 
   let receiptData = {
-    logo: 'https://mydepps.pages.dev/_files/logo-depps.png', // URL du logo
-    title: 'Reçu de Paiement - '+ titre,
-    date: '04 novembre 2024 à 16:39:59',
-    name: 'Kra Rita',
-    paymentMethod: 'OMCIV2',
-    residence: 'XX',
-    phone: '0564924282',
-    receiptNumber: '1730738267',
-    amount: '10000 XOF',
+    logo: 'https://mydepps.pages.dev/_files/logo-depps.png',
+    title: '',
+    date: '',
+    name: '',
+    paymentMethod: '',
+    residence: '',
+    phone: '',
+    receiptNumber: '',
+    amount: '',
     footerText: 'Ce document ne tient pas lieu d’autorisation d’exercice',
-    profession: 'profession',
+    profession: '',
   };
+
+  // Mise à jour réactive du titre dès que `titre` change
+  $: receiptData.title = 'Reçu de Paiement - ' + titre;
 
   function generatePDF() {
     const doc = new jsPDF();
@@ -46,32 +46,37 @@
     const imgWidth = 30;
     const imgHeight = 30;
     const pageWidth = 210;
-    const logoX = (pageWidth - imgWidth) / 2; // Position X centrée
+    const logoX = (pageWidth - imgWidth) / 2;
     doc.addImage(receiptData.logo, 'PNG', logoX, 10, imgWidth, imgHeight);
 
-    // Ajouter le titre centré sous le logo
+    // Ajouter le titre
     doc.setFontSize(16);
     doc.setFont('helvetica', 'bold');
     doc.text(receiptData.title, 105, 50, { align: 'center' });
 
-    // Ajouter les informations du reçu
+    // Infos
     doc.setFontSize(12);
     doc.setFont('helvetica', 'bold');
-    
+
     const startX = 10;
     const startY = 60;
     const lineHeight = 10;
 
     const fields = [
       { label: "Date d'édition:", value: formatDate(data.createdAt) },
-      { label: "Nom complet:", value: data.typeUser == "PROFESSIONNEL" 
-          ? data.personne?.nom + " "+ data.personne?.prenoms 
-          : data.personne?.nomEntreprise },
+      {
+        label: "Nom complet:",
+        value: data.typeUser == "PROFESSIONNEL"
+          ? `${data.personne?.nom} ${data.personne?.prenoms}`
+          : data.personne?.nomEntreprise
+      },
       { label: "Mode de paiement:", value: data.channel },
-     /*  { label: "Lieu de résidence:", value: receiptData.residence }, */
-      { label: "Numéro de téléphone:", value: data.typeUser == "PROFESSIONNEL" 
-          ? data.personne?.number 
-          : data.personne?.contactEntreprise },
+      {
+        label: "Numéro de téléphone:",
+        value: data.typeUser == "PROFESSIONNEL"
+          ? data.personne?.number
+          : data.personne?.contactEntreprise
+      },
       { label: "Réference paiement:", value: `N° ${data.reference}` },
       { label: "Paiement:", value: `${data.montant}` },
       { label: "Profession:", value: `${data.personne?.profession?.libelle}` }
@@ -81,62 +86,24 @@
     fields.forEach(({ label, value }) => {
       doc.text(label, startX, yPos);
       doc.setFont('helvetica', 'normal');
-      doc.text(value, startX + 50, yPos);
+      doc.text(value ?? '', startX + 50, yPos);
       doc.setFont('helvetica', 'bold');
-      doc.line(startX, yPos + 2, 200, yPos + 2); // Ligne de séparation
+      doc.line(startX, yPos + 2, 200, yPos + 2);
       yPos += lineHeight;
     });
 
-    // Ajouter le texte en bas du reçu
     doc.setFontSize(10);
     doc.setFont('helvetica', 'italic');
     doc.text(receiptData.footerText, 105, yPos + 10, { align: 'center' });
 
-    // Convertir en URL pour affichage
     const pdfBlob = doc.output('blob');
     pdfUrlAffiche = URL.createObjectURL(pdfBlob);
   }
 
+  $: if (open &&   !isLoading) {
 
-  let isLoading = false;
-
-/* async function getTransactionInfos() {
-  isLoading = true;
-  try {
-
-    if(data.id){
-      await apiFetch(true, "/find/one/transaction/"+data.id).then((response) => {
-      console.log(response);
-      if (response.code === 200) {
-        receiptData.amount = response.data.montant;
-        receiptData.paymentMethod = response.data.channel;
-        receiptData.receiptNumber = response.data.reference;
-        receiptData.name = response.data.typeUser == "PROFESSIONNEL" 
-          ? response.data.personne.nom + " "+ response.data.personne.prenoms 
-          : response.data.personne.nomEntreprise;
-        receiptData.phone = response.data.typeUser == "PROFESSIONNEL" 
-          ? response.data.personne.number 
-          : response.data.personne.contactEntreprise;
-        receiptData.date = formatDate(response.data.createdAt);
-      } });
-    }
-    
-   
-  } catch (error) {
-    console.error("Erreur lors de la récupération des infos de transaction", error);
-  } finally {
-    isLoading = false;
-  }
-} */
-
-$: if (open == true && !isLoading) {
   generatePDF();
 }
-
-  /* onMount(async () => {
-  
-    getTransactionInfos();
-  }); */
 
   function handleModalClose(event: Event) {
     if (isLoad) {
@@ -147,9 +114,7 @@ $: if (open == true && !isLoading) {
 
 <Modal
   bind:open
-  title={Object.keys(data).length
-    ? "Reçu de Paiement"
-    : "Reçu de Paiement"}
+  title="Reçu de Paiement"
   size={sizeModal}
   class="m-4 modale_general"
   on:close={handleModalClose}
@@ -160,31 +125,29 @@ $: if (open == true && !isLoading) {
     integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN"
     crossorigin="anonymous"
   />
+
   <div class="space-y-6 p-0">
     <form action="#" use:init>
-      
       <div class="pdf-viewer">
-    <!--     {#if pdfUrlAffiche}
-          <iframe src={pdfUrlAffiche} title="Aperçu du PDF" width="100%" height="700px" type="application/pdf"></iframe>
-        {/if} -->
-
         {#if isLoading}
-        <p>Chargement en cours...</p>
-      {:else if pdfUrlAffiche}
-        <iframe src={pdfUrlAffiche} title="Aperçu du PDF" width="100%" height="700px" type="application/pdf"></iframe>
-      {/if}
+          <p>Chargement en cours...</p>
+        {:else if pdfUrlAffiche}
+          <iframe src={pdfUrlAffiche} title="Aperçu du PDF" width="100%" height="700px" type="application/pdf"></iframe>
+        {/if}
+      </div>
     </form>
   </div>
 
-  <!-- Modal footer -->
   <div slot="footer" class="w-full">
     <div class="flex justify-end">
-       <Button
-          color="alternative"
-          style="background-color: gray !important; color: white;"
-          on:click={() => (open = false)}
-          type="submit">{"Fermer"} </Button
-        >
+      <Button
+        color="alternative"
+        style="background-color: gray !important; color: white;"
+        on:click={() => (open = false)}
+        type="submit"
+      >
+        Fermer
+      </Button>
     </div>
   </div>
 </Modal>

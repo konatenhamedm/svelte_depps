@@ -446,6 +446,7 @@
   bind:open={openEdit}
   data={current_data}
   sizeModal="xl"
+  titre={current_data.type}
   userUpdateId={'userUpdateId'}
 />
 <Delete bind:open={openDelete} data={current_data} />
