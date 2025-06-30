@@ -50,6 +50,14 @@ export async function handle({ event, resolve }) {
        !user) {
     return redirect(302, "/");
   }
+
+  if(event.url.pathname.startsWith("/site") && user && user.role.includes("ROLE_ADMIN")) {
+    return redirect(302, "/admin");
+  }
+  if(event.url.pathname.startsWith("/admin") && user && user.role.includes("ROLE_MEMBRE")) {
+    return redirect(302, "/site/dossiers");
+  }
+
   if ((event.url.pathname.startsWith("/site/dossiers") ||
    event.url.pathname.startsWith("/site/forum") ||
      event.url.pathname.startsWith("/site/documents") ||
