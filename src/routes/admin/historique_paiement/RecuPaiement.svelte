@@ -17,14 +17,17 @@
 
   export let data: Record<string, string> = {};
 
+  let titre = "";
+
   // Initialize form data with the provided record
   function init(form: HTMLFormElement) {
    //alert("Form initialized with data: " + JSON.stringify(data.type));
+   titre = data.type;
   }
 
   let receiptData = {
     logo: 'https://mydepps.pages.dev/_files/logo-depps.png', // URL du logo
-    title: 'Reçu de Paiement - '+ data.type,
+    title: 'Reçu de Paiement - '+ titre,
     date: '04 novembre 2024 à 16:39:59',
     name: 'Kra Rita',
     paymentMethod: 'OMCIV2',
