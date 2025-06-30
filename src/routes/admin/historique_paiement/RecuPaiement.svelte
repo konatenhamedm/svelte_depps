@@ -19,7 +19,7 @@
 
   // Initialize form data with the provided record
   function init(form: HTMLFormElement) {
-   alert("Form initialized with data: " + JSON.stringify(data.type));
+   //alert("Form initialized with data: " + JSON.stringify(data.type));
   }
 
   let receiptData = {
