@@ -24,6 +24,7 @@ let  info = {
   expire: false,
   finRenouvellement: "",
   montant: "",
+  etatPro: false
 }
 
 async function fetchData(userId: number) {
@@ -54,6 +55,7 @@ onMount(async () => {
         info.expire = result.data.expire;
         info.finRenouvellement = result.data.finRenouvellement;
         info.montant = result.data.montant;
+        info.etatPro = result.data.etatPro;
         console.log("content main_data", info);
 
         
@@ -287,7 +289,7 @@ let isModalOpen = false;
   <section class="hakkimizda-bolumu-anasayfa1 iletisim-form-alani" style="padding-top:120px">
     <div class="container">
 
-      {#if info.expire == true }
+      {#if info.etatPro == true }
 
       <button on:click={()=>{
         goto("/site/renouvellement");

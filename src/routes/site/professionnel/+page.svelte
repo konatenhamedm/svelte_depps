@@ -84,6 +84,8 @@
     quartier: "",
     professionnel: "",
     lieuExercicePro: "",
+    statusPro: "",
+    typeDiplome: "",
     //media informations
 
     photo: "",
@@ -127,6 +129,8 @@
     poleSanitairePro: "",
     diplome: "",
     situationPro: "",
+    statusPro: "",
+    typeDiplome: "",
 
     poleSanitaire: "",
     region: "",
@@ -237,6 +241,8 @@
       errors.ville = formData.ville ? "" : "La ville est requise";
       errors.commune = formData.commune ? "" : "La commune est requise";
       errors.quartier = formData.quartier ? "" : "Le quartier est requis";
+      errors.statusPro = formData.statusPro ? "" : "Le status Pro est requis";
+      errors.typeDiplome = formData.typeDiplome ? "" : "Le type Diplome est requis";
 
       // Vérifie si toutes les valeurs dans errors sont vides (""), donc aucune erreur
       valid =
@@ -768,9 +774,9 @@
 
   let objects = [
     { name: "civilite", url: "/civilite/" },
-    /* { name: "region", url: "/region" },
-    { name: "ville", url: "/ville" },
-    { name: "district", url: "/district" },
+     { name: "statusPro", url: "/statusPro" },
+    { name: "typeDiplome", url: "/typeDiplome" },
+    /*{ name: "district", url: "/district" },
     { name: "commune", url: "/commune" }, */
     { name: "nationate", url: "/pays/" },
     { name: "situationProfessionnelle", url: "/situationProfessionnelle/" },
@@ -782,10 +788,14 @@
     district: District[];
     ville: Civilite[];
     commune: Civilite[]; */
+    statusPro: Pays[];
+    typeDiplome: Pays[];
     nationate: Pays[];
     situationProfessionnelle: Pays[];
   } = {
     civilite: [],
+    statusPro: [],
+    typeDiplome: [],
     nationate: [],
     situationProfessionnelle: [],
     /* ville: [],
