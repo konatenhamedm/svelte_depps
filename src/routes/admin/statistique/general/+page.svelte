@@ -83,7 +83,7 @@
       <div class="mb-4 p-4 bg-gray-100 rounded-lg shadow-sm flex flex-wrap gap-4 items-end">
         <div>
           <InputSelectChart
-          label="Période"
+          label="Périodes"
           bind:selectedId={periode}
           datas={[
             {
@@ -121,7 +121,7 @@
 
         <div>
           <InputSelectChart
-          label="Annee"
+          label="Années"
           bind:selectedId={annee}
           datas={stats.all_annees}
           id="annee"
