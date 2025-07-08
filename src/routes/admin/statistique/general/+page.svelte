@@ -30,7 +30,7 @@
   let main_data: Stats[] = [];
   let stats: any = [];
   let searchQuery = ''; // Pour la recherche par texte
-  let periode = 'null';
+  let periode: string | "null" = 'null';
   let annee: any = "null"; // Valeur par défaut pour l'année
   let currentPage = 1;
   let loading = false;
@@ -84,7 +84,7 @@
         <div>
           <InputSelectChart
           label="Période"
-          bind:selectedId={annee}
+          bind:selectedId={periode}
           datas={[
             {
               'libelle':"Mois",
