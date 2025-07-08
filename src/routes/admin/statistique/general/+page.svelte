@@ -170,14 +170,14 @@
                  -->
     
         <Hist1 data={stats.pays} container="container1" title="Statistique de la répartition des professionnels par pays"/>
-        <Hist2 data={stats.professions} container="container2" title="Statistique de la répartition des professionnels par profession" subtitle="Profession" type="Professionnels"/>
+        <Hist2 data={stats.professions} container="container2" title="Statistique de la répartition des professionnels par profession" subtitle="Professions" type="Professionnels"/>
         <Hist1 data={stats.regions} container="container3" title="Statistique de la répartition des professionnel par region"/>
         <Hist2 data={stats.tranches_age} container="container4" title="Statistique de la répartition des professionnel par tranche d'âge" subtitle="Tranche d'âge" type="Professionnels"/>
 
         <Hist1 data={stats.villes} container="container5" title="Statistique de la répartition des professionnel par ville"/>
         <Hist2 data={stats.annees} container="container6" title="Statistique de la répartition des professionnel par année" subtitle="Années" type="Professionnels"/>
         <Hist2 data={stats.genres} container="container7" title="Statistique de la répartition des professionnel par civilité" subtitle="Civilités" type="Professionnels"/>
-        <Hist2 data={stats.genres} container="container8" title="Statistique de la répartition des professionnel par region" subtitle="Régions" type="Professionnels"/>
+        <Hist2 data={stats.regions} container="container8" title="Statistique de la répartition des professionnel par region" subtitle="Régions" type="Professionnels"/>
         {/if}
         
       </div>
