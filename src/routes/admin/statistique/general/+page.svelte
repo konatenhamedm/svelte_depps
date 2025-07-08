@@ -176,7 +176,8 @@
 
         <Hist1 data={stats.villes} container="container5" title="Statistique de la répartition des professionnel par ville"/>
         <Hist2 data={stats.annees} container="container6" title="Statistique de la répartition des professionnel par année" subtitle="Années" type="Professionnels"/>
-        <Hist2 data={stats.genres} container="container7" title="Statistique de la répartition des professionnel par civilité" subtitle="Civilité" type="Professionnels"/>
+        <Hist2 data={stats.genres} container="container7" title="Statistique de la répartition des professionnel par civilité" subtitle="Civilités" type="Professionnels"/>
+        <Hist2 data={stats.genres} container="container8" title="Statistique de la répartition des professionnel par region" subtitle="Régions" type="Professionnels"/>
         {/if}
         
       </div>
