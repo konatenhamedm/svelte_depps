@@ -30,6 +30,7 @@
   // Liste des objets à charger
   let objects = [
     {name: 'civilite', url: '/civilite'},
+    {name: 'lieuDiplome', url: '/lieuDiplome'},
     {name: 'region', url: '/region'},
     {name: 'ville', url: '/ville'},
     {name: 'district', url: '/district'},
@@ -419,7 +420,7 @@
     />
   </div>
   <div
-    class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-2 gap-6 mt-6"
+    class="grid grid-cols-1 sm:grid-cols-3 md:grid-cols-3 lg:grid-cols-3 gap-6 mt-6"
   >
     <SelectInput
       label="Type de diplôme"
@@ -447,6 +448,21 @@
       )}
       placeholder="Sélectionnez votre status professionnel"
       error={errors.statusPro}
+      onInput={saveFormStateComponent}
+      step={3}
+      bind:formData
+    />
+    <SelectInput
+      label="Lieu obtention du diplôme"
+      bind:value={formData.lieuObtentionDiplome}
+      options={values.lieuDiplome.map(
+        (c: {id: number; libelle: string}) => ({
+          id: String(c.id),
+          libelle: c.libelle,
+        })
+      )}
+      placeholder="Sélectionnez  le lieu obtention diplome"
+      error={errors.lieuObtentionDiplome}
       onInput={saveFormStateComponent}
       step={3}
       bind:formData

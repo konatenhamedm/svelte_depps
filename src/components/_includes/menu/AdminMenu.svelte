@@ -172,6 +172,13 @@
               >
             </li>
             <li>
+              <a href="/admin/lieu_diplome"
+                ><i class="icon-Commit"
+                  ><span class="path1"></span><span class="path2"></span></i
+                >Lieu diplôme</a
+              >
+            </li>
+            <li>
               <a href="/admin/status_pro"
                 ><i class="icon-Commit"
                   ><span class="path1"></span><span class="path2"></span></i

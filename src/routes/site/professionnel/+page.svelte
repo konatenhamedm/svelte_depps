@@ -86,6 +86,7 @@
     lieuExercicePro: "",
     statusPro: "",
     typeDiplome: "",
+    lieuObtentionDiplome: "",
     //media informations
 
     photo: "",
@@ -131,6 +132,7 @@
     situationPro: "",
     statusPro: "",
     typeDiplome: "",
+    lieuObtentionDiplome: "",
 
     poleSanitaire: "",
     region: "",
@@ -243,6 +245,7 @@
       errors.quartier = formData.quartier ? "" : "Le quartier est requis";
       errors.statusPro = formData.statusPro ? "" : "Le status Pro est requis";
       errors.typeDiplome = formData.typeDiplome ? "" : "Le type Diplome est requis";
+      errors.lieuObtentionDiplome = formData.lieuObtentionDiplome ? "" : "Le lieu obtention Diplome est requis";
 
       // Vérifie si toutes les valeurs dans errors sont vides (""), donc aucune erreur
       valid =
@@ -776,6 +779,7 @@
     { name: "civilite", url: "/civilite/" },
      { name: "statusPro", url: "/statusPro" },
     { name: "typeDiplome", url: "/typeDiplome" },
+    { name: "lieuDiplome", url: "/lieuDiplome" },
     /*{ name: "district", url: "/district" },
     { name: "commune", url: "/commune" }, */
     { name: "nationate", url: "/pays/" },
@@ -792,12 +796,14 @@
     typeDiplome: Pays[];
     nationate: Pays[];
     situationProfessionnelle: Pays[];
+    lieuDiplome: Pays[];
   } = {
     civilite: [],
     statusPro: [],
     typeDiplome: [],
     nationate: [],
     situationProfessionnelle: [],
+    lieuDiplome: [],
     /* ville: [],
     region: [],
     district: [],
