@@ -779,7 +779,7 @@
     { name: "civilite", url: "/civilite/" },
      { name: "statusPro", url: "/statusPro" },
     { name: "typeDiplome", url: "/typeDiplome" },
-    { name: "lieuDiplome", url: "/lieuDiplome" },
+    { name: "lieuObtentionDiplome", url: "/lieuDiplome" },
     /*{ name: "district", url: "/district" },
     { name: "commune", url: "/commune" }, */
     { name: "nationate", url: "/pays/" },
@@ -796,14 +796,14 @@
     typeDiplome: Pays[];
     nationate: Pays[];
     situationProfessionnelle: Pays[];
-    lieuDiplome: Pays[];
+    lieuObtentionDiplome: Pays[];
   } = {
     civilite: [],
     statusPro: [],
     typeDiplome: [],
     nationate: [],
     situationProfessionnelle: [],
-    lieuDiplome: [],
+    lieuObtentionDiplome: [],
     /* ville: [],
     region: [],
     district: [],

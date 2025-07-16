@@ -26,17 +26,18 @@
   values.district = [];
   values.ville = [];
   values.commune = [];
+  values.lieuObtentionDiplome = [];
 
   // Liste des objets à charger
   let objects = [
     {name: 'civilite', url: '/civilite'},
-    {name: 'lieuDiplome', url: '/lieuDiplome'},
     {name: 'region', url: '/region'},
     {name: 'ville', url: '/ville'},
     {name: 'district', url: '/district'},
     {name: 'commune', url: '/commune'},
     {name: 'nationate', url: '/pays'},
     {name: 'situationProfessionnelle', url: '/situationProfessionnelle'},
+    {name: 'lieuObtentionDiplome', url: '/lieuDiplome'},
   ];
 
   // Fonction pour charger les données depuis une API
@@ -452,10 +453,11 @@
       step={3}
       bind:formData
     />
+    
     <SelectInput
       label="Lieu obtention du diplôme"
       bind:value={formData.lieuObtentionDiplome}
-      options={values.lieuDiplome.map(
+      options={values.lieuObtentionDiplome.map(
         (c: {id: number; libelle: string}) => ({
           id: String(c.id),
           libelle: c.libelle,
