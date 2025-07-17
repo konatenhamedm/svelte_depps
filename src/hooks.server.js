@@ -68,7 +68,7 @@ export async function handle({ event, resolve }) {
     return redirect(302, "/admin");
   }
 
-  if (event.url.pathname.startsWith("/site/dashboard") && !user) {
+  if (event.url.pathname.startsWith("/site") && !user) {
     return redirect(302, "/");
   }
 

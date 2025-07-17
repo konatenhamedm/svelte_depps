@@ -41,6 +41,7 @@
     "axios": "^1.7.9",
     "cookie": "^1.0.2",
     "date-fns": "^4.1.0",
+    "file-saver": "^2.0.5",
     "flowbite-svelte": "^0.47.4",
     "flowbite-svelte-icons": "^2.0.2",
     "highcharts": "^11.4.8",
@@ -51,6 +52,7 @@
     "pdfmake": "^0.2.18",
     "svelte-fa": "^4.0.3",
     "svelte-google-maps": "^0.2.0",
-    "svelte-icons": "^2.1.0"
+    "svelte-icons": "^2.1.0",
+    "xlsx": "^0.18.5"
   }
 }

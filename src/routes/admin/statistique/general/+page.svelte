@@ -26,6 +26,8 @@
   import SkeletonChart from '$components/_skeletons/SkeletonChart.svelte';
   import InputSelect from '$components/inputs/InputSelect.svelte';
   import InputSelectChart from '$components/inputs/InputSelectChart.svelte';
+  import TableauCroise from '$components/statistiques/TableauCroise.svelte';
+  import Pyramide from '$components/statistiques/Pyramide.svelte';
 
   let main_data: Stats[] = [];
   let stats: any = [];
@@ -178,6 +180,8 @@
         <Hist2 data={stats.annees} container="container6" title="Statistique de la répartition des professionnel par année" subtitle="Années" type="Professionnels"/>
         <Hist2 data={stats.genres} container="container7" title="Statistique de la répartition des professionnel par civilité" subtitle="Civilités" type="Professionnels"/>
         <Hist2 data={stats.regions} container="container8" title="Statistique de la répartition des professionnel par region" subtitle="Régions" type="Professionnels"/>
+       <TableauCroise apiData={stats} />
+       <Pyramide apiData={stats} />
         {/if}
         
       </div>

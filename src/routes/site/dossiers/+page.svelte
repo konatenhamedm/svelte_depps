@@ -37,6 +37,7 @@
     emailPro: "",
     dateDiplome: "",
     lieuDiplome: "",
+    lieuObtentionDiplome: "",
     datePremierDiplome: "",
     diplome: "",
     situationPro: "",
@@ -82,6 +83,7 @@
     emailPro: "",
     dateDiplome: "",
     lieuDiplome: "",
+    lieuObtentionDiplome: "",
     datePremierDiplome: "",
     diplome: "",
     situationPro: "",
@@ -143,6 +145,7 @@
     try {
       const userId = user?.personneId;
       const response = await apiFetch(true, `/professionnel/get/one/${userId}`)
+      
         .then((res) => {
           const apiData = res.data;
 
@@ -155,6 +158,9 @@
               : "",
             civilite: apiData.personne.civilite
               ? String(apiData.personne.civilite.id)
+              : "",
+              lieuObtentionDiplome: apiData.personne.lieuObtentionDiplome
+              ? String(apiData.personne.lieuObtentionDiplome.id)
               : "",
             emailAutre: apiData.personne.email || "",
             numero: apiData.personne.number || "",
@@ -208,9 +214,11 @@
                 : "",
           };
         })
+        
         .finally(() => {
           isLoading = false;
         });
+        console.log(response);
     } catch (error) {
       console.error("Erreur de récupération des données", error);
       isLoading = false;
@@ -283,6 +291,10 @@
     { name: "district", url: "/district" },
     { name: "commune", url: "/commune" },
     { name: "nationate", url: "/pays" },
+    { name: "nationate", url: "/pays" },
+    { name: "statusPro", url: "/statusPro" },
+    { name: "typeDiplome", url: "/typeDiplome" },
+    { name: "lieuObtentionDiplome", url: "/lieuDiplome" },
     { name: "situationProfessionnelle", url: "/situationProfessionnelle" },
   ];
 
@@ -293,10 +305,16 @@
     ville: Civilite[];
     commune: Civilite[];
     nationate: Pays[];
+    lieuObtentionDiplome: Pays[];
+    typeDiplome: Pays[];
+    statusPro: Pays[];
     situationProfessionnelle: Pays[];
   } = {
     civilite: [],
     nationate: [],
+    lieuObtentionDiplome: [],
+    statusPro: [],
+    typeDiplome: [],
     situationProfessionnelle: [],
     ville: [],
     region: [],
@@ -342,12 +360,12 @@
     if (formData.region) {
       await updateDistricts();
     }
-    if (formData.district) {
+    /* if (formData.district) {
       await updateVilles();
     }
     if (formData.ville) {
       await updateCommunes();
-    }
+    } */
   }
 
   const situationsMatrimoniales = [
@@ -372,7 +390,7 @@
     const selectedRegion = values.region.find(
       (region) => region.id === +formData.region,
     );
-    if (selectedRegion) {
+    /* if (selectedRegion) {
       // Charger les districts de la région sélectionnée
       formData.district ? formData.district : "";
       formData.ville ? formData.ville : "";
@@ -381,7 +399,7 @@
       values.district = await fetchDataChange(`/district/${formData.region}`);
       values.ville = [];
       values.commune = [];
-    }
+    } */
   }
 
   // Fonction pour mettre à jour les villes en fonction du district
