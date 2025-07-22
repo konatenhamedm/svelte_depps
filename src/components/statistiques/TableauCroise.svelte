@@ -262,6 +262,9 @@
   <div class="col-span-1 p-1">
     <div class="box">
       <div class="box-header with-border flex justify-between items-center">
+        <h4 class="box-title text-xl font-medium">
+          Répartition des professionnels par  lieu d'obtention du diplôme
+        </h4>
         <div class="export-buttons">
           <button class="btn-csv" on:click={exportToCSV}>
             Exporter en CSV
@@ -280,7 +283,7 @@
               <p>Vérifiez la console pour les erreurs éventuelles</p>
             </div>
           {:else}
-            <div style="width: 100%; height: 400px; overflow: auto;">
+            <div style="width: 100%; height: 390px; overflow: auto;">
               <div class="table-wrapper">
                 <table>
                   <thead>
@@ -405,7 +408,7 @@
     }
   
     button {
-      padding: 8px 16px;
+      padding: 8px 10px; 
       border: none;
       border-radius: 4px;
       cursor: pointer;

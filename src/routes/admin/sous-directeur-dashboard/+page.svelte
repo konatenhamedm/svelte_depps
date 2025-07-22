@@ -4,7 +4,15 @@
   import type {StatsDashboard} from '../../../types';
   import Pdf from '$components/pdf/Pdf.svelte';
   import {getAuthCookie} from '$lib/auth';
-
+  import Pagination from '$components/_includes/Pagination.svelte';
+  import {
+    Table,
+    TableBody,
+    TableBodyCell,
+    TableBodyRow,
+    TableHead,
+    TableHeadCell,
+  } from 'flowbite-svelte';
   // Nouvelle structure pour les stats
   let stats = {
     atttente: 0,
@@ -228,6 +236,22 @@
       );
     }
   }
+
+  let totalPages = 1;
+
+$: totalPages =
+  activeTab === 'professionnel'
+    ? Math.ceil(filteredProfessionnels.length / itemsPerPage)
+    : activeTab === 'etablissement'
+      ? Math.ceil(filteredEtablissements.length / itemsPerPage)
+      : Math.ceil(filteredProfessionnelsAjour.length / itemsPerPage);
+
+function handlePageChange(event: CustomEvent<number>) {
+  currentPage = event.detail;
+}
+
+$: startRange = currentPage;
+$: endRange = Math.min(currentPage + itemsPerPage, totalPages);
 </script>
 
 <div class="p-4">
@@ -459,68 +483,67 @@
           Chargement en cours...
         </div>
       {:else if activeTab === 'professionnel'}
-        <table class="min-w-full divide-y divide-gray-200">
-          <thead class="bg-gray-50">
-            <tr>
-              <th
-                class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase"
-                >Nom</th
+      <Table class="border border-gray-300">
+        <TableHead
+          class="border-y border-gray-200 bg-gray-100 dark:border-gray-700"
+        >
+
+        
+          {#each ['N°', 'Nom', 'Prénoms','Téléphone', 'Email', 'Profession','Statut'] as title}
+            <TableHeadCell class="ps-4 font-normal border border-gray-300"
+              >{title}</TableHeadCell
+            >
+          {/each}
+        </TableHead>
+        <TableBody>
+          {#if filteredProfessionnels.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage).length === 0}
+            <TableBodyRow class="border border-gray-300">
+              <TableBodyCell
+                colspan={6}
+                class="text-center items-center p-4 text-gray-500 border border-gray-300"
               >
-              <th
-                class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase"
-                >Prénoms</th
-              >
-              <th
-                class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase"
-                >Téléphone</th
-              >
-              <th
-                class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase"
-                >Email</th
-              >
-              <th
-                class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase"
-                >Profession</th
-              >
-              <th
-                class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase"
-                >Statut</th
-              >
-            </tr>
-          </thead>
-          <tbody class="bg-white divide-y divide-gray-200">
-            {#each filteredProfessionnels.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage) as item}
-              <tr class="hover:bg-gray-50">
-                <td class="px-4 py-3 whitespace-nowrap text-sm"
-                  >{item.personne?.nom ?? 'N/A'}</td
+                <div class="flex flex-row items-center justify-center">
+                  <div class="grid grid-cols-1">
+                    <img
+                      src="/search_notfound.svg"
+                      alt="Aucun résultat trouvé"
+                    /><br />
+                    <h1 class="text-2xl font-bold">Aucun résultat</h1>
+                  </div>
+                </div>
+              </TableBodyCell>
+            </TableBodyRow>
+          {:else}
+            {#each filteredProfessionnels.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage) as item,key}
+              <TableBodyRow class="text-base border border-gray-300">
+                <TableBodyCell class="p-4 border border-gray-300"
+                  >{key + 1}</TableBodyCell
                 >
-                <td class="px-4 py-3 whitespace-nowrap text-sm"
-                  >{item.personne?.prenoms ?? 'N/A'}</td
+                <TableBodyCell class="p-4 border border-gray-300"
+                  >{item.personne?.nom ?? 'N/A'}</TableBodyCell
                 >
-                <td class="px-4 py-3 whitespace-nowrap text-sm"
-                  >{item.personne?.number ?? 'N/A'}</td
+                <TableBodyCell class="p-4 border border-gray-300"
+                  >{item.personne?.prenoms ?? 'N/A'}</TableBodyCell
                 >
-                <td class="px-4 py-3 whitespace-nowrap text-sm"
-                  >{item.personne?.email ?? 'N/A'}</td
+                <TableBodyCell class="p-4 border border-gray-300"
+                  >{item.personne?.number ?? 'N/A'}</TableBodyCell
                 >
-                <td class="px-4 py-3 whitespace-nowrap text-sm"
-                  >{item.personne?.profession?.libelle ?? 'N/A'}</td
+                <TableBodyCell class="p-4 border border-gray-300"
+                  >{item.personne?.email ?? 'N/A'}</TableBodyCell
                 >
-                <td class="px-4 py-3 whitespace-nowrap text-sm"
-                  >{item.personne?.status ?? 'N/A'}</td
+                <TableBodyCell class="p-4 border border-gray-300"
+                  >{item.personne?.profession?.libelle ??
+                    'N/A'}</TableBodyCell
                 >
-              </tr>
-            {:else}
-              <tr>
-                <td
-                  colspan="6"
-                  class="px-4 py-3 text-center text-sm text-gray-500"
-                  >Aucun professionnel trouvé</td
+                <TableBodyCell class="p-4 border border-gray-300"
+                  >{item.personne?.status ??
+                    'N/A'}</TableBodyCell
                 >
-              </tr>
+              </TableBodyRow>
             {/each}
-          </tbody>
-        </table>
+          {/if}
+        </TableBody>
+      </Table>
       {:else if activeTab === 'etablissement'}
         <table class="min-w-full divide-y divide-gray-200">
           <thead class="bg-gray-50">
@@ -651,16 +674,29 @@
     </div>
 
     {#if (activeTab === 'professionnel' && filteredProfessionnels.length > itemsPerPage) || (activeTab === 'etablissement' && filteredEtablissements.length > itemsPerPage) || (activeTab === 'pro' && filteredProfessionnelsAjour.length > itemsPerPage)}
-      <div class="flex justify-center mt-4">
-        {#each Array(Math.ceil(activeTab === 'professionnel' ? filteredProfessionnels.length / itemsPerPage : activeTab === 'etablissement' ? filteredEtablissements.length / itemsPerPage : filteredProfessionnelsAjour.length / itemsPerPage)) as _, i}
-          <button
-            on:click={() => (currentPage = i + 1)}
-            class={`mx-1 px-3 py-1 text-sm rounded ${currentPage === i + 1 ? 'bg-blue-500 text-white' : 'bg-gray-200 hover:bg-gray-300'}`}
+    <div class="w-full grid grid-cols-4">
+      <div class="col-span-3 p-2">
+        <span class="text-sm font-normal text-gray-500 dark:text-gray-400">
+          Affichage
+          <span class="font-semibold text-gray-900 dark:text-white"
+            >{startRange}-{endRange}</span
           >
-            {i + 1}
-          </button>
-        {/each}
+          sur un total de
+          <span class="font-semibold text-gray-900 dark:text-white"
+            >{totalPages * itemsPerPage}</span
+          >
+        </span>
       </div>
+      <div class="flex p-2 justify-end">
+        {#if totalPages > 1}
+          <Pagination
+            {currentPage}
+            {totalPages}
+            on:changePage={handlePageChange}
+          />
+        {/if}
+      </div>
+    </div>
     {/if}
   </section>
 </div>

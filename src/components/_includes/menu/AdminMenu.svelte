@@ -94,13 +94,13 @@
                 >Genres</a
               >
             </li>
-            <li>
+            <!-- <li>
               <a href="/admin/specialite"
                 ><i class="icon-Commit"
                   ><span class="path1"></span><span class="path2"></span></i
                 >Spécialités</a
               >
-            </li>
+            </li> -->
             <li>
               <a href="/admin/type_profession"
                 ><i class="icon-Commit"
@@ -460,7 +460,7 @@
             <span class="pull-right-container"> </span>
           </a>
         </li>
-        <li class="path1">
+        <!-- <li class="path1">
           <a href="/admin/statistique/genre">
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -479,8 +479,8 @@
             <span>Civilite</span>
             <span class="pull-right-container"> </span>
           </a>
-        </li>
-        <li class="path1">
+        </li> -->
+        <!-- <li class="path1">
           <a href="/admin/statistique/geolocalisation">
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -499,8 +499,8 @@
             <span>Géolocalisation</span>
             <span class="pull-right-container"> </span>
           </a>
-        </li>
-        <li class="path1">
+        </li> -->
+       <!--  <li class="path1">
           <a href="/admin/statistique/specialite">
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -519,7 +519,7 @@
             <span>Spécialité</span>
             <span class="pull-right-container"> </span>
           </a>
-        </li>
+        </li> -->
       </ul>
     </div>
   </div>

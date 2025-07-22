@@ -98,7 +98,7 @@
             <span class="pull-right-container"> </span>
           </a>
         </li>
-        <li class="path1">
+       <!--  <li class="path1">
           <a href="/admin/statistique/genre">
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -157,7 +157,7 @@
             <span>Spécialité</span>
             <span class="pull-right-container"> </span>
           </a>
-        </li>
+        </li> -->
       </ul>
     </div>
   </div>

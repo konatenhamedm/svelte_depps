@@ -34,16 +34,47 @@
   let searchQuery = ''; // Pour la recherche par texte
   let periode: any | "null" = 'null';
   let annee: any = "null"; // Valeur par défaut pour l'année
+  let mois: any = "null"; // Valeur par défaut pour l'année
+  let tranche :any = "null";
   let currentPage = 1;
   let loading = false;
   let current_data: any = {};
+
+  const moisDatas = [
+    { libelle: "Janvier", id: "1" },
+    { libelle: "Février", id: "2" },
+    { libelle: "Mars", id: "3" },
+    { libelle: "Avril", id: "4" },
+    { libelle: "Mai", id: "5" },
+    { libelle: "Juin", id: "6" },
+    { libelle: "Juillet", id: "7" },
+    { libelle: "Août", id: "8" },
+    { libelle: "Septembre", id: "9" },
+    { libelle: "Octobre", id: "10" },
+    { libelle: "Novembre", id: "11" },
+    { libelle: "Décembre", id: "12" }
+  ];
+
+  // Données trimestre
+  const trimestres = [
+    { libelle: "Premier trimestre", id: "1" },
+    { libelle: "Deuxième trimestre", id: "2" },
+    { libelle: "Troisième trimestre", id: "3" },
+    { libelle: "Quatrième trimestre", id: "4" }
+  ];
+
+  // Données semestre
+  const semestres = [
+    { libelle: "Premier semestre", id: "1" },
+    { libelle: "Deuxième semestre", id: "2" }
+  ];
 
   async function fetchData() {
     loading = true; // Active le spinner de chargement
 
    
     try {
-      const res = await apiFetch(true, `/statistique/generale?periode=${periode}&annee=${annee}`);
+      const res = await apiFetch(true, `/statistique/generale?periode=${periode}&annee=${annee}&mois=${mois}&tranche=${tranche}`);
 
       if (res) {
         main_data = res.data.nombre as Stats[];
@@ -83,64 +114,69 @@
     <div class="col-12">
       <!-- Filtres -->
       <div class="mb-4 p-4 bg-gray-100 rounded-lg shadow-sm flex flex-wrap gap-4 items-end">
+
+        <!-- Période -->
         <div>
           <InputSelectChart
-          label="Périodes"
-          bind:selectedId={periode}
-          datas={[
-            {
-              'libelle':"Mois",
-              'id':"mois"
-            },
-            {
-              'libelle':"Trimestre",
-              'id':"trimestre"
-            },
-            {
-              'libelle':"Semestre",
-              'id':"semestre"
-            },
-            {
-              'libelle':"Année",
-              'id':"annee"
-            }
-          ]}
-          id="periode"
-        
-        ></InputSelectChart>
-        <!--   <label class="block text-sm font-medium text-gray-700 mb-1">Période</label>
-          <select
-            bind:value={periode}
-            class="form-select block w-full rounded border-gray-300"
-          >
-            <option value="null">Sélectionner</option>
-            <option value="mois">Mois</option>
-            <option value="trimestre">Trimestre</option>
-            <option value="semestre">Semestre</option>
-            <option value="annee">Année</option>
-          </select> -->
+            label="Périodes"
+            bind:selectedId={periode}
+            datas={[
+              { libelle: "Mois", id: "mois" },
+              { libelle: "Trimestre", id: "trimestre" },
+              { libelle: "Semestre", id: "semestre" },
+              { libelle: "Année", id: "annee" }
+            ]}
+            id="periode"
+          />
         </div>
-
+      
+        <!-- Mois (si période = mois) -->
+        {#if periode === 'mois'}
+          <div>
+            <InputSelectChart
+              label="Mois"
+              bind:selectedId={mois}
+              datas={moisDatas}
+              id="mois"
+            />
+          </div>
+        {/if}
+      
+        <!-- Tranche Trimestre (si période = trimestre) -->
+        {#if periode === 'trimestre'}
+          <div>
+            <InputSelectChart
+              label="Trimestre"
+              bind:selectedId={tranche}
+              datas={trimestres}
+              id="trimestre"
+            />
+          </div>
+        {/if}
+      
+        <!-- Tranche Semestre (si période = semestre) -->
+        {#if periode === 'semestre'}
+          <div>
+            <InputSelectChart
+              label="Semestre"
+              bind:selectedId={tranche}
+              datas={semestres}
+              id="semestre"
+            />
+          </div>
+        {/if}
+      
+        <!-- Année (toujours affichée) -->
         <div>
           <InputSelectChart
-          label="Années"
-          bind:selectedId={annee}
-          datas={stats.all_annees}
-          id="annee"
-        
-        ></InputSelectChart>
-         <!--  <label class="block text-sm font-medium text-gray-700 mb-1">Année</label>
-          <select
-            bind:value={annee}
-            class="form-select block w-full rounded border-gray-300"
-          >
-            <option value="null">Sélectionner</option>
-            {#each stats.all_annees as year}
-              <option value={year.libelle}>{year.libelle}</option>
-            {/each}
-          </select> -->
+            label="Année"
+            bind:selectedId={annee}
+            datas={stats.all_annees}
+            id="annee"
+          />
         </div>
-
+      
+        <!-- Bouton de recherche -->
         <button
           on:click={appliquerFiltres}
           class="ml-auto bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
@@ -158,30 +194,21 @@
        
         {:else}
 
-        <!-- 
-          'pays' => array_reverse($statsPays),
-          'professions' => array_reverse($statsProfession),
-                'villes' => array_reverse($statsVille),
-                'tranches_age' => $statsTrancheAge,
-                'annees' => array_reverse($statsAnnee),
-                'regions' => array_reverse($statsRegions),
-
-                'genres' => array_reverse($statsGenre),
-
-                'all_annees'=>$dataAnnee
-                 -->
+   
     
         <Hist1 data={stats.pays} container="container1" title="Statistique de la répartition des professionnels par pays"/>
         <Hist2 data={stats.professions} container="container2" title="Statistique de la répartition des professionnels par profession" subtitle="Professions" type="Professionnels"/>
-        <Hist1 data={stats.regions} container="container3" title="Statistique de la répartition des professionnel par region"/>
-        <Hist2 data={stats.tranches_age} container="container4" title="Statistique de la répartition des professionnel par tranche d'âge" subtitle="Tranche d'âge" type="Professionnels"/>
-
-        <Hist1 data={stats.villes} container="container5" title="Statistique de la répartition des professionnel par ville"/>
+        <Hist1 data={stats.regions} container="container3" title="Statistique de la répartition des professionnels par région"/>
+        <Hist2 data={stats.regions} container="container8" title="Statistique de la répartition des professionnels par region" subtitle="Régions" type="Professionnels"/>
+        <Hist1 data={stats.villes} container="container5" title="Statistique de la répartition des professionnels par ville"/>
         <Hist2 data={stats.annees} container="container6" title="Statistique de la répartition des professionnel par année" subtitle="Années" type="Professionnels"/>
-        <Hist2 data={stats.genres} container="container7" title="Statistique de la répartition des professionnel par civilité" subtitle="Civilités" type="Professionnels"/>
-        <Hist2 data={stats.regions} container="container8" title="Statistique de la répartition des professionnel par region" subtitle="Régions" type="Professionnels"/>
+       
+       
+        <Pyramide apiData={stats} />
+        <Hist2 data={stats.tranches_age} container="container4" title="Statistique de la répartition des professionnels par tranche d'âge" subtitle="Tranche d'âge" type="Professionnels"/>
+
+        <Hist2 data={stats.genres} container="container7" title="Statistique de la répartition des professionnels par civilité" subtitle="Civilités" type="Professionnels"/>
        <TableauCroise apiData={stats} />
-       <Pyramide apiData={stats} />
         {/if}
         
       </div>

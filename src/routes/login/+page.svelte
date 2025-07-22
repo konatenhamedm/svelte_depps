@@ -40,7 +40,7 @@
   }
 </script>
 
-<div class="px-4 md:px-0">
+<div class="px-4 md:px-0" style="background-image: url(/bg5.jpg);">
   <div class="grid grid-cols-1 m-0">
     <div class="col-12 p-0">
       <div class="login-card login-dark">
@@ -117,7 +117,7 @@
                   </div>
                   <div class="text-end mt-6">
                     <button
-                      class="btn btn-primary btn-block rounded-md text-white w-full"
+                      class="btn btn-primary bg-[#4f9dd9] hover:bg-[#4f9dd9] btn- rounded-md text-white w-full"
                       type="submit"
                     >
                       {#if authenticating}

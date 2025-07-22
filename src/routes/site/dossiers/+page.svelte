@@ -728,7 +728,7 @@
                 {#each ["photo", "cni", "casier", "diplomeFile", "certificat", "cv"] as field}
                   <div class="space-y-2">
                     <label class="block text-3xl font-medium text-black">
-                      {field.toUpperCase()}
+                      {field == "diplomeFile" ? "DIPLOME" :field.toUpperCase()}
                     </label>
 
                     {#if formData[field] && formData[field].url}
