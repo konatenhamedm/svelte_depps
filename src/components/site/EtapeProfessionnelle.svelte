@@ -455,7 +455,7 @@
     />
     
     <SelectInput
-      label="Lieu obtention du diplôme"
+      label="Origine du diplôme"
       bind:value={formData.lieuObtentionDiplome}
       options={values.lieuObtentionDiplome.map(
         (c: {id: number; libelle: string}) => ({
@@ -463,7 +463,7 @@
           libelle: c.libelle,
         })
       )}
-      placeholder="Sélectionnez  le lieu obtention diplome"
+      placeholder="Sélectionnez  l'origine du  diplome"
       error={errors.lieuObtentionDiplome}
       onInput={saveFormStateComponent}
       step={3}
