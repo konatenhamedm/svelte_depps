@@ -330,7 +330,7 @@ async function fetchData() {
                         >{item.email}</TableBodyCell
                       >
                       <TableBodyCell class="p-4 border border-gray-300"
-                        >{ item.personne.profession.libelle}</TableBodyCell
+                        >{item.personne.profession ? item.personne.profession.libelle : ''}</TableBodyCell
                       >
                       {#if activeTab === "valide"}
                         <TableBodyCell class="p-4 border border-gray-300"
