@@ -28,7 +28,7 @@
   let currentPage = 1;
   const itemsPerPage = 10;
   let main_data: null = null;
-  let showAmount = true; // Nouvelle variable pour gérer l'affichage du montant
+  let showAmount = false; // Nouvelle variable pour gérer l'affichage du montant
 
   // Données pour les cartes
   let stats = {
@@ -344,7 +344,29 @@
             {/each}
           </TableHead>
           <TableBody>
-            {#if filteredProfessionnels.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage).length === 0}
+            {#if loading && filteredProfessionnels.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage).length === 0}
+            <TableBodyRow class="border border-gray-300">
+              <TableBodyCell
+                colspan={6}
+                class="text-center items-center p-4 text-gray-500 border border-gray-300"
+              >
+                <div
+                  class="flex flex-row gap-2 items-center justify-center"
+                >
+                  <div
+                    class="w-4 h-4 rounded-full bg-blue-600 animate-bounce"
+                  ></div>
+                  <div
+                    class="w-4 h-4 rounded-full bg-blue-600 animate-bounce"
+                  ></div>
+                  <div
+                    class="w-4 h-4 rounded-full bg-blue-600 animate-bounce"
+                  ></div>
+                </div>
+              </TableBodyCell>
+            </TableBodyRow>
+          {:else if filteredProfessionnels.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage).length === 0}
+          
               <TableBodyRow class="border border-gray-300">
                 <TableBodyCell colspan={6} class="text-center items-center p-4 text-gray-500 border border-gray-300">
                   <div class="flex flex-row items-center justify-center">
