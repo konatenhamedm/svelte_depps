@@ -20,7 +20,8 @@ export async function handle({ event, resolve }) {
         avatar: auth.avatar
       };
       
-      // ✅ Appel API pour vérifier si l'abonnement a expirédd
+      if(!user?.role.includes("ROLE_ADMIN")){
+// ✅ Appel API pour vérifier si l'abonnement a expirédd
       const apiResponse = await fetch(BASE_URL_API + "/paiement/status/renouvellement/" + user?.id, {
         method: "GET",
        /*  headers: {
@@ -37,6 +38,10 @@ export async function handle({ event, resolve }) {
       } else {
         console.error("Erreur API abonnement:", await apiResponse.text());
       }
+      }else{
+        abonnementExpire = false;
+      }
+      
 
     } catch (e) {
       console.error("Erreur parsing ou appel API:", e);
