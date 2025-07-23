@@ -32,6 +32,7 @@
   import Pdf from '$components/pdf/Pdf.svelte';
   import RecuPaiement from './RecuPaiement.svelte';
   import PdfPaiement from '$components/pdf/PdfPaiement.svelte';
+  import CsvExporter from '$components/excel/CsvExporter.svelte';
 
   export let data; // Les données retournées par `load()`
   let user = data.user;
@@ -225,7 +226,9 @@
 
           <!-- {#if user.type != 'INSTRUCTEUR' || user.type != 'SOUS-DIRECTEUR' } -->
           {#if !["INSTRUCTEUR", "SOUS-DIRECTEUR"].includes(user.type) }
-            <PdfPaiement
+            
+          <div class="grid grid-cols-2 gap-2">
+ <PdfPaiement
               title="Historique_Paiements"
               headers={[
                 'Reference',
@@ -239,14 +242,37 @@
               type="paiement"
               typeUser={user.type}
             />
+            <CsvExporter  title="Historique_Paiements"
+            headers={[
+              'Reference',
+              'Type',
+              'Email',
+              'Etat',
+              'Montant',
+              'Date',
+            ]}
+            data={filteredData}
+            type="paiement"
+            typeUser={user.type} />
+          </div>
+         
           {:else}
-            <PdfPaiement
+          <div class="grid grid-cols-2">
+ <PdfPaiement
               title="Historique_Paiements"
               headers={['Reference', 'Type', 'Email', 'Etat','moyens de paiement' ,'Date']}
               data={filteredData}
               type="paiement"
               typeUser={user.type}
             />
+
+            <CsvExporter   title="Historique_Paiements"
+            headers={['Reference', 'Type', 'Email', 'Etat','moyens de paiement' ,'Date']}
+            data={filteredData}
+            type="paiement"
+            typeUser={user.type} />
+          </div>
+           
           {/if}
         </div>
         <!-- /.box-header -->
