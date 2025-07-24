@@ -226,7 +226,7 @@
 
           <!-- {#if user.type != 'INSTRUCTEUR' || user.type != 'SOUS-DIRECTEUR' } -->
           {#if !['INSTRUCTEUR', 'SOUS-DIRECTEUR'].includes(user.type)}
-            <div class="grid grid-cols-2 gap-2">
+            <div class="grid grid-cols-2 gap-4">
               <PdfPaiement
                 title="Historique_Paiements"
                 headers={[
@@ -243,8 +243,9 @@
                 data={filteredData}
                 type="paiement"
                 typeUser={user.type}
-              />
-              <CsvExporter
+              /> 
+              <div class="ml-2">
+                <CsvExporter
                 title="Historique_Paiements"
                 headers={[
                   'Nom et prénoms',
@@ -261,6 +262,7 @@
                 type="paiement"
                 typeUser={user.type}
               />
+              </div>
             </div>
           {:else}
             <div class="grid grid-cols-2">
@@ -279,7 +281,8 @@
                 typeUser={user.type}
               />
 
-              <CsvExporter
+              <div class="ml-2">
+                <CsvExporter
                 title="Historique_Paiements"
                 headers={[
                   'Reference',
@@ -293,6 +296,7 @@
                 type="paiement"
                 typeUser={user.type}
               />
+              </div>
             </div>
           {/if}
         </div>
