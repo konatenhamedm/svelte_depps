@@ -179,7 +179,7 @@
 <div class="p-4">
   <section class="content">
     <!-- Grille des cartes -->
-    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4 mb-6">
+    <div class="grid grid-cols-5 lg:grid-cols-5 gap-4 mb-6">
       <!-- Carte Montant Total modifiée avec l'œil -->
       <div
         class="bg-white rounded-lg shadow p-4 border border-gray-100 flex flex-col"
