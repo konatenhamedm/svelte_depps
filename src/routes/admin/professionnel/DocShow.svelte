@@ -31,7 +31,8 @@
   />
   <div class="space-y-6 p-0">
     <form action="#" use:init>
-      {#if pdfUrl.includes(".pdf")}
+      {#if pdfUrl != null }
+   {#if pdfUrl.includes(".pdf")}
         <div class="pdf-viewer">
           <!-- Afficher le PDF avec un iframe -->
           <iframe
@@ -48,6 +49,9 @@
           <img src={pdfUrl} alt="Image" class="max-w-full max-h-[50rem]" />
         </div>
       {/if}
+    <!--   {:else} -->
+      {/if}
+   
     </form>
   </div>
 

@@ -1,4 +1,3 @@
-<!-- PdfExporter.svelte -->
 <script>
   import jsPDF from 'jspdf';
   import autoTable from 'jspdf-autotable';
@@ -13,29 +12,18 @@
     doc.addImage(logoImage, 'PNG', 10, 6, 15, 15);
     doc.setFontSize(12);
     doc.setFont('helvetica', 'bold');
-    doc.text('VOTRE ENTREPRISE', 105, 15, null, null, 'center');
+    doc.text('VOTRE ENTREPRISE', 148, 15, null, null, 'center');
     doc.setFontSize(10);
-    doc.text('Adresse, Téléphone', 105, 20, null, null, 'center');
-    doc.line(10, 25, 200, 25);
-    doc.text("République de COTE D'IVOIRE", 200, 15, null, null, 'right');
-    doc.text(
-      `Date : ${new Date().toLocaleDateString()}`,
-      200,
-      20,
-      null,
-      null,
-      'right'
-    );
-  }
-
-  function getStatus(status) {
-    return status === 1 ? 'Paiement effectué' : 'Paiement échoué';
+    doc.text('Adresse, Téléphone', 148, 20, null, null, 'center');
+    doc.line(10, 25, 280, 25);
+    doc.text("République de COTE D'IVOIRE", 280, 15, null, null, 'right');
+    doc.text(`Date : ${new Date().toLocaleDateString()}`, 280, 20, null, null, 'right');
   }
 
   function addFooter(doc, pageNumber) {
     doc.setFontSize(8);
-    doc.line(10, 280, 200, 280);
-    doc.text(`Page ${pageNumber}`, 105, 290, null, null, 'center');
+    doc.line(10, 190, 280, 190);
+    doc.text(`Page ${pageNumber}`, 148, 200, null, null, 'center');
   }
 
   function getImageFromLocalPath(path, callback) {
@@ -50,23 +38,29 @@
       callback(canvas.toDataURL('image/png'));
     };
   }
-  function formatMontant(montant) {
-    return new Intl.NumberFormat('fr-FR', {
-      style: 'currency',
-      currency: 'XOF',
-    }).format(montant);
+
+  function getStatus(status) {
+    switch (status) {
+      case 1:
+        return 'Paiement effectué';
+      case 0:
+        return 'Paiement échoué';
+      default:
+        return 'Inconnu';
+    }
   }
 
   function formatMontantPerso(montant) {
     return montant.toLocaleString('fr-FR') + ' FCFA';
   }
+
   function formatDatePaiement(dateString) {
-    const options = {year: 'numeric', month: '2-digit', day: '2-digit'};
+    const options = { year: 'numeric', month: '2-digit', day: '2-digit' };
     return new Date(dateString).toLocaleDateString('fr-FR', options);
   }
 
   function exportToPDF() {
-    const doc = new jsPDF();
+    const doc = new jsPDF({ orientation: 'landscape', unit: 'mm', format: 'a4' });
 
     getImageFromLocalPath('/_files/depps.png', (logoImage) => {
       addHeader(doc, logoImage);
@@ -75,53 +69,42 @@
 
       const body = data.map((item) => {
         if (type === 'paiement') {
-          if (!["INSTRUCTEUR", "SOUS-DIRECTEUR"].includes(typeUser)) {
-            return [
-              item.reference || 'N/A',
-              item.type || 'N/A',
-              item.email || 'N/A',
-              getStatus(item.state),
-              formatMontantPerso(item.montant),
-              formatDatePaiement(item.createdAt),
-            ];
-          } else {
-            return [
-              item.reference || 'N/A',
-              item.type || 'N/A',
-              item.email || 'N/A',
-              getStatus(item.state),
-              item.channel || 'N/A',
-              formatDatePaiement(item.createdAt),
-            ];
-          }
-        } else if (type === 'professionnel' || type === 'pro') {
-          // ... (garder la logique existante)
-        } else {
-          // ... (garder la logique existante)
+          return [
+            item.personne?.nom || 'N/A',
+            item.personne?.number || 'N/A',
+            item.personne?.profession?.libelle || 'N/A',
+            item.reference || 'N/A',
+            item.type || 'N/A',
+            item.email || 'N/A',
+            getStatus(item.state),
+            formatMontantPerso(item.montant),
+            formatDatePaiement(item.createdAt),
+          ];
         }
+        return [];
       });
 
       autoTable(doc, {
         head: head,
         body: body,
         startY: 35,
-        tableWidth: 'auto',
         styles: {
-          fontSize: 8,
-          cellPadding: 2,
+          fontSize: 7,
+          cellPadding: 1,
           overflow: 'linebreak',
         },
-        columnStyles:
-          type === 'paiement'
-            ? {
-                0: {cellWidth: 30},
-                1: {cellWidth: 25},
-                2: {cellWidth: 40},
-                3: {cellWidth: 30},
-                4: {cellWidth: 25},
-                5: {cellWidth: 25},
-              }
-            : undefined,
+        columnStyles: {
+          0: { cellWidth: 30 },
+          1: { cellWidth: 25 },
+          2: { cellWidth: 35 },
+          3: { cellWidth: 30 },
+          4: { cellWidth: 25 },
+          5: { cellWidth: 35 },
+          6: { cellWidth: 30 },
+          7: { cellWidth: 30 },
+          8: { cellWidth: 25 },
+        },
+        horizontalPageBreak: true,
       });
 
       addFooter(doc, 1);
@@ -130,6 +113,7 @@
   }
 </script>
 
+<!-- Bouton -->
 <button
   on:click={exportToPDF}
   class="flex items-center px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 transition-colors"

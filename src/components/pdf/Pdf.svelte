@@ -70,7 +70,7 @@
          
           return [
             item.personne.nom || "N/A",
-            item.personne.prenom || "N/A",
+            item.personne.prenoms || "N/A",
             item.email || "N/A",
             item.personne.number || "N/A",
             item.personne.profession ? item.personne.profession.libelle : "N/A",
@@ -79,7 +79,7 @@
         } else if (type === "professionnel" || type === "pro") {
           return [
             item.personne.nom || "N/A",
-            item.personne.prenom || "N/A",
+            item.personne.prenoms || "N/A",
             item.email || "N/A",
             item.personne.number || "N/A",
             item.personne.profession ? item.personne.profession.libelle : "N/A",

@@ -267,35 +267,41 @@
           {:else}
             <div class="grid grid-cols-2">
               <PdfPaiement
-                title="Historique_Paiements"
-                headers={[
-                  'Reference',
-                  'Type',
-                  'Email',
-                  'Etat',
-                  'moyens de paiement',
-                  'Date',
-                ]}
-                data={filteredData}
-                type="paiement"
-                typeUser={user.type}
-              />
-
-              <div class="ml-2">
-                <CsvExporter
-                title="Historique_Paiements"
-                headers={[
-                  'Reference',
-                  'Type',
-                  'Email',
-                  'Etat',
-                  'moyens de paiement',
-                  'Date',
-                ]}
-                data={filteredData}
-                type="paiement"
-                typeUser={user.type}
-              />
+              title="Historique_Paiements"
+              headers={[
+                'Nom et Prénoms',
+                'Contact',
+                'Profession',
+                'Reference',
+                'Type',
+                'Email',
+                'Etat',
+                'Montant',
+                'Date',
+              ]}
+              data={filteredData}
+              type="paiement"
+              typeUser={user.type}
+            /> 
+            <div class="ml-2">
+              <CsvExporter
+              title="Historique_Paiements"
+              headers={[
+                'Nom et prénoms',
+                'Contact',
+                'Profession',
+                'Reference',
+                'Type',
+                'Email',
+                'Etat',
+                'Montant',
+                'Date',
+              ]}
+              data={filteredData}
+              type="paiement"
+              typeUser={user.type}
+            />
+           
               </div>
             </div>
           {/if}

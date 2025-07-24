@@ -9,8 +9,15 @@
 
   let dataP: any;
 
-  function getStatus(status: any) {
-    return status === 1 ? 'Paiement effectué' : 'Paiement échoué';
+  function getStatus(status:any) {
+    switch (status) {
+      case 1:
+        return 'Paiement effectué';
+      case 0:
+        return 'Paiement échoué';
+      default:
+        return 'Paiement effectué';
+    }
   }
 
   function formatMontantPerso(montant: any) {
