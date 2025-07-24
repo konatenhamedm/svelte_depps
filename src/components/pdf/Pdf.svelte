@@ -49,12 +49,7 @@
       callback(canvas.toDataURL("image/png"));
     };
   }
-  function formatMontant(montant) {
-    return new Intl.NumberFormat('fr-FR', {
-      style: 'currency',
-      currency: 'XOF'
-    }).format(montant);
-  }
+ 
   function formatDatePaiement(dateString) {
     const options = { year: 'numeric', month: '2-digit', day: '2-digit' };
     return new Date(dateString).toLocaleDateString('fr-FR', options);
@@ -72,16 +67,24 @@
 
       const body = data.map((item) => {
         if (type === "paiement") {
+         
           return [
-            item.reference || "N/A",
-            item.type || "N/A",
-            item.user?.email || "N/A",
-            getStatus(item.state),
-            formatMontantPerso(item.montant),
-            formatDatePaiement(item.createdAt)
+            item.personne.nom || "N/A",
+            item.personne.prenom || "N/A",
+            item.email || "N/A",
+            item.personne.number || "N/A",
+            item.personne.profession ? item.personne.profession.libelle : "N/A",
+           
           ];
         } else if (type === "professionnel" || type === "pro") {
-          // ... (garder la logique existante)
+          return [
+            item.personne.nom || "N/A",
+            item.personne.prenom || "N/A",
+            item.email || "N/A",
+            item.personne.number || "N/A",
+            item.personne.profession ? item.personne.profession.libelle : "N/A",
+           
+          ];
         } else {
           // ... (garder la logique existante)
         }

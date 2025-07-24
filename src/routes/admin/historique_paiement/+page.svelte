@@ -225,54 +225,75 @@
           </h4>
 
           <!-- {#if user.type != 'INSTRUCTEUR' || user.type != 'SOUS-DIRECTEUR' } -->
-          {#if !["INSTRUCTEUR", "SOUS-DIRECTEUR"].includes(user.type) }
-            
-          <div class="grid grid-cols-2 gap-2">
- <PdfPaiement
-              title="Historique_Paiements"
-              headers={[
-                'Reference',
-                'Type',
-                'Email',
-                'Etat',
-                'Montant',
-                'Date',
-              ]}
-              data={filteredData}
-              type="paiement"
-              typeUser={user.type}
-            />
-            <CsvExporter  title="Historique_Paiements"
-            headers={[
-              'Reference',
-              'Type',
-              'Email',
-              'Etat',
-              'Montant',
-              'Date',
-            ]}
-            data={filteredData}
-            type="paiement"
-            typeUser={user.type} />
-          </div>
-         
+          {#if !['INSTRUCTEUR', 'SOUS-DIRECTEUR'].includes(user.type)}
+            <div class="grid grid-cols-2 gap-2">
+              <PdfPaiement
+                title="Historique_Paiements"
+                headers={[
+                  'Nom et Prénoms',
+                  'Contact',
+                  'Profession',
+                  'Reference',
+                  'Type',
+                  'Email',
+                  'Etat',
+                  'Montant',
+                  'Date',
+                ]}
+                data={filteredData}
+                type="paiement"
+                typeUser={user.type}
+              />
+              <CsvExporter
+                title="Historique_Paiements"
+                headers={[
+                  'Nom et prénoms',
+                  'Contact',
+                  'Profession',
+                  'Reference',
+                  'Type',
+                  'Email',
+                  'Etat',
+                  'Montant',
+                  'Date',
+                ]}
+                data={filteredData}
+                type="paiement"
+                typeUser={user.type}
+              />
+            </div>
           {:else}
-          <div class="grid grid-cols-2">
- <PdfPaiement
-              title="Historique_Paiements"
-              headers={['Reference', 'Type', 'Email', 'Etat','moyens de paiement' ,'Date']}
-              data={filteredData}
-              type="paiement"
-              typeUser={user.type}
-            />
+            <div class="grid grid-cols-2">
+              <PdfPaiement
+                title="Historique_Paiements"
+                headers={[
+                  'Reference',
+                  'Type',
+                  'Email',
+                  'Etat',
+                  'moyens de paiement',
+                  'Date',
+                ]}
+                data={filteredData}
+                type="paiement"
+                typeUser={user.type}
+              />
 
-            <CsvExporter   title="Historique_Paiements"
-            headers={['Reference', 'Type', 'Email', 'Etat','moyens de paiement' ,'Date']}
-            data={filteredData}
-            type="paiement"
-            typeUser={user.type} />
-          </div>
-           
+              <CsvExporter
+                title="Historique_Paiements"
+                headers={[
+                  'Reference',
+                  'Type',
+                  'Email',
+                  'Etat',
+                  'moyens de paiement',
+                  'Date',
+                ]}
+                data={filteredData}
+                type="paiement"
+                typeUser={user.type}
+              />
+            </div>
           {/if}
         </div>
         <!-- /.box-header -->
@@ -288,7 +309,7 @@
                 />
               </div>
 
-              {#if !["INSTRUCTEUR", "SOUS-DIRECTEUR"].includes(user.type) }
+              {#if !['INSTRUCTEUR', 'SOUS-DIRECTEUR'].includes(user.type)}
                 <div>
                   <Select bind:value={selectedAmount}>
                     {#each amountOptions as option}
@@ -319,7 +340,7 @@
               <TableHead
                 class="border-y border-gray-200 bg-gray-100 dark:border-gray-700"
               >
-              {#if !["INSTRUCTEUR", "SOUS-DIRECTEUR"].includes(user.type) }
+                {#if !['INSTRUCTEUR', 'SOUS-DIRECTEUR'].includes(user.type)}
                   {#each ['Nom', 'Prénoms', 'Profession', 'Contacts', 'Reference', 'type', 'moyens de paiement', 'email', 'Etat paiement', 'Montant', 'Date', 'Action'] as title}
                     <TableHeadCell
                       class="ps-4 font-normal border border-gray-300"
@@ -409,7 +430,7 @@
                           >{getStatus(item.state)}</span
                         >
                       </TableBodyCell>
-                      {#if !["INSTRUCTEUR", "SOUS-DIRECTEUR"].includes(user.type) }
+                      {#if !['INSTRUCTEUR', 'SOUS-DIRECTEUR'].includes(user.type)}
                         <TableBodyCell
                           class="p-4 border border-gray-300 justify-end text-right"
                           >{formatAmount(

@@ -35,6 +35,9 @@
                 'Date', */
     if (type === 'paiement') {
       dataP = data.map((item: any) => ({
+        nom: item.personne.nom + ' ' +item.personne.prenoms,
+        contact:item.personne.number ,
+        profession: item.personne.profession ? item.personne.profession.libelle : '',
         reference: item.reference,
         email: item.email,
         type: item.type,
@@ -59,6 +62,9 @@
       if (type === 'paiement') {
         if (!['INSTRUCTEUR', 'SOUS-DIRECTEUR'].includes(typeUser)) {
           rows.push([
+            item.nom || 'N/A',
+            item.contact || 'N/A',
+            item.profession || 'N/A',
             item.reference || 'N/A',
             item.type || 'N/A',
             item.email || 'N/A',
@@ -68,6 +74,9 @@
           ]);
         } else {
           rows.push([
+            item.nom || 'N/A',
+            item.contact || 'N/A',
+            item.profession || 'N/A',
             item.reference || 'N/A',
             item.type || 'N/A',
             item.email || 'N/A',

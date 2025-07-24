@@ -13,6 +13,7 @@
     TableHead,
     TableHeadCell,
   } from 'flowbite-svelte';
+  import CsvExporter from '$components/excel/CsvExporter.svelte';
   // Nouvelle structure pour les stats
   let stats = {
     atttente: 0,
@@ -434,28 +435,62 @@ $: endRange = Math.min(currentPage + itemsPerPage, totalPages);
           </div>
         </div>
 
-        <Pdf
-          title={activeTab === 'professionnel'
-            ? selectedProfession
-              ? `Liste des professionnels - ${professions.find((p) => p.id === selectedProfession)?.libelle || ''}`
-              : 'Liste des professionnels'
-            : activeTab === 'etablissement'
+        <div class="grid grid-cols-2 gap-2">
+          <Pdf
+            title={activeTab === 'professionnel'
               ? selectedProfession
-                ? `Liste des établissements - ${professions.find((p) => p.id === selectedProfession)?.libelle || ''}`
-                : 'Liste des établissements'
-              : selectedProfession
-                ? `Liste des professionnels à jour - ${professions.find((p) => p.id === selectedProfession)?.libelle || ''}`
-                : 'Liste des professionnels à jour'}
-          headers={activeTab === 'professionnel' || activeTab === 'pro'
-            ? ['Nom', 'Prénoms', 'Téléphone', 'Email', 'Profession', 'Statut']
-            : ['Nom', 'Adresse', 'Téléphone', 'Email', 'Profession', 'Statut']}
-          data={activeTab === 'professionnel'
-            ? filteredProfessionnels
-            : activeTab === 'etablissement'
-              ? filteredEtablissements
-              : filteredProfessionnelsAjour}
-          type={activeTab}
-        />
+                ? `Liste des professionnels - ${professions.find((p) => p.id === selectedProfession)?.libelle || ''}`
+                : 'Liste des professionnels'
+              : activeTab === 'etablissement'
+                ? selectedProfession
+                  ? `Liste des établissements - ${professions.find((p) => p.id === selectedProfession)?.libelle || ''}`
+                  : 'Liste des établissements'
+                : selectedProfession
+                  ? `Liste des professionnels à jour - ${professions.find((p) => p.id === selectedProfession)?.libelle || ''}`
+                  : 'Liste des professionnels à jour'}
+            headers={activeTab === 'professionnel' || activeTab === 'pro'
+              ? ['Nom', 'Prénoms', 'Téléphone', 'Email', 'Profession']
+              : ['Nom', 'Adresse', 'Téléphone', 'Email', 'Profession']}
+            data={activeTab === 'professionnel'
+              ? filteredProfessionnels
+              : activeTab === 'etablissement'
+                ? filteredEtablissements
+                : filteredProfessionnelsAjour}
+            type={activeTab}
+          />
+
+          
+
+          <CsvExporter
+            title={activeTab === 'professionnel'
+              ? selectedProfession
+                ? `Liste des professionnels - ${professions.find((p) => p.id === selectedProfession)?.libelle || ''}`
+                : 'Liste des professionnels'
+              : activeTab === 'etablissement'
+                ? selectedProfession
+                  ? `Liste des établissements - ${professions.find((p) => p.id === selectedProfession)?.libelle || ''}`
+                  : 'Liste des établissements'
+                : selectedProfession
+                  ? `Liste des professionnels à jour - ${professions.find((p) => p.id === selectedProfession)?.libelle || ''}`
+                  : 'Liste des professionnels à jour'}
+            headers={activeTab === 'professionnel' || activeTab === 'pro'
+              ? [
+                  'Nom',
+                  'Prénoms',
+                  'Email',
+                  'Téléphone',
+                  'Profession'
+                ]
+              : ['Nom', 'Adresse', 'Téléphone', 'Email', 'Profession']}
+            data={activeTab === 'professionnel'
+              ? filteredProfessionnels
+              : activeTab === 'etablissement'
+                ? filteredEtablissements
+                : filteredProfessionnelsAjour}
+            typeUser={activeTab}
+            type = 'professionnel'
+          />
+        </div>
       </div>
 
       {#if loading}
