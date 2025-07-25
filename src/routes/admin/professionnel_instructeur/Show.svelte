@@ -131,8 +131,8 @@
     cni = data.personne.cni || "";
     CVpath = data.personne.cv.path || "";
     CValt = data.personne.cv.alt || "";
-    Photopath = photo ? data.personne.photo.path || "";
-    Photoalt = photo ? data.personne.photo.alt || "";
+    Photopath = photo ? data.personne.photo.path : "";
+    Photoalt = photo ? data.personne.photo.alt : "";
     diplomeFilePath = data.personne.diplomeFile ? data.personne.diplomeFile.path : "";
     diplomeFileAlt = data.personne.diplomeFile ? data.personne.diplomeFile.alt : "";
     cniPath = cni ? data.personne.cni.path : "";
