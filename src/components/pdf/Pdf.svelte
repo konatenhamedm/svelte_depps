@@ -8,23 +8,18 @@
   export let data = [];
   export let type = "professionnel"; // 'professionnel' | 'etablissement' | 'pro'
 
+  
   function addHeader(doc, logoImage) {
-    doc.addImage(logoImage, "PNG", 10, 6, 15, 15);
+    
+    doc.addImage(logoImage, 'PNG', 10, 6, 20, 14);
     doc.setFontSize(12);
-    doc.setFont("helvetica", "bold");
-    doc.text("VOTRE ENTREPRISE", 105, 15, null, null, "center");
+    doc.setFont('helvetica', 'bold');
+    doc.text('VOTRE ENTREPRISE', 148, 15, null, null, 'center');
     doc.setFontSize(10);
-    doc.text("Adresse, Téléphone", 105, 20, null, null, "center");
-    doc.line(10, 25, 200, 25);
-    doc.text("République de COTE D'IVOIRE", 200, 15, null, null, "right");
-    doc.text(
-      `Date : ${new Date().toLocaleDateString()}`,
-      200,
-      20,
-      null,
-      null,
-      "right"
-    );
+    doc.text('Adresse, Téléphone', 148, 20, null, null, 'center');
+    doc.line(10, 25, 280, 25);
+    doc.text("République de COTE D'IVOIRE", 280, 15, null, null, 'right');
+    doc.text(`Date : ${new Date().toLocaleDateString()}`, 280, 20, null, null, 'right');
   }
 
   function getStatus(status) {

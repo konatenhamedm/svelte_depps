@@ -9,7 +9,8 @@
   export let type = 'professionnel'; // 'professionnel' | 'etablissement' | 'pro'
 
   function addHeader(doc, logoImage) {
-    doc.addImage(logoImage, 'PNG', 10, 6, 15, 15);
+    
+    doc.addImage(logoImage, 'PNG', 10, 6, 20, 14);
     doc.setFontSize(12);
     doc.setFont('helvetica', 'bold');
     doc.text('VOTRE ENTREPRISE', 148, 15, null, null, 'center');
@@ -70,7 +71,7 @@
       const body = data.map((item) => {
         if (type === 'paiement') {
           return [
-            item.personne?.nom || 'N/A',
+            item.personne?.nom + " " + item.personne?.nom  || 'N/A',
             item.personne?.number || 'N/A',
             item.personne?.profession?.libelle || 'N/A',
             item.reference || 'N/A',
