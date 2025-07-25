@@ -8,7 +8,7 @@
   export let data = [];
   export let type = "professionnel"; // 'professionnel' | 'etablissement' | 'pro'
 
-  
+
   function addHeader(doc, logoImage) {
     
     doc.addImage(logoImage, 'PNG', 10, 6, 20, 14);
@@ -25,7 +25,7 @@
   function getStatus(status) {
     return status === 1 ? "Paiement effectué" : "Paiement échoué";
   }
-
+//dddd
   function addFooter(doc, pageNumber) {
     doc.setFontSize(8);
     doc.line(10, 280, 200, 280);
