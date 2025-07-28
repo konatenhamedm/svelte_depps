@@ -33,7 +33,7 @@
       </div>
       <div class="phone">
         <a href="tel:123456789"
-          ><span class="numberp"> (225) 27 20 32 46 32 </span></a
+          ><span class="numberp"><!--  (225) 27 20 32 46 32  --></span></a
         >
       </div>
       <div class="main-menu">
