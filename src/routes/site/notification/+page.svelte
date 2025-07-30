@@ -10,9 +10,48 @@
     let notificationsnotRead = [];
     let isLoading = true;
 
+    let currentPage = 1;
+    const itemsPerPage = 3;
+
     let searchQuery = "";
     let totalNotifications = 0;
     let totalNotificationsNoRead = 0;
+
+    $: paginatedalertes = notifications.slice(
+        (currentPage - 1) * itemsPerPage,
+        currentPage * itemsPerPage
+    );
+
+    // Calcul du nombre total de pages
+    export let totalPages = 10;
+
+    // Calcul du nombre total de pages
+    $: totalPages = Math.ceil(notifications.length / itemsPerPage);
+
+    // Fonction pour changer de page
+    function goToPage(page: any) {
+        if (page >= 1 && page <= totalPages) {
+            currentPage = page;
+        }
+    }
+
+
+    function getPageNumbers() {
+        let pages = [];
+        if (totalPages <= 7) {
+            // Affiche toutes les pages si <= 7 pages
+            for (let i = 1; i <= totalPages; i++) {
+                pages.push(i);
+            }
+        } else {
+            if (currentPage > 3) pages.push(1, '...');
+            for (let i = Math.max(1, currentPage - 2); i <= Math.min(totalPages, currentPage + 2); i++) {
+                pages.push(i);
+            }
+            if (currentPage < totalPages - 2) pages.push('...', totalPages);
+        }
+        return pages;
+    }
 
     export let data;
     let user = data?.user;
@@ -118,90 +157,219 @@
 <Header/>
 <Slide/>
 
-<div class="file-ariane flex items-center space-x-2 text-sm text-gray-600 mb-4">
-    <button on:click={navigateToDashboard} class="flex items-center hover:text-blue-600">
+<div
+    class="file-ariane flex items-center space-x-2 text-sm text-gray-600 mb-8"
+  >
+    <div class="flex items-center hover:text-blue-600 entete">
+      <button
+      on:click={navigateToDashboard}
+      class="flex items-center hover:text-blue-600"
+    >
       <!-- Icône SVG pour "Tableau de bord" -->
       <svg
-              xmlns="http://www.w3.org/2000/svg"
-              class="w-4 h-4 mr-1"
-              viewBox="0 0 20 20"
-              fill="currentColor"
+        xmlns="http://www.w3.org/2000/svg"
+        class="w-4 h-4 mr-1"
+        viewBox="0 0 20 20"
+        fill="currentColor"
       >
         <path
-                d="M10.707 2.293a1 1 0 00-1.414 0l-7 7a1 1 0 001.414 1.414L4 10.414V17a1 1 0 001 1h2a1 1 0 001-1v-2a1 1 0 011-1h2a1 1 0 011 1v2a1 1 0 001 1h2a1 1 0 001-1v-6.586l.293.293a1 1 0 001.414-1.414l-7-7z"
+          d="M10.707 2.293a1 1 0 00-1.414 0l-7 7a1 1 0 001.414 1.414L4 10.414V17a1 1 0 001 1h2a1 1 0 001-1v-2a1 1 0 011-1h2a1 1 0 011 1v2a1 1 0 001 1h2a1 1 0 001-1v-6.586l.293.293a1 1 0 001.414-1.414l-7-7z"
         />
       </svg>
       Tableau de bord
     </button>
     <span>/</span>
-    <span class="text-gray-800">Liste des notifications</span> <!-- Nom de la page actuelle -->
-  </div><br>
-<main class="mx-auto px-8 py-8 main-divoo"style="padding-top:250px;padding-bottom:142px;">
-    <div class="max-w-[125rem] mx-auto p-6">
-        <div class="bg-white rounded-lg shadow-sm overflow-hidden">
-            <!-- Notification Header -->
-            <div class="p-4 border-b flex justify-between items-center">
-                <h1 class="text-xl font-semibold">{totalNotificationsNoRead} non lus sur {totalNotifications} {totalNotifications > 0 ? 'Notifications':'Notification' }</h1>
-                <div class="relative">
-                    <input
-                            type="text"
-                            placeholder="Search by Name Product"
-                            class="pl-10 pr-4 py-2 border rounded-full bg-gray-100 w-64"
-                            bind:value={searchQuery}
-                    />
-                    <svg class="absolute left-3 top-3 w-4 h-4 text-gray-500" fill="none" stroke="currentColor"
-                         viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                              d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
-                    </svg>
-                </div>
-            </div>
+    <span class="text-gray-800">Liste des notifications</span>
+    </div>
+    <!-- Nom de la page actuelle -->
+  </div><br><br><br /><br /><br /><br><br><br /><br /><br />
 
-            <!-- Notification List -->
-            <div class="divide-y">
-                {#if isLoading}
-                    <NotificationSkeleton count={5} />
-                {:else}
-                    {#each notifications as notification (notification.id)}
-                        <div class="flex items-start p-4 hover:bg-gray-50 relative cursor-pointer {!notification.isRead ? 'bg-gray-100' : ''}">
-                            {#if !notification.isRead}
-                                <div class="h-2 w-2 rounded-full bg-green-400 absolute left-2 top-6"></div>
-                            {/if}
+<main style="background-color: #fff" class="pb-20">
+    <style>
+        .entete {
+            width: 80% !important;
+        }
+        .tablo:not(:last-child) {
+            margin-bottom: 35px;
+        }
+        .dropify-wrapper .dropify-message p {
+            text-align: center;
+        }
+        .dropify-wrapper .dropify-message span.file-icon {
+            font-size: 50px;
+            color: #ccc;
+            display: none;
+        }
+        .dropify-wrapper {
+            height: 100px !important;
+        }
+        .col-md-3 {
+            margin-top: 15px !important;
+        }
+        .iletisim-form-alani {
+            padding: 20rem 157px 10rem !important;
 
-                            <div class="mr-3 flex-shrink-0">
-                                <div class="w-8 h-8 bg-gray-200 rounded-lg flex items-center justify-center">
-                                    <svg class="w-5 h-5 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"
-                                         xmlns="http://www.w3.org/2000/svg">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                              d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
-                                    </svg>
+            background-color: #fff;
+        }
+        .main-div {
+            margin-top: -10px;
+            margin-bottom: 130px;
+            /* border: 1px solid #e5e7eb; */
+            background: transparent;
+            border-radius: 10px;
+            padding: 20rem 316px 10rem !important;
+        }
+
+        .file-ariane {
+            position: absolute;
+            width: 100%;
+            top: 96px;
+            background: #4292cecc;
+            padding: 22px;
+            color: white;
+            font-size: 14px;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .file-ariane span {
+            color: white;
+            margin: 0 5px;
+        }
+        .pagination-controls {
+            /* display: flex; */
+            justify-content: center;
+            align-items: center;
+            margin-top: 20px;
+        }
+        .pagination-controls button {
+            margin: 0 10px;
+            padding: 5px 10px;
+            background-color: #f57f30;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .pagination-controls button:disabled {
+            background-color: #ccc;
+            cursor: not-allowed;
+        }
+
+        .pagination-controls span {
+            margin: 0 10px;
+        }
+
+
+
+    </style>
+    <link
+            rel="stylesheet"
+            href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
+            integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN"
+            crossorigin="anonymous"
+    />
+    <link
+            rel="stylesheet"
+            href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
+            integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A=="
+            crossorigin="anonymous"
+            referrerpolicy="no-referrer"
+    />
+    <section class="hakkimizda-bolumu-anasayfa1 iletisim-form-alani" style="padding-top:120px">
+        <div class="container"><br /><br /> <br /><br /><br />
+            <div class="masqueur à effet de révélation d'image de projet wow">
+
+                {#if notifications.length > 0}
+                    {#each notifications as notification, index}
+                        <div on:click={() => markAsRead(notification.id)}
+                                class="services-kutu2 project-image reveal-effect masker wow"
+                                style="cursor: pointer; visibility: visible; width: 100%; margin-bottom: 15px;"
+                        >
+                            <div class="row">
+                                <div class="col-md-1">
+                                    <i
+                                            style="font-size: 25px; margin-top: 12px; color: #f57f30;"
+                                            class="fa fa-bell"
+                                    ></i>
+                                </div>
+                                <div class="col-md-6">
+                                    <p style="margin-top: 12px;">
+                                        {notification.createdAt}
+                                    </p>
+                                </div>
+                                <div class="col-md-3">
+                                    {notification.libelle}
+                                </div>
+                                <div class="col-md-2 d-none d-sm-block">
+                                    <form action="#" class="delete_alerte">
+
+                                        <button
+                                                on:click={() => deleteNotification(notification.id)}
+                                                style="height: 50px; width: 50px; background: red !important; padding: 0;"
+                                                class="buton buton--kirmizi"
+                                                id="three_customer"
+                                        >
+                                            <i class="fa fa-trash"></i>
+                                        </button>
+                                    </form>
                                 </div>
                             </div>
-                            <div class="flex-grow" on:click={() => {
-                                goto(`/site/suivi`);
-                            }}>
-                                <p class="text-sm text-gray-800 mb-1">{notification.libelle}</p>
-                                <p class="text-xs text-gray-500">{notification.createdAt}</p>
-                            </div>
-                            <button
-                                    class="text-red-500 ml-3"
-                                    style="color: red !important;"
-                                    on:click={() => deleteNotification(notification.id)}
-                            >
-                                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"
-                                     xmlns="http://www.w3.org/2000/svg">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                          d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
-                                </svg>
-                            </button>
-
                         </div>
                     {/each}
+                {:else}
+                    <div
+                            class="services-kutu2 project-image reveal-effect masker wow"
+                            style="cursor: pointer; visibility: visible; width: 100%;"
+                    >
+                        <div class="row">
+                            <div class="col-md-12 text-center">
+                                <p style="margin: auto; text-align: center;">
+                                    Aucune notification pour l'instant
+                                </p>
+                            </div>
+                        </div>
+                    </div>
                 {/if}
 
+                <!-- Contrôles de pagination -->
+                {#if notifications.length > itemsPerPage}
+                    <div class="pagination-controls">
+
+                        <button on:click={() => goToPage(1)} disabled={currentPage === 1}>
+                            Premier
+                        </button>
+                        <button on:click={() => goToPage(currentPage - 1)} disabled={currentPage === 1}>
+                            Précédent
+                        </button>
+                        {#each getPageNumbers() as page}
+                            {#if page === '...'}
+                                <span class="dots">...</span>
+                            {:else}
+                                <button
+                                        on:click={() => goToPage(page)}
+                                        class:active={page === currentPage}
+                                >
+                                    {page}
+                                </button>
+                            {/if}
+                        {/each}
+                        <button on:click={() => goToPage(currentPage + 1)} disabled={currentPage === totalPages}>
+                            Suivant
+                        </button>
+
+
+                        <button on:click={() => goToPage(totalPages)} disabled={currentPage === totalPages}>
+                            Dernier
+                        </button>
+                    </div>
+
+                {/if}
+                <br /><br /><br /><br /><br /><br /> <br /><br /><br /><br /><br /><br /> <br /><br /><br /><br /><br /> <br /><br /><br />
             </div>
         </div>
-    </div>
+    </section>
 </main>
 
 <!-- Popup pour afficher la notification -->

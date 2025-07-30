@@ -146,7 +146,10 @@ async function logout() {
     <span>/</span>
     <span class="text-gray-800">Profil</span> 
   </div>
-</div><br><br><br><br><br>
+</div>
+
+
+<br><br><br><br><br>
 
 <main style="background-color: #fff" class="pb-20 main-div">
  
@@ -193,7 +196,7 @@ async function logout() {
                       type="text"
                       class="form__input"
                       bind:value={user_data.password}
-                      placeholder="Nom utilisateur"
+                      placeholder="Ancien mot de passe"
                     />
                   </div>
                   <!--  </div> -->
@@ -204,7 +207,7 @@ async function logout() {
                         type="password"
                         class="form__input"
                         bind:value={user_data.newPassword}
-                        placeholder="Mot de passe"
+                        placeholder="Nouveau Mot de passe"
                       />
                     </div>
                   </div>
@@ -283,7 +286,7 @@ async function logout() {
 
 <style>
   .entete {
-    width: 30% !important;
+    width: 80% !important;
   }
     .main-div {
     margin-top: 30px;
@@ -338,7 +341,7 @@ async function logout() {
   }
   .dropify-preview {
     display: block;
-    margin-top: 10px;
+    margin-top: 0px;
   }
 
   .dropify-wrapper {

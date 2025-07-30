@@ -37,6 +37,7 @@
     emailPro: "",
     dateDiplome: "",
     lieuDiplome: "",
+    lieuObtentionDiplome: "",
     datePremierDiplome: "",
     diplome: "",
     situationPro: "",
@@ -62,7 +63,9 @@
     // organization informations
 
     appartenirOrganisation: "non",
+    appartenirOrdre: "non",
     organisationNom: "",
+    numeroInscription: "",
   };
   let errors = {
     nom: "",
@@ -80,6 +83,7 @@
     emailPro: "",
     dateDiplome: "",
     lieuDiplome: "",
+    lieuObtentionDiplome: "",
     datePremierDiplome: "",
     diplome: "",
     situationPro: "",
@@ -105,9 +109,11 @@
 
     // Organization informations
     appartenirOrganisation: "",
+    appartenirOrdre: "",
     organisationNom: "",
     organisationNumero: "",
     organisationAnnee: "",
+    numeroInscription: "",
 
     // Paiement informations
   };
@@ -139,6 +145,7 @@
     try {
       const userId = user?.personneId;
       const response = await apiFetch(true, `/professionnel/get/one/${userId}`)
+      
         .then((res) => {
           const apiData = res.data;
 
@@ -151,6 +158,9 @@
               : "",
             civilite: apiData.personne.civilite
               ? String(apiData.personne.civilite.id)
+              : "",
+              lieuObtentionDiplome: apiData.personne.lieuObtentionDiplome
+              ? String(apiData.personne.lieuObtentionDiplome.id)
               : "",
             emailAutre: apiData.personne.email || "",
             numero: apiData.personne.number || "",
@@ -193,15 +203,22 @@
             cv: apiData.personne.cv || "",
             // Organisation
             appartenirOrganisation: apiData.personne.appartenirOrganisation,
+            appartenirOrdre: apiData.personne.appartenirOrdre,
             organisationNom:
               apiData.personne.appartenirOrganisation == "oui"
                 ? apiData.personne.organisationNom || ""
                 : "",
+            numeroInscription:
+              apiData.personne.appartenirOrdre == "oui"
+                ? apiData.personne.numeroInscription || ""
+                : "",
           };
         })
+        
         .finally(() => {
           isLoading = false;
         });
+        console.log(response);
     } catch (error) {
       console.error("Erreur de récupération des données", error);
       isLoading = false;
@@ -274,6 +291,10 @@
     { name: "district", url: "/district" },
     { name: "commune", url: "/commune" },
     { name: "nationate", url: "/pays" },
+    { name: "nationate", url: "/pays" },
+    { name: "statusPro", url: "/statusPro" },
+    { name: "typeDiplome", url: "/typeDiplome" },
+    { name: "lieuObtentionDiplome", url: "/lieuDiplome" },
     { name: "situationProfessionnelle", url: "/situationProfessionnelle" },
   ];
 
@@ -284,10 +305,16 @@
     ville: Civilite[];
     commune: Civilite[];
     nationate: Pays[];
+    lieuObtentionDiplome: Pays[];
+    typeDiplome: Pays[];
+    statusPro: Pays[];
     situationProfessionnelle: Pays[];
   } = {
     civilite: [],
     nationate: [],
+    lieuObtentionDiplome: [],
+    statusPro: [],
+    typeDiplome: [],
     situationProfessionnelle: [],
     ville: [],
     region: [],
@@ -333,12 +360,12 @@
     if (formData.region) {
       await updateDistricts();
     }
-    if (formData.district) {
+    /* if (formData.district) {
       await updateVilles();
     }
     if (formData.ville) {
       await updateCommunes();
-    }
+    } */
   }
 
   const situationsMatrimoniales = [
@@ -363,7 +390,7 @@
     const selectedRegion = values.region.find(
       (region) => region.id === +formData.region,
     );
-    if (selectedRegion) {
+    /* if (selectedRegion) {
       // Charger les districts de la région sélectionnée
       formData.district ? formData.district : "";
       formData.ville ? formData.ville : "";
@@ -372,7 +399,7 @@
       values.district = await fetchDataChange(`/district/${formData.region}`);
       values.ville = [];
       values.commune = [];
-    }
+    } */
   }
 
   // Fonction pour mettre à jour les villes en fonction du district
@@ -701,7 +728,7 @@
                 {#each ["photo", "cni", "casier", "diplomeFile", "certificat", "cv"] as field}
                   <div class="space-y-2">
                     <label class="block text-3xl font-medium text-black">
-                      {field.toUpperCase()}
+                      {field == "diplomeFile" ? "Origine du diplôme" :field.toUpperCase()}
                     </label>
 
                     {#if formData[field] && formData[field].url}
@@ -740,7 +767,7 @@
               <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div class="col-span-2 space-y-2">
                   <label class="block text-3xl font-medium text-black"
-                    >Appartenir à une organisation ?</label
+                    >Appartenez-vous à une organisation ?</label
                   >
                   <div class="flex space-x-4">
                     <label class="inline-flex items-center">
@@ -776,6 +803,52 @@
                     <input
                       type="text"
                       bind:value={formData.organisationNom}
+                      class="w-full form__input"
+                    />
+                  </div>
+
+                 
+                {/if}
+              </div>
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div class="col-span-2 space-y-2">
+                  <label class="block text-3xl font-medium text-black"
+                    >Appartenez-vous à un ordre ?</label
+                  >
+                  <div class="flex space-x-4">
+                    <label class="inline-flex items-center">
+                      <input
+                        type="radio"
+                        bind:group={formData.appartenirOrdre}
+                        value="oui"
+                        disabled
+                        class="form-radio text-white"
+                        checked={formData.appartenirOrdre === "oui"}
+                      />
+                      <span class="ml-2">Oui</span>
+                    </label>
+                    <label class="inline-flex items-center">
+                      <input
+                        type="radio"
+                        bind:group={formData.appartenirOrdre}
+                        value="non"
+                        disabled
+                        class="form-radio text-white"
+                        checked={formData.appartenirOrdre === "non"}
+                      />
+                      <span class="ml-2">Non</span>
+                    </label>
+                  </div>
+                </div>
+
+                {#if formData.appartenirOrdre == "oui"}
+                  <div class="space-y-2">
+                    <label class="block text-3xl font-medium text-black"
+                      >Numéro d'inscription</label
+                    >
+                    <input
+                      type="text"
+                      bind:value={formData.numeroInscription}
                       class="w-full form__input"
                     />
                   </div>

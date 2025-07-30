@@ -1,70 +1,92 @@
 import cookie from "cookie";
 import { redirect } from "@sveltejs/kit";
-// @ts-ignore
-import { logout } from "$lib/auth";
+import { BASE_URL_API } from "$lib/api";
 
-// @ts-ignore
 export async function handle({ event, resolve }) {
   const cookies = cookie.parse(event.request.headers.get("cookie") || "");
-  // Lire et décoder le cookie auth
   let user = null;
+  let abonnementExpire = false;
+
   if (cookies.auth) {
     try {
       const auth = JSON.parse(cookies.auth);
-      user = { id: auth.id, role: auth.role, token: auth.token, username: auth.username, type: auth.type, status: auth.status, payement: auth.payement, avatar: auth.avatar };
-  
-   
+      user = {
+        id: auth.id,
+        role: auth.role,
+        token: auth.token,
+        username: auth.username,
+        type: auth.type,
+        status: auth.status,
+        avatar: auth.avatar
+      };
+      
+      if(!user?.role.includes("ROLE_ADMIN")){
+// ✅ Appel API pour vérifier si l'abonnement a expirédd
+      const apiResponse = await fetch(BASE_URL_API + "/paiement/status/renouvellement/" + user?.id, {
+        method: "GET",
+       /*  headers: {
+          Authorization: `Bearer ${auth.token}`,
+          Accept: "application/json"
+        } */
+      });
+
+      if (apiResponse.ok) {
+        const data = await apiResponse.json();
+        abonnementExpire = data.data.expire; // adapte selon ta réponsehhh
+       
+        console.error("Erreur API abonnement:", abonnementExpire);
+      } else {
+        console.error("Erreur API abonnement:", await apiResponse.text());
+      }
+      }else{
+        abonnementExpire = false;
+      }
+      
+
     } catch (e) {
-      console.error("Erreur de parsing du cookie auth:", e);
+      console.error("Erreur parsing ou appel API:", e);
     }
   }
-  // Protéger la route /admin en vérifiant l'authentification
+
+  // ⛔ Redirection pour les pages restreintes si abonnement expiré
+  const protectedPagesWhenExpired = [
+    "/site/dossiers",
+    "/site/forum",
+    "/site/documents",
+    "/site/chatbox",
+    "/site/forum/all-forums",
+    "/site/faq",
+    "/site/alerte",
+    "/site/profil"
+  ];
+
+  if (user && abonnementExpire && protectedPagesWhenExpired.some(path => event.url.pathname.startsWith(path))) {
+    return redirect(302, "/site/dashboard"); // ou page d'erreur/renouvellement
+  }
+
+  // Redirections basées sur le rôle
   if (event.url.pathname.startsWith("/admin") && !user) {
     return redirect(302, "/login");
   }
-  if (
-    event.url.pathname == "/login" &&
-    user &&
-    user.role.includes("ROLE_ADMIN")
-  ) {
-    // Redirection si l'utilisateur n'est pas authentifié
+
+  if (event.url.pathname === "/login" && user?.role.includes("ROLE_ADMIN")) {
     return redirect(302, "/admin");
   }
-  if (event.url.pathname.startsWith("/site/dashboard") && !user) {
-    return redirect(302, "/");
-  }
-  /* if (event.url.pathname.startsWith("/new_site") && !user) {
-    return redirect(302, "/");
-  } */
-  if ((event.url.pathname.startsWith("/site/dossiers") ||
-   event.url.pathname.startsWith("/site/forum") ||
-     event.url.pathname.startsWith("/site/documents") ||
-      event.url.pathname.startsWith("/site/chatbox") ||
-       event.url.pathname.startsWith("/site/dashboard") ||
-        event.url.pathname.startsWith("/site/notification") ||
-         event.url.pathname.startsWith("/site/paiement") ||
-          event.url.pathname.startsWith("/site/forum/all-forums") ||
-            event.url.pathname.startsWith("/site/faq") ||
-     event.url.pathname.startsWith("/site/alerte") ||
-      event.url.pathname.startsWith("/site/profil")) &&
-       !user) {
-    return redirect(302, "/");
-  }
-/*   if (user && !user.role.includes("ROLE_ADMIN")) {
-    const response = new Response(null, {
-      status: 302,
-      headers: {
-        Location: "/",
-        "Set-Cookie":
-          "auth=; Path=/; HttpOnly; Secure; SameSite=Strict; Expires=Thu, 01 Jan 1970 00:00:00 GMT",
-      },
-    });
-  
-    return response;
-  } */
-  // Continuer la requête si tout va bien
 
-  event.locals.user = cookies.auth ? JSON.parse(cookies.auth) : null;
+  if (event.url.pathname.startsWith("/site") && !user && !event.url.pathname.startsWith("/site/professionnel")) {
+    return redirect(302, "/");
+  }
+
+  if (event.url.pathname.startsWith("/site") && user?.role.includes("ROLE_ADMIN")) {
+    return redirect(302, "/admin");
+  }
+
+  if (event.url.pathname.startsWith("/admin") && user?.role.includes("ROLE_MEMBRE")) {
+    return redirect(302, "/site/dossiers");
+  }
+
+  // Attache l'utilisateur dans `event.locals` pour y accéder ailleurs
+  event.locals.user = user;
   const response = await resolve(event);
   return response;
 }

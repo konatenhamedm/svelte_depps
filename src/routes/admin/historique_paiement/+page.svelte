@@ -7,76 +7,136 @@
     TableBodyCell,
     TableBodyRow,
     TableHead,
-    TableHeadCell
-  } from "flowbite-svelte";
-  import {
-    EditOutline,
-    EyeOutline,
-    TrashBinSolid
-  } from "flowbite-svelte-icons";
-  import Entete from "../../../components/_includes/Entete.svelte";
-  import MessageError from "../../../components/MessageError.svelte";
-  import Pagination from "../../../components/_includes/Pagination.svelte";
+    TableHeadCell,
+    Select,
+  } from 'flowbite-svelte';
+  import {EditOutline, EyeOutline, TrashBinSolid} from 'flowbite-svelte-icons';
+  import Entete from '../../../components/_includes/Entete.svelte';
+  import MessageError from '../../../components/MessageError.svelte';
+  import Pagination from '../../../components/_includes/Pagination.svelte';
   // Importer le store pageSize
-  import { get } from "svelte/store";
-  import type { professionnel, Transaction, User } from "../../../types";
-  import { apiFetch } from "$lib/api";
-  import { pageSize } from "../../../store"; // Importer le store pageSize
-  import { onMount } from "svelte";
+  import {get} from 'svelte/store';
+  import type {professionnel, Transaction, User} from '../../../types';
+  import {apiFetch} from '$lib/api';
+  import {pageSize} from '../../../store'; // Importer le store pageSize
+  import {onMount} from 'svelte';
 
-  import { getAuthCookie } from "$lib/auth";
-  import Show from "./Show.svelte";
-  import Delete from "./Delete.svelte";
-  import { formatDate } from "$lib/dateUtils";
-  import { formatAmount } from "$lib/formatAmount";
-  import DropdownMenuShow from "$components/DropdownMenuShow.svelte";
-  import DropdownMenu from "$components/DropdownMenu.svelte";
-  import DropdownOnlyShow from "$components/DropdownOnlyShow.svelte";
-  import Pdf from "$components/pdf/Pdf.svelte";
+  import {getAuthCookie} from '$lib/auth';
+  import Show from './Show.svelte';
+  import Delete from './Delete.svelte';
+  import {formatDate} from '$lib/dateUtils';
+  import {formatAmount} from '$lib/formatAmount';
+  import DropdownMenuShow from '$components/DropdownMenuShow.svelte';
+  import DropdownMenu from '$components/DropdownMenu.svelte';
+  import DropdownOnlyShow from '$components/DropdownOnlyShow.svelte';
+  import Pdf from '$components/pdf/Pdf.svelte';
+  import RecuPaiement from './RecuPaiement.svelte';
+  import PdfPaiement from '$components/pdf/PdfPaiement.svelte';
+  import CsvExporter from '$components/excel/CsvExporter.svelte';
 
   export let data; // Les données retournées par `load()`
   let user = data.user;
 
   let main_data: Transaction[] = [];
-  let searchQuery = ""; // Pour la recherche par texte
-  let selectedService: any = ""; // Pour filtrer par service
-  let selectedStatus: any = ""; // Pour filtrer par status
+  let searchQuery = ''; // Pour la recherche par texte
+  let selectedService: any = ''; // Pour filtrer par service
+  let selectedStatus: any = ''; // Pour filtrer par status
   let startDate: any | null = null; // Date de début
   let endDate: any | null = null; // Date de fin
+  let selectedAmount: any = ''; // Pour filtrer par montant
   let currentPage = 1;
   let loading = false;
   let openDelete: boolean = false;
   let openEdit: boolean = false;
   let openAdd: boolean = false;
   let openShow: boolean = false;
+  let openDoc: boolean = false;
   let current_data: any = {};
+
+  // Options statiques pour le filtre de montant
+  let amountOptions: any = [];
 
   async function fetchData() {
     loading = true; // Active le spinner de chargement
     try {
-      const res = await apiFetch(true, "/paiement/historique");
+      const res = await apiFetch(true, '/paiement/historique');
       console.log(res);
       if (res) {
-        main_data = res.data as Transaction[];
+        main_data = res.data;
+        console.log('content main', main_data);
       } else {
         console.error(
-          "Erreur lors de la récupération des données:",
+          'Erreur lors de la récupération des données:',
           res.statusText
         );
       }
     } catch (error) {
-      console.error("Erreur lors de la récupération des données:", error);
+      console.error('Erreur lors de la récupération des données:', error);
     } finally {
       loading = false; // Désactive le spinner de chargement
+    }
+  }
+  async function fetchMontant() {
+    try {
+      const res = await apiFetch(true, '/profession/api/montants');
+
+      if (res) {
+        amountOptions = res.data;
+      } else {
+        console.error(
+          'Erreur lors de la récupération des données:',
+          res.statusText
+        );
+      }
+    } catch (error) {
+      console.error('Erreur lors de la récupération des données:', error);
+    } finally {
     }
   }
 
   onMount(async () => {
     await fetchData();
+    await fetchMontant();
+
+    // console.log("user", user);
   });
 
   $: filteredData = main_data.filter((item) => {
-    return item.reference.toLowerCase().includes(searchQuery.toLowerCase());
+    // Filtre par recherche texte
+    // console.log("ITEMMMMMMMMM =====", item.personne.profession.libelle);
+    const textMatch =
+      item.reference.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      item.personne?.nom.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      item.personne?.prenoms
+        .toLowerCase()
+        .includes(searchQuery.toLowerCase()) ||
+      item.email.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      item.type.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      item.personne?.profession?.libelle
+        .toLowerCase()
+        .includes(searchQuery.toLowerCase());
+
+    // Filtre par montant
+    let amountMatch = true;
+    if (selectedAmount) {
+      amountMatch = parseInt(item.montant, 10) === parseInt(selectedAmount, 10);
+    }
+
+    // Filtre par date
+    let dateMatch = true;
+    if (startDate) {
+      const itemDate = new Date(item.createdAt);
+      const start = new Date(startDate);
+      dateMatch = itemDate >= start;
+    }
+    if (endDate) {
+      const itemDate = new Date(item.createdAt);
+      const end = new Date(endDate);
+      end.setHours(23, 59, 59, 999); // Pour inclure toute la journée
+      dateMatch = dateMatch && itemDate <= end;
+    }
+
+    return textMatch && amountMatch && dateMatch;
   });
 
   // $: totalPages = Math.ceil(filteredData.length / get(pageSize)) pageSize se trouve store.ts;
@@ -113,11 +173,11 @@
 
   const handleAction = (action: any, item: any) => {
     current_data = item;
-    if (action === "view") {
+    if (action === 'view') {
       openShow = true;
-    } else if (action === "edit") {
-      openEdit = false;
-    } else if (action === "delete") {
+    } else if (action === 'edit') {
+      openEdit = true;
+    } else if (action === 'delete') {
       openDelete = false;
     }
   };
@@ -128,29 +188,26 @@
   }
 
   function getBgColor(color: number): string {
-        switch (color) {
-            case 1:
-                return "bg-success border-success";
-            case 0:
-                return "bg-danger border-danger";
-            default:
-                return "bg-gray-300";
-        }
+    switch (color) {
+      case 1:
+        return 'bg-success border-success';
+      case 0:
+        return 'bg-danger border-danger';
+      default:
+        return 'bg-gray-300';
     }
+  }
 
-    
-    function getStatus(status: number): string {
-        switch (status) {
-            case 1:
-                return "Paiement effectué";
-            case 0:
-                return "Paiement échoué";
-            default:
-                return "Inconnu";
-        }
+  function getStatus(status: number): string {
+    switch (status) {
+      case 1:
+        return 'Paiement effectué';
+      case 0:
+        return 'Paiement échoué';
+      default:
+        return 'Inconnu';
     }
-
-
+  }
 </script>
 
 <Entete
@@ -166,23 +223,126 @@
           <h4 class="box-title text-xl font-medium">
             Liste des historiques de paiement
           </h4>
-          <Pdf
-                  title="Historique_Paiements"
-                  headers={["Reference", "Type", "Email", "Etat", "Montant", "Date"]}
-                  data={main_data}
-                  type="paiement"
-          />
+
+          <!-- {#if user.type != 'INSTRUCTEUR' || user.type != 'SOUS-DIRECTEUR' } -->
+          {#if !['INSTRUCTEUR', 'SOUS-DIRECTEUR'].includes(user.type)}
+            <div class="grid grid-cols-2 gap-4">
+              <PdfPaiement
+                title="Historique_Paiements"
+                headers={[
+                  'Nom et Prénoms',
+                  'Contact',
+                  'Profession',
+                  'Reference',
+                  'Type',
+                  'Email',
+                  'Etat',
+                  'Montant',
+                  'Date',
+                ]}
+                data={filteredData}
+                type="paiement"
+                typeUser={user.type}
+              /> 
+              <div class="ml-2">
+                <CsvExporter
+                title="Historique_Paiements"
+                headers={[
+                  'Nom et prénoms',
+                  'Contact',
+                  'Profession',
+                  'Reference',
+                  'Type',
+                  'Email',
+                  'Etat',
+                  'Montant',
+                  'Date',
+                ]}
+                data={filteredData}
+                type="paiement"
+                typeUser={user.type}
+              />
+              </div>
+            </div>
+          {:else}
+            <div class="grid grid-cols-2">
+              <PdfPaiement
+              title="Historique_Paiements"
+              headers={[
+                'Nom et Prénoms',
+                'Contact',
+                'Profession',
+                'Reference',
+                'Type',
+                'Email',
+                'Etat',
+                'Montant',
+                'Date',
+              ]}
+              data={filteredData}
+              type="paiement"
+              typeUser={user.type}
+            /> 
+            <div class="ml-2">
+              <CsvExporter
+              title="Historique_Paiements"
+              headers={[
+                'Nom et prénoms',
+                'Contact',
+                'Profession',
+                'Reference',
+                'Type',
+                'Email',
+                'Etat',
+                'Montant',
+                'Date',
+              ]}
+              data={filteredData}
+              type="paiement"
+              typeUser={user.type}
+            />
+           
+              </div>
+            </div>
+          {/if}
         </div>
         <!-- /.box-header -->
         <div class="box-body">
           <div class="table-responsive">
-            <div class="w-full grid grid-cols-4">
+            <div class="w-full grid grid-cols-4 gap-4 mb-4">
               <div>
                 <Input
                   placeholder="Rechercher..."
                   type="text"
                   bind:value={searchQuery}
-                  class="form-input font-normal rounded block w-full border-gray-200 text-sm focus:border-gray-300 focus:ring-0 bg-white mb-4"
+                  class="form-input font-normal rounded block w-full border-gray-200 text-sm focus:border-gray-300 focus:ring-0 bg-white"
+                />
+              </div>
+
+              {#if !['INSTRUCTEUR', 'SOUS-DIRECTEUR'].includes(user.type)}
+                <div>
+                  <Select bind:value={selectedAmount}>
+                    {#each amountOptions as option}
+                      <option value={option.value}>{option.label}</option>
+                    {/each}
+                  </Select>
+                </div>
+              {/if}
+
+              <div>
+                <Input
+                  type="date"
+                  bind:value={startDate}
+                  class="form-input font-normal rounded block w-full border-gray-200 text-sm focus:border-gray-300 focus:ring-0 bg-white"
+                  placeholder="Date de début"
+                />
+              </div>
+              <div>
+                <Input
+                  type="date"
+                  bind:value={endDate}
+                  class="form-input font-normal rounded block w-full border-gray-200 text-sm focus:border-gray-300 focus:ring-0 bg-white"
+                  placeholder="Date de fin"
                 />
               </div>
             </div>
@@ -190,11 +350,21 @@
               <TableHead
                 class="border-y border-gray-200 bg-gray-100 dark:border-gray-700"
               >
-                {#each ["Reference", "type", "email","Etat paiement", "Montant", "Date", "Action"] as title}
-                  <TableHeadCell class="ps-4 font-normal border border-gray-300"
-                    >{title}</TableHeadCell
-                  >
-                {/each}
+                {#if !['INSTRUCTEUR', 'SOUS-DIRECTEUR'].includes(user.type)}
+                  {#each ['Nom', 'Prénoms', 'Profession', 'Contacts', 'Reference', 'type', 'moyens de paiement', 'email', 'Etat paiement', 'Montant', 'Date', 'Action'] as title}
+                    <TableHeadCell
+                      class="ps-4 font-normal border border-gray-300"
+                      >{title}</TableHeadCell
+                    >
+                  {/each}
+                {:else}
+                  {#each ['Nom', 'Prénoms', 'Profession', 'Contacts', 'Reference', 'type', 'moyens de paiement', 'email', 'Etat paiement', 'Date', 'Action'] as title}
+                    <TableHeadCell
+                      class="ps-4 font-normal border border-gray-300"
+                      >{title}</TableHeadCell
+                    >
+                  {/each}
+                {/if}
               </TableHead>
               <TableBody>
                 {#if loading && paginatedProducts.length === 0}
@@ -239,37 +409,45 @@
                   {#each paginatedProducts as item}
                     <TableBodyRow class="text-base border border-gray-300">
                       <TableBodyCell class="p-4 border border-gray-300"
-                        >{item.reference}</TableBodyCell
+                        >{item?.personne?.nom}</TableBodyCell
+                      >
+                      <TableBodyCell class="p-4 border border-gray-300"
+                        >{item?.personne?.prenoms}</TableBodyCell
+                      >
+                      <TableBodyCell class="p-4 border border-gray-300"
+                        >{item?.personne?.profession?.libelle}</TableBodyCell
+                      >
+                      <TableBodyCell class="p-4 border border-gray-300"
+                        >{item?.personne?.number}</TableBodyCell
+                      >
+                      <TableBodyCell class="p-4 border border-gray-300"
+                        >{item?.reference}</TableBodyCell
                       >
                       <TableBodyCell class="p-4 border border-gray-300"
                         >{item.type}</TableBodyCell
                       >
-                      <!-- <TableBodyCell class="p-4 border border-gray-300"
-                        >{item.user.username}</TableBodyCell
-                      > -->
-                      <!--  <TableBodyCell class="p-4 border border-gray-300"
-                        >{item.numero}</TableBodyCell
-                      > -->
                       <TableBodyCell class="p-4 border border-gray-300"
-                        >{item.user.email}</TableBodyCell
+                        >{item.channel}</TableBodyCell
+                      >
+
+                      <TableBodyCell class="p-4 border border-gray-300"
+                        >{item.email}</TableBodyCell
                       >
 
                       <TableBodyCell class="p-4 border border-gray-300"
                         ><span
-                        class={`py-[0.1875rem] px-[0.8125rem] text-xs rounded-[1.25rem] text-white w-[77px] leading-[1.5] ${getBgColor(item.state)}`}
-                        >{getStatus(
-                            item.state,
-                        )}</span
-                    >
-                        
-                        </TableBodyCell
-                      >
-                      <TableBodyCell
-                        class="p-4 border border-gray-300 justify-end text-right"
-                        >{formatAmount(
-                          parseInt(item.montant, 10)
-                        )}</TableBodyCell
-                      >
+                          class={`py-[0.1875rem] px-[0.8125rem] text-xs rounded-[1.25rem] text-white w-[77px] leading-[1.5] ${getBgColor(item.state)}`}
+                          >{getStatus(item.state)}</span
+                        >
+                      </TableBodyCell>
+                      {#if !['INSTRUCTEUR', 'SOUS-DIRECTEUR'].includes(user.type)}
+                        <TableBodyCell
+                          class="p-4 border border-gray-300 justify-end text-right"
+                          >{formatAmount(
+                            parseInt(item.montant, 10)
+                          )}</TableBodyCell
+                        >
+                      {/if}
                       <TableBodyCell class="p-4 border border-gray-300"
                         >{formatDate(item.createdAt)}</TableBodyCell
                       >
@@ -277,8 +455,7 @@
                                    -->
 
                       <TableBodyCell class="p-2 w-8 border border-gray-300">
-                        <!-- Utilisation de <details> pour gérer l'ouverture/fermeture au clic -->
-                          <DropdownOnlyShow {item} onAction={handleAction} />
+                        <DropdownOnlyShow {item} onAction={handleAction} />
                       </TableBodyCell>
                     </TableBodyRow>
                   {/each}
@@ -322,4 +499,11 @@
 
 <!-- Modales -->
 <Show bind:open={openShow} data={current_data} sizeModal="xl" />
+<RecuPaiement
+  bind:open={openEdit}
+  data={current_data}
+  sizeModal="xl"
+  titre={current_data.type}
+  userUpdateId={'userUpdateId'}
+/>
 <Delete bind:open={openDelete} data={current_data} />

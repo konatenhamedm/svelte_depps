@@ -13,7 +13,7 @@
     <span>{label}</span>
     <Input 
         name={fieldName} 
-        bind:value={field}  style="color: black !important;"
+        bind:value={field}  style="color: #000000 !important;font-weight: 900 !important;"
         class="border outline-none form-input font-normal rounded block w-full border-gray-200 text-md text-black focus:border-gray-300 focus:ring-0 bg-white" 
         placeholder={placeholder} 
         disabled={disabled}

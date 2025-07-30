@@ -45,6 +45,8 @@
   let userEmail = "";
   let typeUser = "";
   let appartenirOrganisation = "";
+  let appartenirOrdre = "";
+  let numeroInscription = "";
   let photo = "";
   let cni = "";
   let cv = "";
@@ -125,20 +127,22 @@
     typeUser = data?.typeUser || "";
     userEmail = data.email || "";
     appartenirOrganisation = data.personne.appartenirOrganisation || "";
+    appartenirOrdre = data.personne.appartenirOrdre || "";
+    numeroInscription = data.personne.numeroInscription || "";
     photo = data.personne.photo || "";
-    cni = data.personne.cni || "";
-    CVpath = data.personne.cv.path || "";
-    CValt = data.personne.cv.alt || "";
-    Photopath = data.personne.photo.path || "";
-    Photoalt = data.personne.photo.alt || "";
-    diplomeFilePath = data.personne.diplomeFile.path || "";
-    diplomeFileAlt = data.personne.diplomeFile.alt || "";
-    cniPath = data.personne.cni.path || "";
-    cniAlt = data.personne.cni.alt || "";
-    casierPath = data.personne.casier.path || "";
-    casierAlt = data.personne.casier.alt || "";
-    certificatPath = data.personne.certificat.path || "";
-    certificatAlt = data.personne.certificat.alt || "";
+    cni = data.personne.cni  || "";
+    CVpath = data.personne.cv ? data.personne.cv.path : "";
+    CValt = data.personne.cv ? data.personne.cv.alt : "";
+    Photopath = data.personne.photo ? data.personne.photo.path :  "";
+    Photoalt = photo ? data.personne.photo.alt :  "";
+    diplomeFilePath = data.personne.diplomeFile ? data.personne.diplomeFile.path : "";
+    diplomeFileAlt = data.personne.diplomeFile ? data.personne.diplomeFile.alt : "";
+    cniPath = data.personne.cni ? data.personne.cni.path : "";
+    cniAlt = data.personne.cni ? data.personne.cni.alt : "";
+    casierPath = data.personne.casier ? data.personne.casier.path : "";
+    casierAlt =  data.personne.casier ? data.personne.casier.alt :  "";
+    certificatPath = data.personne.certificat ? data.personne.certificat.path : "";
+    certificatAlt = data.personne.certificat ? data.personne.certificat.alt : "";
     lieuDiplome = data.personne.lieuDiplome || "";
     persionneId = data.personne.id;
     // Récupérer la profession
@@ -153,7 +157,7 @@
   }
   let valid_endUser = {
     raison: "",
-    status: "acceptation",
+    status: status == "accepte" ? "validation" : "acceptation",
   };
 
   let openShow: boolean = false;
@@ -547,7 +551,7 @@
           <div class="flex items-center justify-between space-x-2">
             <fieldset>
               <legend style="color: black;"
-                >Appartenance à une organisation</legend
+                >Appartenez-vous à une organisation?</legend
               >
               <div class="flex items-center">
                 <div class="mr-2">
@@ -582,9 +586,49 @@
         {/if}
       </div>
 
+      <div class="grid grid-cols-2 gap-6 mt-6 mb-2">
+        <div class="space-y-6">
+          <div class="flex items-center justify-between space-x-2">
+            <fieldset>
+              <legend style="color: black;"
+                >Appartenez-vous à un ordre ?</legend
+              >
+              <div class="flex items-center">
+                <div class="mr-2">
+                  <InputCheck
+                    checked={appartenirOrdre === "non" ? true : false}
+                    label="Non"
+                    disabled={true}
+                  />
+                </div>
+                <div>
+                  <InputCheck
+                    checked={appartenirOrdre === "oui" ? true : false}
+                    label="Oui"
+                    disabled={true}
+                  />
+                </div>
+              </div>
+            </fieldset>
+          </div>
+        </div>
+        {#if appartenirOrdre === "oui"}
+          <!-- <div class="grid grid-cols-1 gap-6 mt-6"> -->
+          <div class="space-y-6">
+            <InputSimple
+              fieldName="numeroInscription"
+              label="Numéro d'inscription"
+              field={numeroInscription}
+              disabled={true}
+            />
+          </div>
+          <!-- </div> -->
+        {/if}
+      </div>
+
       <br />
 
-      {#if status === "attente" || status === "accepte" || status === "valide" || status === "renouvellement"}
+      {#if status === "attente" }
         <fieldset class="border border-gray-300 rounded-md p-4">
           <legend class="text-lg font-semibold text-blue-500">Décision</legend>
           <div class="space-y-4">
@@ -610,7 +654,7 @@
                 bind:group={valid_endUser.status}
               />
               <label for="unverified" class="text-black text-3xl mt-2"
-                >Refuser</label
+                >Rejeter</label
               >
             </div>
             {#if valid_endUser.status === "rejet"}
@@ -623,7 +667,47 @@
           </div>
         </fieldset>
       {/if}
-      {#if status === "refuse"}
+      {#if status === "accepte" }
+        <fieldset class="border border-gray-300 rounded-md p-4">
+          <legend class="text-lg font-semibold text-blue-500">Décision</legend>
+          <div class="space-y-4">
+            <div class="flex items-center space-x-2">
+              <input
+                type="radio"
+                id="conforme"
+                name="profil"
+                value="validation"
+                bind:group={valid_endUser.status}
+                checked
+              />
+              <label for="conforme" class="text-black mt-2 text-3xl"
+                >Valider</label
+              >
+            </div>
+            <div class="flex items-center space-x-2">
+              <input
+                type="radio"
+                id="unverified"
+                name="profil"
+                value="refuse"
+                bind:group={valid_endUser.status}
+              />
+              <label for="unverified" class="text-black text-3xl mt-2"
+                >Refuser</label
+              >
+            </div>
+            {#if valid_endUser.status === "refuse"}
+              <textarea
+                bind:value={valid_endUser.raison}
+                placeholder="Observation"
+                class="w-full border border-gray-300 rounded-md p-2"
+              ></textarea>
+            {/if}
+          </div>
+        </fieldset>
+      {/if}
+      
+      {#if status === "refuse" || status === "rejete"}
         <fieldset class="border border-gray-300 rounded-md p-4">
           <legend class="text-lg font-semibold text-blue-500">Traitement</legend
           >
@@ -672,17 +756,47 @@
               type="submit">{"Valider le dossier"}</Button
             >
           {/if}
-
-          <!-- <Button
-            color="alternative"
-            style="background-color: red !important; color: white;"
-            on:click={() => (open = false)}
-            type="submit">{"Refuser dossier"}</Button
-          > -->
         </div>
-      {:else}
+      {/if}
+
+      {#if status === "accepte"}
         <div class="col-span-2">
-          {#if status == "accepte" || status == "valide" || status == "renouvellement"}
+          {#if isLoad}
+            <Button
+              disabled={true}
+              color="alternative"
+              style="background-color: green !important; color: white;"
+              type="submit"
+            >
+              <div class="flex flex-row gap-2">
+                <div
+                  class="w-3 h-3 rounded-full bg-white animate-bounce [animation-delay:.7s]"
+                ></div>
+                <div
+                  class="w-3 h-3 rounded-full bg-white animate-bounce [animation-delay:.3s]"
+                ></div>
+                <div
+                  class="w-3 h-3 rounded-full bg-white animate-bounce [animation-delay:.7s]"
+                ></div>
+              </div>
+            </Button>
+          {:else}
+            <Button
+              color="alternative"
+              style="background-color: green !important; color: white;"
+              on:click={SaveFunction}
+              type="submit">{"Traiter le dossier"}</Button
+            >
+          {/if}
+        </div>
+      {/if}
+
+      {#if status != "accepte" &&  status != "attente"}
+      <div class="col-span-2">
+      </div>
+      {/if}
+        <!-- <div class="col-span-2">
+          {#if status == "accepte" /* || status == "valide" */ || status == "renouvellement"}
             {#if isLoad}
               <Button
                 disabled={true}
@@ -709,18 +823,16 @@
                 on:click={() =>
                   status === "accepte"
                     ? SaveFunctionSingleMethode("validation")
-                    : status === "valide"
-                      ? SaveFunctionSingleMethode("renouvellement")
                       : SaveFunctionSingleMethode("mis_a_jour")}
                 type="submit"
-                >{#if status === "accepte"}{"Valider l'inscription"}{:else if status === "valide"}{"Renouveller l'inscription"}{:else if status === "renouvellement"}{"Mise au jour de l'inscription"}{/if}</Button
+                >{#if status === "accepte"}{"Valider l'inscription"}{:else if status === "renouvellement"}{"Mise au jour de l'inscription"}{/if}</Button
               >
             {/if}
           {/if}
         </div>
-      {/if}
+      {/if} -->
 
-      <div class="flex justify-end">
+      <div class="flex justify-end item-end">
         <Button
           color="alternative"
           style="background-color: gray !important; color: white;"

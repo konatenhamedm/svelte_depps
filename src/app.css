@@ -14,3 +14,8 @@
        
         background-color: white !important;
     }
+
+    .menu-dropdown{
+    width: 120px !important;
+    right: 21px !important;
+    }

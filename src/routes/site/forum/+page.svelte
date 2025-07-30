@@ -104,15 +104,9 @@
   }
 </script>
 
-<Slide {user} /> <br /><br /><br /><br />
-<link
-  rel="stylesheet"
-  href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
-  integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN"
-  crossorigin="anonymous"
-/>
+<Slide {user} /> <br /><br /><br /><br /><br /><br />
 
-<div class="file-ariane flex items-center space-x-2 text-sm text-gray-600 mb-4">
+<div class="file-ariane flex items-center space-x-2 text-sm text-gray-600 mb-8">
   <div class="flex items-center hover:text-blue-600 entete">
     <button
       on:click={navigateToDashboard}
@@ -133,118 +127,45 @@
     </button>
     <span>/</span>
     <span class="text-gray-800">Liste des articles</span>
-    <!-- Nom de la page actuelle -->
   </div>
-</div>
-<br /><br /><br /><br /><br />
+  <!-- Nom de la page actuelle -->
+</div><br /><br /><br /><br /><br /><br />
 
-<br />
-
-<main class="pb-[120px] iletisim-form-alani">
-  <section class="">
-    <br /><br />
-    <div
-      class="h-yazi-ortalama h-yazi-margin-orta-3 wow fadeInUp container pb-8"
-    >
-      <!--  <h2 class="h2-baslik-hizmetler-2 wow fadeInUp"> &nbsp;&nbsp;FORUM</h2> -->
-    </div>
-    <br />
-    <div class="container">
-      <div class="row">
-        {#if loading}
-         <!--  <div class="loader"> -->
-            {#each Array(3) as _}
-              <!-- Afficher 3 éléments skeleton -->
-              <div class="col-md-4 skeleton">
-                <div class="post">
-                  <div class="datesection">
-                    <span class="skeleton-date"></span>
-                    <span class="skeleton-category"></span>
-                  </div>
-                  <div class="skeleton-title"></div>
-                  <div class="skeleton-text"></div>
-                  <div class="skeleton-btn"></div>
-                </div>
-              </div>
-            {/each}
-       <!--    </div> -->
-        {:else}
-          {#each paginatedForums as forum}
-            <div class="col-md-4">
-              <div
-                class="post wow fadeInUp"
-                data-wow-delay="0.60s"
-                style="cursor:pointer;"
-              >
-                <div class="datesection">
-                  <span class="date">{formatDateForInput(forum.createdAt)}</span
-                  >&nbsp;<span class="tt">-</span>&nbsp;<span class="category">
-                    {#if forum.user.typeUser == "PROFESSIONNEL"}
-                      {forum.user.personne.nom +
-                        " " +
-                        forum.user.personne.prenoms}
-                    {:else}
-                      {forum.user.email}
-                    {/if}
-                  </span>
-                </div>
-                <h3 class="baslik-3 h-yazi-margin-kucuk">{forum.titre}</h3>
-                <p class="post-kutu--yazi">
-                  {truncate(forum.contenu, 80)} ...
-                </p>
-                <div class="h-yazi-ortalama h-yazi-margin-4">
-                  <a
-                    href="javascript:void(0);"
-                    on:click={() => {
-                      goto("/site/forum/details/" + forum.id);
-                    }}
-                    class="buton buton--kirmizi buton--animasyon">Voir plus</a
-                  >
-                </div>
-              </div>
-            </div>
-          {/each}
-        {/if}
-      </div>
-    </div>
-    <div class="alanb"></div>
-    <br /><br />
-  </section>
-
-  <div class="adminActions">
-    <a class="adminButton" href="javascript:void(0);" on:click={openAddPopup}
-      ><i style="font-size: 30px;color:#fff;" class="fa fa-plus"></i></a
-    >
-  </div>
-
+<main style="background-color: #fff" class="pb-20">
   <style>
-    .post {
-      margin-bottom: 40px;
+    .entete {
+      width: 80% !important;
+    }
+    .tablo:not(:last-child) {
+      margin-bottom: 35px;
+    }
+    .dropify-wrapper .dropify-message p {
+      text-align: center;
+    }
+    .dropify-wrapper .dropify-message span.file-icon {
+      font-size: 50px;
+      color: #ccc;
+      display: none;
+    }
+    .dropify-wrapper {
+      height: 100px !important;
+    }
+    .col-md-3 {
+      margin-top: 15px !important;
     }
     .iletisim-form-alani {
       padding: 20rem 157px 10rem !important;
 
       background-color: #fff;
     }
-    .adminActions {
-      position: fixed;
-      bottom: 35px;
-      right: 35px;
-      z-index: 999;
-      width: 70px;
-      background: #20aae1;
-      height: 70px;
-      border-radius: 50%;
-    }
-    .adminActions a i {
-      position: absolute;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-    }
+    .main-div {
+      margin-top: -10px;
+      margin-bottom: 10px;
 
-    .entete {
-      width: 80% !important;
+      /* border: 1px solid #e5e7eb; */
+      background: transparent;
+      border-radius: 10px;
+      padding: 20rem 316px 10rem 10rem !important;
     }
 
     .file-ariane {
@@ -263,64 +184,116 @@
       color: white;
       margin: 0 5px;
     }
-
-    .loader .skeleton {
-    background-color: #e0e0e0;
-    height: 200px;
-    margin-bottom: 20px;
-    border-radius: 8px;
-    position: relative;
-  }
-
-  .skeleton-title, .skeleton-text, .skeleton-date, .skeleton-category, .skeleton-btn {
-    background-color: #d0d0d0;
-    border-radius: 5px;
-  }
-
-  .skeleton-title {
-    width: 80%;
-    height: 24px;
-    margin: 10px 0;
-  }
-
-  .skeleton-text {
-    width: 60%;
-    height: 15px;
-    margin-bottom: 10px;
-  }
-
-  .skeleton-date, .skeleton-category {
-    width: 40%;
-    height: 12px;
-  }
-
-  .skeleton-btn {
-    width: 30%;
-    height: 35px;
-    margin-top: 15px;
-  }
-
-  /* Animation pour l'effet de squelette */
-  .skeleton {
-    animation: pulse 1.5s infinite ease-in-out;
-  }
-
-  @keyframes pulse {
-    0% {
-      background-color: #e0e0e0;
+    .pagination-controls {
+      /* display: flex; */
+      justify-content: center;
+      align-items: center;
+      margin-top: 20px;
     }
-    50% {
-      background-color: #f5f5f5;
+    .pagination-controls button {
+      margin: 0 10px;
+      padding: 5px 10px;
+      background-color: #f57f30;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
     }
-    100% {
-      background-color: #e0e0e0;
+
+    .pagination-controls button:disabled {
+      background-color: #ccc;
+      cursor: not-allowed;
     }
-  }
+
+    .pagination-controls span {
+      margin: 0 10px;
+    }
   </style>
   <link
-    href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css"
     rel="stylesheet"
+    href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
+    integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN"
+    crossorigin="anonymous"
   />
+  <link
+    rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
+    integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A=="
+    crossorigin="anonymous"
+    referrerpolicy="no-referrer"
+  />
+  <section class="hakkimizda-bolumu-anasayfa1 iletisim-form-alani" style="padding-top:120px">
+    <div class="container">
+      <div class="masqueur à effet de révélation d'image de projet wow">
+        <button on:click={openAddPopup} class="buton buton--kirmizi">
+          <small>ENVOYER UN ARTICLE</small> <i class="fa fa-plus"></i>
+        </button>
+        <br /><br />
+
+        <div class="row">
+          {#if loading}
+            {#each Array(3) as _}
+              <div class="col-md-4 skeleton">
+                <div class="post">
+                  <div class="datesection">
+                    <span class="skeleton-date"></span>
+                    <span class="skeleton-category"></span>
+                  </div>
+                  <div class="skeleton-title"></div>
+                  <div class="skeleton-text"></div>
+                  <div class="skeleton-btn"></div>
+                </div>
+              </div>
+            {/each}
+          {:else if paginatedForums.length > 0}
+            {#each paginatedForums as forum}
+              <div class="col-md-4">
+                <div
+                  class="post wow fadeInUp"
+                  data-wow-delay="0.60s"
+                  style="cursor:pointer;"
+                >
+                  <div class="datesection">
+                    <span class="date">{formatDateForInput(forum.createdAt)}</span>
+                    &nbsp;<span class="tt">-</span>&nbsp;
+                    <span class="category">
+                      {#if forum.user.typeUser == "PROFESSIONNEL"}
+                        {forum.user.personne.nom + " " + forum.user.personne.prenoms}
+                      {:else}
+                        {forum.user.email}
+                      {/if}
+                    </span>
+                  </div>
+                  <h3 class="baslik-3 h-yazi-margin-kucuk">{forum.titre}</h3>
+                  <p class="post-kutu--yazi">
+                    {truncate(forum.contenu, 80)} ...
+                  </p>
+                  <div class="h-yazi-ortalama h-yazi-margin-4">
+                    <a
+                      href="javascript:void(0);"
+                      on:click={() => {
+                        goto("/site/forum/details/" + forum.id);
+                      }}
+                      class="buton buton--kirmizi buton--animasyon"
+                    >
+                      Voir plus
+                    </a>
+                  </div>
+                </div>
+              </div>
+            {/each}
+          {:else}
+            <div class="col-12 text-center text-muted my-5">
+              <p class="text-center" style="text-align: center;">Aucun forum disponible pour le moment.</p>
+            </div>
+          {/if}
+        </div>
+       
+        <br /><br /><br /><br /><br /><br /><br /><br /> <br /><br /><br /><br /><br /><br /> <br /><br /><br /><br /><br /><br /><br/><br/>
+        </div>
+      </div>
+    
+  </section>
 </main>
 <!-- Popup d'ajout -->
 <AddForumPopup

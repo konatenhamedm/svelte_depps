@@ -116,7 +116,7 @@
 
 <Entete libelle="Statistiques" parent="Statistiques" descr="Spécialisation" />
 <section class="content">
-  <div class="row">
+  <div class="row mb-10">
     <div class="col-12">
       <div class="grid grid-cols-3 gap-4">
         <div class="col-span-2 p-4 h-64">
@@ -271,7 +271,14 @@
         </div>
       </div>
     </div>
+    
   </div>
+  
+
+
+
 </section>
+
+
 
 <!-- Modales -->

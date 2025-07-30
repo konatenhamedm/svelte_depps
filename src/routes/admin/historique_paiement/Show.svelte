@@ -70,13 +70,18 @@
     <div slot="footer" class="w-full grid grid-cols-3">
   <!-- Place le bouton dans la troisième colonne -->
   <div class="col-start-3 flex justify-end">
-    <Button 
-      color="alternative" 
-      style="background-color: red; color: white;" 
-      on:click={() => (open = false)}
-    >
-      Fermer
-    </Button>
+    <Button
+    color="alternative"
+    style="background-color: gray !important; color: white;"
+    on:click={() => (open = false)}
+    type="submit">{"Fermer"}</Button
+  >
+
+   <!--  <Button
+    color="dark"
+    style="background-color: black;"
+    on:click={() => (open = false)}>Annuler</Button
+  > -->
   </div>
 </div>
 

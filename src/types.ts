@@ -507,8 +507,14 @@ export interface professionnel {
       montantNouvelleDemande: string;
       montantRenouvellement: string;
       id: number;
-
+      
     };
+    imputation: any;
+    imputationData : {
+      id:number;
+      username:any;
+      email:any;
+    }
     lieuDiplome: string;
     code: string;
     prenoms: string;

@@ -1,7 +1,7 @@
 
 
 
-<script lang="ts" >
+<script lang="ts">
   
 
 
@@ -11,10 +11,15 @@
   import Side from "../components/_includes/Side.svelte";
   import Footer from "../components/_includes/Footer.svelte";
   import Header from "$components/_includes/Header.svelte";
- 
+  import { onMount } from "svelte";
+  import type { User } from "../types";
+  import { getAuthCookie } from "$lib/auth";
+
 
   let { children,data } = $props();
   let currentYear = new Date().getFullYear();
+
+
 
 </script>
 
@@ -39,11 +44,11 @@
 .theme-primary .main-header {
     background: #343437 !important;
 }
-
 .dark\:bg-gray-800 {
-        --tw-bg-opacity: 1;
-        background-color: white !important;
-    }
+       
+       background-color: white !important;
+   }
+
     .dark\:border-gray-600 {
         --tw-border-opacity: 1;
         background-color: white !important;
@@ -367,8 +372,8 @@ img {
   <div class="wrapper">
     <div id="loader"></div>
 
-    <Header />
-    <Side />
+    <Header user={data.user} />
+    <Side user={data.user}/>
     <div class="content-wrapper">
       {@render children()}
       

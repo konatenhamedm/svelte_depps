@@ -7,33 +7,29 @@
     TableBodyCell,
     TableBodyRow,
     TableHead,
-    TableHeadCell
-  } from "flowbite-svelte";
-  import {
-    EditOutline,
-    EyeOutline,
-    TrashBinSolid
-  } from "flowbite-svelte-icons";
-  import Entete from "../../../components/_includes/Entete.svelte";
-  import MessageError from "../../../components/MessageError.svelte";
-  import Pagination from "../../../components/_includes/Pagination.svelte";
+    TableHeadCell,
+  } from 'flowbite-svelte';
+  import {EditOutline, EyeOutline, TrashBinSolid} from 'flowbite-svelte-icons';
+  import Entete from '../../../components/_includes/Entete.svelte';
+  import MessageError from '../../../components/MessageError.svelte';
+  import Pagination from '../../../components/_includes/Pagination.svelte';
   // Importer le store pageSize
-  import { get } from "svelte/store";
-  import type { Permission, User } from "../../../types";
-  import { apiFetch } from "$lib/api";
-  import { pageSize } from "../../../store"; // Importer le store pageSize
-  import { onMount } from "svelte";
-  import Add from "./Add.svelte";
-  import Edit from "./Edit.svelte";
-  import Show from "./Show.svelte";
-  import Delete from "./Delete.svelte";
-  import { getAuthCookie } from "$lib/auth";
-  import DropdownMenu from "$components/DropdownMenu.svelte";
+  import {get} from 'svelte/store';
+  import type {Permission, User} from '../../../types';
+  import {apiFetch} from '$lib/api';
+  import {pageSize} from '../../../store'; // Importer le store pageSize
+  import {onMount} from 'svelte';
+  import Add from './Add.svelte';
+  import Edit from './Edit.svelte';
+  import Show from './Show.svelte';
+  import Delete from './Delete.svelte';
+  import {getAuthCookie} from '$lib/auth';
+  import DropdownMenu from '$components/DropdownMenu.svelte';
 
   let main_data: Permission[] = [];
-  let searchQuery = ""; // Pour la recherche par texte
-  let selectedService: any = ""; // Pour filtrer par service
-  let selectedStatus: any = ""; // Pour filtrer par status
+  let searchQuery = ''; // Pour la recherche par texte
+  let selectedService: any = ''; // Pour filtrer par service
+  let selectedStatus: any = ''; // Pour filtrer par status
   let startDate: any | null = null; // Date de début
   let endDate: any | null = null; // Date de fin
   let currentPage = 1;
@@ -50,18 +46,18 @@
   async function fetchData() {
     loading = true; // Active le spinner de chargement
     try {
-      const res = await apiFetch(true, "/civilite/");
+      const res = await apiFetch(true, '/civilite/');
 
       if (res) {
         main_data = res.data as Permission[];
       } else {
         console.error(
-          "Erreur lors de la récupération des données:",
+          'Erreur lors de la récupération des données:',
           res.statusText
         );
       }
     } catch (error) {
-      console.error("Erreur lors de la récupération des données:", error);
+      console.error('Erreur lors de la récupération des données:', error);
     } finally {
       loading = false; // Désactive le spinner de chargement
     }
@@ -114,14 +110,14 @@
   $: if (!openAdd || !openEdit || !openDelete) {
     refreshDataIfNeeded();
   }
-    // Fonction de callback pour gérer les actions
+  // Fonction de callback pour gérer les actions
   const handleAction = (action: any, item: any) => {
     current_data = item;
-    if (action === "view") {
+    if (action === 'view') {
       openShow = true;
-    } else if (action === "edit") {
+    } else if (action === 'edit') {
       openEdit = true;
-    } else if (action === "delete") {
+    } else if (action === 'delete') {
       openDelete = true;
     }
   };
@@ -165,7 +161,7 @@
               <TableHead
                 class="border-y border-gray-200 bg-gray-100 dark:border-gray-700"
               >
-                {#each ["code", "libelle", "Action"] as title}
+                {#each ['code', 'libelle', 'Action'] as title}
                   <TableHeadCell class="ps-4 font-normal border border-gray-300"
                     >{title}</TableHeadCell
                   >
@@ -222,8 +218,8 @@
 
                       <!--  <TableBodyCell class="p-4 border border-gray-300">{item.sous_menu.libelle}</TableBodyCell>
                                    -->
-                     
-                        <TableBodyCell class="p-2 w-8 border border-gray-300">
+
+                      <TableBodyCell class="p-2 w-8 border border-gray-300">
                         <DropdownMenu {item} onAction={handleAction} />
                       </TableBodyCell>
                     </TableBodyRow>

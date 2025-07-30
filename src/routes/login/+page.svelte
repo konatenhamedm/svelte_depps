@@ -1,48 +1,46 @@
 <script lang="ts">
-  import Notification from "$components/_includes/Notification.svelte";
-  import Spinner from "$components/_skeletons/Spinner.svelte";
-  import { login } from "$lib/auth";
+  import Notification from '$components/_includes/Notification.svelte';
+  import Spinner from '$components/_skeletons/Spinner.svelte';
+  import {login} from '$lib/auth';
 
   let showNotification = false;
-  let notificationMessage = "";
-  let notificationType = "info";
+  let notificationMessage = '';
+  let notificationType = 'info';
 
-  let username = "";
-  let password = "";
+  let username = '';
+  let password = '';
   $: authenticating = false;
   let showPassword = false; // To toggle password visibility
-  $: message = "";
-  let error = "";
+  $: message = '';
+  let error = '';
 
-  let passwordWarning = "";
+  let passwordWarning = '';
   let isPasswordValid = false;
-
-
 
   async function handleSubmit(event: any) {
     authenticating = true;
     event.preventDefault();
     try {
       const success = await login(username, password);
-	
+
       if (success.token != null) {
-        window.location.href = "/admin";
+        window.location.href = '/admin';
       } else {
-        message = "Veuillez vérifier vos identifiants";
+        message = 'Veuillez vérifier vos identifiants';
         authenticating = false;
         setTimeout(() => {
-          message = ""; // Efface le message après 3 secondes
+          message = ''; // Efface le message après 3 secondes
         }, 3000);
       }
-	  authenticating = false;
+      authenticating = false;
     } catch (error) {
       authenticating = false;
-      message = "Une erreur est survenue";
+      message = 'Une erreur est survenue';
     }
   }
 </script>
 
-<div class="px-4 md:px-0">
+<div class="px-4 md:px-0" style="background-image: url(/bg5.jpg);">
   <div class="grid grid-cols-1 m-0">
     <div class="col-12 p-0">
       <div class="login-card login-dark">
@@ -81,7 +79,7 @@
                     <input
                       id="Password"
                       bind:value={password}
-                      class="border-1 rounded w-full py-3 px-3 leading-tight border-gray-300  focus:outline-none focus:border-indigo-700 focus:bg-white text-black pr-16 font-mono js-password"
+                      class="border-1 rounded w-full py-3 px-3 leading-tight border-gray-300 focus:outline-none focus:border-indigo-700 focus:bg-white text-black pr-16 font-mono js-password"
                       type="text"
                       placeholder="Entrez votre mot de passe"
                     />
@@ -112,13 +110,14 @@
 									<input id="checkbox1" type="checkbox">
 									<label class="text-muted" for="checkbox1">Remember password</label>
 								</div> -->
-                  <!-- 				<div class="checkbox p-0">
-
-								<a class="link text-blue-500" href="forget-password.html">Forgot password?</a>
-							</div> -->
+                  <div class="checkbox p-0">
+                    <a class="link text-blue-500" href="/login/mot_passe_oublie"
+                      >Mot de passe oublié !</a
+                    >
+                  </div>
                   <div class="text-end mt-6">
                     <button
-                      class="btn btn-primary btn-block rounded-md text-white w-full"
+                      class="btn btn-primary bg-[#4f9dd9] hover:bg-[#4f9dd9] btn- rounded-md text-white w-full"
                       type="submit"
                     >
                       {#if authenticating}
@@ -137,18 +136,16 @@
                       {/if}
                     </button>
                   </div>
-
-              
                 </div>
-				{#if !authenticating && message !== ""}
-				<div
-				  class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative"
-				  role="alert"
-				>
-				  <strong class="font-bold">Oups erreur!</strong>
-				  <span class="block sm:inline">{message}</span>
-				</div>
-			  {/if}
+                {#if !authenticating && message !== ''}
+                  <div
+                    class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative"
+                    role="alert"
+                  >
+                    <strong class="font-bold">Oups erreur!</strong>
+                    <span class="block sm:inline">{message}</span>
+                  </div>
+                {/if}
               </div>
             </form>
           </div>
@@ -157,18 +154,22 @@
     </div>
   </div>
 </div>
+
+{#if showNotification}
+  <Notification
+    message={notificationMessage}
+    type={notificationType}
+    duration={5000}
+  />
+{/if}
+
 <style>
-	@keyframes spin {
-	  from {
-		transform: rotate(0deg);
-	  }
-	  to {
-		transform: rotate(360deg);
-	  }
-	}
-  </style>
-  
-  {#if showNotification}
-	<Notification message={notificationMessage} type={notificationType} duration={5000} />
-  {/if}
-  
+  @keyframes spin {
+    from {
+      transform: rotate(0deg);
+    }
+    to {
+      transform: rotate(360deg);
+    }
+  }
+</style>

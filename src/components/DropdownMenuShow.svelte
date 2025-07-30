@@ -1,12 +1,15 @@
 <script>
   import { EditOutline, EyeOutline, TrashBinSolid } from "flowbite-svelte-icons";
   import { openMenu } from "../menuStore"; // Store global pour gérer un seul menu ouvert
-
+ 
+  export let user ;
   export let item;
   export let onAction;
   let isOpen = false;
   let menuPosition = { top: "0px", left: "0px" };
   let buttonRef;
+
+ console.log("UUUUU",user); 
 
   const toggleMenu = (event) => {
     openMenu.update(current => {
@@ -54,10 +57,32 @@
 
   {#if isOpen}
     <div class="menu-dropdown">
+      {#if user.type != "SOUS-DIRECTEUR"}
       <button class="menu-item  hover:text-white"
         on:click={() => {onAction('view', item); isOpen = false;}}>
         <EyeOutline size="sm" class="mr-2" /> Traiter
       </button>
+  {:else if user.type == "SOUS-DIRECTEUR"  }
+
+    {#if item?.personne?.status == "attente" }
+ <button class="menu-item  hover:text-white"
+      on:click={() => {onAction('details', item); isOpen = false;}}>
+      <EditOutline size="sm" class="mr-2" /> Détails
+    </button>
+ <button class="menu-item  hover:text-white"
+      on:click={() => {onAction('imputation', item); isOpen = false;}}>
+      <EditOutline size="sm" class="mr-2" /> Imputation
+    </button>
+    {:else}
+    <button class="menu-item  hover:text-white"
+    on:click={() => {onAction('details', item); isOpen = false;}}>
+    <EditOutline size="sm" class="mr-2" /> Détails
+  </button>
+    {/if}
+
+
+  {/if}
+     
      
     </div>
   {/if}

@@ -8,29 +8,24 @@
   export let data = [];
   export let type = "professionnel"; // 'professionnel' | 'etablissement' | 'pro'
 
+
   function addHeader(doc, logoImage) {
-    doc.addImage(logoImage, "PNG", 10, 6, 15, 15);
+    
+    doc.addImage(logoImage, 'PNG', 10, 6, 20, 14);
     doc.setFontSize(12);
-    doc.setFont("helvetica", "bold");
-    doc.text("VOTRE ENTREPRISE", 105, 15, null, null, "center");
+    doc.setFont('helvetica', 'bold');
+    doc.text('VOTRE ENTREPRISE', 148, 15, null, null, 'center');
     doc.setFontSize(10);
-    doc.text("Adresse, Téléphone", 105, 20, null, null, "center");
-    doc.line(10, 25, 200, 25);
-    doc.text("République de COTE D'IVOIRE", 200, 15, null, null, "right");
-    doc.text(
-      `Date : ${new Date().toLocaleDateString()}`,
-      200,
-      20,
-      null,
-      null,
-      "right"
-    );
+    doc.text('Adresse, Téléphone', 148, 20, null, null, 'center');
+    doc.line(10, 25, 280, 25);
+    doc.text("République de COTE D'IVOIRE", 280, 15, null, null, 'right');
+    doc.text(`Date : ${new Date().toLocaleDateString()}`, 280, 20, null, null, 'right');
   }
 
   function getStatus(status) {
     return status === 1 ? "Paiement effectué" : "Paiement échoué";
   }
-
+//dddd
   function addFooter(doc, pageNumber) {
     doc.setFontSize(8);
     doc.line(10, 280, 200, 280);
@@ -49,17 +44,14 @@
       callback(canvas.toDataURL("image/png"));
     };
   }
-  function formatMontant(montant) {
-    return new Intl.NumberFormat('fr-FR', {
-      style: 'currency',
-      currency: 'XOF'
-    }).format(montant);
-  }
+ 
   function formatDatePaiement(dateString) {
     const options = { year: 'numeric', month: '2-digit', day: '2-digit' };
     return new Date(dateString).toLocaleDateString('fr-FR', options);
   }
-
+  function formatMontantPerso(montant) {
+  return montant.toLocaleString('fr-FR') + ' FCFA';
+}
   function exportToPDF() {
     const doc = new jsPDF();
 
@@ -70,16 +62,24 @@
 
       const body = data.map((item) => {
         if (type === "paiement") {
+         
           return [
-            item.reference || "N/A",
-            item.type || "N/A",
-            item.user?.email || "N/A",
-            getStatus(item.state),
-            formatMontant(parseInt(item.montant, 10)),
-            formatDatePaiement(item.createdAt)
+            item.personne.nom || "N/A",
+            item.personne.prenoms || "N/A",
+            item.email || "N/A",
+            item.personne.number || "N/A",
+            item.personne.profession ? item.personne.profession.libelle : "N/A",
+           
           ];
         } else if (type === "professionnel" || type === "pro") {
-          // ... (garder la logique existante)
+          return [
+            item.personne.nom || "N/A",
+            item.personne.prenoms || "N/A",
+            item.email || "N/A",
+            item.personne.number || "N/A",
+            item.personne.profession ? item.personne.profession.libelle : "N/A",
+           
+          ];
         } else {
           // ... (garder la logique existante)
         }

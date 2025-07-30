@@ -1,5 +1,5 @@
 <script lang="ts">
-  import Entete from "$components/_includes/Entete.svelte";
+  import Entete from '$components/_includes/Entete.svelte';
   import {
     Button,
     Input,
@@ -8,74 +8,79 @@
     TableBodyCell,
     TableBodyRow,
     TableHead,
-    TableHeadCell
-  } from "flowbite-svelte";
+    TableHeadCell,
+  } from 'flowbite-svelte';
   import {
     EditOutline,
     TrashBinSolid,
     EyeOutline,
     LockOpenOutline,
     LockOutline,
-    CheckCircleOutline
-  } from "flowbite-svelte-icons";
-  import Pagination from "$components/_includes/Pagination.svelte";
-  import { pageSize } from "../../../store";
-  import { get } from "svelte/store";
-  import { onMount, onDestroy } from "svelte";
-  import MessageError from "$components/MessageError.svelte";
+    CheckCircleOutline,
+  } from 'flowbite-svelte-icons';
+  import Pagination from '$components/_includes/Pagination.svelte';
+  import {pageSize} from '../../../store';
+  import {get} from 'svelte/store';
+  import {onMount, onDestroy} from 'svelte';
+  import MessageError from '$components/MessageError.svelte';
 
-  import { apiFetch, BASE_URL_API } from "$lib/api";
-  import type { EndUser, professionnel } from "../../../types";
-  import Add from "./Add.svelte";
-  import Edit from "./Edit.svelte";
-  import Show from "./Show.svelte";
-  import Delete from "./Delete.svelte";
-  import DropdownMenu from "$components/DropdownMenu.svelte";
-  import DropdownMenuShow from "$components/DropdownMenuShow.svelte";
+  import {apiFetch, BASE_URL_API} from '$lib/api';
+  import type {EndUser, professionnel} from '../../../types';
+  import Add from './Add.svelte';
+  import Edit from './Edit.svelte';
+  import Show from './Show.svelte';
+  import Delete from './Delete.svelte';
+  import DropdownMenu from '$components/DropdownMenu.svelte';
+  import DropdownMenuShow from '$components/DropdownMenuShow.svelte';
+  import Imputation from './Imputation.svelte';
+  import ShowDetails from './ShowDetails.svelte';
   export let data; // Les données retournées par `load()`
   let user = data.user;
 
-  const path: string = "/admin/end-user";
-  const description: string = "Liste des end users freewan";
-  const title: string = "Admin | end users";
-  const subtitle: string = "Liste des end users";
+  const path: string = '/admin/end-user';
+  const description: string = 'Liste des end users freewan';
+  const title: string = 'Admin | end users';
+  const subtitle: string = 'Liste des end users';
 
   let openDelete: boolean = false;
   let openEdit: boolean = false;
   let openAdd: boolean = false;
   let openShow: boolean = false;
+  let openShowDetails: boolean = false;
+  let openImputation: boolean = false;
   let current_data: any = {};
-  let activeTab = "attente"; // Valeur par défaut : "En attente"
+  let activeTab = 'attente'; // Valeur par défaut : "En attente"
 
   // Données et pagination
   let currentPage = 1;
   let main_data: professionnel[] = [];
   let loading = false;
-  let searchQuery: string = "";
-  $: searchQuery = "";
-
+  let searchQuery: string = '';
+  $: searchQuery = '';
 
   // Fonction pour récupérer les données
-async function fetchData() {
-  loading = true; // Active le spinner de chargement
-  try {
-    const res = await apiFetch(true, "/professionnel/");
-    if (res) {
-      main_data = res.data as professionnel[];
+  async function fetchData() {
+    loading = true; // Active le spinner de chargement
+    try {
+      const res = await apiFetch(true, '/professionnel/');
+      if (res) {
+        main_data = res.data as professionnel[];
 
-      console.log(main_data);
-    } else {
-      console.error(
-        "Erreur lors de la récupération des données:",
-        res.statusText
-      );
+        console.log(main_data);
+      } else {
+        console.error(
+          'Erreur lors de la récupération des données:',
+          res.statusText
+        );
+      }
+
+      loading = false; // Désactive le spinner de chargement
+    } catch (error) {
+      console.error('Erreur lors de la récupération des données:', error);
+    } finally {
+      loading = false; // Désactive le spinner de chargement
     }
-  } catch (error) {
-    console.error("Erreur lors de la récupération des données:", error);
-  } finally {
-    loading = false; // Désactive le spinner de chargement
   }
-}
   onMount(async () => {
     await fetchData();
   });
@@ -83,15 +88,16 @@ async function fetchData() {
   // Liste des onglets avec leur label et couleur
   const tabs = [
     /* { key: "all", label: "Tous" }, */
-    { key: "attente", label: "En attente" },
-    { key: "accepte", label: "Accepté" },
-    { key: "valide", label: "Validé" },
-    { key: "refuse", label: "Refusé" },
-    { key: "renouvellement", label: "Renouvellement" },
-    { key: "a_jour", label: "À jour" }
+    {key: 'attente', label: 'En attente'},
+    {key: 'accepte', label: 'Accepté'},
+    {key: 'rejete', label: 'Rejeté'},
+    {key: 'valide', label: 'Validé'},
+    {key: 'refuse', label: 'Refusé'},
+    {key: 'renouvellement', label: 'Renouvellement'},
+    {key: 'a_jour', label: 'À jour'},
   ];
-  let statusCounts: { [key: string]: number } = {};
-  // Filtrage des données selon l'onglet actifn,j
+  let statusCounts: {[key: string]: number} = {};
+  // Filtrage des données selon l'onglet actif
   // Filtrage des données selon l'onglet actif
   // Précalcul du nombre d'éléments par statut
   $: statusCounts = main_data.reduce((acc, user) => {
@@ -101,19 +107,19 @@ async function fetchData() {
 
   // Filtrage des données selon l'onglet actif
   $: filteredData = main_data
-          .filter((user) => user.personne.status === activeTab)
-          .filter((user) => {
-            if (!searchQuery) return true;
-            const query = searchQuery.toLowerCase();
-            return (
-                    user.personne.nom?.toLowerCase().includes(query) ||
-                    user.personne.prenoms?.toLowerCase().includes(query) ||
-                    user.personne.number?.toLowerCase().includes(query) ||
-                    user.email?.toLowerCase().includes(query) ||
-                    user.personne.profession?.libelle?.toLowerCase().includes(query) ||
-                    user.personne.code?.toLowerCase().includes(query)
-            );
-          });
+    .filter((user) => user.personne.status === activeTab)
+    .filter((user) => {
+      if (!searchQuery) return true;
+      const query = searchQuery.toLowerCase();
+      return (
+        user.personne.nom?.toLowerCase().includes(query) ||
+        user.personne.prenoms?.toLowerCase().includes(query) ||
+        user.personne.number?.toLowerCase().includes(query) ||
+        user.email?.toLowerCase().includes(query) ||
+        user.personne.profession?.libelle?.toLowerCase().includes(query) ||
+        user.personne.code?.toLowerCase().includes(query)
+      );
+    });
 
   // Calcul du nombre total de pages
   $: totalPages = Math.max(
@@ -154,23 +160,24 @@ async function fetchData() {
   }
 
   // Rafraîchir les données après fermeture des modales
-  $: if (!openAdd || !openEdit || !openDelete || !openShow) {
+  $: if (!openAdd || !openEdit || !openDelete || !openShow || !openImputation) {
     refreshDataIfNeeded();
   }
 
   const handleAction = (action: any, item: any) => {
     current_data = item;
-    if (action === "view") {
+    if (action === 'view') {
       openShow = true;
-    } else if (action === "edit") {
+    } else if (action === 'edit') {
       openEdit = false;
-    } else if (action === "delete") {
+    } else if (action === 'delete') {
       openDelete = false;
+    } else if (action === 'imputation') {
+      openImputation = true;
+    } else if (action === 'details') {
+      openShowDetails = true;
     }
   };
-
-
-
 </script>
 
 <Entete
@@ -214,30 +221,30 @@ async function fetchData() {
             <div class="w-full grid grid-cols-4">
               <div class="relative">
                 <Input
-                        placeholder="Rechercher..."
-                        type="text"
-                        bind:value={searchQuery}
-                        class="form-input font-normal rounded block w-full border-gray-200 text-sm focus:border-gray-300 focus:ring-0 bg-white mb-4 pl-10"
+                  placeholder="Rechercher..."
+                  type="text"
+                  bind:value={searchQuery}
+                  class="form-input font-normal rounded block w-full border-gray-200 text-sm focus:border-gray-300 focus:ring-0 bg-white mb-4 pl-10"
                 />
                 {#if searchQuery}
                   <button
-                          on:click={() => (searchQuery = '')}
-                          class="absolute right-2 top-2 text-gray-500 hover:text-gray-700"
+                    on:click={() => (searchQuery = '')}
+                    class="absolute right-2 top-2 text-gray-500 hover:text-gray-700"
                   >
                     ×
                   </button>
                 {/if}
                 <svg
-                        class="absolute left-3 top-2.5 h-5 w-5 text-gray-400"
-                        fill="none"
-                        stroke="currentColor"
-                        viewBox="0 0 24 24"
+                  class="absolute left-3 top-2.5 h-5 w-5 text-gray-400"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
                 >
                   <path
-                          stroke-linecap="round"
-                          stroke-linejoin="round"
-                          stroke-width="2"
-                          d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
                   />
                 </svg>
               </div>
@@ -247,20 +254,57 @@ async function fetchData() {
               <TableHead
                 class="border-y border-gray-200 bg-gray-100 dark:border-gray-700"
               >
-                {#if activeTab === "valide"}
-                  {#each ["nom", "prénoms", "Téléphone", "email","professionnel de santé ", "Code", "Action"] as title}
-                    <TableHeadCell
-                      class="ps-4 font-normal border border-gray-300"
-                      >{title}</TableHeadCell
-                    >
+                {#if user.type == 'ADMINISTRATEUR'}
+
+                  {#each ['nom', 'prénoms', 'Téléphone', 'email', 'professionnel de santé', 'Code', 'imputation'] as title}
+                    {#if title}
+                      <TableHeadCell
+                        class="ps-4 font-normal border border-gray-300"
+                      >
+                        {title}
+                      </TableHeadCell>
+                    {/if}
                   {/each}
+
+                  <!-- fin first -->
                 {:else}
-                  {#each ["nom", "prénoms", "Téléphone", "email", "professionnel de santé ", "Action"] as title}
+                  {#if activeTab === 'valide'}
+
+                  {#if user.type === "SOUS-DIRECTEUR"  }
+                  {#each ['nom', 'prénoms', 'Téléphone', 'email', 'professionnel de santé', 'Code', 'imputation','Action'] as title}
+                  {#if title}
                     <TableHeadCell
                       class="ps-4 font-normal border border-gray-300"
-                      >{title} </TableHeadCell
                     >
-                  {/each}
+                      {title}
+                    </TableHeadCell>
+                  {/if}
+                {/each}
+                  {:else}
+                  {#each ['nom', 'prénoms', 'Téléphone', 'email', 'professionnel de santé', 'Code', 'imputation'] as title}
+                  {#if title}
+                    <TableHeadCell
+                      class="ps-4 font-normal border border-gray-300"
+                    >
+                      {title}
+                    </TableHeadCell>
+                  {/if}
+                {/each}
+                  {/if}
+                    
+                  {:else}
+                    {#each ['nom', 'prénoms', 'Téléphone', 'email', 'professionnel de santé', 'imputation', /* (user.type === "SOUS-DIRECTEUR" && activeTab == "attente") ? */ 'Action'] as title}
+                      {#if title}
+                        <TableHeadCell
+                          class="ps-4 font-normal border border-gray-300"
+                        >
+                          {title}
+                        </TableHeadCell>
+                      {/if}
+                    {/each}
+                  {/if}
+
+                  <!-- fin seconde -->
                 {/if}
               </TableHead>
               <TableBody>
@@ -318,17 +362,37 @@ async function fetchData() {
                         >{item.email}</TableBodyCell
                       >
                       <TableBodyCell class="p-4 border border-gray-300"
-                        >{ item.personne.profession.libelle}</TableBodyCell
+                        >{item.personne.profession ? item.personne.profession.libelle : ''}</TableBodyCell
                       >
-                      {#if activeTab === "valide"}
+                      {#if activeTab === 'valide'}
                         <TableBodyCell class="p-4 border border-gray-300"
                           >{item.personne.code}</TableBodyCell
                         >
                       {/if}
 
-                      <TableBodyCell class="p-2 w-8 border border-gray-300">
-                        <DropdownMenuShow {item} onAction={handleAction} />
+                      <TableBodyCell class="p-4 border border-gray-300">
+                        {#if item.personne.imputationData}
+                          {item.personne.imputationData.username}
+                        {:else}
+                          {item.personne.imputationData}
+                        {/if}
                       </TableBodyCell>
+
+                      {#if user.type == 'SOUS-DIRECTEUR'}
+                        <TableBodyCell class="p-2 w-8 border border-gray-300">
+                          <DropdownMenuShow
+                            {item}
+                            onAction={handleAction}
+                            {user}
+                          />
+                        </TableBodyCell>
+                      {/if}
+                      <!--    {#if  user.type == "ADMINISTRATEUR"  }
+                      <TableBodyCell class="p-2 w-8 border border-gray-300">
+                        <DropdownMenuShow {item} onAction={handleAction} user={user} />
+                      </TableBodyCell>
+
+                      {/if} -->
 
                       <!-- <Button
                             color="green"
@@ -400,6 +464,22 @@ async function fetchData() {
     bind:open={openShow}
     data={current_data}
     sizeModal="xl"
+    userUpdateId={user.id}
+  />
+{/if}
+{#if openShowDetails}
+  <ShowDetails
+    bind:open={openShowDetails}
+    data={current_data}
+    sizeModal="xl"
+    userUpdateId={user.id}
+  />
+{/if}
+{#if openImputation}
+  <Imputation
+    bind:open={openImputation}
+    data={current_data}
+    sizeModal="md"
     userUpdateId={user.id}
   />
 {/if}

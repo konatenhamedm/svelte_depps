@@ -676,7 +676,7 @@
           <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div class="col-span-2 space-y-2">
               <label class="block text-sm font-medium text-gray-700"
-                >Appartenir à une organisation ?</label
+                >Appartenez-vous à une organisation ??</label
               >
               <div class="flex space-x-4">
                 <label class="inline-flex items-center">

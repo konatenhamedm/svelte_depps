@@ -3,15 +3,16 @@
   import Slide from "$components/Slide.svelte";
   import Footer from "$components/Footer.svelte";
   import { onMount } from "svelte";
-  import { apiFetch } from "$lib/api";
+  import { apiFetch, BASE_URL_API } from "$lib/api";
   import { EyeOutline } from "flowbite-svelte-icons";
   import { goto } from "$app/navigation";
-
+    import RecuPaiement from "./RecuPaiement.svelte";
+  
   let paiementData: any[] = [];
 
 export let data;
 let user = data?.user;
-
+let current_data: any = {};
 let currentPage = 1;
 const itemsPerPage = 3;
 let showAddPopup = false;
@@ -19,6 +20,12 @@ let showEditPopup = false;
 let showDeletePopup = false;
 let selectedForum: any = null;
 let loading = false;
+let  info = {
+  expire: false,
+  finRenouvellement: "",
+  montant: "",
+  etatPro: false
+}
 
 async function fetchData(userId: number) {
     loading = true;
@@ -27,6 +34,7 @@ async function fetchData(userId: number) {
         if (res) {
             paiementData = res.data;
             console.log("content main_data", paiementData);
+            
         } else {
             console.error("Erreur de récupération:", res.statusText);
         }
@@ -39,6 +47,19 @@ async function fetchData(userId: number) {
 
 onMount(async () => {
     await fetchData(user?.id);
+
+    fetch(BASE_URL_API + "/paiement/status/renouvellement/" + user?.id)
+      .then((response) => response.json())
+      .then((result) => {
+        
+        info.expire = result.data.expire;
+        info.finRenouvellement = result.data.finRenouvellement;
+        info.montant = result.data.montant;
+        info.etatPro = result.data.etatPro;
+        console.log("content main_data", info);
+
+        
+      })
 });
 
 // Calcul des paiementData paginés
@@ -87,6 +108,10 @@ function openAddPopup() {
 function closeAddPopup() {
     showAddPopup = false;
 }
+function formatDatePaiement(dateString:any) {
+    const options = { year: 'numeric', month: '2-digit', day: '2-digit' };
+    return new Date(dateString).toLocaleDateString('fr-FR', options);
+  }
 
 function openEditPopup(forum: any) {
     selectedForum = forum;
@@ -123,6 +148,20 @@ $: if (showAddPopup == false || showEditPopup == false || showDeletePopup == fal
 function navigateToDashboard() {
     goto("/site/dashboard");
 }
+let pdfUrl: any;
+
+
+let isModalOpen = false;
+  let isModalOpenRegister = false;
+
+  function openModal(url: any) {
+    pdfUrl = url; // ✅ Met à jour la variable réactive
+    isModalOpen = true;
+  }
+
+  function closeModal() {
+    isModalOpen = false;
+  }
 </script>
 
 <Slide {user} /> <br /><br /><br /><br /><br /><br />
@@ -249,6 +288,21 @@ function navigateToDashboard() {
   />
   <section class="hakkimizda-bolumu-anasayfa1 iletisim-form-alani" style="padding-top:120px">
     <div class="container">
+
+      {#if info.etatPro == true }
+
+      <button on:click={()=>{
+        goto("/site/renouvellement");
+     }} class="buton buton--kirmizi">
+       <small>FAITE LE RENOUVELLEMENT</small> <i class="fa fa-plus"></i>
+     </button>
+      {/if}
+     
+      
+      <br><br>
+
+      <!-- <p>{user?.expire}</p>
+      <p>{user?.finRenouvellement}</p> -->
       <div class="masqueur à effet de révélation d'image de projet wow">
        <!-- 
         <div class="row  text-centerf"  >
@@ -283,9 +337,9 @@ function navigateToDashboard() {
             >
               <div class="row  text-center"  >
               
-                <div class="col-md-1">
+                <div class="col-md-2">
                   <p  style="margin-top: 16px;">
-                    {index + 1}
+                    {formatDatePaiement(item.createdAt)}
 
                   </p>
                   
@@ -297,15 +351,32 @@ function navigateToDashboard() {
                   </p>
                   
                 </div>
-                <div class="col-md-3">
-                  {item.montant} 
+                <div class="col-md-2">
+                  
+                  <p  style="margin-top: 16px;">
+
+                    {item.montant} 
+                  </p>
                 </div>
                 <div class="col-md-3">
                   {item.reference} 
                 </div>
 
-                <div class="col-md-3">
+                <div class="col-md-2">
                   {item.channel}
+                </div>
+                <div class="col-md-1 d-none d-sm-block">
+                  <form action="#" class="delete_alerte">
+                  
+                    <button
+                    on:click={() => ((current_data = item), (isModalOpen = true))}
+                      style="height: 50px; width: 50px; background: green !important; padding: 0;"
+                      class="buton buton--kirmizi"
+                      id="three_customer"
+                    >
+                      <i class="fa fa-print"></i>
+                    </button>
+                  </form>
                 </div>
                 
               </div>
@@ -319,7 +390,7 @@ function navigateToDashboard() {
             <div class="row">
               <div class="col-md-12 text-center">
                 <p style="margin: auto; text-align: center;">
-                  Aucune alerte pour l'instant
+                  Aucune paiement pour l'instant
                 </p>
               </div>
             </div>
@@ -364,6 +435,14 @@ function navigateToDashboard() {
     </div>
   </section>
 </main>
-
+{#if isModalOpen == true}
+  <RecuPaiement
+    bind:open={isModalOpen}
+    data={current_data}
+    sizeModal="md"
+    userUpdateId =  {"userUpdateId"}
+   
+  />
+{/if}
 
 <Footer />

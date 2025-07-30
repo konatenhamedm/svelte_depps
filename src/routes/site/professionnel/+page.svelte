@@ -1,149 +1,165 @@
 <script lang="ts">
-  import { onMount } from "svelte";
-  import Footer from "$components/Footer.svelte";
-  import Slide from "$components/Slide.svelte";
-
-  import { apiFetch, BASE_URL_API } from "$lib/api";
-  import type Civilite from "../../../types.js";
-  import type Pays from "../../../types.js";
-  import { goto } from "$app/navigation";
-  import Modal from "./Modal.svelte";
-  import FormButtons from "$components/site/FormButtons.svelte";
-  import InscriptionEtapeFinale from "$components/site/InscriptionEtapeFinale.svelte";
-  import EtapeOrganisation from "$components/site/EtapeOrganisation.svelte";
-  import EtapeProfessionnelle from "$components/site/EtapeProfessionnelle.svelte";
-  import Step2Form from "$components/site/Step2Form.svelte";
-  import EtapeConnexion from "$components/site/EtapeConnexion.svelte";
+  import {onDestroy, onMount} from 'svelte';
+  import Footer from '$components/Footer.svelte';
+  import Slide from '$components/Slide.svelte';
+  import {apiFetch, BASE_URL_API} from '$lib/api';
+  import {goto} from '$app/navigation';
+  import Modal from './Modal.svelte';
+  import FormButtons from '$components/site/FormButtons.svelte';
+  import InscriptionEtapeFinale from '$components/site/InscriptionEtapeFinale.svelte';
+  import EtapeOrganisation from '$components/site/EtapeOrganisation.svelte';
+  import EtapeProfessionnelle from '$components/site/EtapeProfessionnelle.svelte';
+  import Step2Form from '$components/site/Step2Form.svelte';
+  import EtapeConnexion from '$components/site/EtapeConnexion.svelte';
+  import type {Civilite, Pays} from '../../../types';
 
   export let data;
   let user = data?.user;
   let paiementStatus: boolean;
   let showPassword = false;
   let showPasswordConfirm = false;
-
+  let codeExisteError = '';
   function validateEmail(email: string): boolean {
     const regex = /\S+@\S+\.\S+/;
 
     return regex.test(email);
+  }
+  function validatePassword(password: string): boolean {
+    const regex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{6,}$/;
+    return regex.test(password);
   }
 
   let isValidPhoneOrganisation = true;
 
   $: emailError =
     formData.email && !validateEmail(formData.email)
-      ? "Veuillez entrer un email valide"
-      : "";
+      ? 'Veuillez entrer un email valide'
+      : '';
+  $: emailPassword =
+    formData.email && !validatePassword(formData.password)
+      ? 'Le mot de passe doit contenir au moins 6 caractères, une majuscule, une minuscule et un chiffre.'
+      : '';
 
   $: emailProError =
     formData.emailPro && !validateEmail(formData.emailPro)
-      ? "Veuillez entrer un email valide"
-      : "";
+      ? 'Veuillez entrer un email valide'
+      : '';
   $: emailAutreError =
     formData.emailAutre && !validateEmail(formData.emailAutre)
-      ? "Veuillez entrer un email valide"
-      : "";
+      ? 'Veuillez entrer un email valide'
+      : '';
 
   let step = 1;
 
   let formData = {
-    email: "",
-    password: "",
-    confirmPassword: "",
+    email: '',
+    password: '',
+    confirmPassword: '',
     // Personal Informations
-    code: "",
-    nom: "",
-    prenoms: "",
-    nationalite: "",
-    civilite: "",
-    emailAutre: "",
-    numero: "",
-    dateNaissance: "",
-    situation: "",
+    code: '',
+    nom: '',
+    prenoms: '',
+    nationalite: '',
+    civilite: '',
+    emailAutre: '',
+    numero: '',
+    dateNaissance: '',
+    situation: '',
 
     // Professional informations
-    profession: "",
-    emailPro: "",
-    dateDiplome: "",
-    lieuDiplome: "",
-    datePremierDiplome: "",
-    poleSanitairePro: "",
-    diplome: "",
-    situationPro: "",
+    profession: '',
+    emailPro: '',
+    dateDiplome: '',
+    lieuDiplome: '',
+    datePremierDiplome: '',
+    poleSanitairePro: '',
+    diplome: '',
+    situationPro: '',
 
-    poleSanitaire: "",
-    region: "",
-    district: "",
-    ville: "",
-    commune: "",
-    quartier: "",
-    professionnel: "",
-    lieuExercicePro: "",
+    poleSanitaire: '',
+    region: '',
+    district: '',
+    ville: '',
+    commune: '',
+    quartier: '',
+    professionnel: '',
+    lieuExercicePro: '',
+    statusPro: '',
+    typeDiplome: '',
+    lieuObtentionDiplome: '',
     //media informations
 
-    photo: "",
-    cni: "",
-    casier: "",
-    diplomeFile: "",
-    certificat: "",
-    cv: "",
+    photo: '',
+    cni: '',
+    casier: '',
+    diplomeFile: '',
+    certificat: '',
+    cv: '',
 
     // organization informations
 
-    appartenirOrganisation: "non",
-    organisationNom: "",
+    appartenirOrganisation: 'non',
+    organisationNom: '',
+    appartenirOrdre: 'non',
+    numeroInscription: '',
   };
 
   let errors = {
-    email: "",
-    code: "",
-    password: "",
-    confirmPassword: "",
+    email: '',
+    code: '',
+    password: '',
+    confirmPassword: '',
 
     // Personal Informations
 
-    nom: "",
-    prenoms: "",
-    nationalite: "",
-    civilite: "",
-    emailAutre: "",
-    numero: "",
-    dateNaissance: "",
-    situation: "",
+    nom: '',
+    prenoms: '',
+    nationalite: '',
+    civilite: '',
+    emailAutre: '',
+    numero: '',
+    dateNaissance: '',
+    situation: '',
 
     // Professional informations
-    profession: "",
-    emailPro: "",
-    dateDiplome: "",
-    lieuDiplome: "",
-    datePremierDiplome: "",
-    poleSanitairePro: "",
-    diplome: "",
-    situationPro: "",
+    profession: '',
+    emailPro: '',
+    dateDiplome: '',
+    lieuDiplome: '',
+    datePremierDiplome: '',
+    poleSanitairePro: '',
+    diplome: '',
+    situationPro: '',
+    statusPro: '',
+    typeDiplome: '',
+    lieuObtentionDiplome: '',
 
-    poleSanitaire: "",
-    region: "",
-    district: "",
-    ville: "",
-    commune: "",
-    quartier: "",
-    professionnel: "",
-    lieuExercicePro: "",
+    poleSanitaire: '',
+    region: '',
+    district: '',
+    ville: '',
+    commune: '',
+    quartier: '',
+    professionnel: '',
+    lieuExercicePro: '',
 
     //media informations
 
     // Media informations
-    photo: "",
-    cni: "",
-    casier: "",
-    diplomeFile: "",
-    certificat: "",
-    cv: "",
+    photo: '',
+    cni: '',
+    casier: '',
+    diplomeFile: '',
+    certificat: '',
+    cv: '',
 
     // Organization informations
-    appartenirOrganisation: "",
-    organisationNom: "",
-    organisationNumero: "",
-    organisationAnnee: "",
+    appartenirOrganisation: '',
+    organisationNom: '',
+    appartenirOrdre: '',
+    numeroInscription: '',
+    organisationNumero: '',
+    organisationAnnee: '',
 
     // Paiement informations
   };
@@ -152,31 +168,32 @@
     let valid = true;
 
     if (step === 1) {
-      errors.email = formData.email ? "" : "L'e-mail est requis";
-      errors.password = formData.password ? "" : "Le mot de passe est requis";
+      errors.email = formData.email ? '' : "L'e-mail est requis";
+      errors.password = formData.password ? '' : 'Le mot de passe est requis';
       errors.confirmPassword =
         formData.confirmPassword === formData.password
-          ? ""
-          : "Les mots de passe ne correspondent pas";
+          ? ''
+          : 'Les mots de passe ne correspondent pas';
 
       valid =
         !errors.password &&
         !errors.confirmPassword &&
         !errors.email &&
         !emailError &&
-        !emailCheck;
+        !emailCheck &&
+        !emailPassword;
     }
 
     if (step === 2) {
-      errors.nom = formData.nom ? "" : "Le nom est requis";
-      errors.prenoms = formData.prenoms ? "" : "Le prenoms est requis";
-      errors.emailAutre = formData.emailAutre ? "" : "L'email est requis";
-      errors.civilite = formData.civilite ? "" : "La civilité est requise";
+      errors.nom = formData.nom ? '' : 'Le nom est requis';
+      errors.prenoms = formData.prenoms ? '' : 'Le prenoms est requis';
+      errors.emailAutre = formData.emailAutre ? '' : "L'email est requis";
+      errors.civilite = formData.civilite ? '' : 'La civilité est requise';
       errors.dateNaissance = formData.dateNaissance
-        ? ""
-        : "La date de naissance est requise";
-      errors.numero = formData.numero ? "" : "Le numéro est requis";
-      errors.situation = formData.situation ? "" : "La situation est requise";
+        ? ''
+        : 'La date de naissance est requise';
+      errors.numero = formData.numero ? '' : 'Le numéro est requis';
+      errors.situation = formData.situation ? '' : 'La situation est requise';
 
       valid =
         !errors.civilite &&
@@ -192,73 +209,88 @@
 
     if (step === 3) {
       errors.profession = formData.profession
-        ? ""
-        : "La profession est requise";
+        ? ''
+        : 'La profession est requise';
 
       errors.dateDiplome = formData.dateDiplome
-        ? ""
-        : "La date du diplome est requise";
+        ? ''
+        : 'La date du diplome est requise';
 
       errors.lieuDiplome = formData.lieuDiplome
-        ? ""
-        : "Le lieu du diplome est requis";
+        ? ''
+        : 'Le lieu du diplome est requis';
 
       errors.datePremierDiplome = formData.datePremierDiplome
-        ? ""
-        : "La date du premier diplome est requise";
+        ? ''
+        : 'La date du premier diplome est requise';
 
-      errors.diplome = formData.diplome ? "" : "Le diplome est requis";
+      errors.diplome = formData.diplome ? '' : 'Le diplome est requis';
       errors.situationPro = formData.situationPro
-        ? ""
-        : "La situation est requise";
+        ? ''
+        : 'La situation est requise';
 
-     /*  errors.poleSanitaire = formData.poleSanitaire
+      /*  errors.poleSanitaire = formData.poleSanitaire
         ? ""
         : "Le pole sanitaire est requis"; */
       errors.lieuExercicePro = formData.lieuExercicePro
-        ? ""
+        ? ''
         : "Le lieu d'exercice est requis";
       errors.professionnel = formData.professionnel
-        ? ""
-        : "Le professionnel est requis";
-      errors.emailPro = formData.emailPro ? "" : "L'email est requis";
-      errors.region = formData.region ? "" : "La région est requise";
-      errors.district = formData.district ? "" : "Le district est requis";
-      errors.ville = formData.ville ? "" : "La ville est requise";
-      errors.commune = formData.commune ? "" : "La commune est requise";
-      errors.quartier = formData.quartier ? "" : "Le quartier est requis";
+        ? ''
+        : 'Le professionnel est requis';
+      errors.emailPro = formData.emailPro ? '' : "L'email est requis";
+      errors.region = formData.region ? '' : 'La région est requise';
+      errors.district = formData.district ? '' : 'Le district est requis';
+      errors.ville = formData.ville ? '' : 'La ville est requise';
+      errors.commune = formData.commune ? '' : 'La commune est requise';
+      errors.quartier = formData.quartier ? '' : 'Le quartier est requis';
+      errors.statusPro = formData.statusPro ? '' : 'Le status Pro est requis';
+      errors.typeDiplome = formData.typeDiplome
+        ? ''
+        : 'Le type Diplome est requis';
+      errors.lieuObtentionDiplome = formData.lieuObtentionDiplome
+        ? ''
+        : 'Le lieu obtention Diplome est requis';
 
       // Vérifie si toutes les valeurs dans errors sont vides (""), donc aucune erreur
       valid =
-        Object.values(errors).every((error) => error === "") &&
+        Object.values(errors).every((error) => error === '') &&
         !emailProError &&
         !codeExisteError;
     }
 
     if (step === 4) {
-      errors.photo = formData.photo ? "" : "La photo est requise";
+      errors.photo = formData.photo ? '' : 'La photo est requise';
       errors.cni = formData.cni
-        ? ""
+        ? ''
         : "La carte nationale d'identité est requise";
-      errors.casier = formData.casier ? "" : "Le casier judiciaire est requis";
-      errors.diplomeFile = formData.diplomeFile ? "" : "Le diplôme est requis";
-      errors.certificat = formData.certificat ? "" : "Le certificat est requis";
-      errors.cv = formData.cv ? "" : "Le CV est requis";
+      errors.casier = formData.casier ? '' : 'Le casier judiciaire est requis';
+      errors.diplomeFile = formData.diplomeFile ? '' : 'Le diplôme est requis';
+      errors.certificat = formData.certificat ? '' : 'Le certificat est requis';
+      errors.cv = formData.cv ? '' : 'Le CV est requis';
 
       // Vérifie si toutes les valeurs dans errors sont vides (""), donc aucune erreur
-      valid = Object.values(errors).every((error) => error === "");
+      valid = Object.values(errors).every((error) => error === '');
 
-      console.log("Validation Status:", valid);
-      console.log("FormData:", formData);
+      console.log('Validation Status:', valid);
+      console.log('FormData:', formData);
     }
 
     if (step === 5) {
-      if (formData.appartenirOrganisation == "oui") {
+      if (formData.appartenirOrganisation == 'oui') {
         errors.organisationNom = formData.organisationNom
-          ? ""
+          ? ''
           : "Le nom de l'organisation est requis";
 
         valid = !errors.organisationNom && isValidPhoneOrganisation;
+      }
+
+      if (formData.appartenirOrdre == 'oui') {
+        errors.numeroInscription = formData.numeroInscription
+          ? ''
+          : "Le numero d'inscription est requis";
+
+        valid = !errors.numeroInscription;
       }
     }
 
@@ -271,16 +303,16 @@
 
   let isPaiementProcessing = false;
   $: isPaiementDone = false;
-  $: message = "";
+  $: message = '';
 
   // 🔹 Fonction pour sauvegarder l'état actuel du formulaire
   function saveFormState() {
-    if (typeof window !== "undefined" && typeof localStorage !== "undefined") {
-      localStorage.setItem("formData", JSON.stringify(formData));
-      localStorage.setItem("step", step.toString());
+    if (typeof window !== 'undefined' && typeof localStorage !== 'undefined') {
+      localStorage.setItem('formData', JSON.stringify(formData));
+      localStorage.setItem('step', step.toString());
     }
   }
-  let fileNames: { [key: string]: string } = {};
+  let fileNames: {[key: string]: string} = {};
 
   let selectedFiles = {};
 
@@ -293,33 +325,31 @@
     reader.onload = () => {
       selectedFiles = {
         ...selectedFiles,
-        [fieldName]: { name: file.name, data: reader.result },
+        [fieldName]: {name: file.name, data: reader.result},
       };
 
       fileNames = {
         ...fileNames,
-        [fieldName]: { name: file.name, url: reader.result },
+        [fieldName]: {name: file.name, url: reader.result},
       };
 
       // 🔥 Mettre à jour `formData` immédiatement
       formData[fieldName] = file;
 
       // 🔥 Stocker dans le localStorage
-      localStorage.setItem("selectedFiles", JSON.stringify(selectedFiles));
-
+      localStorage.setItem('selectedFiles', JSON.stringify(selectedFiles));
     };
   }
 
   function handleFileChange(event: any, fieldName: string) {
     const file = event.target.files[0] || null;
     updateFormData(fieldName, file);
-
   }
 
   function restoreFormState() {
-    if (typeof window !== "undefined" && typeof localStorage !== "undefined") {
-      const savedFormData = localStorage.getItem("formData");
-      const savedStep = localStorage.getItem("step");
+    if (typeof window !== 'undefined' && typeof localStorage !== 'undefined') {
+      const savedFormData = localStorage.getItem('formData');
+      const savedStep = localStorage.getItem('step');
 
       if (savedFormData) {
         formData = JSON.parse(savedFormData);
@@ -328,34 +358,34 @@
       if (savedStep) {
         step = parseInt(savedStep);
       } else {
-        localStorage.setItem("step", step.toString());
+        localStorage.setItem('step', step.toString());
       }
     }
   }
 
   onMount(() => {
     /*  localStorage.clear(); */
-    console.log("gggg", formData);
+    console.log('gggg', formData);
     const urlParams = new URLSearchParams(window.location.search);
-    if (urlParams.has("return")) {
+    if (urlParams.has('return')) {
       restoreFormState();
     }
 
-    const storedFiles = JSON.parse(localStorage.getItem("selectedFiles")) || {};
+    const storedFiles = JSON.parse(localStorage.getItem('selectedFiles')) || {};
     selectedFiles = storedFiles;
 
     fileNames = Object.keys(storedFiles).reduce((acc, key) => {
-      acc[key] = { name: storedFiles[key].name, url: storedFiles[key].data };
+      acc[key] = {name: storedFiles[key].name, url: storedFiles[key].data};
       return acc;
     }, {});
   });
 
-  let messagefile = "";
+  let messagefile = '';
 
   function nextStep() {
     if (validateStep()) {
       step += 1;
-      localStorage.setItem("step", step.toString());
+      localStorage.setItem('step', step.toString());
       return;
     } else {
       /*  messagefile = "Veuillez remplir tous les champs obligatoires."; */
@@ -365,7 +395,7 @@
   function prevStep() {
     if (step > 1) {
       step -= 1;
-      localStorage.setItem("step", step.toString());
+      localStorage.setItem('step', step.toString());
     }
   }
 
@@ -381,14 +411,14 @@
         formDatas.append(key, formData[key]);
       });
 
-      const reference = localStorage.getItem("reference");
+      const reference = localStorage.getItem('reference');
       if (reference) {
-        formDatas.append("reference", reference);
+        formDatas.append('reference', reference);
       }
-      formDatas.append("type", "professionnel");
+      formDatas.append('type', 'professionnel');
 
       const selectedFilesFromStorage = JSON.parse(
-        localStorage.getItem("selectedFiles"),
+        localStorage.getItem('selectedFiles')
       );
 
       if (selectedFilesFromStorage) {
@@ -396,7 +426,7 @@
         Object.keys(selectedFilesFromStorage).forEach((fieldName) => {
           const fileData = selectedFilesFromStorage[fieldName];
           if (fileData && fileData.data) {
-            const byteCharacters = atob(fileData.data.split(",")[1]);
+            const byteCharacters = atob(fileData.data.split(',')[1]);
             const byteArrays = [];
 
             for (
@@ -413,7 +443,7 @@
             }
 
             const blob = new Blob(byteArrays, {
-              type: "application/octet-stream",
+              type: 'application/octet-stream',
             });
             formDatas.append(fieldName, blob, fileData.name);
           }
@@ -422,8 +452,8 @@
 
       authenticating = true;
 
-      fetch("https://depps.leadagro.net/api/paiement/paiement", {
-        method: "POST",
+      fetch(BASE_URL_API + '/paiement/paiement', {
+        method: 'POST',
         body: formDatas,
       })
         .then((response) => response.json())
@@ -434,14 +464,14 @@
             console.log(result.errors);
           } else {
             if (result.url) {
-              localStorage.setItem("reference", result.reference);
+              localStorage.setItem('reference', result.reference);
 
-              window.location.href = result.url + "?return=1"; // 🔥 Ajout du paramètre `return`
+              window.location.href = result.url + '?return=1'; // 🔥 Ajout du paramètre `return`
             }
           }
         })
         .catch((error) => {
-          console.error("Erreur paiements :", error);
+          console.error('Erreur paiements :', error);
           isPaiementProcessing = false;
           let authenticating = false;
         });
@@ -472,14 +502,14 @@
       formDatas.append(key, formData[key]);
     });
 
-    const reference = localStorage.getItem("reference");
+    const reference = localStorage.getItem('reference');
     if (reference) {
-      formDatas.append("reference", reference);
+      formDatas.append('reference', reference);
     }
-    formDatas.append("type", "professionnel");
+    formDatas.append('type', 'professionnel');
 
     const selectedFilesFromStorage = JSON.parse(
-      localStorage.getItem("selectedFiles"),
+      localStorage.getItem('selectedFiles')
     );
 
     if (selectedFilesFromStorage) {
@@ -487,7 +517,7 @@
       Object.keys(selectedFilesFromStorage).forEach((fieldName) => {
         const fileData = selectedFilesFromStorage[fieldName];
         if (fileData && fileData.data) {
-          const byteCharacters = atob(fileData.data.split(",")[1]);
+          const byteCharacters = atob(fileData.data.split(',')[1]);
           const byteArrays = [];
 
           for (let offset = 0; offset < byteCharacters.length; offset += 512) {
@@ -500,7 +530,7 @@
           }
 
           const blob = new Blob(byteArrays, {
-            type: "application/octet-stream",
+            type: 'application/octet-stream',
           });
           formDatas.append(fieldName, blob, fileData.name);
         }
@@ -509,8 +539,8 @@
 
     console.log(formDatas);
 
-    fetch("https://depps.leadagro.net/api/paiement/paiement", {
-      method: "POST",
+    fetch(BASE_URL_API + '/paiement/paiement', {
+      method: 'POST',
       body: formDatas,
     })
       .then((response) => response.json())
@@ -518,12 +548,12 @@
         authenticating = false;
 
         if (result.data.url) {
-          localStorage.setItem("reference", result.data.reference);
-          window.location.href = result.data.url + "?return=1"; // 🔥 Ajout du paramètre `return`
+          localStorage.setItem('reference', result.data.reference);
+          window.location.href = result.data.url + '?return=1'; // 🔥 Ajout du paramètre `return`
         }
       })
       .catch((error) => {
-        console.error("Erreur paiements :", error);
+        console.error('Erreur paiements :', error);
         isPaiementProcessing = false;
         authenticating = false;
       });
@@ -537,14 +567,14 @@
       formDatas.append(key, formData[key]);
     });
 
-    const reference = localStorage.getItem("reference");
+    const reference = localStorage.getItem('reference');
     if (reference) {
-      formDatas.append("reference", reference);
+      formDatas.append('reference', reference);
     }
-    formDatas.append("type", "professionnel");
+    formDatas.append('type', 'professionnel');
 
     const selectedFilesFromStorage = JSON.parse(
-      localStorage.getItem("selectedFiles"),
+      localStorage.getItem('selectedFiles')
     );
 
     if (selectedFilesFromStorage) {
@@ -552,7 +582,7 @@
       Object.keys(selectedFilesFromStorage).forEach((fieldName) => {
         const fileData = selectedFilesFromStorage[fieldName];
         if (fileData && fileData.data) {
-          const byteCharacters = atob(fileData.data.split(",")[1]);
+          const byteCharacters = atob(fileData.data.split(',')[1]);
           const byteArrays = [];
 
           for (let offset = 0; offset < byteCharacters.length; offset += 512) {
@@ -565,15 +595,15 @@
           }
 
           const blob = new Blob(byteArrays, {
-            type: "application/octet-stream",
+            type: 'application/octet-stream',
           });
           formDatas.append(fieldName, blob, fileData.name);
         }
       });
     }
 
-    fetch(BASE_URL_API + "/professionnel/create", {
-      method: "POST",
+    fetch(BASE_URL_API + '/professionnel/create', {
+      method: 'POST',
       body: formDatas,
     })
       .then((response) => response.json())
@@ -586,22 +616,21 @@
         } else {
           connexion();
           localStorage.clear();
-
         }
       })
       .catch((error) => {
-        console.error("Erreur paiements :", error);
+        console.error('Erreur paiements :', error);
         isPaiementProcessing = false;
         authenticating = false;
       });
   }
 
   function connexion() {
-    goto("/site/connexion");
+    goto('/site/connexion');
     localStorage.clear(); // Nettoyer les données du localStorage
 
-    if (localStorage.getItem("reference")) {
-      localStorage.setItem("reference", ""); // Nettoyer les données du localStorage
+    if (localStorage.getItem('reference')) {
+      localStorage.setItem('reference', ''); // Nettoyer les données du localStorage
     }
   }
 
@@ -610,15 +639,15 @@
 
     try {
       const res = await fetch(
-        `https://depps.leadagro.net/api/paiement/get/transaction/${idtransaction}`,
+        BASE_URL_API + `/paiement/get/transaction/${idtransaction}`
       );
       const data = await res.json();
       isPaiementDone = data.data;
       return data.data; // Assurez-vous que l'API renvoie un objet avec une clé `valid`
     } catch (error) {
       console.error(
-        "Erreur lors de la vérification de la transaction :",
-        error,
+        'Erreur lors de la vérification de la transaction :',
+        error
       );
       return false;
     }
@@ -628,15 +657,15 @@
 
     try {
       const res = await fetch(
-        `https://depps.leadagro.net/api/profession/get/status/paiement/${professionCode}`,
+        BASE_URL_API + `/profession/get/status/paiement/${professionCode}`
       );
       const data = await res.json();
       paiementStatus = data.data;
       return data.data; // Assurez-vous que l'API renvoie un objet avec une clé `valid`
     } catch (error) {
       console.error(
-        "Erreur lors de la vérification de la transaction :",
-        error,
+        'Erreur lors de la vérification de la transaction :',
+        error
       );
       return false;
     }
@@ -647,15 +676,14 @@
 
     try {
       const res = await fetch(
-        `https://depps.leadagro.net/api/professionnel/existe/code/${code}`,
+        BASE_URL_API + `/professionnel/existe/code/${code}`
       );
       const data = await res.json();
       return data.data;
-      return data.data; // Assurez-vous que l'API renvoie un objet avec une clé `valid`
     } catch (error) {
       console.error(
-        "Erreur lors de la vérification de la transaction :",
-        error,
+        'Erreur lors de la vérification de la transaction :',
+        error
       );
       return false;
     }
@@ -666,14 +694,14 @@
 
     try {
       const res = await fetch(
-        `https://depps.leadagro.net/api/user/check/email/existe/${email}`,
+        BASE_URL_API + `/user/check/email/existe/${email}`
       );
       const data = await res.json();
       return data.data; // Assurez-vous que l'API renvoie un objet avec une clé `valid`
     } catch (error) {
       console.error(
-        "Erreur lors de la vérification de la transaction :",
-        error,
+        'Erreur lors de la vérification de la transaction :',
+        error
       );
       return false;
     }
@@ -684,47 +712,63 @@
       // paiementStatus = resultat.data;
     });
   }
-  let codeExisteError: any;
-  $: if (formData.code) {
-    checkCodeVerification(formData.code).then((resultat) => {
-      codeVericationStatus = resultat;
 
-      if (
-        resultat.exsiteInProfessionnel == true &&
-        resultat.exsiteInCodeGenerateur == true
-      ) {
-        codeExisteError =
-          "l'utilisateur de ce code de vérification existe deja";
-      } else if (
-        resultat.exsiteInCodeGenerateur == true &&
-        resultat.exsiteInProfessionnel == false
-      ) {
-        codeExisteError = "";
-      } else if (
-        resultat.exsiteInProfessionnel == false &&
-        resultat.exsiteInCodeGenerateur == false
-      ) {
-        codeExisteError = "Ce code de vérification n'existe pas";
-      } else if (
-        resultat.exsiteInProfessionnel == true &&
-        resultat.exsiteInCodeGenerateur == false
-      ) {
-        codeExisteError =
-          "l'utilisateur de ce code de vérification existe deja";
-      } else {
-        codeExisteError = "";
-      }
-    });
-  } else {
-    codeExisteError = "";
+  let interval: any;
+
+  // Observer le champ `formData.code` et lancer le timer
+  $: {
+    clearInterval(interval); // nettoie l'ancien interval
+    if (formData.code) {
+      interval = setInterval(async () => {
+        const resultat = await checkCodeVerification(formData.code);
+        codeVericationStatus = resultat;
+
+        // console.log("YUFYUYKRFYUF",formData.code)
+        if (resultat.verif) {
+          if (
+            resultat.exsiteInProfessionnel &&
+            resultat.exsiteInCodeGenerateur
+          ) {
+            codeExisteError =
+              "L'utilisateur de ce code de vérification existe déjà";
+          } else if (
+            !resultat.exsiteInProfessionnel &&
+            resultat.exsiteInCodeGenerateur
+          ) {
+            codeExisteError = '';
+          } else if (
+            !resultat.exsiteInProfessionnel &&
+            !resultat.exsiteInCodeGenerateur
+          ) {
+            codeExisteError = "Ce code de vérification n'existe pas";
+          } else if (
+            resultat.exsiteInProfessionnel &&
+            !resultat.exsiteInCodeGenerateur
+          ) {
+            codeExisteError =
+              "L'utilisateur de ce code de vérification existe déjà";
+          } else {
+            codeExisteError = '';
+          }
+        } else {
+          codeExisteError = '';
+        }
+      }, 1000); // vérifie chaque 1 seconde
+    } else {
+      codeExisteError = '';
+    }
   }
 
+  // Nettoyage à la destruction du composant
+  onDestroy(() => {
+    clearInterval(interval);
+  });
   $: if (formData.email) {
     checkEmail(formData.email).then((resultat) => {
       emailCheck = resultat;
 
       if (emailCheck == true) {
-        emailError = "Cet email existe deja";
+        emailError = 'Cet email existe deja';
       }
     });
   }
@@ -732,18 +776,18 @@
   let reference: any;
 
   // Déclenche la vérification de façon réactive dès que transactionID change
-  $: if (typeof window !== "undefined" && localStorage.getItem("reference")) {
-    reference = localStorage.getItem("reference").toString();
-    if (reference != "") {
+  $: if (typeof window !== 'undefined' && localStorage.getItem('reference')) {
+    reference = localStorage.getItem('reference').toString();
+    if (reference != '') {
       checkTransactionID(reference).then((resultat) => {
         console.log(resultat);
-        console.log("RRRDDFFF", reference);
+        console.log('RRRDDFFF', reference);
 
         if (resultat == false) {
-          message = "Votre paiement à échoué veillez ressayez svp.";
+          message = 'Votre paiement à échoué veillez ressayez svp.';
           /* isPaiementDone = false; */
         } else {
-          message = "";
+          message = '';
           isPaiementDone = true;
         }
       });
@@ -751,27 +795,34 @@
   }
 
   let objects = [
-    { name: "civilite", url: "/civilite/" },
-    /* { name: "region", url: "/region" },
-    { name: "ville", url: "/ville" },
-    { name: "district", url: "/district" },
+    {name: 'civilite', url: '/civilite/'},
+    {name: 'statusPro', url: '/statusPro'},
+    {name: 'typeDiplome', url: '/typeDiplome'},
+    {name: 'lieuObtentionDiplome', url: '/lieuDiplome'},
+    /*{ name: "district", url: "/district" },
     { name: "commune", url: "/commune" }, */
-    { name: "nationate", url: "/pays/" },
-    { name: "situationProfessionnelle", url: "/situationProfessionnelle/" },
+    {name: 'nationate', url: '/pays/'},
+    {name: 'situationProfessionnelle', url: '/situationProfessionnelle/'},
   ];
 
   let values: {
     civilite: Civilite[];
-   /*  region: Civilite[];
+    /*  region: Civilite[];
     district: District[];
     ville: Civilite[];
     commune: Civilite[]; */
+    statusPro: Pays[];
+    typeDiplome: Pays[];
     nationate: Pays[];
     situationProfessionnelle: Pays[];
+    lieuObtentionDiplome: Pays[];
   } = {
     civilite: [],
+    statusPro: [],
+    typeDiplome: [],
     nationate: [],
     situationProfessionnelle: [],
+    lieuObtentionDiplome: [],
     /* ville: [],
     region: [],
     district: [],
@@ -791,23 +842,24 @@
           }
         } else {
           console.error(
-            "Erreur lors de la récupération des données:",
-            res.statusText,
+            'Erreur lors de la récupération des données:',
+            res.statusText
           );
         }
       });
     } catch (error) {
-      console.error("Erreur lors de la récupération des données:", error);
+      console.error('Erreur lors de la récupération des données:', error);
     }
   }
 
   let professions: any[] = [];
 
   async function getAllProfessions() {
-    await apiFetch(true, "/typeProfession").then((response) => {
-      if (response.code === 200) {
-        professions = response.data;
-      }
+    await apiFetch(true, '/typeProfession').then((response) => {
+      /*  if (response.code === 200) { */
+      professions = response.data;
+      console.log('YYYYYY', professions);
+      /* } */
     });
   }
 
@@ -817,62 +869,93 @@
     //await loadData();
   });
   onMount(() => {
-    /*  localStorage.setItem("reference", ""); */
-    /* localStorage.setItem("reference", "DEPPS250304234714045"); */
-    if (localStorage.getItem("reference"))
-      console.log("JE VEUX", localStorage.getItem("reference")?.toString());
+    setInterval(async () => {
+      const resultat = await checkCodeVerification(formData.code);
+      codeVericationStatus = resultat;
+
+      // console.log("YUFYUYKRFYUF",formData.code)
+      if (resultat.verif) {
+        if (resultat.exsiteInProfessionnel && resultat.exsiteInCodeGenerateur) {
+          codeExisteError =
+            "L'utilisateur de ce code de vérification existe déjà";
+        } else if (
+          !resultat.exsiteInProfessionnel &&
+          resultat.exsiteInCodeGenerateur
+        ) {
+          codeExisteError = '';
+        } else if (
+          !resultat.exsiteInProfessionnel &&
+          !resultat.exsiteInCodeGenerateur
+        ) {
+          codeExisteError = "Ce code de vérification n'existe pas";
+        } else if (
+          resultat.exsiteInProfessionnel &&
+          !resultat.exsiteInCodeGenerateur
+        ) {
+          codeExisteError =
+            "L'utilisateur de ce code de vérification existe déjà";
+        } else {
+          codeExisteError = '';
+        }
+      } else {
+        codeExisteError = '';
+      }
+    }, 1000);
+
+    if (localStorage.getItem('reference'))
+      console.log('JE VEUX', localStorage.getItem('reference')?.toString());
 
     console.log(isPaiementDone);
     console.log(paiementStatus);
 
-    const savedStep = localStorage.getItem("step");
+    const savedStep = localStorage.getItem('step');
     if (savedStep) {
       step = parseInt(savedStep);
     }
 
-    const savedData = localStorage.getItem("formData");
+    const savedData = localStorage.getItem('formData');
 
     if (savedStep) step = parseInt(savedStep);
     if (savedData) formData = JSON.parse(savedData);
 
     if (savedData) {
-      formData = { ...formData, ...JSON.parse(savedData) };
+      formData = {...formData, ...JSON.parse(savedData)};
     }
 
-    const savedFiles = localStorage.getItem("fileNames");
+    const savedFiles = localStorage.getItem('fileNames');
     if (savedFiles) {
       fileNames = JSON.parse(savedFiles);
     }
 
-    console.log("fileNames:", localStorage.getItem("reference"));
+    console.log('fileNames:', localStorage.getItem('reference'));
 
     const EXPIRATION_TIME = 30 * 60 * 1000; // 30 minutes en millisecondes // 1 heure en millisecondes
-    const lastSaved = localStorage.getItem("timestamp");
+    const lastSaved = localStorage.getItem('timestamp');
 
     if (lastSaved && Date.now() - parseInt(lastSaved) > EXPIRATION_TIME) {
       localStorage.clear();
-      localStorage.setItem("reference", "");
+      localStorage.setItem('reference', '');
     }
 
     // Mettre à jour le timestamp
-    localStorage.setItem("timestamp", Date.now().toString());
+    localStorage.setItem('timestamp', Date.now().toString());
 
     // Programmer un clear automatique après 1 heure
     setTimeout(() => {
-      console.log("Effacement automatique après 1 heure !");
+      console.log('Effacement automatique après 1 heure !');
       localStorage.clear();
-      localStorage.setItem("reference", "");
+      localStorage.setItem('reference', '');
     }, EXPIRATION_TIME);
   });
 
   // Sauvegarder les données du formulaire dans localStorage à chaque modification
   function updateField(field: any, value: any) {
     formData[field] = value;
-    localStorage.setItem("formData", JSON.stringify(formData));
+    localStorage.setItem('formData', JSON.stringify(formData));
   }
 
   let isModalOpen = false;
-  let pdfUrl = "";
+  let pdfUrl = '';
 
   function openModal(reference: any) {
     pdfUrl = reference; // ✅ Met à jour la variable réactive
@@ -884,14 +967,13 @@
   }
 
   const situationsMatrimoniales = [
-    { value: "Célibataire", label: "Célibataire" },
-    { value: "Marié(e)", label: "Marié(e)" },
-    { value: "Divorcé(e)", label: "Divorcé(e)" },
-    { value: "Veuf (Veuve)", label: "Veuf (Veuve)" },
+    {value: 'Célibataire', label: 'Célibataire'},
+    {value: 'Marié(e)', label: 'Marié(e)'},
+    {value: 'Divorcé(e)', label: 'Divorcé(e)'},
+    {value: 'Veuf (Veuve)', label: 'Veuf (Veuve)'},
   ];
 
   // Fonction pour charger les données depuis une API
-  
 </script>
 
 <Slide {user} />
@@ -920,6 +1002,7 @@
               bind:formData
               {errors}
               {emailError}
+              {emailPassword}
               {saveFormState}
               {showPassword}
               {showPasswordConfirm}
@@ -954,34 +1037,36 @@
 
           <!-- Étape 4 -->
           {#if step === 4}
-          <h2 class="h2-baslik-anasayfa-ozel h-yazi-margin-kucuk">
-            Informations médiatiques (étape 4/6)
-          </h2>
+            <h2 class="h2-baslik-anasayfa-ozel h-yazi-margin-kucuk">
+              Informations médiatiques (étape 4/6)
+            </h2>
 
-          <div class="tablo">
-            <div class="tablo--1h-ve-2">
-              <div
-                class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 gap-6"
-              >
-                {#each [{ key: "photo", label: "Photo d'identité", type: "file" }, { key: "cni", label: "Copie CNI(Carte nationale d’identité)", type: "file" }, { key: "casier", label: "Extrait Casier judiciaire(Datant de moins 3 mois)", type: "file" }, { key: "diplomeFile", label: "Diplôme légalisé", type: "file" }, { key: "certificat", label: "Certificat de residence (Datant de moins 3 mois)", type: "file" }, { key: "cv", label: "CV", type: "file" }] as field}
-                  <div class="form__group">
-                    <label class="form_label" for={field.key}>{field.label}</label>
-                    <div class="input-container">
-                      {#if fileNames[field.key]}
-                        <img
-                          src={fileNames[field.key].url}
-                          alt={fileNames[field.key].name}
-                          class="preview-image"
+            <div class="tablo">
+              <div class="tablo--1h-ve-2">
+                <div
+                  class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 gap-6"
+                >
+                  {#each [{key: 'photo', label: "Photo d'identité", type: 'file'}, {key: 'cni', label: 'Copie CNI(Carte nationale d’identité)', type: 'file'}, {key: 'casier', label: 'Extrait Casier judiciaire(Datant de moins 3 mois)', type: 'file'}, {key: 'diplomeFile', label: 'Diplôme légalisé', type: 'file'}, {key: 'certificat', label: 'Certificat de residence (Datant de moins 3 mois)', type: 'file'}, {key: 'cv', label: 'CV', type: 'file'}] as field}
+                    <div class="form__group">
+                      <label class="form_label" for={field.key}
+                        >{field.label}</label
+                      >
+                      <div class="input-container">
+                        {#if fileNames[field.key]}
+                          <img
+                            src={fileNames[field.key].url}
+                            alt={fileNames[field.key].name}
+                            class="preview-image"
+                          />
+                        {/if}
+                        <input
+                          id={field.key}
+                          type={field.type}
+                          class="form__input"
+                          on:change={(e) => handleFileChange(e, field.key)}
                         />
-                      {/if}
-                      <input
-                        id={field.key}
-                        type={field.type}
-                        class="form__input"
-                        on:change={(e) => handleFileChange(e, field.key)}
-                      />
-                    </div>
-                    {#if fileNames[field.key]}
+                      </div>
+                      <!--  {#if fileNames[field.key]}
                       <p>
                         {fileNames[field.key].name}
                         <a
@@ -990,56 +1075,53 @@
                           class="download-link">📥 Télécharger</a
                         >
                       </p>
-                    {/if}
-                    {#if errors[field.key as keyof typeof errors]}
-                      <p class="text-red-500 text-sm">{errors[field.key as keyof typeof errors]}</p>
-                    {/if}
-                  </div>
-                {/each}
+                    {/if} -->
+                      {#if errors[field.key as keyof typeof errors]}
+                        <p class="text-red-500 text-sm">
+                          {errors[field.key as keyof typeof errors]}
+                        </p>
+                      {/if}
+                    </div>
+                  {/each}
 
-                <style>
-                  .input-container {
-                    display: flex;
-                    align-items: center;
-                    gap: 10px; /* Espace entre l'image et le champ input */
-                  }
+                  <style>
+                    .input-container {
+                      display: flex;
+                      align-items: center;
+                      gap: 10px; /* Espace entre l'image et le champ input */
+                    }
 
-                  .preview-image {
-                    width: 50px; /* Ajustez la taille de l'image selon vos besoins */
-                    height: 50px;
-                    border-radius: 5px;
-                    object-fit: cover;
-                  }
+                    .preview-image {
+                      width: 50px; /* Ajustez la taille de l'image selon vos besoins */
+                      height: 50px;
+                      border-radius: 5px;
+                      object-fit: cover;
+                    }
 
-                  .form__input {
-                    flex-grow: 1; /* Le champ input prend le reste de l'espace */
-                  }
+                    .form__input {
+                      flex-grow: 1; /* Le champ input prend le reste de l'espace */
+                    }
 
-                  .download-link {
-                    margin-left: 10px;
-                    color: blue;
-                    text-decoration: none;
-                  }
+                    .download-link {
+                      margin-left: 10px;
+                      color: blue;
+                      text-decoration: none;
+                    }
 
-                  .download-link:hover {
-                    text-decoration: underline;
-                  }
+                    .download-link:hover {
+                      text-decoration: underline;
+                    }
 
-                  .text-red-500 {
-                    color: red;
-                  }
-                </style>
+                    .text-red-500 {
+                      color: red;
+                    }
+                  </style>
+                </div>
               </div>
             </div>
-          </div>
-        {/if}
+          {/if}
           <!-- Étape 5 -->
-          <EtapeOrganisation
-            {step}
-            {formData}
-            {updateField}
-            {errors}
-          />
+          <EtapeOrganisation {step} {formData} {updateField} {errors} />
 
           <!-- Étape 6 : Paiement -->
           <InscriptionEtapeFinale

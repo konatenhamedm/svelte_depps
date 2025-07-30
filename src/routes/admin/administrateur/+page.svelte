@@ -239,7 +239,7 @@
                                    <TableBodyCell class="p-2 w-8 border border-gray-300">
                                     <DropdownMenu item={item} onAction={handleAction} />
                                   </TableBodyCell>
-                                  
+
                     </TableBodyRow>
                   {/each}
                 {/if}
