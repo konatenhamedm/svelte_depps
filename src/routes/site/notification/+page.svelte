@@ -75,7 +75,7 @@
 
     async function fetchData() {
         try {
-            const response = await fetch(`https://prodmydepps.leadagro.net/api/notification/by/${user.id}`);
+            const response = await fetch(`https://depps.leadagro.net/api/notification/by/${user.id}`);
             if (response.ok) {
                 const result = await response.json();
                 if (result.code === 200 && result.data) {
@@ -104,7 +104,7 @@
 
     async function deleteNotification(id) {
         try {
-            const response = await fetch(`https://prodmydepps.leadagro.net/api/notification/delete/${id}`, {
+            const response = await fetch(`https://depps.leadagro.net/api/notification/delete/${id}`, {
                 method: 'DELETE',
                 headers: {
                     'Content-Type': 'application/json',
@@ -126,7 +126,7 @@
 
     async function markAsRead(id) {
         try {
-            const response = await fetch(`https://prodmydepps.leadagro.net/api/notification/read/${id}`, {
+            const response = await fetch(`https://depps.leadagro.net/api/notification/read/${id}`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

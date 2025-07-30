@@ -431,7 +431,7 @@
 
             authenticating = true;
 
-            fetch("https://prodmydepps.leadagro.net/api/paiement/paiement", {
+            fetch("https://depps.leadagro.net/api/paiement/paiement", {
                 method: "POST",
                 body: formDatas,
             })
@@ -518,7 +518,7 @@
 
         console.log(formDatas);
 
-        fetch("https://prodmydepps.leadagro.net/api/paiement/paiement", {
+        fetch("https://depps.leadagro.net/api/paiement/paiement", {
             method: "POST",
             body: formDatas,
         })
@@ -617,7 +617,7 @@
 
         try {
             const res = await fetch(
-                `https://prodmydepps.leadagro.net/api/paiement/get/transaction/${idtransaction}`,
+                `https://depps.leadagro.net/api/paiement/get/transaction/${idtransaction}`,
             );
             const data = await res.json();
             isPaiementDone = data.data;
@@ -635,7 +635,7 @@
 
         try {
             const res = await fetch(
-                `https://prodmydepps.leadagro.net/api/profession/get/status/paiement/${professionCode}`,
+                `https://depps.leadagro.net/api/profession/get/status/paiement/${professionCode}`,
             );
             const data = await res.json();
             paiementStatus = data.data;
@@ -654,7 +654,7 @@
 
         try {
             const res = await fetch(
-                `https://prodmydepps.leadagro.net/api/professionnel/existe/code/${code}`,
+                `https://depps.leadagro.net/api/professionnel/existe/code/${code}`,
             );
             const data = await res.json();
             return data.data;
@@ -673,7 +673,7 @@
 
         try {
             const res = await fetch(
-                `https://prodmydepps.leadagro.net/api/user/check/email/existe/${email}`,
+                `https://depps.leadagro.net/api/user/check/email/existe/${email}`,
             );
             const data = await res.json();
             return data.data; // Assurez-vous que l'API renvoie un objet avec une clé `valid`

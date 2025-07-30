@@ -6,7 +6,7 @@ export default defineConfig({
   server: {
     proxy: {
       '/api': {
-        target: 'https://prodmydepps.leadagro.net',
+        target: 'https://depps.leadagro.net',
         changeOrigin: true,
         secure: false, // Désactiver si le certificat SSL est auto-signé
         rewrite: (path) => path.replace(/^\/api/, '/api') // Garde le préfixe

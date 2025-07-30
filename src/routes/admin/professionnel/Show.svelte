@@ -22,7 +22,7 @@
 
   let professionLibelle: string = "";
 
-  const url_image = "https://prodmydepps.leadagro.net/uploads/";
+  const url_image = "https://depps.leadagro.net/uploads/";
   let persionneId = "";
   let numero = "";
   let nom = "";
@@ -454,63 +454,75 @@
       </div>
       <div class="grid grid-cols-4 gap-6 mt-6">
         <!-- <div class="space-y-6"> -->
-        <div
+        <button
+          type="button"
           on:click={() => (
             (current_data = url_image + CVpath + "/" + CValt), (openShow = true)
           )}
           class="w-full h-9 flex justify-center bg-gray-700 hover:bg-gray-700 text-white font-bold py-2 pb-[1.9rem] px-4 border border-white rounded cursor-pointer"
+          aria-label="Voir le CV"
         >
           VOIR LE CV
-        </div>
-        <div
+        </button>
+        <button
+          type="button"
           on:click={() => (
             (current_data = url_image + diplomeFilePath + "/" + diplomeFileAlt),
             (openShow = true)
           )}
           class="w-full h-9 flex justify-center bg-gray-700 hover:bg-gray-700 text-white font-bold py-2 pb-[1.9rem] px-4 border border-white rounded cursor-pointer"
+          aria-label="Voir le diplôme"
         >
           VOIR LE DIPLOME
-        </div>
+        </button>
 
-        <div
+        <button
+          type="button"
           on:click={() => (
             (current_data = url_image + casierPath + "/" + casierAlt),
             (openShow = true)
           )}
           class="w-full h-9 flex justify-center bg-gray-700 hover:bg-gray-700 text-white font-bold py-2 pb-[1.9rem] px-4 border border-white rounded cursor-pointer"
+          aria-label="Voir le casier"
         >
           VOIR LE CASIER
-        </div>
+        </button>
         <!--  </div>
         <div class="space-y-6"> -->
-        <div
+        <button
+          type="button"
           on:click={() => (
             (current_data = url_image + certificatPath + "/" + certificatAlt),
             (openShow = true)
           )}
           class="w-full h-9 flex justify-center bg-gray-700 hover:bg-gray-700 text-white font-bold py-2 pb-[1.9rem] px-4 border border-white rounded cursor-pointer"
+          aria-label="Voir le certificat"
         >
           VOIR LE CERTIFICAT
-        </div>
-        <div
+        </button>
+        <button
+          type="button"
           on:click={() => (
             (current_data = url_image + Photopath + "/" + Photoalt),
             (openShow = true)
           )}
           class="w-full h-9 flex justify-center bg-gray-700 hover:bg-gray-700 text-white font-bold py-2 pb-[1.9rem] px-4 border border-white rounded cursor-pointer"
+          aria-label="Voir la photo"
         >
           VOIR LA PHOTO
-        </div>
+        </button>
 
-        <div
+        <button
+          type="button"
           on:click={() => (
             (current_data = url_image + cniPath + "/" + cniAlt),
             (openShow = true)
           )}
           class="w-full h-9 flex justify-center bg-gray-700 hover:bg-gray-700 text-white font-bold py-2 pb-[1.9rem] px-4 border border-white rounded cursor-pointer"
+          aria-label="Voir la CNI"
         >
           VOIR LA CNI
-        </div>
+        </button>
 
         <div
           on:click={() => (
@@ -526,9 +538,11 @@
             on:click={() => ((current_data = data), (isModalOpen = true))}
             style="background-color: green;"
             class="w-full h-9 flex justify-center bg-green hover:bg-green text-white font-bold py-2 pb-[1.9rem] px-4 border border-white rounded cursor-pointer"
+            aria-label="Voir le reçu de paiement"
+            role="button"
           >
             REÇU DE PAIEMENT
-          </div>
+      </div>
         {/if}
       </div>
 

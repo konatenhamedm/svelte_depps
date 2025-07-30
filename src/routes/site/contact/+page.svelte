@@ -88,7 +88,18 @@
                         <p class="paragraphe">
                             L’accès à E-DEPPS est le moyen digital pour la demande et la délivrance des documents administratifs des établissements sanitaires privés et des professionnels de santé.<br><br>C’est aussi, pour la population, un accès aisé aux informations relatives à la santé.<br><br>Pour une meilleure coordination des interventions du secteur de la santé et aboutir au renforcement du cadre de régulation du secteur privé de la santé en particulier, plusieurs activités ont été réalisées.
                         </p>
+                    <div class="tablo--1-ve-2 wow fadeInUp">
+                        <h2 class="h2-baslik-anasayfa-ozel h-yazi-margin-kucuk">LES NUMEROS DE LA DEPPS</h2>
+                       <p><strong>STANDARD DEPPS : </strong> <a href="tel:2720332150">27 20 33 21 50</a></p>
+                       <p><strong>SECRETARIAT DEPPS : </strong> <a href="tel:0787589025">07 87 58 90 25</a> / <a href="tel:2720332151">27 20 33 21 51 </a></p>
+                       <p><strong>SOUS DIRECTION DES PROFESSIONS : </strong><a href="tel:0768153221">07 68 15 32 21</a></p>
+                       <p><strong>SOUS DIRECTION DU GUICHET : </strong><a href="tel:0171737138">01 71 73 71 38</a></p>
+                       <p><strong>ALERTE INFOS : </strong><a href="tel:0575455757">05 75 45 57 57</a></p>
+                       <p><strong>E-DEPPS  : </strong><a href="tel:0566056060">05 66 05 60 60</a></p>
                     </div>
+                    </div>
+
+                    
                 </div>
             </section>
         <br>

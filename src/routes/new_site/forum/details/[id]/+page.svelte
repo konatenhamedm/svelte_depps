@@ -59,7 +59,7 @@
     loadFetch = true;
     try {
       const res = await fetch(
-        `https://prodmydepps.leadagro.net/api/forum/get/one/${$page.params.id}`
+        `https://depps.leadagro.net/api/forum/get/one/${$page.params.id}`
       );
       const response = await res.json(); // Déclarer `response`
 
@@ -135,7 +135,7 @@
 
     try {
       const response = await fetch(
-        "https://prodmydepps.leadagro.net/api/avis/create",
+        "https://depps.leadagro.net/api/avis/create",
         {
           method: "POST",
           headers: {

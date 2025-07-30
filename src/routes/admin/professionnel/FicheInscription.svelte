@@ -7,12 +7,12 @@
 
     export let open: boolean = false;
     export let sizeModal: any = "xl";
-    export let userUpdateId: any;
+    export const userUpdateId: any = null;
     export let data: any;
 
     let isLoading = false;
     let pdfUrl = "";
-    const url_image = "https://prodmydepps.leadagro.net/uploads/";
+    const url_image = "https://depps.leadagro.net/uploads/";
 
     // Formatage des données
     let formattedData = {
