@@ -89,13 +89,13 @@
                             L’accès à E-DEPPS est le moyen digital pour la demande et la délivrance des documents administratifs des établissements sanitaires privés et des professionnels de santé.<br><br>C’est aussi, pour la population, un accès aisé aux informations relatives à la santé.<br><br>Pour une meilleure coordination des interventions du secteur de la santé et aboutir au renforcement du cadre de régulation du secteur privé de la santé en particulier, plusieurs activités ont été réalisées.
                         </p>
                     <div class="tablo--1-ve-2u wow fadeInUp">
-                        <h2 class="h2-baslik-anasayfa-ozel h-yazi-margin-kucuk">LES NUMEROS DE LA DEPPS</h2>
-                       <p><strong>STANDARD DEPPS : </strong> <a href="tel:2720332150" style="color:black !important;">27 20 33 21 50</a></p>
-                       <p><strong>SECRETARIAT DEPPS : </strong> <a href="tel:0787589025" style="color:black !important;">07 87 58 90 25</a> / <a href="tel:2720332151" style="color:black !important;">27 20 33 21 51 </a></p>
-                       <p><strong>SOUS DIRECTION DES PROFESSIONS : </strong><a href="tel:0768153221" style="color:black !important;">07 68 15 32 21</a></p>
-                       <p><strong>SOUS DIRECTION DU GUICHET : </strong><a href="tel:0171737138" style="color:black !important;">01 71 73 71 38</a></p>
-                       <p><strong>ALERTE INFOS : </strong><a href="tel:0575455757" style="color:black !important;">05 75 45 57 57</a></p>
-                       <p><strong>E-DEPPS  : </strong><a href="tel:0566056060" style="color:black !important;">05 66 05 60 60</a></p>
+                        <h2 class="h2-baslik-anasayfa-ozel h-yazi-margin-kucuk space-2">LES NUMEROS DE LA DEPPS</h2>
+                       <p class="paragraphe"><span style="font-weight:700; font-size:20px; ">STANDARD DEPPS : </span> <a href="tel:2720332150" style="color:black !important;">27 20 33 21 50</a></p>
+                       <p class="paragraphe"><span style="font-weight:700; font-size:20px; ">SECRETARIAT DEPPS : </span> <a href="tel:0787589025" style="color:black !important;">07 87 58 90 25</a> / <a href="tel:2720332151" style="color:black !important;">27 20 33 21 51 </a></p>
+                       <p class="paragraphe"><span style="font-weight:700; font-size:20px; ">SOUS DIRECTION DES PROFESSIONS : </span><a href="tel:0768153221" style="color:black !important;">07 68 15 32 21</a></p>
+                       <p class="paragraphe"><span style="font-weight:700; font-size:20px; ">SOUS DIRECTION DU GUICHET : </span><a href="tel:0171737138" style="color:black !important;">01 71 73 71 38</a></p>
+                       <p class="paragraphe"><span style="font-weight:700; font-size:20px; ">ALERTE INFOS : </span><a href="tel:0575455757" style="color:black !important;">05 75 45 57 57</a></p>
+                       <p class="paragraphe"><span style="font-weight:700; font-size:20px; ">E-DEPPS  : </span><a href="tel:0566056060" style="color:black !important;">05 66 05 60 60</a></p>
                     </div>
                     </div>
 
@@ -125,5 +125,8 @@
       -webkit-background-clip: text;
       color: transparent;
       letter-spacing: 0.1rem;
+    }
+    .space-2{
+        margin-top:3rem
     }
   </style>
