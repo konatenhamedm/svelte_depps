@@ -3,7 +3,7 @@
   import Footer from "$components/Footer.svelte";
   import Header from "$components/Header.svelte";
   import Slide from "$components/Slide.svelte";
-  import { BASE_URL_API} from '$lib/api';
+  import { BASE_URL_API } from "$lib/api";
 
   import { apiFetch } from "$lib/api";
   import type {
@@ -22,21 +22,20 @@
 
   export let data; // Récupérer les données du layout
   let user = data?.user;
-
+  let isPaiementProcessing = false;
+  $: isPaiementDone = false;
+  $: message = "";
   let step = 1;
-
-  let hideForPhysic = true;
-  let hideForOther = true;
+  $: hideForPhysic = false;
+  $: hideForOther = true;
 
   let formData = {
     // Login informations
-
     password: "",
     confirmPassword: "",
     email: "",
-
     // Informations generales ( à update en fonction du type)
-    typePersonne: null,
+    typePersonne: "A",
     nom: "",
     prenoms: "",
     telephone: "",
@@ -45,9 +44,7 @@
     adresse: "",
     nomRepresentant: "",
     denomination: "",
-
     // Pour la derniere step
-
     documents: [],
   };
 
@@ -57,10 +54,9 @@
     email: "",
     password: "",
     confirmPassword: "",
-
     // Informations générales
     // Informations generales ( à update en fonction du type)
-    typePersonne: null,
+    typePersonne: "",
     nom: "",
     prenoms: "",
     telephone: "",
@@ -69,16 +65,13 @@
     adresse: "",
     nomRepresentant: "",
     denomination: "",
-
     // Pour la derniere step
-
     documents: "",
   };
 
   // Fonction de validation des étapes
   function validateStep() {
     let valid = true;
-
     if (step === 1) {
       errors.email = formData.email ? "" : "L'e-mail est requis";
       errors.password = formData.password ? "" : "Le mot de passe est requis";
@@ -86,7 +79,6 @@
         formData.confirmPassword === formData.password
           ? ""
           : "Les mots de passe ne correspondent pas";
-
       valid =
         !errors.username &&
         !errors.password &&
@@ -94,12 +86,43 @@
         !errors.email;
     }
 
-    if (step === 2) {
-      // errors.typeEntreprise = formData.typeEntreprise
-      //   ? ""
-      //   : "Le type est requis";
-      valid = true;
+   if (step === 2) {
+    
+
+    // Champ obligatoire pour tous
+    errors.typePersonne = formData.typePersonne
+        ? ""
+        : "Le type est requis";
+
+    // Champs pour Personne Physique
+    if (!hideForOther) {
+        errors.nom = formData.nom ? "" : "Le nom est requis";
+        errors.prenoms = formData.prenoms ? "" : "Les prénoms sont requis";
+        errors.telephone = formData.telephone ? "" : "Le téléphone est requis";
+        errors.bp = formData.bp ? "" : "La boîte postale est requise";
+        errors.emailAutre = formData.emailAutre ? "" : "L'email est requis";
+        errors.adresse =  "" ;
+        errors.nomRepresentant = "" ;
+        errors.denomination = "" ;
     }
+
+    // Champs pour Personne Morale
+    if (!hideForPhysic) {
+        errors.adresse = formData.adresse ? "" : "L'adresse est requise";
+        errors.nomRepresentant = formData.nomRepresentant ? "" : "Le nom du représentant est requis";
+        errors.denomination = formData.denomination ? "" : "La dénomination est requise";
+        errors.nom =  "" ;
+        errors.prenoms =  "";
+        errors.telephone =  "" ;
+        errors.bp =  "" ;
+        errors.emailAutre = "" ;
+    }
+
+
+
+    // Déterminer si tout est valide
+    valid = Object.values(errors).every(errorMsg => errorMsg === "");
+}
 
     if (step === 3) {
       // errors.genre = formData.genre ? "" : "Le genre est requis";
@@ -133,9 +156,7 @@
     return valid;
   }
 
-  let isPaiementProcessing = false;
-  $: isPaiementDone = false;
-  $: message = "";
+
 
   ////Fonction asynchrone pour recuperer le groupe de documents pour le type de personne
   async function getTypeDoc(typePersonneId: any) {
@@ -164,25 +185,32 @@
       localStorage.setItem("step", step.toString());
       ///recuperer les informations du type de document lorsque le type de personne est selectionné
       if (formData.typePersonne > 0) {
-        console;
         getTypeDoc(formData.typePersonne);
       }
       if (values.typePersonne[formData.typePersonne - 1].libelle == "MORALE") {
         console.log("ici");
         hideForOther = false;
         hideForPhysic = true;
+        formData.nom = "";
+        formData.prenoms = "";
+        formData.telephone = "";
+        formData.bp = "";
+        formData.emailAutre = "";
       } else if (
         values.typePersonne[formData.typePersonne - 1].libelle == "PHYSIQUE"
       ) {
         console.log("la");
+        formData.adresse = "";
+        formData.nomRepresentant = "";
+        formData.denomination = "";
         hideForPhysic = false;
         hideForOther = true;
       }
+      console.log("affichage physique",hideForOther);
+      console.log("affichage morale",hideForPhysic);
     }
   }
-  // let fileNames = {}; // Stocke uniquement les noms des fichiers pour éviter les problèmes avec `localStorage`
-  let fileNames: { [key: string]: string } = {};
-  let selectedFiles = {};
+
 
   function updateFormData(fieldName: any, file: any) {
     if (file) {
@@ -257,6 +285,7 @@
       localStorage.setItem("step", step.toString());
     }
   }
+
   let authenticating_submit = false;
   // 🔹 Soumission du formulaire
   // 🔹 Soumission du formulaire
@@ -316,6 +345,7 @@
       })
         .then((response) => response.json())
         .then((result) => {
+          console.log("erreur", result);
           if (result.errors && Object.keys(result.errors).length > 0) {
             authenticating = false;
             messagefile = result.errors;
@@ -324,7 +354,7 @@
             if (result.url) {
               localStorage.setItem("reference", result.reference);
 
-              window.location.href = result.url + "?return=1"; // 🔥 Ajout du paramètre `return`
+              // window.location.href = result.url + "?return=1"; // 🔥 Ajout du paramètre `return`
             }
           }
         })
@@ -345,8 +375,9 @@
   }
 
   let authenticating = false;
-  function initPaiement() {
+  async function initPaiement() {
     authenticating = true;
+    console.log("Init payment");
     // Créer un FormData pour les données du formulaire
     let formDatas = new FormData();
 
@@ -358,9 +389,6 @@
     if (reference) {
       formDatas.append("reference", reference);
     }
-    formDatas.append("nom", formData.nomEntreprise);
-    formDatas.append("prenoms", formData.natureEntreprise);
-    formDatas.append("numero", formData.contactEntreprise);
     formDatas.append("type", "etablissement");
 
     const selectedFilesFromStorage = JSON.parse(
@@ -392,14 +420,14 @@
       });
     }
 
-    fetch("https://depps.leadagro.net/api/paiement/paiement", {
+   await fetch(`${BASE_URL_API}/paiement/paiement/`, {
       method: "POST",
       body: formDatas,
     })
       .then((response) => response.json())
       .then((result) => {
         authenticating = false;
-
+        console.log(result)
         if (result.data.url) {
           localStorage.setItem("reference", result.data.reference);
           window.location.href = result.data.url + "?return=1"; // 🔥 Ajout du paramètre `return`
@@ -417,38 +445,10 @@
     localStorage.clear(); // Nettoyer les données du localStorage
   }
 
-  async function checkTransactionID(idtransaction: any) {
-    if (!idtransaction) return false;
-
-    try {
-      const res = await fetch(
-        `https://depps.leadagro.net/api/paiement/get/transaction/${idtransaction}`
-      );
-      const data = await res.json();
-      return data.data; // Assurez-vous que l'API renvoie un objet avec une clé `valid`
-    } catch (error) {
-      console.error(
-        "Erreur lors de la vérification de la transaction :",
-        error
-      );
-      return false;
-    }
-  }
-
   // Déclenche la vérification de façon réactive dès que transactionID change
   $: if (typeof window !== "undefined" && localStorage.getItem("reference")) {
     const reference = localStorage.getItem("reference").toString();
     if (reference) {
-      checkTransactionID(reference).then((resultat) => {
-        console.log(resultat);
-        if (resultat.data == false) {
-          message = "Votre paiement à échoué veillez ressayez svp.";
-          isPaiementDone = false;
-        } else {
-          message = "";
-          isPaiementDone = true;
-        }
-      });
     }
   }
 
@@ -567,7 +567,7 @@
           >
             {#if step === 1}
               <h2 class="h2-baslik-anasayfa-ozel h-yazi-margin-kucuk">
-                Informations de connexion (étape 1/5)
+                Informations de connexion (étape 1/3)
               </h2>
               <div class="tablo">
                 <div class="tablo--1h-ve-2">
@@ -625,10 +625,12 @@
                 </div>
               </div>
             {/if}
+
+            
             <!-- Étape 1 -->
             {#if step === 2}
               <h2 class="h2-baslik-anasayfa-ozel h-yazi-margin-kucuk">
-                Etablissement de Sante (étape 2/5)
+                Etablissement de Sante (étape 2/3)
               </h2>
               <div class="tablo">
                 <div class="tablo--1h-ve-2">
@@ -663,7 +665,7 @@
                     <div hidden={hideForOther} class="form__grup">
                       <label class="form_label">Nom*</label>
                       <input
-                        on:input={saveFormState}
+                        
                         on:input={(e: any) =>
                           updateField("nom", e.target.value)}
                         type="text"
@@ -681,7 +683,7 @@
                     <div hidden={hideForOther} class="form__grup">
                       <label class="form_label">Prenoms *</label>
                       <input
-                        on:input={saveFormState}
+                        
                         on:input={(e: any) =>
                           updateField("prenoms", e.target.value)}
                         type="text"
@@ -697,7 +699,7 @@
                     <div hidden={hideForOther} class="form__grup">
                       <label class="form_label">Telephone *</label>
                       <input
-                        on:input={saveFormState}
+                        
                         on:input={(e: any) =>
                           updateField("telephone", e.target.value)}
                         type="text"
@@ -714,7 +716,7 @@
                     <div hidden={hideForOther} class="form__grup">
                       <label class="form_label">Boite Postale *</label>
                       <input
-                        on:input={saveFormState}
+                        
                         on:input={(e: any) => updateField("bp", e.target.value)}
                         type="text"
                         class="form__input"
@@ -731,7 +733,7 @@
                     <div hidden={hideForOther} class="form__grup">
                       <label class="form_label">Autre E-mail *</label>
                       <input
-                        on:input={saveFormState}
+                        
                         on:input={(e: any) =>
                           updateField("emailAutre", e.target.value)}
                         type="email"
@@ -748,7 +750,7 @@
                     <div hidden={hideForPhysic} class="form__grup">
                       <label class="form_label">Adresse *</label>
                       <input
-                        on:input={saveFormState}
+                        
                         on:input={(e: any) =>
                           updateField("adresse", e.target.value)}
                         type="text"
@@ -767,7 +769,7 @@
                     <div hidden={hideForPhysic} class="form__grup">
                       <label class="form_label">Nom du representant *</label>
                       <input
-                        on:input={saveFormState}
+                        
                         on:input={(e: any) =>
                           updateField("nomRepresentant", e.target.value)}
                         type="text"
@@ -784,7 +786,7 @@
                     <div hidden={hideForPhysic} class="form__grup">
                       <label class="form_label">Dénomination *</label>
                       <input
-                        on:input={saveFormState}
+                        
                         on:input={(e: any) =>
                           updateField("denomination", e.target.value)}
                         type="text"
@@ -808,24 +810,23 @@
               </h2>
               <div class="tablo">
                 <div class="tablo--1h-ve-2">
+                  {#each values.typeDocument as document}
+                  <div style="margin-top: 20px;"></div>
+                  <h2 class="h2-baslik-anasayfa-ozel h-yazi-margin-kucuk">{document.libelle}</h2>
                   <div class="grid grid-cols-2">
-                    {#each values.typeDocument as document}
                       {#each document.typeDocuments as requiredFile, index}
-                      {console.log("Required files", requiredFile)}
+                        
                         <div class="form__grup">
                           <label class="form_label"
                             >{requiredFile.libelle} *</label
                           >
 
                           <input
-                          accept="image/*, .pdf"
+                            accept="image/*, .pdf"
                             type="file"
                             class="form__input"
                             on:change={(e) =>
-                              updateField(
-                                "documents",
-                                e.target.files[0]
-                              )}
+                              updateField("documents", e.target.files[0])}
                             placeholder="contacts Promoteur"
                           />
 
@@ -833,169 +834,16 @@
                             <p class="error">{errors.documents}</p>
                           {/if}
                         </div>
-
-
-                        
                       {/each}
+                      </div>
                     {/each}
-                  </div>
+                  
+                    
+                
                 </div>
               </div>
             {/if}
 
-            <!-- Étape 3 -->
-            <!-- {#if step === 4}
-              <h2 class="h2-baslik-anasayfa-ozel h-yazi-margin-kucuk">
-                Informations du technicien (étape 4/5)
-              </h2>
-              <div class="tablo">
-                <div class="tablo--1h-ve-2">
-                  <div class="grid grid-cols-2"> -->
-            <!-- Champ Nom Complet Technique -->
-            <!-- <div class="form__grup">
-                      <label class="form_label">Nom complet *</label>
-                      <input
-                        on:input={saveFormState}
-                        on:input={(e: any) =>
-                          updateField("nomCompletTechnique", e.target.value)}
-                        type="text"
-                        class="form__input"
-                        bind:value={formData.nomCompletTechnique}
-                        placeholder="Nom complet"
-                      />
-                      {#if errors.nomCompletTechnique}<p class="error">
-                          {errors.nomCompletTechnique}
-                        </p>{/if}
-                    </div> -->
-
-            <!-- Champ Contact Pro Technique -->
-            <!-- <div class="form__grup">
-                      <label class="form_label">Contact *</label>
-                      <input
-                        on:input={saveFormState}
-                        on:input={(e: any) =>
-                          updateField("contactProTechnique", e.target.value)}
-                        type="text"
-                        class="form__input"
-                        bind:value={formData.contactProTechnique}
-                        placeholder="Contact professionnel"
-                      />
-                      {#if errors.contactProTechnique}<p class="error">
-                          {errors.contactProTechnique}
-                        </p>{/if}
-                    </div> -->
-
-            <!-- Champ Email Pro Technique -->
-            <!-- <div class="form__grup">
-                      <label class="form_label">Adresse E-mail *</label>
-                      <input
-                        on:input={saveFormState}
-                        on:input={(e: any) =>
-                          updateField("emailProTechnique", e.target.value)}
-                        type="email"
-                        class="form__input"
-                        bind:value={formData.emailProTechnique}
-                        placeholder="E-mail professionnel"
-                      />
-                      {#if errors.emailProTechnique}<p class="error">
-                          {errors.emailProTechnique}
-                        </p>{/if}
-                    </div> -->
-
-            <!-- Champ Lieu de Résidence Technique -->
-            <!-- <div class="form__grup">
-                      <label class="form_label">Lieu de résidence *</label>
-                      <input
-                        on:input={saveFormState}
-                        on:input={(e: any) =>
-                          updateField("lieuResidenceTechnique", e.target.value)}
-                        type="text"
-                        class="form__input"
-                        bind:value={formData.lieuResidenceTechnique}
-                        placeholder="Lieu de résidence"
-                      />
-                      {#if errors.lieuResidenceTechnique}<p class="error">
-                          {errors.lieuResidenceTechnique}
-                        </p>{/if}
-                    </div> -->
-
-            <!-- Champ Profession Technique -->
-            <!-- <div class="form__grup">
-                      <label class="form_label">Profession *</label>
-                      <input
-                        on:input={saveFormState}
-                        on:input={(e: any) =>
-                          updateField("professionTechnique", e.target.value)}
-                        type="text"
-                        class="form__input"
-                        bind:value={formData.professionTechnique}
-                        placeholder="Profession"
-                      />
-                      {#if errors.professionTechnique}<p class="error">
-                          {errors.professionTechnique}
-                        </p>{/if}
-                    </div> -->
-
-            <!-- Champ Numéro d'Ordre Technique -->
-            <!-- <div class="form__grup">
-                      <label class="form_label">N° d'ordre *</label>
-                      <input
-                        on:input={saveFormState}
-                        on:input={(e: any) =>
-                          updateField("numeroOrdreTechnique", e.target.value)}
-                        type="text"
-                        class="form__input"
-                        bind:value={formData.numeroOrdreTechnique}
-                        placeholder="Numéro d'ordre"
-                      />
-                      {#if errors.numeroOrdreTechnique}<p class="error">
-                          {errors.numeroOrdreTechnique}
-                        </p>{/if}
-                    </div>
-                  </div>
-                </div>
-              </div>
-            {/if} -->
-
-            <!-- Étape 4 -->
-            <!-- {#if step === 5}
-              <h2 class="h2-baslik-anasayfa-ozel h-yazi-margin-kucuk">
-                Informations médiatiques (étape 5/5)
-              </h2> -->
-            <!-- {#if messagefile !== ""}
-               <div
-                 class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative"
-                 role="alert"
-               >
-                 <strong class="font-bold">Oups erreur!</strong>
-                 <span class="block sm:inline">{messagefile}</span>
-               </div>
-             {/if} -->
-            <!-- <div class="tablo">
-                <div class="tablo--1h-ve-2">
-                  <div class="grid grid-cols-2">
-                    {#each ["photo", "diplomeFile", "cni", "cv", "ordreNational", "dfe"] as fieldName}
-                      <div class="form__grup">
-                        <label class="form_label"
-                          >{fieldName.toUpperCase()}</label
-                        >
-                        <input
-                          type="file"
-                          class="form__input"
-                          on:change={(e) => handleFileChange(e, fieldName)}
-                        />
-                        {#if fileNames[fieldName]}
-                          <p>{fileNames[fieldName]} *</p>
-                        {/if}
-                        {#if errors[fieldName]}
-                          <p class="error">{errors[fieldName]}</p>
-                        {/if}
-                      </div>
-                    {/each}
-                  </div>
-                </div>
-              </div>
-            {/if} -->
             <!-- Étape 4 : Paiement -->
             {#if step === 4}
               <h2 class="h2-baslik-anasayfa-ozel h-yazi-margin-kucuk">
@@ -1003,7 +851,7 @@
               </h2>
               <div class="tablo">
                 <div class="tablo--1h-ve-2">
-                  <!--   on:click={clickPaiement} -->
+                  <!-- on:click={clickPaiement} -->
                   <div class="grid grid-cols-1 gap-20 flex justify-center">
                     <div class="">
                       {#if isPaiementDone == false}
