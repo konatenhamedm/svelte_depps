@@ -28,7 +28,7 @@
   <select
     id="select-input"
     bind:value={value}
-    class="w-full form__input"
+    class="form__input"
     on:change={(event) => {
       handleInput(event);
       saveFormState();

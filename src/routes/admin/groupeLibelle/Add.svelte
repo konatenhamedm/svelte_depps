@@ -4,8 +4,6 @@
   import { Button, Input, Label, Modal, Textarea } from "flowbite-svelte";
   import Notification from "$components/_includes/Notification.svelte";
   import InputTextArea from "$components/inputs/InputTextArea.svelte";
-  import { onMount } from "svelte";
-  import InputSelect from "$components/inputs/InputSelect.svelte";
 
   let showNotification = false;
   let notificationMessage = "";
@@ -14,14 +12,8 @@
   export let open: boolean = false;
   let isLoad = false;
 
-  let typePersonnes: any = []; // Assume that this will be populated with cities
-  let libelleGroupe: any = []; // Assume that this will be populated with cities
-
-  let typeDoc: any = {
-    nombre: "",
+  let icons: any = {
     libelle: "",
-    typePersonne: "",
-    libelleGroupe
   };
   export let sizeModal: any = "lg";
   export let userUpdateId: any;
@@ -33,16 +25,13 @@
   async function SaveFunction() {
     isLoad = true;
     try {
-      const res = await fetch(BASE_URL_API + "/typeDocument/create", {
+      const res = await fetch(BASE_URL_API + "/libelleGroupe/create", {
         method: "POST",
         headers: {
           "Content-Type": "application/json"
         },
         body: JSON.stringify({
-          nombre: typeDoc.nombre,
-          libelle: typeDoc.libelle,
-          libelleGroupe: typeDoc.libelleGroupe,
-          typePersonne: typeDoc.typePersonne,
+          libelle: icons.libelle,
           userUpdate: userUpdateId
         })
       });
@@ -50,7 +39,7 @@
       if (res.ok) {
         isLoad = false;
         open = false;
-        notificationMessage = "type document créé avec succès!";
+        notificationMessage = "civilite créé avec succès!";
         notificationType = "success";
         showNotification = true;
       }
@@ -58,7 +47,6 @@
       notificationMessage = "Une erreur crée lors de l enregistrement";
       notificationType = "error";
       showNotification = true;
-      isLoad = false;
       console.error("Error saving:", error);
     }
   }
@@ -68,30 +56,13 @@
       event.preventDefault(); // Prevent modal from closing if loading
     }
   }
-
-  async function getTypePersonne() {
-    try {
-      const res = await fetch(BASE_URL_API + "/typePersonne");
-      const data = await res.json();
-      typePersonnes = data.data;
-      const res_libelle = await fetch(BASE_URL_API + "/libelleGroupe/");
-      const data_libelle = await res_libelle.json();
-      libelleGroupe = data_libelle.data;
-    } catch (error) {
-      console.error("Error fetching villes:", error);
-    }
-  }
-
-  onMount(async () => {
-    await getTypePersonne();
-  });
 </script>
 
 <Modal
   bind:open
   title={Object.keys(data).length
-    ? "Ajouter une type document "
-    : "Ajouter une type document"}
+    ? "Ajouter un libellé "
+    : "Ajouter un libellé"}
   size={sizeModal}
   class="m-4 modale_general"
   on:close={handleModalClose}
@@ -104,36 +75,17 @@
   />
   <div class="space-y-6 p-0">
     <form action="#" use:init>
-      <div class="grid grid-cols-1 gap-4 mb-4">
-        
+      <div class="grid grid-cols-1">
+     
+
         <InputSimple
-          fieldName="Libellé"
-          label="Libellé"
-          bind:field={typeDoc.libelle}
-          placeholder="entrez le libellé"
+          fieldName="libelle"
+          label="Libelle"
+          bind:field={icons.libelle}
+          placeholder="entrez le libelle"
           class="w-full"
         ></InputSimple>
-        <InputSimple
-          fieldName="nombre"
-          label="Nombre"
-          bind:field={typeDoc.nombre}
-          placeholder="entrez le nombre"
-          class="w-full"
-        ></InputSimple>
-      </div>
-      <div class="grid grid-cols-1 gap-6">
-        <InputSelect
-          label="Type personne"
-          bind:selectedId={typeDoc.typePersonne}
-          datas={typePersonnes}
-          id="typePersonne"
-        />
-        <InputSelect
-          label="Libellé groupe"
-          bind:selectedId={typeDoc.libelleGroupe}
-          datas={libelleGroupe}
-          id="libelleGroupe"
-        />
+     
       </div>
     </form>
   </div>

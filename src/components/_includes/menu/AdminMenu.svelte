@@ -185,6 +185,14 @@
                 >Statut professionnel</a
               >
             </li>
+
+            <li>
+              <a href="/admin/libelleGroupe"
+                ><i class="icon-Commit"
+                  ><span class="path1"></span><span class="path2"></span></i
+                >Libellé groupe</a
+              >
+            </li>
           </ul>
         </li>
 

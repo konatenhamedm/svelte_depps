@@ -4,24 +4,18 @@
   export let open: boolean = false;
   export let sizeModal: any = "lg";
   export let data: Record<string, string> = {};
-  let nombre = "";
   let libelle = "";
-  let typePersonne = "";
-  let libelleGroupe = "";
 
   function init(form: HTMLFormElement) {
-    nombre = data.nombre || "";
+    
     libelle = data.libelle || "";
-    typePersonne = data.typePersonne.libelle || "";
-    libelleGroupe = data.libelleGroupe.libelle || "";
+
   }
 </script>
 
 <Modal
   bind:open
-  title={Object.keys(data).length
-    ? "Détails type document"
-    : "Détails type document"}
+  title={Object.keys(data).length ? "Détails icon" : "Détails icon"}
   size={sizeModal}
   class="m-4 modale_general"
 >
@@ -34,6 +28,7 @@
   <div class="space-y-6 p-0">
     <form action="#" use:init>
       <div class="grid grid-cols-1 gap-6">
+       
         <InputSimple
           fieldName="libelle"
           label="Libelle"
@@ -41,28 +36,7 @@
           placeholder="entrez le libelle"
           disabled={true}
         />
-
-        <InputSimple
-          fieldName="nombre"
-          label="nombre"
-          field={nombre}
-          placeholder="entrez le nombre"
-          disabled={true}
-        />
-        <InputSimple
-          fieldName="typePersonne"
-          label="Type personne"
-          field={typePersonne}
-          placeholder=""
-          disabled={true}
-        />
-         <InputSimple
-          fieldName="libelleGroupe"
-          label="Libellé groupe"
-          field={libelleGroupe}
-          placeholder=""
-          disabled={true}
-        />
+      
       </div>
     </form>
   </div>

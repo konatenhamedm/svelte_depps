@@ -17,6 +17,8 @@
   import MessageError from "$components/MessageError.svelte";
   import { goto } from "$app/navigation";
   import Spinner from "$components/_skeletons/Spinner.svelte";
+  import EtapeConnexion from "$components/site/EtapeConnexion.svelte";
+  import SelectInput from "$components/site/SelectInput.svelte";
 
   const professions = getProfessions();
 
@@ -29,13 +31,67 @@
   $: hideForPhysic = false;
   $: hideForOther = true;
 
+  //////Nouvelle variable
+
+  let showPassword = false;
+  let showPasswordConfirm = false;
+
+  $: emailError =
+    formData.email && !validateEmail(formData.email)
+      ? "Veuillez entrer un email valide"
+      : "";
+  $: emailPassword =
+    formData.email && !validatePassword(formData.password)
+      ? "Le mot de passe doit contenir au moins 6 caractères, une majuscule, une minuscule et un chiffre."
+      : "";
+
+  $: emailAutreError =
+    formData.emailAutre && !validateEmail(formData.emailAutre)
+      ? "Veuillez entrer un email valide"
+      : "";
+
+  function validateEmail(email: string): boolean {
+    const regex = /\S+@\S+\.\S+/;
+
+    return regex.test(email);
+  }
+  function validatePassword(password: string): boolean {
+    const regex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{6,}$/;
+    return regex.test(password);
+  }
+
+$: if (formData.typePersonne == 1 ) {
+        hideForOther = true;
+        hideForPhysic = false;
+        formData.nom = "";
+        formData.prenoms = "";
+        formData.telephone = "";
+        formData.bp = "";
+        formData.emailAutre = "";
+      } else if (formData.typePersonne == 2 ) {
+        formData.adresse = "";
+        formData.nomRepresentant = "";
+        formData.denomination = "";
+        hideForPhysic = true;
+        hideForOther = false;
+      }else{
+        hideForPhysic = false;
+        hideForOther = false;
+      }
+
+
+
+
+
+  /////fin 
+
   let formData = {
     // Login informations
     password: "",
     confirmPassword: "",
     email: "",
     // Informations generales ( à update en fonction du type)
-    typePersonne: "A",
+    typePersonne: 1,
     nom: "",
     prenoms: "",
     telephone: "",
@@ -50,7 +106,6 @@
 
   // Définition des erreurs
   let errors = {
-    username: "",
     email: "",
     password: "",
     confirmPassword: "",
@@ -68,6 +123,34 @@
     // Pour la derniere step
     documents: "",
   };
+  let emailCheck = false;
+  async function checkEmail(email: any) {
+    if (!email) return false;
+
+    try {
+      const res = await fetch(
+        BASE_URL_API + `/user/check/email/existe/${email}`
+      );
+      const data = await res.json();
+      return data.data; // Assurez-vous que l'API renvoie un objet avec une clé `valid`
+    } catch (error) {
+      console.error(
+        "Erreur lors de la vérification de la transaction :",
+        error
+      );
+      return false;
+    }
+  }
+
+  $: if (formData.email) {
+    checkEmail(formData.email).then((resultat) => {
+      emailCheck = resultat;
+
+      if (emailCheck == true) {
+        emailError = "Cet email existe deja";
+      }
+    });
+  }
 
   // Fonction de validation des étapes
   function validateStep() {
@@ -79,50 +162,51 @@
         formData.confirmPassword === formData.password
           ? ""
           : "Les mots de passe ne correspondent pas";
+
       valid =
-        !errors.username &&
         !errors.password &&
         !errors.confirmPassword &&
-        !errors.email;
+        !errors.email &&
+        !emailError &&
+        !emailCheck &&
+        !emailPassword;
     }
 
-   if (step === 2) {
-    
+    if (step === 2) {
+      // Champ obligatoire pour tous
+      errors.typePersonne = formData.typePersonne ? "" : "Le type est requis";
 
-    // Champ obligatoire pour tous
-    errors.typePersonne = formData.typePersonne
-        ? ""
-        : "Le type est requis";
-
-    // Champs pour Personne Physique
-    if (!hideForOther) {
+      // Champs pour Personne Physique
+      if (!hideForOther) {
         errors.nom = formData.nom ? "" : "Le nom est requis";
         errors.prenoms = formData.prenoms ? "" : "Les prénoms sont requis";
         errors.telephone = formData.telephone ? "" : "Le téléphone est requis";
         errors.bp = formData.bp ? "" : "La boîte postale est requise";
         errors.emailAutre = formData.emailAutre ? "" : "L'email est requis";
-        errors.adresse =  "" ;
-        errors.nomRepresentant = "" ;
-        errors.denomination = "" ;
-    }
+        errors.adresse = "";
+        errors.nomRepresentant = "";
+        errors.denomination = "";
+      }
 
-    // Champs pour Personne Morale
-    if (!hideForPhysic) {
+      // Champs pour Personne Morale
+      if (!hideForPhysic) {
         errors.adresse = formData.adresse ? "" : "L'adresse est requise";
-        errors.nomRepresentant = formData.nomRepresentant ? "" : "Le nom du représentant est requis";
-        errors.denomination = formData.denomination ? "" : "La dénomination est requise";
-        errors.nom =  "" ;
-        errors.prenoms =  "";
-        errors.telephone =  "" ;
-        errors.bp =  "" ;
-        errors.emailAutre = "" ;
+        errors.nomRepresentant = formData.nomRepresentant
+          ? ""
+          : "Le nom du représentant est requis";
+        errors.denomination = formData.denomination
+          ? ""
+          : "La dénomination est requise";
+        errors.nom = "";
+        errors.prenoms = "";
+        errors.telephone = "";
+        errors.bp = "";
+        errors.emailAutre = "";
+      }
+
+      // Déterminer si tout est valide
+      valid = Object.values(errors).every((errorMsg) => errorMsg === "");
     }
-
-
-
-    // Déterminer si tout est valide
-    valid = Object.values(errors).every(errorMsg => errorMsg === "");
-}
 
     if (step === 3) {
       // errors.genre = formData.genre ? "" : "Le genre est requis";
@@ -156,15 +240,13 @@
     return valid;
   }
 
-
-
   ////Fonction asynchrone pour recuperer le groupe de documents pour le type de personne
   async function getTypeDoc(typePersonneId: any) {
     let res = null;
-    console.log("Type personne ID transmis", typePersonneId);
-    res = await apiFetch(true, `${objects[1].url}/${formData.typePersonne}`);
+    
+    res = await apiFetch(true, `${objects[1].url}/${typePersonneId}`);
     if (res) {
-      console.log("Resultat de ma requete", res);
+     
       if (Object.keys(values).includes(objects[1].name)) {
         values[objects[1].name as keyof typeof values] = res.data;
       } else {
@@ -188,9 +270,9 @@
         getTypeDoc(formData.typePersonne);
       }
       if (values.typePersonne[formData.typePersonne - 1].libelle == "MORALE") {
-        console.log("ici");
-        hideForOther = false;
-        hideForPhysic = true;
+    
+        hideForOther = true;
+        hideForPhysic = false;
         formData.nom = "";
         formData.prenoms = "";
         formData.telephone = "";
@@ -199,18 +281,15 @@
       } else if (
         values.typePersonne[formData.typePersonne - 1].libelle == "PHYSIQUE"
       ) {
-        console.log("la");
+
         formData.adresse = "";
         formData.nomRepresentant = "";
         formData.denomination = "";
-        hideForPhysic = false;
-        hideForOther = true;
+        hideForPhysic = true;
+        hideForOther = false;
       }
-      console.log("affichage physique",hideForOther);
-      console.log("affichage morale",hideForPhysic);
     }
   }
-
 
   function updateFormData(fieldName: any, file: any) {
     if (file) {
@@ -258,11 +337,13 @@
   }
 
   // ✅ Vérifier si on revient après un paiements
-  onMount(() => {
+   onMount(async () => {
     const urlParams = new URLSearchParams(window.location.search);
     if (urlParams.has("return")) {
       restoreFormState();
     }
+    await getTypeDoc(formData.typePersonne);
+   
   });
 
   // Lire la valeur de `step` depuis localStorage, sinon initialiser à 1
@@ -368,6 +449,7 @@
 
   // 🔹 Gestion du paiements
   function clickPaiement() {
+    console.log("click payment")
     isPaiementProcessing = true;
     saveFormState(); // 🔥 Sauvegarder avant de partir
 
@@ -377,7 +459,6 @@
   let authenticating = false;
   async function initPaiement() {
     authenticating = true;
-    console.log("Init payment");
     // Créer un FormData pour les données du formulaire
     let formDatas = new FormData();
 
@@ -420,14 +501,16 @@
       });
     }
 
-   await fetch(`${BASE_URL_API}/paiement/paiement/`, {
+    await fetch(`${BASE_URL_API}/paiement/paiement/`, {
       method: "POST",
       body: formDatas,
     })
-      .then((response) => response.json())
+      .then(async (response) =>console.log("response", await xresponse.json()))
       .then((result) => {
+    
+        console.log("resultat", result)
         authenticating = false;
-        console.log(result)
+        console.log(result);
         if (result.data.url) {
           localStorage.setItem("reference", result.data.reference);
           window.location.href = result.data.url + "?return=1"; // 🔥 Ajout du paramètre `return`
@@ -457,7 +540,7 @@
    */
   let objects = [
     { name: "typePersonne", url: "/typePersonne" },
-    { name: "typeDocument", url: "/libelleGroupe/all" },
+    { name: "typeDocument", url: "/libelleGroupe/all", id: 1 },
   ];
 
   let values: {
@@ -465,7 +548,7 @@
     civilite: Civilite[];
     nationate: Pays[];
     specialite: Specialite[];
-    typePersonne: Pays[];
+    typePersonne: any;
     ville: Ville[];
     typeDocument: any[];
   } = {
@@ -482,7 +565,12 @@
     try {
       let res = null;
       objects.forEach(async (element) => {
-        res = await apiFetch(true, element.url);
+        if (element.id) {
+          res = await apiFetch(true, `${element.url}/${element.id}`);
+        } else {
+          res = await apiFetch(true, element.url);
+        }
+
         if (res) {
           if (Object.keys(values).includes(element.name)) {
             values[element.name as keyof typeof values] = res.data;
@@ -535,14 +623,6 @@
   }
 </script>
 
-<!-- <div
-  id="pointer-ring"
-  style="border-color: rgb(82, 200, 233); padding: 25px; transform: translate(308px, 648px);"
-></div>
-<div
-  id="pointer-dot"
-  style="border-color: rgb(113, 88, 190); transform: translate(333px, 673px);"
-></div> -->
 <div id="">
   <Header {user} />
   <Slide {user} />
@@ -566,67 +646,20 @@
             on:submit|preventDefault={submitForm}
           >
             {#if step === 1}
-              <h2 class="h2-baslik-anasayfa-ozel h-yazi-margin-kucuk">
-                Informations de connexion (étape 1/3)
-              </h2>
-              <div class="tablo">
-                <div class="tablo--1h-ve-2">
-                  <div class="grid grid-cols-3">
-                    <div class="form__grup">
-                      <label class="form_label">E-mail *</label>
-                      <input
-                        on:input={saveFormState}
-                        on:input={(e: any) =>
-                          updateField("email", e.target.value)}
-                        type="email"
-                        class="form__input"
-                        bind:value={formData.email}
-                        placeholder="E-mail"
-                      />
-                      {#if errors.email}<p class="error">
-                          {errors.email}
-                        </p>{/if}
-                    </div>
-
-                    <div class="form__grup">
-                      <label class="form_label">Mot de passe *</label>
-                      <input
-                        on:input={saveFormState}
-                        on:input={(e: any) =>
-                          updateField("password", e.target.value)}
-                        type="password"
-                        class="form__input"
-                        bind:value={formData.password}
-                        placeholder="Mot de passe"
-                      />
-                      {#if errors.password}<p class="error">
-                          {errors.password}
-                        </p>{/if}
-                    </div>
-
-                    <div class="form__grup">
-                      <label class="form_label"
-                        >Confirmer le mot de passe *</label
-                      >
-                      <input
-                        on:input={saveFormState}
-                        on:input={(e: any) =>
-                          updateField("confirmPassword", e.target.value)}
-                        type="password"
-                        class="form__input"
-                        bind:value={formData.confirmPassword}
-                        placeholder="Confirmer le mot de passe"
-                      />
-                      {#if errors.confirmPassword}<p class="error">
-                          {errors.confirmPassword}
-                        </p>{/if}
-                    </div>
-                  </div>
-                </div>
-              </div>
+              <EtapeConnexion
+                bind:formData
+                {errors}
+                {emailError}
+                {emailPassword}
+                {saveFormState}
+                {showPassword}
+                {showPasswordConfirm}
+                togglePassword={() => (showPassword = !showPassword)}
+                toggleConfirmPassword={() =>
+                  (showPasswordConfirm = !showPasswordConfirm)}
+              />
             {/if}
 
-            
             <!-- Étape 1 -->
             {#if step === 2}
               <h2 class="h2-baslik-anasayfa-ozel h-yazi-margin-kucuk">
@@ -637,35 +670,32 @@
                   <div class="grid grid-cols-2">
                     <!-- Champ natureEntreprise -->
 
-                    <div class="form__grup">
-                      <label class="form_label">Personne Physique *</label>
-                      <select
-                        on:change={saveFormState}
-                        class="form__input"
-                        name=""
-                        id=""
+                    <!-- <div class="form__grup"> -->
+                      <!-- <label class="form_label">Personne Physique *</label> -->
+                      <SelectInput
+                        label="Personne Physique "
                         bind:value={formData.typePersonne}
-                      >
-                        <option value="" selected={!formData.typePersonne}
-                          >Veuillez sélectionner une option</option
-                        >
-                        {#each values.typePersonne as typePersonne}
-                          <option
-                            value={typePersonne.id}
-                            selected={formData.typePersonne === typePersonne.id}
-                            >{typePersonne.libelle}</option
-                          >
-                        {/each}
-                      </select>
-                      {#if errors.typePersonne}<p class="error">
+                        options={values.typePersonne.map(
+                          (c: { id: number; libelle: string }) => ({
+                            id: String(c.id),
+                            libelle: c.libelle,
+                          })
+                        )}
+                        placeholder="Sélectionnez le type de personne "
+                        error={errors.typePersonne}
+                        onInput={saveFormState}
+                        step={2}
+                        bind:formData
+                      />
+
+                      <!-- {#if errors.typePersonne}<p class="error">
                           {errors.typePersonne}
-                        </p>{/if}
-                    </div>
+                        </p>{/if} -->
+                    <!-- </div> -->
 
                     <div hidden={hideForOther} class="form__grup">
                       <label class="form_label">Nom*</label>
                       <input
-                        
                         on:input={(e: any) =>
                           updateField("nom", e.target.value)}
                         type="text"
@@ -683,7 +713,6 @@
                     <div hidden={hideForOther} class="form__grup">
                       <label class="form_label">Prenoms *</label>
                       <input
-                        
                         on:input={(e: any) =>
                           updateField("prenoms", e.target.value)}
                         type="text"
@@ -699,7 +728,6 @@
                     <div hidden={hideForOther} class="form__grup">
                       <label class="form_label">Telephone *</label>
                       <input
-                        
                         on:input={(e: any) =>
                           updateField("telephone", e.target.value)}
                         type="text"
@@ -716,7 +744,6 @@
                     <div hidden={hideForOther} class="form__grup">
                       <label class="form_label">Boite Postale *</label>
                       <input
-                        
                         on:input={(e: any) => updateField("bp", e.target.value)}
                         type="text"
                         class="form__input"
@@ -733,7 +760,6 @@
                     <div hidden={hideForOther} class="form__grup">
                       <label class="form_label">Autre E-mail *</label>
                       <input
-                        
                         on:input={(e: any) =>
                           updateField("emailAutre", e.target.value)}
                         type="email"
@@ -750,7 +776,6 @@
                     <div hidden={hideForPhysic} class="form__grup">
                       <label class="form_label">Adresse *</label>
                       <input
-                        
                         on:input={(e: any) =>
                           updateField("adresse", e.target.value)}
                         type="text"
@@ -769,7 +794,6 @@
                     <div hidden={hideForPhysic} class="form__grup">
                       <label class="form_label">Nom du representant *</label>
                       <input
-                        
                         on:input={(e: any) =>
                           updateField("nomRepresentant", e.target.value)}
                         type="text"
@@ -786,7 +810,6 @@
                     <div hidden={hideForPhysic} class="form__grup">
                       <label class="form_label">Dénomination *</label>
                       <input
-                        
                         on:input={(e: any) =>
                           updateField("denomination", e.target.value)}
                         type="text"
@@ -811,11 +834,12 @@
               <div class="tablo">
                 <div class="tablo--1h-ve-2">
                   {#each values.typeDocument as document}
-                  <div style="margin-top: 20px;"></div>
-                  <h2 class="h2-baslik-anasayfa-ozel h-yazi-margin-kucuk">{document.libelle}</h2>
-                  <div class="grid grid-cols-2">
+                    <div style="margin-top: 20px;"></div>
+                    <h2 class="h2-baslik-anasayfa-ozel h-yazi-margin-kucuk">
+                      {document.libelle}
+                    </h2>
+                    <div class="grid grid-cols-2">
                       {#each document.typeDocuments as requiredFile, index}
-                        
                         <div class="form__grup">
                           <label class="form_label"
                             >{requiredFile.libelle} *</label
@@ -827,7 +851,7 @@
                             class="form__input"
                             on:change={(e) =>
                               updateField("documents", e.target.files[0])}
-                            placeholder="contacts Promoteur"
+                            placeholder="Documents a fournir"
                           />
 
                           {#if errors.documents}
@@ -835,11 +859,8 @@
                           {/if}
                         </div>
                       {/each}
-                      </div>
-                    {/each}
-                  
-                    
-                
+                    </div>
+                  {/each}
                 </div>
               </div>
             {/if}
