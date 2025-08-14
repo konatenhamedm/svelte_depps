@@ -1,7 +1,7 @@
 <script lang="ts">
   import {onMount} from 'svelte';
   import type {StatsDashboard} from '../../types';
-  import {apiFetch} from '$lib/api';
+  import {apiFetch, BASE_URL_API} from '$lib/api';
   import Pdf from '$components/pdf/Pdf.svelte';
   import {
     Button,
@@ -15,10 +15,13 @@
   } from 'flowbite-svelte';
   import Pagination from '$components/_includes/Pagination.svelte';
   import CsvExporter from '$components/excel/CsvExporter.svelte';
+  import Notification from '$components/_includes/Notification.svelte';
 
   export let data;
   let user = data.user;
-
+  $: notificationMessage = ""
+$: notificationType = ""
+$: showNotification = false
   // Données réactives
   let main_data: StatsDashboard | null = null;
   let loading = false;
@@ -49,7 +52,7 @@
       const [statsRes, proRes, etabRes, profRes] = await Promise.all([
         apiFetch(true, '/statistique/info-dashboard'),
         apiFetch(true, '/professionnel/'),
-        apiFetch(true, '/professionnel/'),
+        apiFetch(true, '/etablissement/'),
         apiFetch(true, '/profession/'),
       ]);
 
@@ -200,6 +203,32 @@
 
   $: startRange = currentPage;
   $: endRange = Math.min(currentPage + itemsPerPage, totalPages);
+
+
+ async function handleChangeStatus (id:any,status:string,reason:string=""){
+    try {
+      const res = await fetch(BASE_URL_API + "/etablissement/active/"+id, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+  status: status,
+  raison:reason})
+      });
+
+      if (res.ok) {
+        notificationMessage = "Status mis à jour  avec succès!";
+        notificationType = "success";
+        showNotification = true;
+      }
+    } catch (error) {
+      notificationMessage = "Une erreur crée lors de l enregistrement";
+      notificationType = "error";
+      showNotification = true;
+      console.error("Error saving:", error);
+    }
+  }
 
   // Pas besoin de réagir aux changements, nous gérons cela dans handleProfessionChange
 </script>
@@ -510,7 +539,7 @@
         >
 
        
-          {#each ['Nom', 'Adresse', 'Téléphone', 'Email', 'Profession'] as title}
+          {#each ['Nom', 'Adresse', 'Téléphone', 'Email', 'Type de personnes','Action'] as title}
             <TableHeadCell class="ps-4 font-normal border border-gray-300"
               >{title}</TableHeadCell
             >
@@ -539,20 +568,30 @@
             {#each filteredEtablissements.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage) as item}
               <TableBodyRow class="text-base border border-gray-300">
                 <TableBodyCell class="p-4 border border-gray-300"
-                  >{item.personne?.username ?? 'N/A'}</TableBodyCell
+                  >{item.denomination ?? item.nom ?? 'N/A'}</TableBodyCell
                 >
                 <TableBodyCell class="p-4 border border-gray-300"
-                  >{item.personne?.adresse ?? 'N/A'}</TableBodyCell
+                  >{item.adresse ?? 'N/A'}</TableBodyCell
                 >
                 <TableBodyCell class="p-4 border border-gray-300"
-                  >{item.personne?.number ?? 'N/A'}</TableBodyCell
+                  >{item.number ?? 'N/A'}</TableBodyCell
                 >
                 <TableBodyCell class="p-4 border border-gray-300"
-                  >{item.personne?.email ?? 'N/A'}</TableBodyCell
+                  >{item.email ?? 'N/A'}</TableBodyCell
                 >
                 <TableBodyCell class="p-4 border border-gray-300"
                   >{item.personne?.profession?.libelle ??
                     'N/A'}</TableBodyCell
+                >
+                <TableBodyCell class="p-4 border border-gray-300"
+                  >
+                  <button  class="button-33" type="button" on:click={()=>{
+                   handleChangeStatus(item.id,"validate")
+                  }}> Valider</button>
+                  <button class="button-34" on:click={()=>{
+                    handleChangeStatus(item.id,"cancelled")
+                  }}> Annuler</button>
+                  </TableBodyCell
                 >
               </TableBodyRow>
             {/each}
@@ -660,7 +699,16 @@
       </div>
     {/if}
   </section>
+  
 </div>
+{#if showNotification}
+  <Notification
+    message={notificationMessage}
+    type={notificationType}
+    duration={5000}
+  />
+{/if}
+
 
 <style lang="postcss">
   .card-container {
@@ -668,4 +716,53 @@
     display: flex;
     flex-direction: column;
   }
+
+  .button-33 {
+  background-color: #c2fbd7;
+  border-radius: 100px;
+  box-shadow: rgba(44, 187, 99, .2) 0 -25px 18px -14px inset,rgba(44, 187, 99, .15) 0 1px 2px,rgba(44, 187, 99, .15) 0 2px 4px,rgba(44, 187, 99, .15) 0 4px 8px,rgba(44, 187, 99, .15) 0 8px 16px,rgba(44, 187, 99, .15) 0 16px 32px;
+  color: green;
+  cursor: pointer;
+  display: inline-block;
+  font-family: CerebriSans-Regular,-apple-system,system-ui,Roboto,sans-serif;
+  padding: 7px 20px;
+  text-align: center;
+  text-decoration: none;
+  transition: all 250ms;
+  border: 0;
+  font-size: 16px;
+  user-select: none;
+  -webkit-user-select: none;
+  touch-action: manipulation;
+}
+
+.button-33:hover {
+  box-shadow: rgba(44,187,99,.35) 0 -25px 18px -14px inset,rgba(44,187,99,.25) 0 1px 2px,rgba(44,187,99,.25) 0 2px 4px,rgba(44,187,99,.25) 0 4px 8px,rgba(44,187,99,.25) 0 8px 16px,rgba(44,187,99,.25) 0 16px 32px;
+  transform: scale(1.05) rotate(-1deg);
+}
+
+
+.button-34 {
+  background-color: #fbc2c2;
+  border-radius: 100px;
+  box-shadow: rgba(163, 27, 27, 0.2) 0 -25px 18px -14px inset,rgba(240, 30, 30, 0.15) 0 1px 2px,rgba(216, 31, 31, 0.15) 0 2px 4px,rgba(187, 44, 44, 0.15) 0 4px 8px,rgba(187, 44, 44, 0.15) 0 8px 16px,rgba(187, 44, 44, 0.15) 0 16px 32px;
+  color: rgb(128, 0, 0);
+  cursor: pointer;
+  display: inline-block;
+  font-family: CerebriSans-Regular,-apple-system,system-ui,Roboto,sans-serif;
+  padding: 7px 20px;
+  text-align: center;
+  text-decoration: none;
+  transition: all 250ms;
+  border: 0;
+  font-size: 16px;
+  user-select: none;
+  -webkit-user-select: none;
+  touch-action: manipulation;
+}
+
+.button-34:hover {
+  box-shadow: rgba(187, 44, 44, 0.35) 0 -25px 18px -14px inset,rgba(187, 44, 44, 0.25) 0 1px 2px,rgba(187, 44, 44, 0.25) 0 2px 4px,rgba(187, 44, 44, 0.25) 0 4px 8px,rgba(187, 44, 44, 0.25) 0 8px 16px,rgba(187, 44, 44, 0.25) 0 16px 32px;
+  transform: scale(1.05) rotate(-1deg);
+}
 </style>

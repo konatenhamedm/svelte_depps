@@ -60,37 +60,82 @@
     return regex.test(password);
   }
 
-$: if (formData.typePersonne == 1 ) {
-        hideForOther = true;
-        hideForPhysic = false;
-        formData.nom = "";
-        formData.prenoms = "";
-        formData.telephone = "";
-        formData.bp = "";
-        formData.emailAutre = "";
-      } else if (formData.typePersonne == 2 ) {
-        formData.adresse = "";
-        formData.nomRepresentant = "";
-        formData.denomination = "";
-        hideForPhysic = true;
-        hideForOther = false;
-      }else{
-        hideForPhysic = false;
-        hideForOther = false;
-      }
+  $: if (formData.typePersonne == 1) {
+    hideForOther = true;
+    hideForPhysic = false;
+    formData.nom = "";
+    formData.prenoms = "";
+    formData.telephone = "";
+    formData.bp = "";
+    formData.emailAutre = "";
+  } else if (formData.typePersonne == 2) {
+    formData.adresse = "";
+    formData.nomRepresentant = "";
+    formData.denomination = "";
+    hideForPhysic = true;
+    hideForOther = false;
+  } else {
+    hideForPhysic = false;
+    hideForOther = false;
+  }
+
+  /////fin
+  interface DocumentItem {
+    libelle: string;
+    path: string; // chemin ou base64 du fichier
+    libelleGroupe: string;
+  }
+
+
+
+function handleDocumentChange(
+  event: Event,
+  libelle: string,
+  libelleGroupe: string
+) {
+  const target = event.target as HTMLInputElement;
+  const file = target.files?.[0];
+
+  if (!file) return;
+
+  const reader = new FileReader();
+  reader.onload = () => {
+    const base64 = reader.result as string;
+
+    // On ajoute l'objet formaté dans formData.documents
+    formData.documents.push({
+      libelle: libelle,
+      path: base64, // ou file.name si tu veux juste le nom
+      libelleGroupe: libelleGroupe
+    });
+
+    // Sauvegarde dans localStorage si besoin
+    localStorage.setItem("formData", JSON.stringify(formData));
+  };
+  reader.readAsDataURL(file);
+}
 
 
 
 
-
-  /////fin 
-
-  let formData = {
-    // Login informations
+  let formData: {
+    password: string;
+    confirmPassword: string;
+    email: string;
+    typePersonne: number;
+    nom: string;
+    prenoms: string;
+    telephone: string;
+    bp: string;
+    emailAutre: string;
+    adresse: string;
+    nomRepresentant: string;
+    denomination: string;
+    documents: DocumentItem[];
+  } = {
     password: "",
     confirmPassword: "",
     email: "",
-    // Informations generales ( à update en fonction du type)
     typePersonne: 1,
     nom: "",
     prenoms: "",
@@ -100,7 +145,6 @@ $: if (formData.typePersonne == 1 ) {
     adresse: "",
     nomRepresentant: "",
     denomination: "",
-    // Pour la derniere step
     documents: [],
   };
 
@@ -209,28 +253,7 @@ $: if (formData.typePersonne == 1 ) {
     }
 
     if (step === 3) {
-      // errors.genre = formData.genre ? "" : "Le genre est requis";
-      // errors.nomCompletPromoteur = formData.nomCompletPromoteur
-      //   ? ""
-      //   : "Le nom complet est requis";
-      // errors.emailPro = formData.emailPro
-      //   ? ""
-      //   : "L'email professionnel est requis";
-      // errors.profession = formData.profession
-      //   ? ""
-      //   : "La profession est requise";
-      // errors.contactsPromoteur = formData.contactsPromoteur
-      //   ? ""
-      //   : "Les contacts sont requis";
-      // errors.lieuResidence = formData.lieuResidence
-      //   ? ""
-      //   : "Le lieu de résidence est requis";
-      // errors.numeroCni = formData.numeroCni
-      //   ? ""
-      //   : "Le numéro de CNI est requis";
-
       valid = true;
-      // Object.values(errors).every((e) => e === "");
     }
 
     if (step === 4) {
@@ -243,10 +266,9 @@ $: if (formData.typePersonne == 1 ) {
   ////Fonction asynchrone pour recuperer le groupe de documents pour le type de personne
   async function getTypeDoc(typePersonneId: any) {
     let res = null;
-    
+
     res = await apiFetch(true, `${objects[1].url}/${typePersonneId}`);
     if (res) {
-     
       if (Object.keys(values).includes(objects[1].name)) {
         values[objects[1].name as keyof typeof values] = res.data;
       } else {
@@ -270,7 +292,6 @@ $: if (formData.typePersonne == 1 ) {
         getTypeDoc(formData.typePersonne);
       }
       if (values.typePersonne[formData.typePersonne - 1].libelle == "MORALE") {
-    
         hideForOther = true;
         hideForPhysic = false;
         formData.nom = "";
@@ -281,7 +302,6 @@ $: if (formData.typePersonne == 1 ) {
       } else if (
         values.typePersonne[formData.typePersonne - 1].libelle == "PHYSIQUE"
       ) {
-
         formData.adresse = "";
         formData.nomRepresentant = "";
         formData.denomination = "";
@@ -337,13 +357,12 @@ $: if (formData.typePersonne == 1 ) {
   }
 
   // ✅ Vérifier si on revient après un paiements
-   onMount(async () => {
+  onMount(async () => {
     const urlParams = new URLSearchParams(window.location.search);
     if (urlParams.has("return")) {
       restoreFormState();
     }
     await getTypeDoc(formData.typePersonne);
-   
   });
 
   // Lire la valeur de `step` depuis localStorage, sinon initialiser à 1
@@ -367,89 +386,9 @@ $: if (formData.typePersonne == 1 ) {
     }
   }
 
-  let authenticating_submit = false;
-  // 🔹 Soumission du formulaire
-  // 🔹 Soumission du formulaire
-  function submitForm() {
-    if (validateStep()) {
-      // Créer un FormData pour les données du formulaire
-      let formDatas = new FormData();
-
-      Object.keys(formData).forEach((key) => {
-        formDatas.append(key, formData[key]);
-      });
-
-      const reference = localStorage.getItem("reference");
-      if (reference) {
-        formDatas.append("reference", reference);
-      }
-      formDatas.append("type", "etablissement");
-
-      const selectedFilesFromStorage = JSON.parse(
-        localStorage.getItem("selectedFiles")
-      );
-
-      if (selectedFilesFromStorage) {
-        // Ajouter chaque fichier au FormData
-        Object.keys(selectedFilesFromStorage).forEach((fieldName) => {
-          const fileData = selectedFilesFromStorage[fieldName];
-          if (fileData && fileData.data) {
-            const byteCharacters = atob(fileData.data.split(",")[1]);
-            const byteArrays = [];
-
-            for (
-              let offset = 0;
-              offset < byteCharacters.length;
-              offset += 512
-            ) {
-              const slice = byteCharacters.slice(offset, offset + 512);
-              const byteNumbers = new Array(slice.length);
-              for (let i = 0; i < slice.length; i++) {
-                byteNumbers[i] = slice.charCodeAt(i);
-              }
-              byteArrays.push(new Uint8Array(byteNumbers));
-            }
-
-            const blob = new Blob(byteArrays, {
-              type: "application/octet-stream",
-            });
-            formDatas.append(fieldName, blob, fileData.name);
-          }
-        });
-      }
-
-      authenticating = true;
-
-      fetch(`${BASE_URL_API}/paiement/paiement`, {
-        method: "POST",
-        body: formDatas,
-      })
-        .then((response) => response.json())
-        .then((result) => {
-          console.log("erreur", result);
-          if (result.errors && Object.keys(result.errors).length > 0) {
-            authenticating = false;
-            messagefile = result.errors;
-            console.log(result.errors);
-          } else {
-            if (result.url) {
-              localStorage.setItem("reference", result.reference);
-
-              // window.location.href = result.url + "?return=1"; // 🔥 Ajout du paramètre `return`
-            }
-          }
-        })
-        .catch((error) => {
-          console.error("Erreur paiements :", error);
-          isPaiementProcessing = false;
-          let authenticating = false;
-        });
-    }
-  }
-
   // 🔹 Gestion du paiements
   function clickPaiement() {
-    console.log("click payment")
+    console.log("click payment");
     isPaiementProcessing = true;
     saveFormState(); // 🔥 Sauvegarder avant de partir
 
@@ -459,6 +398,7 @@ $: if (formData.typePersonne == 1 ) {
   let authenticating = false;
   async function initPaiement() {
     authenticating = true;
+    console.log("formdata", formData)
     // Créer un FormData pour les données du formulaire
     let formDatas = new FormData();
 
@@ -496,7 +436,7 @@ $: if (formData.typePersonne == 1 ) {
           const blob = new Blob(byteArrays, {
             type: "application/octet-stream",
           });
-          formDatas.append(fieldName, blob, fileData.name);
+          // formDatas.append(fieldName, blob, fileData.name);
         }
       });
     }
@@ -505,10 +445,9 @@ $: if (formData.typePersonne == 1 ) {
       method: "POST",
       body: formDatas,
     })
-      .then(async (response) =>console.log("response", await xresponse.json()))
+      .then(async (response) => console.log("response", await xresponse.json()))
       .then((result) => {
-    
-        console.log("resultat", result)
+        console.log("resultat", result);
         authenticating = false;
         console.log(result);
         if (result.data.url) {
@@ -643,7 +582,7 @@ $: if (formData.typePersonne == 1 ) {
           <form
             class="form one_customer"
             method="post"
-            on:submit|preventDefault={submitForm}
+            on:submit|preventDefault={initPaiement}
           >
             {#if step === 1}
               <EtapeConnexion
@@ -671,24 +610,24 @@ $: if (formData.typePersonne == 1 ) {
                     <!-- Champ natureEntreprise -->
 
                     <!-- <div class="form__grup"> -->
-                      <!-- <label class="form_label">Personne Physique *</label> -->
-                      <SelectInput
-                        label="Personne Physique "
-                        bind:value={formData.typePersonne}
-                        options={values.typePersonne.map(
-                          (c: { id: number; libelle: string }) => ({
-                            id: String(c.id),
-                            libelle: c.libelle,
-                          })
-                        )}
-                        placeholder="Sélectionnez le type de personne "
-                        error={errors.typePersonne}
-                        onInput={saveFormState}
-                        step={2}
-                        bind:formData
-                      />
+                    <!-- <label class="form_label">Personne Physique *</label> -->
+                    <SelectInput
+                      label="Personne Physique "
+                      bind:value={formData.typePersonne}
+                      options={values.typePersonne.map(
+                        (c: { id: number; libelle: string }) => ({
+                          id: String(c.id),
+                          libelle: c.libelle,
+                        })
+                      )}
+                      placeholder="Sélectionnez le type de personne "
+                      error={errors.typePersonne}
+                      onInput={saveFormState}
+                      step={2}
+                      bind:formData
+                    />
 
-                      <!-- {#if errors.typePersonne}<p class="error">
+                    <!-- {#if errors.typePersonne}<p class="error">
                           {errors.typePersonne}
                         </p>{/if} -->
                     <!-- </div> -->
@@ -850,8 +789,12 @@ $: if (formData.typePersonne == 1 ) {
                             type="file"
                             class="form__input"
                             on:change={(e) =>
-                              updateField("documents", e.target.files[0])}
-                            placeholder="Documents a fournir"
+                              handleDocumentChange(
+                                e,
+                                requiredFile.libelle,
+                                document.libelle
+                              )}
+                            placeholder="Documents à fournir"
                           />
 
                           {#if errors.documents}
@@ -943,15 +886,7 @@ $: if (formData.typePersonne == 1 ) {
                   </button>
                 {/if}
 
-                <!-- disabled={!isPaiementDone} -->
-                <!--   <button
-                    type="submit"
-                    on:click={submitForm}
-                    class="buton buton--kirmizi"
-                    disabled={!isPaiementDone}
-                  >
-                    VALIDER
-                  </button> -->
+              
               {/if}
 
               <br />
