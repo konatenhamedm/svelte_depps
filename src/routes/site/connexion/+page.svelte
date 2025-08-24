@@ -26,9 +26,14 @@
     event.preventDefault();
     try {
       const success = await loginloginUserFront(username, password);
-
       if (success.token != null) {
-        window.location.href = "/site/dashboard";
+        if(success.data.type == "PROFESSIONNEL"){
+          window.location.href = "/site/dashboard";
+          
+        }else{
+          window.location.href = "/site/dashboard_etablissement";
+        }
+        
       } else {
         message = "Veuillez vérifier vos identifiants";
         notificationMessage = "Veuillez vérifier vos identifiants";
