@@ -19,36 +19,36 @@ export async function handle({ event, resolve }) {
         status: auth.status,
         avatar: auth.avatar
       };
-      
-      if(!user?.role.includes("ROLE_ADMIN")){
-// ✅ Appel API pour vérifier si l'abonnement a expirédd
-      const apiResponse = await fetch(BASE_URL_API + "/paiement/status/renouvellement/" + user?.id, {
-        method: "GET",
-       /*  headers: {
-          Authorization: `Bearer ${auth.token}`,
-          Accept: "application/json"
-        } */
-      });
 
-      if (apiResponse.ok) {
-        const data = await apiResponse.json();
-        abonnementExpire = data.data.expire; // adapte selon ta réponsehhh
-       
-        console.error("Erreur API abonnement:", abonnementExpire);
+      if (!user?.role.includes("ROLE_ADMIN")) {
+        // ✅ Vérification API abonnement
+        const apiResponse = await fetch(
+          BASE_URL_API + "/paiement/status/renouvellement/" + user?.id,
+          {
+            method: "GET"
+            // headers: {
+            //   Authorization: `Bearer ${auth.token}`,
+            //   Accept: "application/json"
+            // }
+          }
+        );
+
+        if (apiResponse.ok) {
+          const data = await apiResponse.json();
+          abonnementExpire = data.data.expire;
+          console.error("Abonnement expiré:", abonnementExpire);
+        } else {
+          console.error("Erreur API abonnement:", await apiResponse.text());
+        }
       } else {
-        console.error("Erreur API abonnement:", await apiResponse.text());
-      }
-      }else{
         abonnementExpire = false;
       }
-      
-
     } catch (e) {
       console.error("Erreur parsing ou appel API:", e);
     }
   }
 
-  // ⛔ Redirection pour les pages restreintes si abonnement expiré
+  // ⛔ Pages protégées si abonnement expiré
   const protectedPagesWhenExpired = [
     "/site/dossiers",
     "/site/forum",
@@ -60,8 +60,31 @@ export async function handle({ event, resolve }) {
     "/site/profil"
   ];
 
-  if (user && abonnementExpire && protectedPagesWhenExpired.some(path => event.url.pathname.startsWith(path))) {
-    return redirect(302, "/site/dashboard"); // ou page d'erreur/renouvellement
+  if (
+    user &&
+    abonnementExpire &&
+    protectedPagesWhenExpired.some((path) => event.url.pathname.startsWith(path))
+  ) {
+    return redirect(302, "/site/dashboard"); // ou une page de renouvellement
+  }
+
+  // ✅ Pages publiques accessibles sans login
+  const publicPages = [
+    "/site/professionnel",
+    "/site/etablissement",
+    "/site/inscription",
+    "/site/connexion/nouveau_mot_de_passe",
+    "/site/connexion/reset_password",
+    "/site/connexion/login"
+  ];
+
+  if (event.url.pathname.startsWith("/site") && !user) {
+    const isPublic = publicPages.some((path) =>
+      event.url.pathname.startsWith(path)
+    );
+    if (!isPublic) {
+      return redirect(302, "/");
+    }
   }
 
   // Redirections basées sur le rôle
@@ -73,10 +96,6 @@ export async function handle({ event, resolve }) {
     return redirect(302, "/admin");
   }
 
-  if (event.url.pathname.startsWith("/site") && !user && !event.url.pathname.startsWith("/site/professionnel")) {
-    return redirect(302, "/");
-  }
-
   if (event.url.pathname.startsWith("/site") && user?.role.includes("ROLE_ADMIN")) {
     return redirect(302, "/admin");
   }
@@ -85,7 +104,7 @@ export async function handle({ event, resolve }) {
     return redirect(302, "/site/dossiers");
   }
 
-  // Attache l'utilisateur dans `event.locals` pour y accéder ailleurs
+  // ✅ Attacher l’utilisateur dans locals
   event.locals.user = user;
   const response = await resolve(event);
   return response;

@@ -58,7 +58,7 @@
   </script>
   
   <div id="">
-    <Header {user} />
+    <Header  />
     <Slide {user} />
     <section class="text-center pb-0 " style="padding-top:142px;">
       <h2 class="h2-baslik-anasayfa-ozel h-yazi-margin-kucuk ">Reinitialisation de mot de passe</h2>

@@ -6,18 +6,20 @@
   export let data: Record<string, string> = {};
   let code = "";
   let libelle = "";
+  let montant = "";
 
   function init(form: HTMLFormElement) {
     libelle = data.libelle || "";
     code = data.code || "";
+    montant = data.montant || "";
   }
 </script>
 
 <Modal
   bind:open
   title={Object.keys(data).length
-    ? "Détails type personne"
-    : "Détails type personne"}
+    ? "Détails niveau intervention"
+    : "Détails niveau intervention"}
   size={sizeModal}
   class="m-4 modale_general"
 >
@@ -42,6 +44,13 @@
           label="Libelle"
           field={libelle}
           placeholder="entrez le libelle"
+          disabled={true}
+        />
+        <InputSimple
+          fieldName="montant"
+          label="Montant"
+          field={libelle}
+          placeholder="entrez le montant"
           disabled={true}
         />
       </div>

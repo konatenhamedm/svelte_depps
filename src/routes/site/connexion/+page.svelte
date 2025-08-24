@@ -60,7 +60,7 @@
 </script>
 
 <div id="">
-  <Header {user} />
+  <Header />
   <Slide {user} />
   <section class="text-center pb-0 " style="padding-top:142px;">
     <h2 class="h2-baslik-anasayfa-ozel h-yazi-margin-kucuk ">Connexion</h2>
@@ -120,7 +120,7 @@
               <!-- Lien Mot de passe oublié -->
               <div class="text-right">
                 <a
-                        href="/site/connexion/mot_de_passe_oublie"
+                        href="#"
                         class="text-sm text-blue-600 hover:text-blue-800 hover:underline"
                         on:click|preventDefault={redirectToForgotPassword}
                 >

@@ -145,6 +145,17 @@ export interface sMenu {
   id: number;
   libelle: string;
 }
+export interface sMenuTypePersonne {
+  id: number;
+  libelle: string;
+  code: string;
+}
+export interface NiveauIntervention {
+  id: number;
+  libelle: string;
+  code: string;
+  montant: string;
+}
 export interface RacineSequence {
   id: number;
   code: string;

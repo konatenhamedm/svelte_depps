@@ -18,7 +18,7 @@
   import type {
     Permission,
     sMenu,
-    sMenuTypePersonne,
+    NiveauIntervention,
     User,
   } from '../../../types';
   import {apiFetch} from '$lib/api';
@@ -33,7 +33,7 @@
 
   export let data; // Les données retournées par `load()`
   let user = data.user;
-  let main_data: sMenuTypePersonne[] = [];
+  let main_data: NiveauIntervention[] = [];
   let searchQuery = ''; // Pour la recherche par texte
   let selectedService: any = ''; // Pour filtrer par service
   let selectedStatus: any = ''; // Pour filtrer par status
@@ -50,10 +50,10 @@
   async function fetchData() {
     loading = true; // Active le spinner de chargement
     try {
-      const res = await apiFetch(true, '/typePersonne/');
+      const res = await apiFetch(true, '/niveauIntervention/');
       console.log(res);
       if (res) {
-        main_data = res.data as sMenuTypePersonne[];
+        main_data = res.data as NiveauIntervention[];
       } else {
         console.error(
           'Erreur lors de la récupération des données:',
@@ -124,23 +124,23 @@
 </script>
 
 <Entete
-  libelle="Gestion des type personne"
+  libelle="Gestion des niveaux d'intervention"
   parent="Parametres"
-  descr="Liste des type personne"
+  descr="Liste des niveau d'intervention"
 />
 <section class="content">
   <div class="row">
     <div class="col-12">
       <div class="box">
         <div class="box-header with-border flex justify-between items-center">
-          <h4 class="box-title text-xl font-medium">Liste des type personne</h4>
+          <h4 class="box-title text-xl font-medium">Liste des niveau d'intervention</h4>
 
           <div>
             <a
               class="py-[5px] px-3 waves-effect waves-light btn btn-info mb-5"
               on:click={() => ((current_data = {}), (openAdd = true))}
             >
-              + Nouveau type personne
+              + Nouveau niveau d'intervention
             </a>
           </div>
         </div>
@@ -161,7 +161,7 @@
               <TableHead
                 class="border-y border-gray-200 bg-gray-100 dark:border-gray-700"
               >
-                {#each ['Code','Libelle', 'Action'] as title}
+                {#each ['Code','Libelle','Montant', 'Action'] as title}
                   <TableHeadCell class="ps-4 font-normal border border-gray-300"
                     >{title}</TableHeadCell
                   >
@@ -214,6 +214,9 @@
                       </TableBodyCell>
                       <TableBodyCell class="p-4 border border-gray-300">
                         {item.libelle}
+                      </TableBodyCell>
+                      <TableBodyCell class="p-4 border border-gray-300">
+                        {item.montant}
                       </TableBodyCell>
 
                       <TableBodyCell class="p-2 w-8 border border-gray-300">

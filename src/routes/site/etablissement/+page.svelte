@@ -19,6 +19,8 @@
   import Spinner from "$components/_skeletons/Spinner.svelte";
   import EtapeConnexion from "$components/site/EtapeConnexion.svelte";
   import SelectInput from "$components/site/SelectInput.svelte";
+  import InputSelect from "$components/inputs/InputSelect.svelte";
+  import InputSelectTypePersonne from "$components/inputs/InputSelectTypePersonne.svelte";
 
   const professions = getProfessions();
 
@@ -60,7 +62,7 @@
     return regex.test(password);
   }
 
-  $: if (formData.typePersonne == 1) {
+  $: if (formData.typePersonne == "PHYSIQUE") {
     hideForOther = true;
     hideForPhysic = false;
     formData.nom = "";
@@ -68,7 +70,7 @@
     formData.telephone = "";
     formData.bp = "";
     formData.emailAutre = "";
-  } else if (formData.typePersonne == 2) {
+  } else if (formData.typePersonne == "MORALE") {
     formData.adresse = "";
     formData.nomRepresentant = "";
     formData.denomination = "";
@@ -122,7 +124,7 @@ function handleDocumentChange(
     password: string;
     confirmPassword: string;
     email: string;
-    typePersonne: number;
+    typePersonne: any;
     nom: string;
     prenoms: string;
     telephone: string;
@@ -136,7 +138,7 @@ function handleDocumentChange(
     password: "",
     confirmPassword: "",
     email: "",
-    typePersonne: 1,
+    typePersonne: 'MORALE',
     nom: "",
     prenoms: "",
     telephone: "",
@@ -287,11 +289,15 @@ function handleDocumentChange(
     if (typeof window !== "undefined" && typeof localStorage !== "undefined") {
       localStorage.setItem("formData", JSON.stringify(formData));
       localStorage.setItem("step", step.toString());
+
+  
+
+      console.log("formData sauvegardé:", formData.typePersonne);
       ///recuperer les informations du type de document lorsque le type de personne est selectionné
       if (formData.typePersonne > 0) {
         getTypeDoc(formData.typePersonne);
       }
-      if (values.typePersonne[formData.typePersonne - 1].libelle == "MORALE") {
+      if (formData.typePersonne == "MORALE") {
         hideForOther = true;
         hideForPhysic = false;
         formData.nom = "";
@@ -300,7 +306,7 @@ function handleDocumentChange(
         formData.bp = "";
         formData.emailAutre = "";
       } else if (
-        values.typePersonne[formData.typePersonne - 1].libelle == "PHYSIQUE"
+        formData.typePersonne == "PHYSIQUE"
       ) {
         formData.adresse = "";
         formData.nomRepresentant = "";
@@ -563,11 +569,11 @@ function handleDocumentChange(
 </script>
 
 <div id="">
-  <Header {user} />
+  <Header  />
   <Slide {user} />
   <section class="text-center pb-20" style="padding-top:150px">
     <h2 class="h2-baslik-anasayfa-ozel pb-10 text-uppercase">
-      Inscription en tant que professionnel de santé
+      Inscription en tant que etablissement de santé
     </h2>
     <p class="text-center paragraf">
       Veuillez renseigner vos informations afin de procéder à l'inscription
@@ -582,7 +588,7 @@ function handleDocumentChange(
           <form
             class="form one_customer"
             method="post"
-            on:submit|preventDefault={initPaiement}
+            on:submit|preventDefault={clickPaiement}
           >
             {#if step === 1}
               <EtapeConnexion
@@ -612,25 +618,23 @@ function handleDocumentChange(
                     <!-- <div class="form__grup"> -->
                     <!-- <label class="form_label">Personne Physique *</label> -->
                     <SelectInput
-                      label="Personne Physique "
+                      label="Type Physique "
                       bind:value={formData.typePersonne}
                       options={values.typePersonne.map(
                         (c: { id: number; libelle: string }) => ({
-                          id: String(c.id),
+                          id: String(c.libelle),
                           libelle: c.libelle,
                         })
                       )}
                       placeholder="Sélectionnez le type de personne "
                       error={errors.typePersonne}
                       onInput={saveFormState}
+                      on:change={saveFormState}
                       step={2}
                       bind:formData
                     />
 
-                    <!-- {#if errors.typePersonne}<p class="error">
-                          {errors.typePersonne}
-                        </p>{/if} -->
-                    <!-- </div> -->
+    
 
                     <div hidden={hideForOther} class="form__grup">
                       <label class="form_label">Nom*</label>

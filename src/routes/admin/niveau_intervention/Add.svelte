@@ -13,9 +13,10 @@
   export let open: boolean = false;
   let isLoad = false;
 
-  let pays: any = {
+  let item: any = {
     libelle: "",
     code: "",
+    montant: "",
   };
   export let sizeModal: any = "lg";
 
@@ -26,15 +27,16 @@
   async function SaveFunction() {
     isLoad = true;
     try {
-      const res = await fetch(BASE_URL_API + "/typePersonne/create", {
+      const res = await fetch(BASE_URL_API + "/niveauIntervention/create", {
         method: "POST",
         headers: {
           "Content-Type": "application/json"
         },
         body: JSON.stringify({
           userUpdate: userUpdateId,
-          libelle: pays.libelle,
-          code: pays.code
+          libelle: item.libelle,
+          code: item.code,
+          montant: item.montant,
         })
       });
 
@@ -63,8 +65,8 @@
 <Modal
   bind:open
   title={Object.keys(data).length
-    ? "Ajouter un type personne "
-    : "Ajouter un type personne"}
+    ? "Ajouter un niveau intervention "
+    : "Ajouter un niveau intervention"}
   size={sizeModal}
   class="m-4 modale_general"
   on:close={handleModalClose}
@@ -81,15 +83,22 @@
         <InputSimple
           fieldName="code"
           label="Code"
-          bind:field={pays.code}
+          bind:field={item.code}
           placeholder="entrez le code"
           class="w-full"
         ></InputSimple>
         <InputSimple
           fieldName="libelle"
           label="Libelle"
-          bind:field={pays.libelle}
+          bind:field={item.libelle}
           placeholder="entrez le libelle"
+          class="w-full"
+        ></InputSimple>
+        <InputSimple
+          fieldName="montant"
+          label="Montant"
+          bind:field={item.montant}
+          placeholder="entrez le montant"
           class="w-full"
         ></InputSimple>
       </div>

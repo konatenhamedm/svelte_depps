@@ -1,16 +1,16 @@
 <script lang="ts">
-  import Spinner from "$components/_skeletons/Spinner.svelte";
-  import InputSimple from "$components/inputs/InputSimple.svelte";
-  import { BASE_URL_API } from "$lib/api";
-  import { Button, Input, Label, Modal, Textarea } from "flowbite-svelte";
-  import InputTextArea from "$components/inputs/InputTextArea.svelte";
+  import Spinner from '$components/_skeletons/Spinner.svelte';
+  import InputSimple from '$components/inputs/InputSimple.svelte';
+  import {BASE_URL_API} from '$lib/api';
+  import {Button, Input, Label, Modal, Textarea} from 'flowbite-svelte';
+  import InputTextArea from '$components/inputs/InputTextArea.svelte';
 
   export let open: boolean = false; // modal control
   let isLoad = false;
-  let code: string = "";
-  let libelle: string = "";
+  let code: string = '';
+  let libelle: string = '';
 
-  export let sizeModal: any = "lg";
+  export let sizeModal: any = 'lg';
 
   export let userUpdateId: any;
   export let data: Record<string, string> = {};
@@ -26,13 +26,17 @@
 
     try {
       const res = await fetch(
-        BASE_URL_API + "/typePersonne/update/" + data?.id,
+        BASE_URL_API + '/typePersonne/update/' + data?.id,
         {
-          method: "POST",
+          method: 'POST',
           headers: {
-            "Content-Type": "application/json"
+            'Content-Type': 'application/json',
           },
-          body: JSON.stringify({ libelle: libelle, userUpdate: userUpdateId })
+          body: JSON.stringify({
+            libelle: libelle,
+            code: code,
+            userUpdate: userUpdateId,
+          }),
         }
       );
 
@@ -41,7 +45,7 @@
         open = false; // Close the modal
       }
     } catch (error) {
-      console.error("Error saving:", error);
+      console.error('Error saving:', error);
     }
   }
 
@@ -55,8 +59,8 @@
 <Modal
   bind:open
   title={Object.keys(data).length
-    ? "Modification de type personne"
-    : "Modification de type personne"}
+    ? 'Modification de type personne'
+    : 'Modification de type personne'}
   size={sizeModal}
   class="m-4 modale_general"
   on:close={handleModalClose}
@@ -70,15 +74,21 @@
   <div class="space-y-6 p-0">
     <form action="#" use:init>
       <div class="grid grid-cols-1">
-        <div class="grid grid-cols-1">
-          <InputSimple
-            fieldName="libelle"
-            label="Libelle"
-            bind:field={libelle}
-            placeholder="entrez le libelle"
-            class="w-full"
-          ></InputSimple>
-        </div>
+        <InputSimple
+          fieldName="code"
+          label="Code"
+          bind:field={code}
+          placeholder="entrez le code"
+          class="w-full"
+        ></InputSimple>
+
+        <InputSimple
+          fieldName="libelle"
+          label="Libelle"
+          bind:field={libelle}
+          placeholder="entrez le libelle"
+          class="w-full"
+        ></InputSimple>
       </div>
     </form>
   </div>
