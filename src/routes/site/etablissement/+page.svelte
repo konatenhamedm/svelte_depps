@@ -87,6 +87,7 @@
     path: string; // chemin ou base64 du fichier
     libelleGroupe: string;
   }
+let uploadedFiles: { [key: string]: string } = {}; // key: libelle+libelleGroupe, value: file name or base64
 
 
 
@@ -110,6 +111,7 @@ function handleDocumentChange(
       path: base64, // ou file.name si tu veux juste le nom
       libelleGroupe: libelleGroupe
     });
+    uploadedFiles[libelle + libelleGroupe] = file.name;
 
     // Sauvegarde dans localStorage si besoin
     localStorage.setItem("formData", JSON.stringify(formData));
@@ -124,7 +126,9 @@ function handleDocumentChange(
     password: string;
     confirmPassword: string;
     email: string;
+    niveauIntervention: any;
     typePersonne: any;
+
     nom: string;
     prenoms: string;
     telephone: string;
@@ -138,6 +142,7 @@ function handleDocumentChange(
     password: "",
     confirmPassword: "",
     email: "",
+    niveauIntervention: '',
     typePersonne: 'MORALE',
     nom: "",
     prenoms: "",
@@ -158,6 +163,7 @@ function handleDocumentChange(
     // Informations générales
     // Informations generales ( à update en fonction du type)
     typePersonne: "",
+    niveauIntervention: "",
     nom: "",
     prenoms: "",
     telephone: "",
@@ -447,19 +453,19 @@ function handleDocumentChange(
       });
     }
 
-    await fetch(`${BASE_URL_API}/paiement/paiement/`, {
+    await fetch(`${BASE_URL_API}/etablissement/create`, {
       method: "POST",
       body: formDatas,
     })
-      .then(async (response) => console.log("response", await xresponse.json()))
+      .then(async (response) => console.log("response", await response.json()))
       .then((result) => {
         console.log("resultat", result);
         authenticating = false;
         console.log(result);
-        if (result.data.url) {
-          localStorage.setItem("reference", result.data.reference);
-          window.location.href = result.data.url + "?return=1"; // 🔥 Ajout du paramètre `return`
-        }
+        // if (result.data.url) {
+        //   localStorage.setItem("reference", result.data.reference);
+        //   window.location.href = result.data.url + "?return=1"; // 🔥 Ajout du paramètre `return`
+        // }
       })
       .catch((error) => {
         console.error("Erreur paiements :", error);
@@ -485,6 +491,7 @@ function handleDocumentChange(
    */
   let objects = [
     { name: "typePersonne", url: "/typePersonne" },
+    { name: "niveauIntervention", url: "/niveauIntervention" },
     { name: "typeDocument", url: "/libelleGroupe/all", id: 1 },
   ];
 
@@ -494,6 +501,7 @@ function handleDocumentChange(
     nationate: Pays[];
     specialite: Specialite[];
     typePersonne: any;
+    niveauIntervention: any;
     ville: Ville[];
     typeDocument: any[];
   } = {
@@ -503,6 +511,7 @@ function handleDocumentChange(
     specialite: [],
     ville: [],
     typePersonne: [],
+    niveauIntervention: [],
     typeDocument: [],
   };
 
@@ -617,6 +626,22 @@ function handleDocumentChange(
 
                     <!-- <div class="form__grup"> -->
                     <!-- <label class="form_label">Personne Physique *</label> -->
+                      <SelectInput
+                      label="Niveau d'Intervention"
+                      bind:value={formData.niveauIntervention}
+                      options={values.niveauIntervention.map(
+                        (c: { id: number; libelle: string }) => ({
+                          id: String(c.libelle),
+                          libelle: c.libelle,
+                        })
+                      )}
+                      placeholder="Sélectionnez le type de personne "
+                      error={errors.typePersonne}
+                      onInput={saveFormState}
+                      on:change={saveFormState}
+                      step={2}
+                      bind:formData
+                    />
                     <SelectInput
                       label="Type Physique "
                       bind:value={formData.typePersonne}
@@ -787,8 +812,19 @@ function handleDocumentChange(
                           <label class="form_label"
                             >{requiredFile.libelle} *</label
                           >
+                          <div class="flex items-center">
+{#if uploadedFiles[requiredFile.libelle + document.libelle]}
+          <span class="file-icon" style="margin-right:8px;">
+            <!-- Example: PDF icon for .pdf, image icon for image -->
+            {#if uploadedFiles[requiredFile.libelle + document.libelle].endsWith('.pdf')}
+              <svg width="24" height="24" fill="currentColor" viewBox="0 0 24 24"><path d="M6 2a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8l-6-6H6zm7 1.5V8h5.5L13 3.5zM6 4h6v5a1 1 0 0 0 1 1h5v10a1 1 0 0 1-1 1H6a1 1 0 0 1-1-1V4zm2 10v2h2v-2H8zm4 0v2h2v-2h-2z"/></svg>
+            {:else}
+              <svg width="24" height="24" fill="currentColor" viewBox="0 0 24 24"><path d="M21 19V5a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2zm-2 0H5V5h14v14zm-7-7a2 2 0 1 1 0-4 2 2 0 0 1 0 4zm-5 6l3-4 2.5 3.01L17 13l3 5H5z"/></svg>
+            {/if}
+          </span>
+        {/if}
 
-                          <input
+         <input
                             accept="image/*, .pdf"
                             type="file"
                             class="form__input"
@@ -804,6 +840,8 @@ function handleDocumentChange(
                           {#if errors.documents}
                             <p class="error">{errors.documents}</p>
                           {/if}
+                          </div>
+                         
                         </div>
                       {/each}
                     </div>
@@ -968,6 +1006,13 @@ function handleDocumentChange(
       scale: 1.1;
       duration: 2;
     }
+
+
+    .file-icon {
+  display: flex;
+  align-items: center;
+  color: #e53e3e; /* red for PDF, change as needed */
+}
   </style>
   <Footer />
 </div>
