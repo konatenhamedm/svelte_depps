@@ -30,8 +30,8 @@
   $: isPaiementDone = false;
   $: message = "";
   let step = 1;
-  $: hideForPhysic = false;
-  $: hideForOther = true;
+  $: hideForPhysic = true;
+  $: hideForOther = false;
 
   //////Nouvelle variable
 
@@ -62,25 +62,26 @@
     return regex.test(password);
   }
 
-  $: if (formData.typePersonne == "PHYSIQUE") {
-    hideForOther = true;
-    hideForPhysic = false;
-    formData.nom = "";
-    formData.prenoms = "";
-    formData.telephone = "";
-    formData.bp = "";
-    formData.emailAutre = "";
-  } else if (formData.typePersonne == "MORALE") {
-    formData.adresse = "";
-    formData.nomRepresentant = "";
-    formData.denomination = "";
-    hideForPhysic = true;
-    hideForOther = false;
-  } else {
-    hideForPhysic = false;
-    hideForOther = false;
-  }
-
+ $: if (formData.typePersonne == "PHYSIQUE") {
+  hideForOther = false;
+  hideForPhysic = true;
+  // Effacer les champs de la personne morale
+  formData.adresse = "";
+  formData.nomRepresentant = "";
+  formData.denomination = "";
+} else if (formData.typePersonne == "MORALE") {
+  hideForPhysic = false;
+  hideForOther = true;
+  // Effacer les champs de la personne physique
+  formData.nom = "";
+  formData.prenoms = "";
+  formData.telephone = "";
+  formData.bp = "";
+  formData.emailAutre = "";
+} else {
+  hideForPhysic = false;
+  hideForOther = false;
+}
   /////fin
   interface DocumentItem {
     libelle: string;
@@ -304,8 +305,7 @@ function handleDocumentChange(
         getTypeDoc(formData.typePersonne);
       }
       if (formData.typePersonne == "MORALE") {
-        hideForOther = true;
-        hideForPhysic = false;
+      
         formData.nom = "";
         formData.prenoms = "";
         formData.telephone = "";
@@ -317,8 +317,7 @@ function handleDocumentChange(
         formData.adresse = "";
         formData.nomRepresentant = "";
         formData.denomination = "";
-        hideForPhysic = true;
-        hideForOther = false;
+       
       }
     }
   }
@@ -462,10 +461,10 @@ function handleDocumentChange(
         console.log("resultat", result);
         authenticating = false;
         console.log(result);
-        // if (result.data.url) {
-        //   localStorage.setItem("reference", result.data.reference);
-        //   window.location.href = result.data.url + "?return=1"; // 🔥 Ajout du paramètre `return`
-        // }
+        if (result.data.url) {
+          localStorage.setItem("reference", result.data.reference);
+          window.location.href = result.data.url + "?return=1"; // 🔥 Ajout du paramètre `return`
+        }
       })
       .catch((error) => {
         console.error("Erreur paiements :", error);
@@ -492,7 +491,7 @@ function handleDocumentChange(
   let objects = [
     { name: "typePersonne", url: "/typePersonne" },
     { name: "niveauIntervention", url: "/niveauIntervention" },
-    { name: "typeDocument", url: "/libelleGroupe/all", id: 1 },
+    { name: "typeDocument", url: "/libelleGroupe/all", id: 2 },
   ];
 
   let values: {
@@ -814,15 +813,26 @@ function handleDocumentChange(
                           >
                           <div class="flex items-center">
 {#if uploadedFiles[requiredFile.libelle + document.libelle]}
-          <span class="file-icon" style="margin-right:8px;">
-            <!-- Example: PDF icon for .pdf, image icon for image -->
-            {#if uploadedFiles[requiredFile.libelle + document.libelle].endsWith('.pdf')}
-              <svg width="24" height="24" fill="currentColor" viewBox="0 0 24 24"><path d="M6 2a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8l-6-6H6zm7 1.5V8h5.5L13 3.5zM6 4h6v5a1 1 0 0 0 1 1h5v10a1 1 0 0 1-1 1H6a1 1 0 0 1-1-1V4zm2 10v2h2v-2H8zm4 0v2h2v-2h-2z"/></svg>
-            {:else}
-              <svg width="24" height="24" fill="currentColor" viewBox="0 0 24 24"><path d="M21 19V5a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2zm-2 0H5V5h14v14zm-7-7a2 2 0 1 1 0-4 2 2 0 0 1 0 4zm-5 6l3-4 2.5 3.01L17 13l3 5H5z"/></svg>
-            {/if}
-          </span>
-        {/if}
+  <span class="file-preview" style="margin-right:8px;">
+    {#if formData.documents.find(
+      d => d.libelle === requiredFile.libelle && d.libelleGroupe === document.libelle
+    )?.path.startsWith('data:image')}
+      <!-- Affiche la miniature de l'image -->
+      <img
+        src="{formData.documents.find(
+          d => d.libelle === requiredFile.libelle && d.libelleGroupe === document.libelle
+        )?.path}"
+        alt="miniature"
+        style="width:70px;height:70px;object-fit:cover;border-radius:4px;border:1px solid #ccc;"
+      />
+    {:else}
+      <!-- Affiche le nom du fichier si ce n'est pas une image -->
+      <span style="font-size:12px;color:#555;">
+        {uploadedFiles[requiredFile.libelle + document.libelle]}
+      </span>
+    {/if}
+  </span>
+{/if}
 
          <input
                             accept="image/*, .pdf"

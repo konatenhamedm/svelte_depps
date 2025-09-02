@@ -187,7 +187,7 @@
             </li>
 
             <li>
-              <a href="/admin/libelleGroupe"
+              <a href="/admin/groupeLibelle"
                 ><i class="icon-Commit"
                   ><span class="path1"></span><span class="path2"></span></i
                 >Libellé groupe</a
