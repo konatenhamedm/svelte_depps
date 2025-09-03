@@ -14,6 +14,7 @@
 
   let icons: any = {
     libelle: "",
+    type: ""
   };
   export let sizeModal: any = "lg";
   export let userUpdateId: any;
@@ -32,6 +33,7 @@
         },
         body: JSON.stringify({
           libelle: icons.libelle,
+          type: icons.type,
           userUpdate: userUpdateId
         })
       });
@@ -85,7 +87,14 @@
           placeholder="entrez le libelle"
           class="w-full"
         ></InputSimple>
-     
+        <InputSimple
+          fieldName="type"
+          label="Type"
+          bind:field={icons.type}
+          placeholder="entrez le type"
+          class="w-full"
+        ></InputSimple>
+
       </div>
     </form>
   </div>

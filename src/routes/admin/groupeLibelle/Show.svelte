@@ -5,10 +5,12 @@
   export let sizeModal: any = "lg";
   export let data: Record<string, string> = {};
   let libelle = "";
+  let type = "";
 
   function init(form: HTMLFormElement) {
     
     libelle = data.libelle || "";
+    type = data.type || "";
 
   }
 </script>
@@ -34,6 +36,13 @@
           label="Libelle"
           field={libelle}
           placeholder="entrez le libelle"
+          disabled={true}
+        />
+         <InputSimple
+          fieldName="Type"
+          label="Type"
+          field={type}
+          placeholder="entrez le type"
           disabled={true}
         />
       

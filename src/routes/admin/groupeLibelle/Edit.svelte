@@ -8,7 +8,7 @@
   export let open: boolean = false; // modal control
   let isLoad = false;
   let libelle: string = "";
-  
+  let type: string = "";
 
   export let sizeModal: any = "lg";
   export let userUpdateId: any;
@@ -18,6 +18,7 @@
   // Initialize form data with the provided record
   function init(form: HTMLFormElement) {
     libelle = data?.libelle;
+    type = data?.type;
   }
 
   async function SaveFunction() {
@@ -32,7 +33,7 @@
         body: JSON.stringify({
          
           libelle: libelle,
-        
+          type: type,
           userUpdate: userUpdateId
         })
       });
@@ -80,8 +81,14 @@
             placeholder="entrez le libelle"
             class="w-full"
           ></InputSimple>
+          <InputSimple
+            fieldName="type"
+            label="Type"
+            bind:field={type}
+            placeholder="entrez le type"
+            class="w-full"
+          ></InputSimple>
 
-         
         </div>
       </div>
     </form>

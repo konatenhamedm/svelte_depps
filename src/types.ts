@@ -228,6 +228,7 @@ export interface TypeDocument {
 export interface Permission {
   id: number;
   libelle: string;
+  type?: string;
   code: string;
 }
 export interface CodeGenerateur {
