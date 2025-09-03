@@ -7,11 +7,13 @@
   let code = "";
   let libelle = "";
   let montant = "";
+  let montantRenouvellement = "";
 
   function init(form: HTMLFormElement) {
     libelle = data.libelle || "";
     code = data.code || "";
     montant = data.montant || "";
+    montantRenouvellement = data.montantRenouvellement || "";
   }
 </script>
 
@@ -51,6 +53,13 @@
           label="Montant"
           field={montant}
           placeholder="entrez le montant"
+          disabled={true}
+        />
+        <InputSimple
+          fieldName="montantRenouvellement"
+          label="Montant Renouvellement"
+          field={montantRenouvellement}
+          placeholder="entrez le montant de renouvellement"
           disabled={true}
         />
       </div>

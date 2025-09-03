@@ -17,6 +17,7 @@
     libelle: "",
     code: "",
     montant: "",
+    montantRenouvellement: "",
   };
   export let sizeModal: any = "lg";
 
@@ -37,6 +38,7 @@
           libelle: item.libelle,
           code: item.code,
           montant: item.montant,
+          montantRenouvellement: item.montantRenouvellement,
         })
       });
 
@@ -99,6 +101,13 @@
           label="Montant"
           bind:field={item.montant}
           placeholder="entrez le montant"
+          class="w-full"
+        ></InputSimple>
+        <InputSimple
+          fieldName="Montant Renouvellement"
+          label="Montant Renouvellement"
+          bind:field={item.montantRenouvellement}
+          placeholder="entrez le montant de renouvellement"
           class="w-full"
         ></InputSimple>
       </div>

@@ -161,7 +161,7 @@
               <TableHead
                 class="border-y border-gray-200 bg-gray-100 dark:border-gray-700"
               >
-                {#each ['Code','Libelle','Montant', 'Action'] as title}
+                {#each ['Code','Libelle','Montant','Montant Renouvellement', 'Action'] as title}
                   <TableHeadCell class="ps-4 font-normal border border-gray-300"
                     >{title}</TableHeadCell
                   >
@@ -218,6 +218,10 @@
                       <TableBodyCell class="p-4 border border-gray-300">
                         {item.montant}
                       </TableBodyCell>
+                      <TableBodyCell class="p-4 border border-gray-300">
+                        {item.montantRenouvellement}
+                      </TableBodyCell>
+
 
                       <TableBodyCell class="p-2 w-8 border border-gray-300">
                         <DropdownMenu {item} onAction={handleAction} />

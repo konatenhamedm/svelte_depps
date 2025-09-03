@@ -155,6 +155,7 @@ export interface NiveauIntervention {
   libelle: string;
   code: string;
   montant: string;
+  montantRenouvellement: string;
 }
 export interface RacineSequence {
   id: number;

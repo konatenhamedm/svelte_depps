@@ -10,6 +10,7 @@
   let code: string = '';
   let libelle: string = '';
   let montant: string = '';
+  let  montantRenouvellement: string = '';
 
   export let sizeModal: any = 'lg';
 
@@ -21,6 +22,7 @@
     code = data?.code;
     libelle = data?.libelle;
     montant = data?.montant;
+    montantRenouvellement = data?.montantRenouvellement;
   }
 
   async function SaveFunction() {
@@ -37,6 +39,8 @@
           body: JSON.stringify({
             libelle: libelle,
             code: code,
+            montantRenouvellement: montantRenouvellement,
+            montant: montant,
             userUpdate: userUpdateId,
           }),
         }
@@ -98,6 +102,13 @@
           label="Montant"
           bind:field={montant}
           placeholder="entrez le montant"
+          class="w-full"
+        ></InputSimple>
+        <InputSimple
+          fieldName="montantRenouvellement"
+          label="Montant Renouvellement"
+          bind:field={montantRenouvellement}
+          placeholder="entrez le montant de renouvellement"
           class="w-full"
         ></InputSimple>
       </div>
