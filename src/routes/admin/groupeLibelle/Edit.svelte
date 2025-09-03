@@ -4,11 +4,22 @@
   import { BASE_URL_API } from "$lib/api";
   import { Button, Input, Label, Modal, Textarea } from "flowbite-svelte";
   import InputTextArea from "$components/inputs/InputTextArea.svelte";
+  import InputSelect from "$components/inputs/InputSelect.svelte";
+  import InputSelect2 from "$components/inputs/InputSelect2.svelte";
 
   export let open: boolean = false; // modal control
   let isLoad = false;
   let libelle: string = "";
-  let type: string = "";
+  let type: any = "";
+
+  let libelleType: any = [{
+  libelle: "Accord de principe",
+  id: "ACP"
+},{
+  libelle: "Ouverture d'Exploitation",
+  id: "OEP"
+}];
+
 
   export let sizeModal: any = "lg";
   export let userUpdateId: any;
@@ -81,14 +92,12 @@
             placeholder="entrez le libelle"
             class="w-full"
           ></InputSimple>
-          <InputSimple
-            fieldName="type"
-            label="Type"
-            bind:field={type}
-            placeholder="entrez le type"
-            class="w-full"
-          ></InputSimple>
-
+            <InputSelect2
+          label="Type utilisateur"
+          bind:selectedId={type}
+          datas={libelleType}
+          id="typeUser"
+        />
         </div>
       </div>
     </form>

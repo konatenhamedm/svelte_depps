@@ -407,32 +407,131 @@ function handleDocumentChange(
   }
 
   let authenticating = false;
+  // async function initPaiement() {
+  //   authenticating = true;
+  //   console.log("formdata", formData)
+  //   // Créer un FormData pour les données du formulaire
+  //   let formDatas = new FormData();
+
+  //   Object.keys(formData).forEach((key) => {
+  //     formDatas.append(key, formData[key]);
+  //   });
+
+  //   const reference = localStorage.getItem("reference");
+  //   if (reference) {
+  //     formDatas.append("reference", reference);
+  //   }
+  //   formDatas.append("type", "etablissement");
+
+  //   const selectedFilesFromStorage = JSON.parse(
+  //     localStorage.getItem("selectedFiles")
+  //   );
+
+  //   if (selectedFilesFromStorage) {
+  //     // Ajouter chaque fichier au FormData
+  //     Object.keys(selectedFilesFromStorage).forEach((fieldName) => {
+  //       const fileData = selectedFilesFromStorage[fieldName];
+  //       if (fileData && fileData.data) {
+  //         const byteCharacters = atob(fileData.data.split(",")[1]);
+  //         const byteArrays = [];
+
+  //         for (let offset = 0; offset < byteCharacters.length; offset += 512) {
+  //           const slice = byteCharacters.slice(offset, offset + 512);
+  //           const byteNumbers = new Array(slice.length);
+  //           for (let i = 0; i < slice.length; i++) {
+  //             byteNumbers[i] = slice.charCodeAt(i);
+  //           }
+  //           byteArrays.push(new Uint8Array(byteNumbers));
+  //         }
+
+  //         const blob = new Blob(byteArrays, {
+  //           type: "application/octet-stream",
+  //         });
+  //         // formDatas.append(fieldName, blob, fileData.name);
+  //       }
+  //     });
+  //   }
+
+  //   await fetch(`${BASE_URL_API}/etablissement/create`, {
+  //     method: "POST",
+  //     body: formDatas,
+  //   })
+  //     .then(async (response) => console.log("response", await response.json()))
+  //     .then((result) => {
+  //       console.log("resultat", result);
+  //       authenticating = false;
+  //       console.log(result);
+  //       if (result.data.url) {
+  //         localStorage.setItem("reference", result.data.reference);
+  //         window.location.href = result.data.url + "?return=1"; // 🔥 Ajout du paramètre `return`
+  //       }
+  //     })
+  //     .catch((error) => {
+  //       console.error("Erreur paiements :", error);
+  //       isPaiementProcessing = false;
+  //       authenticating = false;
+  //     });
+  // }
+
   async function initPaiement() {
     authenticating = true;
-    console.log("formdata", formData)
-    // Créer un FormData pour les données du formulaire
+    console.log('formdata', formData);
+
     let formDatas = new FormData();
 
-    Object.keys(formData).forEach((key) => {
-      formDatas.append(key, formData[key]);
+    const simpleFields = [
+      'password',
+      'confirmPassword',
+      'email',
+      'niveauIntervention',
+      'typePersonne',
+      'nom',
+      'prenoms',
+      'telephone',
+      'bp',
+      'emailAutre',
+      'adresse',
+      'nomRepresentant',
+      'denomination',
+    ];
+
+    simpleFields.forEach((key:any) => {
+      if (formData[key] !== undefined && formData[key] !== null) {
+        formDatas.append(key, formData[key]);
+      }
     });
 
-    const reference = localStorage.getItem("reference");
-    if (reference) {
-      formDatas.append("reference", reference);
+    // Ajouter les documents dans le format souhaité
+    if (formData.documents && Array.isArray(formData.documents)) {
+      formData.documents.forEach((doc:any, index:any) => {
+        formDatas.append(doc[`${index}`][libelle], doc.libelle);
+        formDatas.append(doc[`${index}`][path], doc.path);
+        if (doc.libelleGroupe) {
+          formDatas.append(
+            doc[`${index}`][libelleGroupe],
+            doc.libelleGroupe
+          );
+        }
+      });
     }
-    formDatas.append("type", "etablissement");
+
+    // Ajouter la référence et le type
+    const reference = localStorage.getItem('reference');
+    if (reference) {
+      formDatas.append('reference', reference);
+    }
+    formDatas.append('type', 'etablissement');
 
     const selectedFilesFromStorage = JSON.parse(
-      localStorage.getItem("selectedFiles")
+      localStorage.getItem('selectedFiles') || '{}'
     );
 
     if (selectedFilesFromStorage) {
-      // Ajouter chaque fichier au FormData
       Object.keys(selectedFilesFromStorage).forEach((fieldName) => {
         const fileData = selectedFilesFromStorage[fieldName];
         if (fileData && fileData.data) {
-          const byteCharacters = atob(fileData.data.split(",")[1]);
+          const base64Data = fileData.data.split(',')[1];
+          const byteCharacters = atob(base64Data);
           const byteArrays = [];
 
           for (let offset = 0; offset < byteCharacters.length; offset += 512) {
@@ -445,32 +544,48 @@ function handleDocumentChange(
           }
 
           const blob = new Blob(byteArrays, {
-            type: "application/octet-stream",
+            type: fileData.type || 'application/octet-stream',
           });
-          // formDatas.append(fieldName, blob, fileData.name);
+          formDatas.append(fieldName, blob, fileData.name);
         }
       });
     }
 
-    await fetch(`${BASE_URL_API}/etablissement/create`, {
-      method: "POST",
-      body: formDatas,
-    })
-      .then(async (response) => console.log("response", await response.json()))
-      .then((result) => {
-        console.log("resultat", result);
-        authenticating = false;
-        console.log(result);
-        if (result.data.url) {
-          localStorage.setItem("reference", result.data.reference);
-          window.location.href = result.data.url + "?return=1"; // 🔥 Ajout du paramètre `return`
-        }
-      })
-      .catch((error) => {
-        console.error("Erreur paiements :", error);
-        isPaiementProcessing = false;
-        authenticating = false;
+    console.log('Contenu de formDatas:');
+    for (let [key, value] of formDatas.entries()) {
+      if (value instanceof Blob) {
+        console.log(
+          key,
+          [Fichier: ${value.name || 'sans nom'}, type: ${value.type}, taille: ${value.size} octets]
+        );
+      } else {
+        console.log(key, value);
+      }
+    }
+
+    console.log('formDatas', formDatas);
+
+    try {
+      const response = await fetch(`${BASE_URL_API}/etablissement/create`, {
+        method: 'POST',
+        body: formDatas,
+       
       });
+
+      const result = await response.json();
+      console.log('Réponse du serveur:', result);
+
+      authenticating = false;
+
+      if (result.data && result.data.url) {
+        localStorage.setItem('reference', result.data.reference);
+        window.location.href = result.data.url + '?return=1';
+      }
+    } catch (error) {
+      console.error('Erreur lors du paiement:', error);
+      isPaiementProcessing = false;
+      authenticating = false;
+    }
   }
 
   function connexion() {
@@ -491,7 +606,7 @@ function handleDocumentChange(
   let objects = [
     { name: "typePersonne", url: "/typePersonne" },
     { name: "niveauIntervention", url: "/niveauIntervention" },
-    { name: "typeDocument", url: "/libelleGroupe/all", id: 2 },
+    { name: "typeDocument", url: "/libelleGroupe/all", id: formData.typePersonne },
   ];
 
   let values: {

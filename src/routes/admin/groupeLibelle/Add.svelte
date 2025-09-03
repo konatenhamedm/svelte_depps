@@ -4,6 +4,9 @@
   import { Button, Input, Label, Modal, Textarea } from "flowbite-svelte";
   import Notification from "$components/_includes/Notification.svelte";
   import InputTextArea from "$components/inputs/InputTextArea.svelte";
+  import SelectInput from "$components/site/SelectInput.svelte";
+  import InputSelect from "$components/inputs/InputSelect.svelte";
+  import InputSelect2 from "$components/inputs/InputSelect2.svelte";
 
   let showNotification = false;
   let notificationMessage = "";
@@ -16,6 +19,16 @@
     libelle: "",
     type: ""
   };
+
+let libelleType: any = [{
+  libelle: "Accord de principe",
+  id: "ACP"
+},{
+  libelle: "Ouverture d'Exploitation",
+  id: "OEP"
+}];
+
+
   export let sizeModal: any = "lg";
   export let userUpdateId: any;
 
@@ -87,14 +100,13 @@
           placeholder="entrez le libelle"
           class="w-full"
         ></InputSimple>
-        <InputSimple
-          fieldName="type"
-          label="Type"
-          bind:field={icons.type}
-          placeholder="entrez le type"
-          class="w-full"
-        ></InputSimple>
-
+        <div class="grid grid-cols-1 gap-6">
+        <InputSelect2
+          label="Type utilisateur"
+          bind:selectedId={icons.type}
+          datas={libelleType}
+          id="type"
+        />
       </div>
     </form>
   </div>
