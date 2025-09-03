@@ -78,12 +78,17 @@
   // Liste des onglets avec leur label et couleur
   const tabs = [
     { key: "all", label: "Tous" },
-    { key: "attente", label: "En attente" },
-    { key: "accepte", label: "Accepté" },
-    { key: "valide", label: "Validé" },
-    { key: "refuse", label: "Refusé" },
-    { key: "renouvellement", label: "Renouvellement" },
-    { key: "a_jour", label: "À jour" }
+    { key: "acp_attente_dossier_depot_service_courrier", label: "ACP de dépôt de dossier" },
+    { key: "acp_dossier_attente_validation_directrice", label: "ACP validation directrice" },
+    { key: "acp_dossier_valide_directrice", label: "ACP Validé par la directrice" },
+    { key: "oep_demande_initie", label: "OEP initié" },
+    { key: "oep_dossier_imputer", label: "OEP dossier imputer" },
+    { key: "oep_dossier_imputer_conforme_attente_planification_visite", label: "OEP dossier conforme en attente" },
+    { key: "oep_dossier_imputer_non_conforme", label: "OEP imputer non conforme" },
+    { key: "oep_dossier_visite_programme", label: "OEP visite programmé" },
+    { key: "oep_visite_effectue_attente_validation_directrice", label: "OEP visite effectuée en attente de validation directrice" },
+    { key: "oep_dossier_valide", label: "OEP Validé" },
+    { key: "oep_dossier_rejette", label: "OEP Rejeté" },
   ];
 
   // Filtrage des données selon l'onglet actif

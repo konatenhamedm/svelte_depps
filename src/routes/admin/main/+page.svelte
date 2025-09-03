@@ -539,7 +539,7 @@ $: showNotification = false
         >
 
        
-          {#each ['Nom', 'Adresse', 'Téléphone', 'Email', 'Type de personnes','Action'] as title}
+          {#each ['Nom', 'Adresse', 'Téléphone', 'Email', 'Type de personnes'] as title}
             <TableHeadCell class="ps-4 font-normal border border-gray-300"
               >{title}</TableHeadCell
             >
@@ -583,7 +583,7 @@ $: showNotification = false
                   >{item.personne?.profession?.libelle ??
                     'N/A'}</TableBodyCell
                 >
-                <TableBodyCell class="p-4 border border-gray-300"
+                <!-- <TableBodyCell class="p-4 border border-gray-300"
                   >
                   <button  class="button-33" type="button" on:click={()=>{
                    handleChangeStatus(item.id,"validate")
@@ -592,7 +592,7 @@ $: showNotification = false
                     handleChangeStatus(item.id,"cancelled")
                   }}> Annuler</button>
                   </TableBodyCell
-                >
+                > -->
               </TableBodyRow>
             {/each}
           {/if}

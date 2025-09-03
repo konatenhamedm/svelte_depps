@@ -20,7 +20,7 @@
   function init(form: HTMLFormElement) {
     code = data?.code;
     libelle = data?.libelle;
-    montant = data?.ùmontant;
+    montant = data?.montant;
   }
 
   async function SaveFunction() {
@@ -43,6 +43,7 @@
       );
 
       if (res.ok) {
+        console.log('Saved successfully', res);
         isLoad = false;
         open = false; // Close the modal
       }

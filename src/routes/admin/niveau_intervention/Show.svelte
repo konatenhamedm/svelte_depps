@@ -35,7 +35,7 @@
         <InputSimple
           fieldName="code"
           label="Code"
-          field={libelle}
+          field={code}
           placeholder="entrez le code"
           disabled={true}
         />
@@ -49,7 +49,7 @@
         <InputSimple
           fieldName="montant"
           label="Montant"
-          field={libelle}
+          field={montant}
           placeholder="entrez le montant"
           disabled={true}
         />
