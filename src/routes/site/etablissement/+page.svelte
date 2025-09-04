@@ -1,26 +1,27 @@
 <script lang="ts">
-  import { onMount } from "svelte";
-  import Footer from "$components/Footer.svelte";
-  import Header from "$components/Header.svelte";
-  import Slide from "$components/Slide.svelte";
-  import { BASE_URL_API } from "$lib/api";
+  import {onMount} from 'svelte';
+  import Footer from '$components/Footer.svelte';
+  import Header from '$components/Header.svelte';
+  import Slide from '$components/Slide.svelte';
+  import {BASE_URL_API} from '$lib/api';
 
-  import { apiFetch } from "$lib/api";
+  import {apiFetch} from '$lib/api';
   import type {
     Civilite,
     Genre,
     Pays,
     Specialite,
     Ville,
-  } from "../../../types.js";
-  import { getProfessions } from "$lib/constants";
-  import MessageError from "$components/MessageError.svelte";
-  import { goto } from "$app/navigation";
-  import Spinner from "$components/_skeletons/Spinner.svelte";
-  import EtapeConnexion from "$components/site/EtapeConnexion.svelte";
-  import SelectInput from "$components/site/SelectInput.svelte";
-  import InputSelect from "$components/inputs/InputSelect.svelte";
-  import InputSelectTypePersonne from "$components/inputs/InputSelectTypePersonne.svelte";
+  } from '../../../types.js';
+  import {getProfessions} from '$lib/constants';
+  import MessageError from '$components/MessageError.svelte';
+  import {goto} from '$app/navigation';
+  import Spinner from '$components/_skeletons/Spinner.svelte';
+  import EtapeConnexion from '$components/site/EtapeConnexion.svelte';
+  import SelectInput from '$components/site/SelectInput.svelte';
+  import InputSelect from '$components/inputs/InputSelect.svelte';
+  import InputSelectTypePersonne from '$components/inputs/InputSelectTypePersonne.svelte';
+  import type { AnyAaaaRecord } from 'node:dns';
 
   const professions = getProfessions();
 
@@ -28,7 +29,7 @@
   let user = data?.user;
   let isPaiementProcessing = false;
   $: isPaiementDone = false;
-  $: message = "";
+  $: message = '';
   let step = 1;
   $: hideForPhysic = true;
   $: hideForOther = false;
@@ -40,17 +41,17 @@
 
   $: emailError =
     formData.email && !validateEmail(formData.email)
-      ? "Veuillez entrer un email valide"
-      : "";
+      ? 'Veuillez entrer un email valide'
+      : '';
   $: emailPassword =
     formData.email && !validatePassword(formData.password)
-      ? "Le mot de passe doit contenir au moins 6 caractères, une majuscule, une minuscule et un chiffre."
-      : "";
+      ? 'Le mot de passe doit contenir au moins 6 caractères, une majuscule, une minuscule et un chiffre.'
+      : '';
 
   $: emailAutreError =
     formData.emailAutre && !validateEmail(formData.emailAutre)
-      ? "Veuillez entrer un email valide"
-      : "";
+      ? 'Veuillez entrer un email valide'
+      : '';
 
   function validateEmail(email: string): boolean {
     const regex = /\S+@\S+\.\S+/;
@@ -62,66 +63,61 @@
     return regex.test(password);
   }
 
- $: if (formData.typePersonne == "PHYSIQUE") {
-  hideForOther = false;
-  hideForPhysic = true;
-  // Effacer les champs de la personne morale
-  formData.adresse = "";
-  formData.nomRepresentant = "";
-  formData.denomination = "";
-} else if (formData.typePersonne == "MORALE") {
-  hideForPhysic = false;
-  hideForOther = true;
-  // Effacer les champs de la personne physique
-  formData.nom = "";
-  formData.prenoms = "";
-  formData.telephone = "";
-  formData.bp = "";
-  formData.emailAutre = "";
-} else {
-  hideForPhysic = false;
-  hideForOther = false;
-}
+  $: if (formData.typePersonne == 'PHYSIQUE') {
+    hideForOther = false;
+    hideForPhysic = true;
+    // Effacer les champs de la personne morale
+    formData.adresse = '';
+    formData.nomRepresentant = '';
+    formData.denomination = '';
+  } else if (formData.typePersonne == 'MORALE') {
+    hideForPhysic = false;
+    hideForOther = true;
+    // Effacer les champs de la personne physique
+    formData.nom = '';
+    formData.prenoms = '';
+    formData.telephone = '';
+    formData.bp = '';
+    formData.emailAutre = '';
+  } else {
+    hideForPhysic = false;
+    hideForOther = false;
+  }
   /////fin
   interface DocumentItem {
     libelle: string;
     path: string; // chemin ou base64 du fichier
     libelleGroupe: string;
   }
-let uploadedFiles: { [key: string]: string } = {}; // key: libelle+libelleGroupe, value: file name or base64
+  let uploadedFiles: {[key: string]: string} = {}; // key: libelle+libelleGroupe, value: file name or base64
 
+  function handleDocumentChange(
+    event: Event,
+    libelle: string,
+    libelleGroupe: any
+  ) {
+    const target = event.target as HTMLInputElement;
+    const file = target.files?.[0];
 
+    if (!file) return;
 
-function handleDocumentChange(
-  event: Event,
-  libelle: string,
-  libelleGroupe: string
-) {
-  const target = event.target as HTMLInputElement;
-  const file = target.files?.[0];
+    const reader = new FileReader();
+    reader.onload = () => {
+      const base64 = reader.result as string;
 
-  if (!file) return;
+      // On ajoute l'objet formaté dans formData.documents
+      formData.documents.push({
+        libelle: libelle,
+        path: base64, // ou file.name si tu veux juste le nom
+        libelleGroupe: libelleGroupe,
+      });
+      uploadedFiles[libelle + libelleGroupe] = file.name;
 
-  const reader = new FileReader();
-  reader.onload = () => {
-    const base64 = reader.result as string;
-
-    // On ajoute l'objet formaté dans formData.documents
-    formData.documents.push({
-      libelle: libelle,
-      path: base64, // ou file.name si tu veux juste le nom
-      libelleGroupe: libelleGroupe
-    });
-    uploadedFiles[libelle + libelleGroupe] = file.name;
-
-    // Sauvegarde dans localStorage si besoin
-    localStorage.setItem("formData", JSON.stringify(formData));
-  };
-  reader.readAsDataURL(file);
-}
-
-
-
+      // Sauvegarde dans localStorage si besoin
+      localStorage.setItem('formData', JSON.stringify(formData));
+    };
+    reader.readAsDataURL(file);
+  }
 
   let formData: {
     password: string;
@@ -140,41 +136,41 @@ function handleDocumentChange(
     denomination: string;
     documents: DocumentItem[];
   } = {
-    password: "",
-    confirmPassword: "",
-    email: "",
+    password: '',
+    confirmPassword: '',
+    email: '',
     niveauIntervention: '',
-    typePersonne: 'MORALE',
-    nom: "",
-    prenoms: "",
-    telephone: "",
-    bp: "",
-    emailAutre: "",
-    adresse: "",
-    nomRepresentant: "",
-    denomination: "",
+    typePersonne: '',
+    nom: '',
+    prenoms: '',
+    telephone: '',
+    bp: '',
+    emailAutre: '',
+    adresse: '',
+    nomRepresentant: '',
+    denomination: '',
     documents: [],
   };
 
   // Définition des erreurs
   let errors = {
-    email: "",
-    password: "",
-    confirmPassword: "",
+    email: '',
+    password: '',
+    confirmPassword: '',
     // Informations générales
     // Informations generales ( à update en fonction du type)
-    typePersonne: "",
-    niveauIntervention: "",
-    nom: "",
-    prenoms: "",
-    telephone: "",
-    bp: "",
-    emailAutre: "",
-    adresse: "",
-    nomRepresentant: "",
-    denomination: "",
+    typePersonne: '',
+    niveauIntervention: '',
+    nom: '',
+    prenoms: '',
+    telephone: '',
+    bp: '',
+    emailAutre: '',
+    adresse: '',
+    nomRepresentant: '',
+    denomination: '',
     // Pour la derniere step
-    documents: "",
+    documents: '',
   };
   let emailCheck = false;
   async function checkEmail(email: any) {
@@ -188,7 +184,7 @@ function handleDocumentChange(
       return data.data; // Assurez-vous que l'API renvoie un objet avec une clé `valid`
     } catch (error) {
       console.error(
-        "Erreur lors de la vérification de la transaction :",
+        'Erreur lors de la vérification de la transaction :',
         error
       );
       return false;
@@ -200,7 +196,7 @@ function handleDocumentChange(
       emailCheck = resultat;
 
       if (emailCheck == true) {
-        emailError = "Cet email existe deja";
+        emailError = 'Cet email existe deja';
       }
     });
   }
@@ -209,12 +205,12 @@ function handleDocumentChange(
   function validateStep() {
     let valid = true;
     if (step === 1) {
-      errors.email = formData.email ? "" : "L'e-mail est requis";
-      errors.password = formData.password ? "" : "Le mot de passe est requis";
+      errors.email = formData.email ? '' : "L'e-mail est requis";
+      errors.password = formData.password ? '' : 'Le mot de passe est requis';
       errors.confirmPassword =
         formData.confirmPassword === formData.password
-          ? ""
-          : "Les mots de passe ne correspondent pas";
+          ? ''
+          : 'Les mots de passe ne correspondent pas';
 
       valid =
         !errors.password &&
@@ -227,38 +223,38 @@ function handleDocumentChange(
 
     if (step === 2) {
       // Champ obligatoire pour tous
-      errors.typePersonne = formData.typePersonne ? "" : "Le type est requis";
+      errors.typePersonne = formData.typePersonne ? '' : 'Le type est requis';
 
       // Champs pour Personne Physique
       if (!hideForOther) {
-        errors.nom = formData.nom ? "" : "Le nom est requis";
-        errors.prenoms = formData.prenoms ? "" : "Les prénoms sont requis";
-        errors.telephone = formData.telephone ? "" : "Le téléphone est requis";
-        errors.bp = formData.bp ? "" : "La boîte postale est requise";
-        errors.emailAutre = formData.emailAutre ? "" : "L'email est requis";
-        errors.adresse = "";
-        errors.nomRepresentant = "";
-        errors.denomination = "";
+        errors.nom = formData.nom ? '' : 'Le nom est requis';
+        errors.prenoms = formData.prenoms ? '' : 'Les prénoms sont requis';
+        errors.telephone = formData.telephone ? '' : 'Le téléphone est requis';
+        errors.bp = formData.bp ? '' : 'La boîte postale est requise';
+        errors.emailAutre = formData.emailAutre ? '' : "L'email est requis";
+        errors.adresse = '';
+        errors.nomRepresentant = '';
+        errors.denomination = '';
       }
 
       // Champs pour Personne Morale
       if (!hideForPhysic) {
-        errors.adresse = formData.adresse ? "" : "L'adresse est requise";
+        errors.adresse = formData.adresse ? '' : "L'adresse est requise";
         errors.nomRepresentant = formData.nomRepresentant
-          ? ""
-          : "Le nom du représentant est requis";
+          ? ''
+          : 'Le nom du représentant est requis';
         errors.denomination = formData.denomination
-          ? ""
-          : "La dénomination est requise";
-        errors.nom = "";
-        errors.prenoms = "";
-        errors.telephone = "";
-        errors.bp = "";
-        errors.emailAutre = "";
+          ? ''
+          : 'La dénomination est requise';
+        errors.nom = '';
+        errors.prenoms = '';
+        errors.telephone = '';
+        errors.bp = '';
+        errors.emailAutre = '';
       }
 
       // Déterminer si tout est valide
-      valid = Object.values(errors).every((errorMsg) => errorMsg === "");
+      valid = Object.values(errors).every((errorMsg) => errorMsg === '');
     }
 
     if (step === 3) {
@@ -273,51 +269,50 @@ function handleDocumentChange(
   }
 
   ////Fonction asynchrone pour recuperer le groupe de documents pour le type de personne
-  async function getTypeDoc(typePersonneId: any) {
+  async function getTypeDoc() {
     let res = null;
-
-    res = await apiFetch(true, `${objects[1].url}/${typePersonneId}`);
+    // alert("hello world, " + formData.typePersonne);
+    res = await apiFetch(true, `${objects[2].url}/${formData.typePersonne}`);
     if (res) {
-      if (Object.keys(values).includes(objects[1].name)) {
-        values[objects[1].name as keyof typeof values] = res.data;
+      if (Object.keys(values).includes(objects[2].name)) {
+        values[objects[2].name as keyof typeof values] = res.data;
       } else {
-        console.error(`Invalid key: ${objects[1].name}`);
+        console.error(`Invalid key: ${objects[2].name}`);
       }
     } else {
       console.error(
-        "Erreur lors de la récupération des données:",
+        'Erreur lors de la récupération des données:',
         res.statusText
       );
     }
   }
 
   // 🔹 Fonction pour sauvegarder l'état actuel du formulaire
-  function saveFormState() {
-    if (typeof window !== "undefined" && typeof localStorage !== "undefined") {
-      localStorage.setItem("formData", JSON.stringify(formData));
-      localStorage.setItem("step", step.toString());
+  async function saveFormState() {
+    if (typeof window !== 'undefined' && typeof localStorage !== 'undefined') {
+      localStorage.setItem('formData', JSON.stringify(formData));
+      localStorage.setItem('step', step.toString());
+      await getTypeDoc();
 
-  
-
-      console.log("formData sauvegardé:", formData.typePersonne);
+      console.log('formData sauvegardé:', formData.typePersonne);
       ///recuperer les informations du type de document lorsque le type de personne est selectionné
       if (formData.typePersonne > 0) {
-        getTypeDoc(formData.typePersonne);
+        getTypeDoc();
       }
-      if (formData.typePersonne == "MORALE") {
-      
-        formData.nom = "";
-        formData.prenoms = "";
-        formData.telephone = "";
-        formData.bp = "";
-        formData.emailAutre = "";
-      } else if (
-        formData.typePersonne == "PHYSIQUE"
-      ) {
-        formData.adresse = "";
-        formData.nomRepresentant = "";
-        formData.denomination = "";
-       
+      if (formData.typePersonne == 'MORALE') {
+        formData.documents =  [];
+        formData.nom = '';
+        formData.prenoms = '';
+        formData.telephone = '';
+        formData.bp = '';
+        formData.emailAutre = '';
+        localStorage.setItem('formData', JSON.stringify(formData));
+      } else if (formData.typePersonne == 'PHYSIQUE') {
+        formData.documents =  [];
+        formData.adresse = '';
+        formData.nomRepresentant = '';
+        formData.denomination = '';
+        localStorage.setItem('formData', JSON.stringify(formData));
       }
     }
   }
@@ -331,14 +326,14 @@ function handleDocumentChange(
         // Ajouter le fichier à selectedFiles
         selectedFiles = {
           ...selectedFiles,
-          [fieldName]: { name: file.name, data: reader.result },
+          [fieldName]: {name: file.name, data: reader.result},
         };
 
         // Stocker dans le localStorage
-        localStorage.setItem("selectedFiles", JSON.stringify(selectedFiles));
+        localStorage.setItem('selectedFiles', JSON.stringify(selectedFiles));
 
         // Mettre à jour les noms de fichiers affichés
-        fileNames = { ...fileNames, [fieldName]: file.name };
+        fileNames = {...fileNames, [fieldName]: file.name};
       };
     }
   }
@@ -350,10 +345,10 @@ function handleDocumentChange(
 
   // 🔹 Fonction pour restaurer le formulaire après un retour
   // Restaurer les données et l'étape depuis localStorage
-  function restoreFormState() {
-    if (typeof window !== "undefined" && typeof localStorage !== "undefined") {
-      const savedFormData = localStorage.getItem("formData");
-      const savedStep = localStorage.getItem("step");
+  async function restoreFormState() {
+    if (typeof window !== 'undefined' && typeof localStorage !== 'undefined') {
+      const savedFormData = localStorage.getItem('formData');
+      const savedStep = localStorage.getItem('step');
 
       if (savedFormData) {
         formData = JSON.parse(savedFormData);
@@ -362,7 +357,7 @@ function handleDocumentChange(
       if (savedStep) {
         step = parseInt(savedStep);
       } else {
-        localStorage.setItem("step", step.toString());
+        localStorage.setItem('step', step.toString());
       }
     }
   }
@@ -370,36 +365,36 @@ function handleDocumentChange(
   // ✅ Vérifier si on revient après un paiements
   onMount(async () => {
     const urlParams = new URLSearchParams(window.location.search);
-    if (urlParams.has("return")) {
+    if (urlParams.has('return')) {
       restoreFormState();
     }
-    await getTypeDoc(formData.typePersonne);
+    await getTypeDoc();
   });
 
   // Lire la valeur de `step` depuis localStorage, sinon initialiser à 1
 
-  let messagefile = "";
+  let messagefile = '';
   // Fonction pour changer d'étape et sauvegarder dans localStorage
   function nextStep() {
     if (validateStep()) {
       step += 1;
-      localStorage.setItem("step", step.toString());
+      localStorage.setItem('step', step.toString());
       return;
     } else {
-      messagefile = "Veuillez remplir tous les champs obligatoires.";
+      messagefile = 'Veuillez remplir tous les champs obligatoires.';
     }
   }
 
   function prevStep() {
     if (step > 1) {
       step -= 1;
-      localStorage.setItem("step", step.toString());
+      localStorage.setItem('step', step.toString());
     }
   }
 
   // 🔹 Gestion du paiements
   function clickPaiement() {
-    console.log("click payment");
+    console.log('click payment');
     isPaiementProcessing = true;
     saveFormState(); // 🔥 Sauvegarder avant de partir
 
@@ -407,72 +402,6 @@ function handleDocumentChange(
   }
 
   let authenticating = false;
-  // async function initPaiement() {
-  //   authenticating = true;
-  //   console.log("formdata", formData)
-  //   // Créer un FormData pour les données du formulaire
-  //   let formDatas = new FormData();
-
-  //   Object.keys(formData).forEach((key) => {
-  //     formDatas.append(key, formData[key]);
-  //   });
-
-  //   const reference = localStorage.getItem("reference");
-  //   if (reference) {
-  //     formDatas.append("reference", reference);
-  //   }
-  //   formDatas.append("type", "etablissement");
-
-  //   const selectedFilesFromStorage = JSON.parse(
-  //     localStorage.getItem("selectedFiles")
-  //   );
-
-  //   if (selectedFilesFromStorage) {
-  //     // Ajouter chaque fichier au FormData
-  //     Object.keys(selectedFilesFromStorage).forEach((fieldName) => {
-  //       const fileData = selectedFilesFromStorage[fieldName];
-  //       if (fileData && fileData.data) {
-  //         const byteCharacters = atob(fileData.data.split(",")[1]);
-  //         const byteArrays = [];
-
-  //         for (let offset = 0; offset < byteCharacters.length; offset += 512) {
-  //           const slice = byteCharacters.slice(offset, offset + 512);
-  //           const byteNumbers = new Array(slice.length);
-  //           for (let i = 0; i < slice.length; i++) {
-  //             byteNumbers[i] = slice.charCodeAt(i);
-  //           }
-  //           byteArrays.push(new Uint8Array(byteNumbers));
-  //         }
-
-  //         const blob = new Blob(byteArrays, {
-  //           type: "application/octet-stream",
-  //         });
-  //         // formDatas.append(fieldName, blob, fileData.name);
-  //       }
-  //     });
-  //   }
-
-  //   await fetch(`${BASE_URL_API}/etablissement/create`, {
-  //     method: "POST",
-  //     body: formDatas,
-  //   })
-  //     .then(async (response) => console.log("response", await response.json()))
-  //     .then((result) => {
-  //       console.log("resultat", result);
-  //       authenticating = false;
-  //       console.log(result);
-  //       if (result.data.url) {
-  //         localStorage.setItem("reference", result.data.reference);
-  //         window.location.href = result.data.url + "?return=1"; // 🔥 Ajout du paramètre `return`
-  //       }
-  //     })
-  //     .catch((error) => {
-  //       console.error("Erreur paiements :", error);
-  //       isPaiementProcessing = false;
-  //       authenticating = false;
-  //     });
-  // }
-
   async function initPaiement() {
     authenticating = true;
     console.log('formdata', formData);
@@ -495,7 +424,7 @@ function handleDocumentChange(
       'denomination',
     ];
 
-    simpleFields.forEach((key:any) => {
+    simpleFields.forEach((key) => {
       if (formData[key] !== undefined && formData[key] !== null) {
         formDatas.append(key, formData[key]);
       }
@@ -503,12 +432,14 @@ function handleDocumentChange(
 
     // Ajouter les documents dans le format souhaité
     if (formData.documents && Array.isArray(formData.documents)) {
-      formData.documents.forEach((doc:any, index:any) => {
-        formDatas.append(doc[`${index}`][libelle], doc.libelle);
-        formDatas.append(doc[`${index}`][path], doc.path);
+
+      console.log('formData.documents', formData.documents);
+      formData.documents.forEach((doc, index) => {
+        formDatas.append(`documents[${index}][libelle]`, doc.libelle);
+        formDatas.append(`documents[${index}][path]`, doc.path);
         if (doc.libelleGroupe) {
           formDatas.append(
-            doc[`${index}`][libelleGroupe],
+            `documents[${index}][libelleGroupe]`,
             doc.libelleGroupe
           );
         }
@@ -556,7 +487,7 @@ function handleDocumentChange(
       if (value instanceof Blob) {
         console.log(
           key,
-          [Fichier: ${value.name || 'sans nom'}, type: ${value.type}, taille: ${value.size} octets]
+          `[Fichier: ${value.name || 'sans nom'}, type: ${value.type}, taille: ${value.size} octets]`
         );
       } else {
         console.log(key, value);
@@ -587,15 +518,14 @@ function handleDocumentChange(
       authenticating = false;
     }
   }
-
   function connexion() {
-    goto("/site/connexion");
+    goto('/site/connexion');
     localStorage.clear(); // Nettoyer les données du localStorage
   }
 
   // Déclenche la vérification de façon réactive dès que transactionID change
-  $: if (typeof window !== "undefined" && localStorage.getItem("reference")) {
-    const reference = localStorage.getItem("reference").toString();
+  $: if (typeof window !== 'undefined' && localStorage.getItem('reference')) {
+    const reference = localStorage.getItem('reference').toString();
     if (reference) {
     }
   }
@@ -604,9 +534,9 @@ function handleDocumentChange(
    * @type {any[]}
    */
   let objects = [
-    { name: "typePersonne", url: "/typePersonne" },
-    { name: "niveauIntervention", url: "/niveauIntervention" },
-    { name: "typeDocument", url: "/libelleGroupe/all", id: formData.typePersonne },
+    {name: 'typePersonne', url: '/typePersonne'},
+    {name: 'niveauIntervention', url: '/niveauIntervention'},
+    {name: 'typeDocument', url: '/libelleGroupe/all', id: formData.typePersonne},
   ];
 
   let values: {
@@ -647,13 +577,13 @@ function handleDocumentChange(
           }
         } else {
           console.error(
-            "Erreur lors de la récupération des données:",
+            'Erreur lors de la récupération des données:',
             res.statusText
           );
         }
       });
     } catch (error) {
-      console.error("Erreur lors de la récupération des données:", error);
+      console.error('Erreur lors de la récupération des données:', error);
     }
   }
 
@@ -662,37 +592,37 @@ function handleDocumentChange(
   });
   onMount(() => {
     //localStorage.clear();
-    const savedStep = localStorage.getItem("step");
+    const savedStep = localStorage.getItem('step');
     if (savedStep) {
       step = parseInt(savedStep);
     }
 
-    const savedData = localStorage.getItem("formData");
+    const savedData = localStorage.getItem('formData');
 
     if (savedStep) step = parseInt(savedStep);
     if (savedData) formData = JSON.parse(savedData);
 
     if (savedData) {
-      formData = { ...formData, ...JSON.parse(savedData) };
+      formData = {...formData, ...JSON.parse(savedData)};
     }
 
-    const savedFiles = localStorage.getItem("fileNames");
+    const savedFiles = localStorage.getItem('fileNames');
     if (savedFiles) {
       fileNames = JSON.parse(savedFiles);
     }
 
-    console.log("fileNames:", localStorage.getItem("reference"));
+    console.log('fileNames:', localStorage.getItem('reference'));
   });
 
   // Sauvegarder les données du formulaire dans localStorage à chaque modification
   function updateField(field: any, value: any) {
     formData[field] = value;
-    localStorage.setItem("formData", JSON.stringify(formData));
+    localStorage.setItem('formData', JSON.stringify(formData));
   }
 </script>
 
 <div id="">
-  <Header  />
+  <Header />
   <Slide {user} />
   <section class="text-center pb-20" style="padding-top:150px">
     <h2 class="h2-baslik-anasayfa-ozel pb-10 text-uppercase">
@@ -740,11 +670,11 @@ function handleDocumentChange(
 
                     <!-- <div class="form__grup"> -->
                     <!-- <label class="form_label">Personne Physique *</label> -->
-                      <SelectInput
+                    <SelectInput
                       label="Niveau d'Intervention"
                       bind:value={formData.niveauIntervention}
                       options={values.niveauIntervention.map(
-                        (c: { id: number; libelle: string }) => ({
+                        (c: {id: number; libelle: string}) => ({
                           id: String(c.libelle),
                           libelle: c.libelle,
                         })
@@ -757,10 +687,10 @@ function handleDocumentChange(
                       bind:formData
                     />
                     <SelectInput
-                      label="Type Physique "
+                      label="Type Personne "
                       bind:value={formData.typePersonne}
                       options={values.typePersonne.map(
-                        (c: { id: number; libelle: string }) => ({
+                        (c: {id: number; libelle: string}) => ({
                           id: String(c.libelle),
                           libelle: c.libelle,
                         })
@@ -773,13 +703,11 @@ function handleDocumentChange(
                       bind:formData
                     />
 
-    
-
                     <div hidden={hideForOther} class="form__grup">
                       <label class="form_label">Nom*</label>
                       <input
                         on:input={(e: any) =>
-                          updateField("nom", e.target.value)}
+                          updateField('nom', e.target.value)}
                         type="text"
                         class="form__input"
                         bind:value={formData.nom}
@@ -796,7 +724,7 @@ function handleDocumentChange(
                       <label class="form_label">Prenoms *</label>
                       <input
                         on:input={(e: any) =>
-                          updateField("prenoms", e.target.value)}
+                          updateField('prenoms', e.target.value)}
                         type="text"
                         class="form__input"
                         bind:value={formData.prenoms}
@@ -811,7 +739,7 @@ function handleDocumentChange(
                       <label class="form_label">Telephone *</label>
                       <input
                         on:input={(e: any) =>
-                          updateField("telephone", e.target.value)}
+                          updateField('telephone', e.target.value)}
                         type="text"
                         class="form__input"
                         bind:value={formData.telephone}
@@ -826,7 +754,7 @@ function handleDocumentChange(
                     <div hidden={hideForOther} class="form__grup">
                       <label class="form_label">Boite Postale *</label>
                       <input
-                        on:input={(e: any) => updateField("bp", e.target.value)}
+                        on:input={(e: any) => updateField('bp', e.target.value)}
                         type="text"
                         class="form__input"
                         bind:value={formData.bp}
@@ -843,7 +771,7 @@ function handleDocumentChange(
                       <label class="form_label">Autre E-mail *</label>
                       <input
                         on:input={(e: any) =>
-                          updateField("emailAutre", e.target.value)}
+                          updateField('emailAutre', e.target.value)}
                         type="email"
                         class="form__input"
                         bind:value={formData.emailAutre}
@@ -859,7 +787,7 @@ function handleDocumentChange(
                       <label class="form_label">Adresse *</label>
                       <input
                         on:input={(e: any) =>
-                          updateField("adresse", e.target.value)}
+                          updateField('adresse', e.target.value)}
                         type="text"
                         class="form__input"
                         bind:value={formData.adresse}
@@ -877,7 +805,7 @@ function handleDocumentChange(
                       <label class="form_label">Nom du representant *</label>
                       <input
                         on:input={(e: any) =>
-                          updateField("nomRepresentant", e.target.value)}
+                          updateField('nomRepresentant', e.target.value)}
                         type="text"
                         class="form__input"
                         bind:value={formData.nomRepresentant}
@@ -893,7 +821,7 @@ function handleDocumentChange(
                       <label class="form_label">Dénomination *</label>
                       <input
                         on:input={(e: any) =>
-                          updateField("denomination", e.target.value)}
+                          updateField('denomination', e.target.value)}
                         type="text"
                         class="form__input"
                         bind:value={formData.denomination}
@@ -927,46 +855,52 @@ function handleDocumentChange(
                             >{requiredFile.libelle} *</label
                           >
                           <div class="flex items-center">
-{#if uploadedFiles[requiredFile.libelle + document.libelle]}
-  <span class="file-preview" style="margin-right:8px;">
-    {#if formData.documents.find(
-      d => d.libelle === requiredFile.libelle && d.libelleGroupe === document.libelle
-    )?.path.startsWith('data:image')}
-      <!-- Affiche la miniature de l'image -->
-      <img
-        src="{formData.documents.find(
-          d => d.libelle === requiredFile.libelle && d.libelleGroupe === document.libelle
-        )?.path}"
-        alt="miniature"
-        style="width:70px;height:70px;object-fit:cover;border-radius:4px;border:1px solid #ccc;"
-      />
-    {:else}
-      <!-- Affiche le nom du fichier si ce n'est pas une image -->
-      <span style="font-size:12px;color:#555;">
-        {uploadedFiles[requiredFile.libelle + document.libelle]}
-      </span>
-    {/if}
-  </span>
-{/if}
+                            {#if uploadedFiles[requiredFile.libelle + document.libelle]}
+                              <span
+                                class="file-preview"
+                                style="margin-right:8px;"
+                              >
+                                {#if formData.documents
+                                  .find((d) => d.libelle === requiredFile.libelle && d.libelleGroupe === document.libelle)
+                                  ?.path.startsWith('data:image')}
+                                  <!-- Affiche la miniature de l'image -->
+                                  <img
+                                    src={formData.documents.find(
+                                      (d) =>
+                                        d.libelle === requiredFile.libelle &&
+                                        d.libelleGroupe === document.libelle
+                                    )?.path}
+                                    alt="miniature"
+                                    style="width:70px;height:70px;object-fit:cover;border-radius:4px;border:1px solid #ccc;"
+                                  />
+                                {:else}
+                                  <!-- Affiche le nom du fichier si ce n'est pas une image -->
+                                  <span style="font-size:12px;color:#555;">
+                                    {uploadedFiles[
+                                      requiredFile.libelle + document.libelle
+                                    ]}
+                                  </span>
+                                {/if}
+                              </span>
+                            {/if}
 
-         <input
-                            accept="image/*, .pdf"
-                            type="file"
-                            class="form__input"
-                            on:change={(e) =>
-                              handleDocumentChange(
-                                e,
-                                requiredFile.libelle,
-                                document.libelle
-                              )}
-                            placeholder="Documents à fournir"
-                          />
+                            <input
+                              accept="image/*, .pdf"
+                              type="file"
+                              class="form__input"
+                              on:change={(e) =>
+                                handleDocumentChange(
+                                  e,
+                                  requiredFile.libelle,
+                                  document.id
+                                )}
+                              placeholder="Documents à fournir"
+                            />
 
-                          {#if errors.documents}
-                            <p class="error">{errors.documents}</p>
-                          {/if}
+                            {#if errors.documents}
+                              <p class="error">{errors.documents}</p>
+                            {/if}
                           </div>
-                         
                         </div>
                       {/each}
                     </div>
@@ -1052,13 +986,11 @@ function handleDocumentChange(
                     Connectez vous
                   </button>
                 {/if}
-
-              
               {/if}
 
               <br />
               <br />
-              {#if message !== ""}
+              {#if message !== ''}
                 <div
                   class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative"
                   role="alert"
@@ -1132,12 +1064,11 @@ function handleDocumentChange(
       duration: 2;
     }
 
-
     .file-icon {
-  display: flex;
-  align-items: center;
-  color: #e53e3e; /* red for PDF, change as needed */
-}
+      display: flex;
+      align-items: center;
+      color: #e53e3e; /* red for PDF, change as needed */
+    }
   </style>
   <Footer />
 </div>

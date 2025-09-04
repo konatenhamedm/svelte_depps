@@ -94,7 +94,7 @@
   // Filtrage des données selon l'onglet actif
   // Filtrage des données selon l'onglet actif
   $: filteredData = main_data.filter((user) =>
-    activeTab === "all" ? true : user.personne.status === activeTab
+    activeTab === "all" ? true : user.personne2.status === activeTab
   );
 
   $: totalPages = Math.max(1, Math.ceil(filteredData.length / get(pageSize)));
@@ -251,24 +251,24 @@
                   {#each paginatedProducts as item}
                     <TableBodyRow class="text-base border border-gray-300">
                       <TableBodyCell class="p-4 border border-gray-300"
-                        >{item.personne.nomEntreprise}</TableBodyCell
+                        >{item.personne2.username}</TableBodyCell
                       >
                       <TableBodyCell class="p-4 border border-gray-300"
-                        >{item.personne.natureEntreprise}</TableBodyCell
+                        >{item.personne2.avatar}</TableBodyCell
                       >
                       <TableBodyCell class="p-4 border border-gray-300"
-                        >{item.personne.contactEntreprise}</TableBodyCell
+                        >{item.personne2.personne}</TableBodyCell
                       >
                       <TableBodyCell class="p-4 border border-gray-300"
                         >{item.email}</TableBodyCell
                       >
                       <TableBodyCell class="p-4 border border-gray-300"
-                        >{item.personne.nomCompletTechnique}</TableBodyCell
+                        >{item.personne2.typeUser}</TableBodyCell
                       >
                       
 
                       <TableBodyCell class="p-2 w-8 border border-gray-300">
-                        <DropdownMenuShow {item} onAction={handleAction} />
+                        <!-- <DropdownMenuShow {item} onAction={handleAction} /> -->
 
                       </TableBodyCell>
 

@@ -610,6 +610,17 @@ export interface Etablissement {
     type: string;
     status: string;
   };
+
+    personne2: {
+     id: number;
+  username: string;
+  email: string;
+  avatar: null;
+  typeUser: string;
+  personne: null;
+  createdAt: null;
+  createdBy: null;
+  };
 }
 export interface EndUser {
   id: string; // Identifiant unique de l'utilisateur
