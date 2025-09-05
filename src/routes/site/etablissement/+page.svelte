@@ -844,67 +844,60 @@
               <div class="tablo">
                 <div class="tablo--1h-ve-2">
                   {#each values.typeDocument as document}
-                    <div style="margin-top: 20px;"></div>
-                    <h2 class="h2-baslik-anasayfa-ozel h-yazi-margin-kucuk">
-                      {document.libelle}
-                    </h2>
-                    <div class="grid grid-cols-2">
-                      {#each document.typeDocuments as requiredFile, index}
-                        <div class="form__grup">
-                          <label class="form_label"
-                            >{requiredFile.libelle} *</label
-                          >
-                          <div class="flex items-center">
-                            {#if uploadedFiles[requiredFile.libelle + document.libelle]}
-                              <span
-                                class="file-preview"
-                                style="margin-right:8px;"
-                              >
-                                {#if formData.documents
-                                  .find((d) => d.libelle === requiredFile.libelle && d.libelleGroupe === document.libelle)
-                                  ?.path.startsWith('data:image')}
-                                  <!-- Affiche la miniature de l'image -->
-                                  <img
-                                    src={formData.documents.find(
-                                      (d) =>
-                                        d.libelle === requiredFile.libelle &&
-                                        d.libelleGroupe === document.libelle
-                                    )?.path}
-                                    alt="miniature"
-                                    style="width:70px;height:70px;object-fit:cover;border-radius:4px;border:1px solid #ccc;"
-                                  />
-                                {:else}
-                                  <!-- Affiche le nom du fichier si ce n'est pas une image -->
-                                  <span style="font-size:12px;color:#555;">
-                                    {uploadedFiles[
-                                      requiredFile.libelle + document.libelle
-                                    ]}
-                                  </span>
-                                {/if}
-                              </span>
-                            {/if}
+  <div style="margin-top: 20px;"></div>
+  <h2 class="h2-baslik-anasayfa-ozel h-yazi-margin-kucuk">
+    {document.libelle}
+  </h2>
+  <div class="grid grid-cols-2">
+    {#each document.typeDocuments as requiredFile, index}
+      <div class="form__grup">
+        <label class="form_label">{requiredFile.libelle} *</label>
+        <div class="flex items-center">
+          {#if uploadedFiles[requiredFile.libelle + document.libelle]}
+            <span class="file-preview" style="margin-right:8px;">
+              {#if formData.documents
+                .find((d) => d.libelle === requiredFile.libelle && d.libelleGroupe === document.libelle)
+                ?.path.startsWith('data:image')}
+                <!-- Affiche la miniature de l'image -->
+                <img
+                  src={formData.documents.find(
+                    (d) =>
+                      d.libelle === requiredFile.libelle &&
+                      d.libelleGroupe === document.libelle
+                  )?.path}
+                  alt="miniature"
+                  style="width:70px;height:70px;object-fit:cover;border-radius:4px;border:1px solid #ccc;"
+                />
+              {:else}
+                <!-- Affiche le nom du fichier si ce n'est pas une image -->
+                <span style="font-size:12px;color:#555;">
+                  {uploadedFiles[requiredFile.libelle + document.libelle]}
+                </span>
+              {/if}
+            </span>
+          {/if}
 
-                            <input
-                              accept="image/*, .pdf"
-                              type="file"
-                              class="form__input"
-                              on:change={(e) =>
-                                handleDocumentChange(
-                                  e,
-                                  requiredFile.libelle,
-                                  document.id
-                                )}
-                              placeholder="Documents à fournir"
-                            />
+          <input
+            accept="image/*, .pdf"
+            type="file"
+            class="form__input"
+            on:change={(e) =>
+              handleDocumentChange(
+                e,
+                requiredFile.libelle,
+                document.libelle
+              )}
+            placeholder="Documents à fournir"
+          />
 
-                            {#if errors.documents}
-                              <p class="error">{errors.documents}</p>
-                            {/if}
-                          </div>
-                        </div>
-                      {/each}
-                    </div>
-                  {/each}
+          {#if errors.documents}
+            <p class="error">{errors.documents}</p>
+          {/if}
+        </div>
+      </div>
+    {/each}
+  </div>
+{/each}
                 </div>
               </div>
             {/if}
