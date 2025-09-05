@@ -101,7 +101,7 @@
     appartenirOrganisation: 'non',
     organisationNom: '',
     appartenirOrdre: 'non',
-    numeroInscription: '',
+    numeroInscription: ''
   };
 
   let errors = {
@@ -410,6 +410,7 @@
       Object.keys(formData).forEach((key) => {
         formDatas.append(key, formData[key]);
       });
+      formDatas.append('specialiteAutre', '');
 
       const reference = localStorage.getItem('reference');
       if (reference) {

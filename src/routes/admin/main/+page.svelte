@@ -539,7 +539,7 @@ $: showNotification = false
         >
 
        
-          {#each ['Nom', 'Adresse', 'Téléphone', 'Email', 'Type de personnes'] as title}
+          {#each ['Nom', 'Adresse', 'Téléphone', 'Email', 'Entité Juridique'] as title}
             <TableHeadCell class="ps-4 font-normal border border-gray-300"
               >{title}</TableHeadCell
             >
@@ -568,19 +568,19 @@ $: showNotification = false
             {#each filteredEtablissements.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage) as item}
               <TableBodyRow class="text-base border border-gray-300">
                 <TableBodyCell class="p-4 border border-gray-300"
-                  >{item.denomination ?? item.nom ?? 'N/A'}</TableBodyCell
+                  >{item.personne.denomination ?? item.personne.nom ?? 'N/A'}</TableBodyCell
                 >
                 <TableBodyCell class="p-4 border border-gray-300"
                   >{item.adresse ?? 'N/A'}</TableBodyCell
                 >
                 <TableBodyCell class="p-4 border border-gray-300"
-                  >{item.number ?? 'N/A'}</TableBodyCell
+                  >{item.personne.telephone ?? 'N/A'}</TableBodyCell
                 >
                 <TableBodyCell class="p-4 border border-gray-300"
                   >{item.email ?? 'N/A'}</TableBodyCell
                 >
                 <TableBodyCell class="p-4 border border-gray-300"
-                  >{item.personne?.profession?.libelle ??
+                  >{item.personne?.typePersonne?.libelle ??
                     'N/A'}</TableBodyCell
                 >
                 <!-- <TableBodyCell class="p-4 border border-gray-300"

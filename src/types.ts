@@ -220,10 +220,10 @@ export interface TypeDocument {
   id: number;
   libelle: string;
   nombre: number;
-  typePersonne:{
+  typePersonne: {
     id: number;
     libelle: string;
-  }
+  };
 }
 export interface Permission {
   id: number;
@@ -233,17 +233,17 @@ export interface Permission {
 }
 export interface CodeGenerateur {
   id: number;
-  civilite:{
+  civilite: {
     id: number;
     libelle: string;
-  },
-  profession:{
+  };
+  profession: {
     id: number;
     libelle: string;
-  }
-  dateNaissance: string,
-  dateCreation: string,
-  code:string
+  };
+  dateNaissance: string;
+  dateCreation: string;
+  code: string;
 }
 export interface District {
   id: number;
@@ -284,8 +284,8 @@ export interface Doc {
   id: number;
   libelle: string;
   path: {
-    alt:string,
-    path:string
+    alt: string;
+    path: string;
   };
 }
 
@@ -520,14 +520,13 @@ export interface professionnel {
       montantNouvelleDemande: string;
       montantRenouvellement: string;
       id: number;
-      
     };
     imputation: any;
-    imputationData : {
-      id:number;
-      username:any;
-      email:any;
-    }
+    imputationData: {
+      id: number;
+      username: any;
+      email: any;
+    };
     lieuDiplome: string;
     code: string;
     prenoms: string;
@@ -539,7 +538,7 @@ export interface professionnel {
     // Nouveaux champs professionnels
     professionnel?: string;
     civilite: string;
-    nationate?:string;
+    nationate?: string;
     dateNaissance?: string;
     dateDiplome?: string;
     diplome?: string;
@@ -549,26 +548,26 @@ export interface professionnel {
     lieuExercicePro?: string; // Note: vous aviez "lieuExercicePro" dans votre code
     datePremierDiplome?: string;
     situationPro?: {
-      id:number,
+      id: number;
       libelle: string;
     };
     situation?: string;
-    region?:{
-      id:number,
+    region?: {
+      id: number;
       libelle: string;
-    }
-    district?:{
-      id:number,
+    };
+    district?: {
+      id: number;
       libelle: string;
-    }
-    ville?:{
-      id:number,
+    };
+    ville?: {
+      id: number;
       libelle: string;
-    }
-    commune?:{
-      id:number,
+    };
+    commune?: {
+      id: number;
       libelle: string;
-    }
+    };
 
     photo: {
       path: string;
@@ -609,17 +608,6 @@ export interface Etablissement {
     email: string;
     type: string;
     status: string;
-  };
-
-    personne2: {
-     id: number;
-  username: string;
-  email: string;
-  avatar: null;
-  typeUser: string;
-  personne: null;
-  createdAt: null;
-  createdBy: null;
   };
 }
 export interface EndUser {
@@ -694,3 +682,64 @@ export interface EndUser {
 
   inscriptionProfessionId: number;
 } */
+
+export interface Etablissement2 {
+  username: string;
+  id: number;
+  email: string;
+  typeUser: string;
+  personne: {
+    id: number;
+    code: null;
+    type: string;
+    status: string;
+    createdAt: null;
+    dateVisite: null;
+    typePersonne: TypePersonneEtablissement2;
+    denomination: null;
+    nomRepresentant: null;
+    adresse: null;
+    telephone: string;
+    emailAutre: string;
+    bp: string;
+    nom: string;
+    prenoms: string;
+    documents: DocumentEtablissement2[];
+  };
+}
+
+export interface PersonneEtablissement2 {
+  id: number;
+  code: null;
+  type: string;
+  status: string;
+  createdAt: null;
+  dateVisite: null;
+  typePersonne: TypePersonneEtablissement2;
+  denomination: null;
+  nomRepresentant: null;
+  adresse: null;
+  telephone: string;
+  emailAutre: string;
+  bp: string;
+  nom: string;
+  prenoms: string;
+  documents: DocumentEtablissement2[];
+}
+
+export interface DocumentEtablissement2 {
+  id: number;
+  libelle: string;
+  libelleGroupe: TypePersonneEtablissement2;
+  path: PathEtablissement2;
+}
+
+export interface PathEtablissement2 {
+  alt: string;
+  path: string;
+}
+
+export interface TypePersonneEtablissement2 {
+  libelle: string;
+  id: number;
+}

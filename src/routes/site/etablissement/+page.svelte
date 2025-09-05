@@ -687,7 +687,7 @@
                       bind:formData
                     />
                     <SelectInput
-                      label="Type Personne "
+                      label="Entité juridique *"
                       bind:value={formData.typePersonne}
                       options={values.typePersonne.map(
                         (c: {id: number; libelle: string}) => ({
