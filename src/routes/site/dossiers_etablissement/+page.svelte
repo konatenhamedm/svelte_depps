@@ -1,117 +1,102 @@
 <script lang="ts">
   import { onMount } from "svelte";
   import Slide from "$components/Slide.svelte";
-  import Header from "$components/Header.svelte";
   import Footer from "$components/Footer.svelte";
-  import { apiFetch, BASE_URL_API, BASE_URL_API_V2 } from "$lib/api";
+  import { apiFetch, BASE_URL_API, BASE_URL_API_UPLOAD } from "$lib/api";
   import SkeletonLoader from "$components/_skeletons/SkeletonLoader.svelte";
   import Spinner from "$components/_skeletons/Spinner.svelte";
+  import { goto } from "$app/navigation";
+  import DocShow from "./DocShow.svelte";
+  import Modal from "$components/Modal.svelte";
+  import TextInput from "$components/site/TextInput.svelte";
+  import SelectInput from "$components/site/SelectInput.svelte";
+  import type {
+    Civilite,
+    District,
+    Etablissement2,
+    Pays,
+  } from "../../../types";
+  import Step2Form from "$components/site/Step2Form.svelte";
+  import EtapeProfessionnelle from "$components/site/EtapeProfessionnelle.svelte";
+  import { is } from "date-fns/locale";
 
   export let data;
   let user = data?.user;
   let activeTab = "step2";
   let isLoading = true;
-  let formData = {
-    genre: "",
-    civilite: "",
-    numero: "",
+
+  interface DocumentItem {
+    libelle: string;
+    path: string; // chemin ou base64 du fichier
+    libelleGroupe: string;
+  }
+  let formData: {
+    password: string;
+    confirmPassword: string;
+    email: string;
+    niveauIntervention: any;
+    typePersonne: any;
+    code: any;
+    nom: string;
+    prenoms: string;
+    telephone: string;
+    bp: string;
+    emailAutre: string;
+    adresse: string;
+    nomRepresentant: string;
+    denomination: string;
+    documents: any[];
+  } = {
+    password: "",
+    confirmPassword: "",
+    email: "",
+    code: "",
+    niveauIntervention: "",
+    typePersonne: "",
     nom: "",
     prenoms: "",
-    nationalite: "",
-    dateNaissance: "",
-    address: "",
-    lieuResidence: "",
-    diplome: "",
-    dateDiplome: "",
-    lieuDiplome: "",
-    situation: "",
-
-    // Professional informations
-    profession: "",
-    situationPro: "",
-    specialite: "",
-    emailPro: "",
-    contactPro: "",
-    professionnel: "",
-    ville: "",
-    dateEmploi: "",
-
-    // Media informations
-    photo: "",
-    cni: "",
-    casier: "",
-    diplomeFile: "",
-    certificat: "",
-    cv: "",
-
-    // Organization informations
-    appartenirOrganisation: false,
-    organisationNom: "",
-    organisationNumero: "",
-    organisationAnnee: ""
+    telephone: "",
+    bp: "",
+    emailAutre: "",
+    adresse: "",
+    nomRepresentant: "",
+    denomination: "",
+    documents: [],
   };
 
-  let specialites: any = [];
-  let genres: any = [];
+  // Définition des erreurs
+  let errors = {
+    email: "",
+    password: "",
+    confirmPassword: "",
+    // Informations générales
+    // Informations generales ( à update en fonction du type)
+    typePersonne: "",
+    niveauIntervention: "",
+    nom: "",
+    prenoms: "",
+    telephone: "",
+    bp: "",
+    emailAutre: "",
+    adresse: "",
+    nomRepresentant: "",
+    denomination: "",
+    code: "",
+    // Pour la derniere step
+    documents: "",
+  };
   let civilites: any = [];
-  let villes: any = [];
+  let situationProfessionnelles: any = [];
+  let pays: any = [];
+
+  let openShow: boolean = false;
+  let current_data: any = {};
 
   const situations = ["Célibataire", "Marié(e)", "Divorcé(e)", "Veuf(ve)"];
   const situationsPro = ["Salarié", "Indépendant", "Sans emploi", "Étudiant"];
   let authenticating = false;
-  const handleSubmit = async () => {
-    authenticating = true;
-    try {
-      const formDataToSend = new FormData();
 
-      // Convertir l'objet formData en FormData
-      for (const [key, value] of Object.entries(formData)) {
-        // Pour les objets avec ID (comme les sélections)
-        if (typeof value === "object" && value !== null && value.id) {
-          formDataToSend.append(key, value.id);
-        }
-        // Pour les fichiers
-        else if (value instanceof File) {
-          formDataToSend.append(key, value);
-        }
-        // Pour les dates
-        else if (key.includes("date") && value) {
-          const formattedDate = new Date(value).toISOString().split("T")[0];
-          formDataToSend.append(key, formattedDate);
-        }
-        // Pour toutes les autres valeurs
-        else if (value !== undefined && value !== null) {
-          formDataToSend.append(key, value);
-        }
-      }
-
-      console.log(formData.situation)
-
-      const userId = user?.personneId;
-      formDataToSend.append("userUpdate", userId);
-      fetch(`${BASE_URL_API}/professionnel/update/${userId}`, {
-        method: "POST",
-        body: formDataToSend
-      })
-        .then((response) => response.json())
-        .then((result) => {
-          authenticating = false;
-
-          console.log(result);
-        })
-        .catch((error) => {
-          console.error("Erreur paiements :", error);
-          authenticating = false;
-        });
-
-      console.log(formDataToSend);
-    } catch (error) {
-      authenticating = false;
-      console.error("Erreur lors de la mise à jour:", error);
-    }
-  };
-
-  function formatDateForInput(dateString) {
+  function formatDateForInput(dateString: string) {
     if (!dateString) return "";
     try {
       const date = new Date(dateString);
@@ -123,653 +108,734 @@
   }
 
   async function getUserInfos() {
+    isLoading = true;
     try {
       const userId = user?.personneId;
-      const response = await apiFetch(true, `/professionnel/get/one/${userId}`);
-      console.log("response before condition", response);
-      if (response.code === 200 && response.data) {
-        const apiData = response.data;
-        console.log("content api data", apiData);
+      const response = await apiFetch(true, `/etablissement/get/one/${userId}`);
+      const apiData: Etablissement2 = response.data;
 
-        formData = {
-          genre: apiData.genre ? apiData.genre.id : "",
-          civilite: apiData.civilite ? apiData.civilite.id : "",
-          nom: apiData.nom || "",
-          prenoms: apiData.prenoms || "",
-          nationalite: apiData.nationalite ? apiData.nationalite.id : "",
-          dateNaissance: formatDateForInput(apiData.dateNaissance),
-          numero: apiData.number || "",
-          address: apiData.address || "",
-          lieuResidence: apiData.lieuResidence || "",
-          diplome: apiData.diplome || "",
-          dateDiplome: formatDateForInput(apiData.dateDiplome),
-          lieuDiplome: apiData.lieuDiplome || "",
-          situation: apiData.situation || "",
-
-          profession: apiData.profession || "",
-          situationPro: apiData.situationPro || "",
-          specialite: apiData.specialite ? apiData.specialite.id : "",
-          emailPro: apiData.emailPro || "",
-          contactPro: apiData.contactPro || "",
-          professionnel: apiData.professionnel || "",
-          ville: apiData.ville ? apiData.ville.id : "",
-          dateEmploi: formatDateForInput(apiData.dateEmploi),
-
-          photo: apiData.photo || "",
-          cni: apiData.cni || "",
-          casier: apiData.casier || "",
-          diplomeFile: apiData.diplomeFile || "",
-          certificat: apiData.certificat || "",
-          cv: apiData.cv || "",
-
-          // Organisation
-          appartenirOrganisation:
-            apiData.appartenirOrganisation !== null
-              ? apiData.appartenirOrganisation
-              : false,
-          organisationNom: apiData.organisationNom || "",
-          organisationNumero: apiData.organisationNumero || "",
-          organisationAnnee: apiData.organisationAnnee || ""
-        };
-
-        console.log("Données chargées:", formData);
-      } else {
-        console.error("Erreur API", response.status);
-      }
+      formData = {
+        password: "",
+        confirmPassword: "",
+        email: apiData.email || "",
+        // niveauIntervention: apiData.personne.niveauIntervention || "",
+        typePersonne: apiData.personne.typePersonne || "",
+        code: apiData.personne.code || "",
+        nom: apiData.personne.nom || "",
+        prenoms: apiData.personne.prenoms || "",
+        telephone: apiData.personne.telephone || "",
+        bp: apiData.personne.bp || "",
+        emailAutre: apiData.personne.emailAutre || "",
+        adresse: apiData.personne.adresse || "",
+        nomRepresentant: apiData.personne.nomRepresentant || "",
+        denomination: apiData.personne.denomination || "",
+        documents: apiData.personne.documents || [],
+      };
     } catch (error) {
       console.error("Erreur de récupération des données", error);
+    } finally {
+      isLoading = false;
     }
   }
-
   async function loadReferenceData() {
     try {
-      const genresResponse = await apiFetch(true, "/genre");
-      if (genresResponse.code === 200) {
-        genres = genresResponse.data || [];
-      }
-
       const civilitesResponse = await apiFetch(true, "/civilite");
       if (civilitesResponse.code === 200) {
         civilites = civilitesResponse.data || [];
       }
-
-      const specialitesResponse = await apiFetch(true, "/specialite");
-      if (specialitesResponse.code === 200) {
-        specialites = specialitesResponse.data || [];
+      const paysResponse = await apiFetch(true, "/pays");
+      if (paysResponse.code === 200) {
+        pays = paysResponse.data || [];
       }
-
-      const villesResponse = await apiFetch(true, "/ville");
-      if (villesResponse.code === 200) {
-        villes = villesResponse.data || [];
+      const situationProfessionnellesResponse = await apiFetch(
+        true,
+        "/situationProfessionnelle"
+      );
+      if (situationProfessionnellesResponse.code === 200) {
+        situationProfessionnelles =
+          situationProfessionnellesResponse.data || [];
       }
     } catch (error) {
       console.error("Erreur lors du chargement des références:", error);
     }
   }
 
-  onMount(async () => {
-    isLoading = true;
-    await loadReferenceData();
-    await getUserInfos();
-    isLoading = false;
+  let isModalOpen = false;
+  let pdfUrl = "";
+
+  function openModal(url: any) {
+    pdfUrl = url; // ✅ Met à jour la variable réactive
+    isModalOpen = true;
+  }
+
+  function closeModal() {
+    isModalOpen = false;
+  }
+
+  let professions: any[] = [];
+
+  async function getAllProfessions() {
+    await apiFetch(true, "/typeProfession").then((response) => {
+      if (response.code === 200) {
+        professions = response.data;
+      }
+    });
+  }
+
+  function navigateToDashboard() {
+    goto("/site/dashboard");
+  }
+
+  function saveFormState() {
+    if (typeof window !== "undefined" && typeof localStorage !== "undefined") {
+      localStorage.setItem("formData", JSON.stringify(formData));
+      /* localStorage.setItem("step", step.toString()); */
+    }
+  }
+
+  /**
+   * @type {any[]}
+   */
+  let objects = [
+    { name: "civilite", url: "/civilite" },
+    { name: "region", url: "/region" },
+    { name: "ville", url: "/ville" },
+    { name: "district", url: "/district" },
+    { name: "commune", url: "/commune" },
+    { name: "nationate", url: "/pays" },
+    { name: "nationate", url: "/pays" },
+    { name: "statusPro", url: "/statusPro" },
+    { name: "typeDiplome", url: "/typeDiplome" },
+    { name: "lieuObtentionDiplome", url: "/lieuDiplome" },
+    { name: "situationProfessionnelle", url: "/situationProfessionnelle" },
+  ];
+
+  let values: {
+    civilite: Civilite[];
+    region: Civilite[];
+    district: District[];
+    ville: Civilite[];
+    commune: Civilite[];
+    nationate: Pays[];
+    lieuObtentionDiplome: Pays[];
+    typeDiplome: Pays[];
+    statusPro: Pays[];
+    situationProfessionnelle: Pays[];
+  } = {
+    civilite: [],
+    nationate: [],
+    lieuObtentionDiplome: [],
+    statusPro: [],
+    typeDiplome: [],
+    situationProfessionnelle: [],
+    ville: [],
+    region: [],
+    district: [],
+    commune: [],
+  };
+
+  async function fetchData() {
+    try {
+      let res = null;
+      objects.forEach(async (element) => {
+        res = await apiFetch(true, element.url);
+        if (res) {
+          if (Object.keys(values).includes(element.name)) {
+            values[element.name as keyof typeof values] = res.data;
+          } else {
+            console.error(`Invalid key: ${element.name}`);
+          }
+        } else {
+          console.error(
+            "Erreur lors de la récupération des données:",
+            res.statusText
+          );
+        }
+      });
+    } catch (error) {
+      console.error("Erreur lors de la récupération des données:", error);
+    }
+  }
+
+  // Fonction pour charger les données depuis une API
+  async function fetchDataChange(url: string) {
+    const response = await apiFetch(true, url);
+    if (!response) {
+      console.error("Erreur lors de la récupération des données:", url);
+      return [];
+    }
+    const data = response.data;
+    return data;
+  }
+
+  async function applyFilters() {
+    if (formData.region) {
+      await updateDistricts();
+    }
+    /* if (formData.district) {
+      await updateVilles();
+    }
+    if (formData.ville) {
+      await updateCommunes();
+    } */
+  }
+
+  const situationsMatrimoniales = [
+    { value: "Célibataire", label: "Célibataire" },
+    { value: "Marié(e)", label: "Marié(e)" },
+    { value: "Divorcé(e)", label: "Divorcé(e)" },
+    { value: "Veuf (Veuve)", label: "Veuf (Veuve)" },
+  ];
+
+  // Fonction pour charger les données nécessaires lors de l'initialisation
+  async function loadData() {
+    for (let obj of objects) {
+      const data = await fetchDataChange(obj.url);
+      values[obj.name] = data;
+    }
+
+    await applyFilters();
+  }
+
+  // Fonction pour mettre à jour les districts en fonction de la région
+  async function updateDistricts() {
+    const selectedRegion = values.region.find(
+      (region) => region.id === +formData.region
+    );
+    /* if (selectedRegion) {
+      // Charger les districts de la région sélectionnée
+      formData.district ? formData.district : "";
+      formData.ville ? formData.ville : "";
+      formData.commune ? formData.commune : "";
+
+      values.district = await fetchDataChange(`/district/${formData.region}`);
+      values.ville = [];
+      values.commune = [];
+    } */
+  }
+
+  // Fonction pour mettre à jour les villes en fonction du district
+  async function updateVilles() {
+    const selectedDistrict = values.district.find(
+      (district) => district.id === +formData.district
+    );
+    if (selectedDistrict) {
+      // Charger les villes du district sélectionné
+      formData.ville ? formData.ville : "";
+      formData.commune ? formData.commune : "";
+      values.ville = await fetchDataChange(`/ville/${formData.district}`);
+      values.commune = [];
+    }
+  }
+
+  // Fonction pour mettre à jour les communes en fonction de la ville
+  async function updateCommunes() {
+    const selectedVille = values.ville.find(
+      (ville) => ville.id === +formData.ville
+    );
+    if (selectedVille) {
+      // Charger les communes de la ville sélectionnée
+
+      formData.commune ? formData.commune : "";
+      values.commune = await fetchDataChange(`/commune/${formData.ville}`);
+    }
+  }
+
+  onMount(() => {
+    fetchData();
+    loadReferenceData();
+
+    getUserInfos();
+
+    getAllProfessions();
+
+    loadData();
   });
+
+  function initValidation() {
+    authenticating = true;
+
+    const formDatas = new FormData();
+
+    // Append form data fields
+    appendFormDataFields(formDatas, formData);
+
+    // Append reference if available
+    const reference = localStorage.getItem("reference");
+    if (reference) {
+      formDatas.append("reference", reference);
+    }
+    formDatas.append("type", "etablissement");
+
+    // Append files from localStorage
+    const selectedFilesFromStorage = JSON.parse(
+      localStorage.getItem("selectedFiles") || "{}"
+    );
+    appendFilesToFormData(formDatas, selectedFilesFromStorage);
+
+    // Debugging: Log FormData
+    for (const pair of formDatas.entries()) {
+      console.log(`${pair[0]}: ${pair[1]}`);
+    }
+
+    // Send the request
+    sendFormData(formDatas);
+  }
+
+  function appendFormDataFields(
+    formDatas: FormData,
+    formData: Record<string, any>
+  ) {
+    for (const [key, value] of Object.entries(formData)) {
+      if (value !== undefined && value !== null) {
+        formDatas.append(key, value);
+      }
+    }
+  }
+
+  function appendFilesToFormData(
+    formDatas: FormData,
+    selectedFiles: Record<string, any>
+  ) {
+    for (const [fieldName, fileData] of Object.entries(selectedFiles)) {
+      if (fileData && fileData.data) {
+        const blob = base64ToBlob(fileData.data, "application/octet-stream");
+        formDatas.append(fieldName, blob, fileData.name);
+      }
+    }
+  }
+
+  function base64ToBlob(base64: string, mimeType: string): Blob {
+    const byteCharacters = atob(base64.split(",")[1]);
+    const byteArrays = [];
+
+    for (let offset = 0; offset < byteCharacters.length; offset += 512) {
+      const slice = byteCharacters.slice(offset, offset + 512);
+      const byteNumbers = new Array(slice.length);
+      for (let i = 0; i < slice.length; i++) {
+        byteNumbers[i] = slice.charCodeAt(i);
+      }
+      byteArrays.push(new Uint8Array(byteNumbers));
+    }
+
+    return new Blob(byteArrays, { type: mimeType });
+  }
+
+  function sendFormData(formDatas: FormData) {
+    console.log("FormData:", formDatas);
+    fetch(`${BASE_URL_API}/etablissement/update/${user?.personneId}`, {
+      method: "POST",
+      body: formDatas,
+    })
+      .then((response) => response.json())
+      .then((result) => {
+        authenticating = false;
+        console.log("Success:", result);
+      })
+      .catch((error) => {
+        console.error("Error during submission:", error);
+        authenticating = false;
+      });
+  }
+
+  function clickValidation() {
+    saveFormState();
+    initValidation();
+  }
+  async function checkCodeVerification(code: any) {
+    if (!code) return false;
+
+    try {
+      const res = await fetch(
+        `https://depps.leadagro.net/api/professionnel/existe/code/${code}`
+      );
+      const data = await res.json();
+      return data.data;
+      return data.data; // Assurez-vous que l'API renvoie un objet avec une clé `valid`
+    } catch (error) {
+      console.error(
+        "Erreur lors de la vérification de la transaction :",
+        error
+      );
+      return false;
+    }
+  }
+  let codeVericationStatus = false;
+
+  let codeExisteError: any;
+  $: if (formData.code) {
+    checkCodeVerification(formData.code).then((resultat) => {
+      codeVericationStatus = resultat;
+
+      if (
+        resultat.exsiteInProfessionnel == true &&
+        resultat.exsiteInCodeGenerateur == true
+      ) {
+        codeExisteError =
+          "l'utilisateur de ce code de vérification existe deja";
+      } else if (
+        resultat.exsiteInCodeGenerateur == true &&
+        resultat.exsiteInProfessionnel == false
+      ) {
+        codeExisteError = "";
+      } else if (
+        resultat.exsiteInProfessionnel == false &&
+        resultat.exsiteInCodeGenerateur == false
+      ) {
+        codeExisteError = "Ce code de vérification n'existe pas";
+      } else if (
+        resultat.exsiteInProfessionnel == true &&
+        resultat.exsiteInCodeGenerateur == false
+      ) {
+        codeExisteError = "";
+      } else {
+        codeExisteError = "";
+      }
+    });
+  } else {
+    codeExisteError = "";
+  }
+  function updateField(field: any, value: any) {
+    formData[field] = value;
+    localStorage.setItem("formData", JSON.stringify(formData));
+  }
 </script>
 
-<Header {user} />
 <Slide {user} />
-{#if isLoading}
-  <SkeletonLoader {activeTab} />
-{:else}
-  <div class="w-full mx-auto p-4 content-sec">
-    <!-- Tabs Navigation -->
-    <div class="mb-4 border-b border-gray-200">
-      <ul class="flex flex-wrap -mb-px text-sm font-medium text-center">
-        <li class="mr-2">
-          <button
-            class="inline-block p-4 btn-tabs {activeTab === 'step2'
-              ? 'text-blue-600 border-b-2 border-blue-600'
-              : 'hover:text-gray-600 hover:border-gray-300'}"
-            on:click={() => (activeTab = "step2")}
-          >
-            Informations de Base
-          </button>
-        </li>
-        <li class="mr-2">
-          <button
-            class="inline-block p-4 btn-tabs {activeTab === 'step3'
-              ? 'text-blue-600 border-b-2 border-blue-600'
-              : 'hover:text-gray-600 hover:border-gray-300'}"
-            on:click={() => (activeTab = "step3")}
-          >
-            Informations Professionnelles
-          </button>
-        </li>
-        <li class="mr-2">
-          <button
-            class="inline-block p-4 btn-tabs {activeTab === 'step4'
-              ? 'text-blue-600 border-b-2 border-blue-600'
-              : 'hover:text-gray-600 hover:border-gray-300'}"
-            on:click={() => (activeTab = "step4")}
-          >
-            Documents
-          </button>
-        </li>
-        <li class="mr-2">
-          <button
-            class="inline-block btn-tabs p-4 {activeTab === 'step5'
-              ? 'text-blue-600 border-b-2 border-blue-600'
-              : 'hover:text-gray-600 hover:border-gray-300'}"
-            on:click={() => (activeTab = "step5")}
-          >
-            Organisation
-          </button>
-        </li>
-      </ul>
-    </div>
 
-    <!-- Tab Contents -->
-    <div class="mt-6">
-      <!-- Step 2: Informations Personnelles -->
-      {#if activeTab === "step2"}
-        <div class="bg-white p-6 rounded-lg shadow-md">
-          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div class="space-y-2">
-              <label class="block text-sm font-medium text-gray-700"
-                >Genre</label
-              >
-              <select
-                bind:value={formData.genre}
-                class="w-full p-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-              >
-                <option value="">Sélectionner un genre</option>
-                {#each genres as genre}
-                  <option value={genre.id}>{genre.libelle}</option>
-                {/each}
-              </select>
-            </div>
-
-            <div class="space-y-2">
-              <label class="block text-sm font-medium text-gray-700"
-                >Civilité</label
-              >
-              <select
-                bind:value={formData.civilite}
-                class="w-full p-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-              >
-                <option value="">Sélectionner une civilité</option>
-                {#each civilites as civilite}
-                  <option value={civilite.id}>{civilite.libelle}</option>
-                {/each}
-              </select>
-            </div>
-
-            <div class="space-y-2">
-              <label class="block text-sm font-medium text-gray-700">Nom</label>
-              <input
-                type="text"
-                bind:value={formData.nom}
-                class="w-full p-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-              />
-            </div>
-
-            <div class="space-y-2">
-              <label class="block text-sm font-medium text-gray-700"
-                >Prénoms</label
-              >
-              <input
-                type="text"
-                bind:value={formData.prenoms}
-                class="w-full p-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-              />
-            </div>
-
-            <div class="space-y-2">
-              <label class="block text-sm font-medium text-gray-700"
-                >Date de Naissance</label
-              >
-              <input
-                type="date"
-                bind:value={formData.dateNaissance}
-                class="w-full p-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-              />
-            </div>
-
-            <div class="space-y-2">
-              <label class="block text-sm font-medium text-gray-700"
-                >Numéro</label
-              >
-              <input
-                type="text"
-                bind:value={formData.numero}
-                class="w-full p-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-              />
-            </div>
-
-            <div class="space-y-2">
-              <label class="block text-sm font-medium text-gray-700"
-                >Adresse</label
-              >
-              <input
-                type="text"
-                bind:value={formData.address}
-                class="w-full p-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-              />
-            </div>
-
-            <div class="space-y-2">
-              <label class="block text-sm font-medium text-gray-700"
-                >Lieu de Résidence</label
-              >
-              <input
-                type="text"
-                bind:value={formData.lieuResidence}
-                class="w-full p-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-              />
-            </div>
-
-            <div class="space-y-2">
-              <label class="block text-sm font-medium text-gray-700"
-                >Situation Matrimoniale</label
-              >
-
-
-              <select
-            
-              class="form__input"
-              name=""
-              id=""
-              bind:value={formData.situation}
-            >
-              <option value="" selected={!formData.situation}
-                >Veuillez sélectionner une option</option
-              >
-
-              <option
-                value="Célibataire"
-                selected={formData.situation === "Célibataire"}
-                >Célibataire</option
-              >
-              <option
-                value="Marié(e)"
-                selected={formData.situation === "Marié(e)"}
-                >Marié(e)</option
-              >
-              <option
-                value="Divorcé(e)"
-                selected={formData.situation === "Divorcé(e)"}
-                >Divorcé(e)</option
-              >
-              <option
-                value="Veuf (Veuve)"
-                selected={formData.situation === "Veuf (Veuve)"}
-                >Veuf (Veuve)</option
-              >
-            </select>
-            </div>
-
-            <div class="space-y-2">
-              <label class="block text-sm font-medium text-gray-700"
-                >Diplôme</label
-              >
-              <input
-                type="text"
-                bind:value={formData.diplome}
-                class="w-full p-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-              />
-            </div>
-
-            <div class="space-y-2">
-              <label class="block text-sm font-medium text-gray-700"
-                >Date d'obtention du diplôme</label
-              >
-              <input
-                type="date"
-                bind:value={formData.dateDiplome}
-                class="w-full p-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-              />
-            </div>
-
-            <div class="space-y-2">
-              <label class="block text-sm font-medium text-gray-700"
-                >Lieu d'obtention du diplôme</label
-              >
-              <input
-                type="text"
-                bind:value={formData.lieuDiplome}
-                class="w-full p-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-              />
-            </div>
-          </div>
-        </div>
-      {/if}
-
-      <!-- Step 3: Informations Professionnelles -->
-      {#if activeTab === "step3"}
-        <div class="bg-white p-6 rounded-lg shadow-md">
-          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div class="space-y-2">
-              <label class="block text-sm font-medium text-gray-700"
-                >Profession</label
-              >
-              <input
-                type="text"
-                bind:value={formData.profession}
-                class="w-full p-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-              />
-            </div>
-
-            <div class="space-y-2">
-              <label class="block text-sm font-medium text-gray-700"
-                >Situation Professionnelle</label
-              >
-              <input
-                type="text"
-                bind:value={formData.situationPro}
-                class="w-full p-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-              />
-            </div>
-
-            <div class="space-y-2">
-              <label class="block text-sm font-medium text-gray-700"
-                >Spécialité</label
-              >
-              <select
-                bind:value={formData.specialite}
-                class="w-full p-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-              >
-                <option value="">Sélectionner une spécialité</option>
-                {#each specialites as specialite}
-                  <option value={specialite.id}>{specialite.libelle}</option>
-                {/each}
-              </select>
-            </div>
-
-            <div class="space-y-2">
-              <label class="block text-sm font-medium text-gray-700"
-                >Email Professionnel</label
-              >
-              <input
-                type="email"
-                bind:value={formData.emailPro}
-                class="w-full p-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-              />
-            </div>
-
-            <div class="space-y-2">
-              <label class="block text-sm font-medium text-gray-700"
-                >Contact Professionnel</label
-              >
-              <input
-                type="text"
-                bind:value={formData.contactPro}
-                class="w-full p-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-              />
-            </div>
-
-            <div class="space-y-2">
-              <label class="block text-sm font-medium text-gray-700"
-                >Professionnel</label
-              >
-              <input
-                type="text"
-                bind:value={formData.professionnel}
-                class="w-full p-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-              />
-            </div>
-
-            <div class="space-y-2">
-              <label class="block text-sm font-medium text-gray-700"
-                >Ville d'exercice</label
-              >
-              <select
-                bind:value={formData.ville}
-                class="w-full p-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-              >
-                <option value="">Sélectionner une ville</option>
-                {#each villes as ville}
-                  <option value={ville.id}>{ville.libelle}</option>
-                {/each}
-              </select>
-            </div>
-
-            <div class="space-y-2">
-              <label class="block text-sm font-medium text-gray-700"
-                >Date d'emploi</label
-              >
-              <input
-                type="date"
-                bind:value={formData.dateEmploi}
-                class="w-full p-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-              />
-            </div>
-          </div>
-        </div>
-      {/if}
-
-      <!-- Step 4: Documents -->
-      {#if activeTab === "step4"}
-        <div class="bg-white p-6 rounded-lg shadow-md">
-          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div class="space-y-2">
-              <label class="block text-sm font-medium text-gray-700"
-                >Photo</label
-              >
-              {#if formData.photo && formData.photo.url}
-                <div class="flex items-center mb-2">
-                  <span class="text-sm text-gray-500 mr-2"
-                    >Fichier actuel : {formData.photo.alt}</span
-                  >
-                  {#if formData.photo.url === "pdf"}
-                    <span
-                      class="px-2 py-1 bg-gray-100 text-gray-800 text-xs rounded"
-                      >PDF</span
-                    >
-                  {:else}
-                    <img
-                      src={formData.photo.path + "/" + formData.photo.alt}
-                      alt="Photo"
-                      class="h-16 w-16 object-cover rounded"
-                    />
-                  {/if}
-                </div>
-              {/if}
-              <input
-                type="file"
-                accept="image/*"
-                on:change={(e) => (formData.photo = e.target.files[0])}
-                class="w-full p-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-              />
-            </div>
-
-            <div class="space-y-2">
-              <label class="block text-sm font-medium text-gray-700">CNI</label>
-              {#if formData.cni && formData.cni.url}
-                <div class="flex items-center mb-2">
-                  <span class="text-sm text-gray-500"
-                    >Fichier actuel : {formData.cni.alt}</span
-                  >
-                </div>
-              {/if}
-              <input
-                type="file"
-                on:change={(e) => (formData.cni = e.target.files[0])}
-                class="w-full p-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-              />
-            </div>
-
-            <div class="space-y-2">
-              <label class="block text-sm font-medium text-gray-700"
-                >Casier judiciaire</label
-              >
-              {#if formData.casier && formData.casier.url}
-                <div class="flex items-center mb-2">
-                  <span class="text-sm text-gray-500"
-                    >Fichier actuel : {formData.casier.alt}</span
-                  >
-                </div>
-              {/if}
-              <input
-                type="file"
-                on:change={(e) => (formData.casier = e.target.files[0])}
-                class="w-full p-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-              />
-            </div>
-
-            <div class="space-y-2">
-              <label class="block text-sm font-medium text-gray-700"
-                >Diplôme</label
-              >
-              {#if formData.diplomeFile && formData.diplomeFile.url}
-                <div class="flex items-center mb-2">
-                  <span class="text-sm text-gray-500"
-                    >Fichier actuel : {formData.diplomeFile.alt}</span
-                  >
-                </div>
-              {/if}
-              <input
-                type="file"
-                on:change={(e) => (formData.diplomeFile = e.target.files[0])}
-                class="w-full p-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-              />
-            </div>
-
-            <div class="space-y-2">
-              <label class="block text-sm font-medium text-gray-700"
-                >Certificat</label
-              >
-              {#if formData.certificat && formData.certificat.url}
-                <div class="flex items-center mb-2">
-                  <span class="text-sm text-gray-500"
-                    >Fichier actuel : {formData.certificat.alt}</span
-                  >
-                </div>
-              {/if}
-              <input
-                type="file"
-                on:change={(e) => (formData.certificat = e.target.files[0])}
-                class="w-full p-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-              />
-            </div>
-
-            <div class="space-y-2">
-              <label class="block text-sm font-medium text-gray-700">CV</label>
-              {#if formData.cv && formData.cv.url}
-                <div class="flex items-center mb-2">
-                  <span class="text-sm text-gray-500"
-                    >Fichier actuel : {formData.cv.alt}</span
-                  >
-                </div>
-              {/if}
-              <input
-                type="file"
-                on:change={(e) => (formData.cv = e.target.files[0])}
-                class="w-full p-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-              />
-            </div>
-          </div>
-        </div>
-      {/if}
-
-      <!-- Step 5: Organisation -->
-      {#if activeTab === "step5"}
-        <div class="bg-white p-6 rounded-lg shadow-md">
-          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div class="col-span-2 space-y-2">
-              <label class="block text-sm font-medium text-gray-700"
-                >Appartenez-vous à une organisation ??</label
-              >
-              <div class="flex space-x-4">
-                <label class="inline-flex items-center">
-                  <input
-                    type="radio"
-                    bind:group={formData.appartenirOrganisation}
-                    value={true}
-                    class="form-radio text-blue-600"
-                  />
-                  <span class="ml-2">Oui</span>
-                </label>
-                <label class="inline-flex items-center">
-                  <input
-                    type="radio"
-                    bind:group={formData.appartenirOrganisation}
-                    value={false}
-                    class="form-radio text-blue-600"
-                  />
-                  <span class="ml-2">Non</span>
-                </label>
-              </div>
-            </div>
-
-            {#if formData.appartenirOrganisation}
-              <div class="space-y-2">
-                <label class="block text-sm font-medium text-gray-700"
-                  >Nom de l'organisation</label
-                >
-                <input
-                  type="text"
-                  bind:value={formData.organisationNom}
-                  class="w-full p-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                />
-              </div>
-
-              <div class="space-y-2">
-                <label class="block text-sm font-medium text-gray-700"
-                  >Numéro de l'organisation</label
-                >
-                <input
-                  type="text"
-                  bind:value={formData.organisationNumero}
-                  class="w-full p-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                />
-              </div>
-
-              <div class="space-y-2">
-                <label class="block text-sm font-medium text-gray-700"
-                  >Année d'adhésion</label
-                >
-                <input
-                  type="number"
-                  bind:value={formData.organisationAnnee}
-                  class="w-full p-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                />
-              </div>
-            {/if}
-          </div>
-        </div>
-      {/if}
-    </div>
-
-    <!-- Submit Button -->
-    <div class="mt-6 flex justify-end">
-      <!--   <button
-                on:click={handleSubmit}
-                class="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
-        >
-            Modifier
-        </button> -->
-
-      <button
-        type="button"
-        on:click={handleSubmit}
-        class="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+<div class="file-ariane flex items-center space-x-2 text-sm text-gray-600 mb-4">
+  <div class="flex items-center hover:text-blue-600 entete">
+    <button
+      on:click={navigateToDashboard}
+      class="flex items-center hover:text-blue-600"
+    >
+      <!-- Icône SVG pour "Tableau de bord" -->
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        class="w-4 h-4 mr-1"
+        viewBox="0 0 20 20"
+        fill="currentColor"
       >
-        {#if authenticating}
-          <div class="grid grid-cols-2">
-            <div>
-              <Spinner />
-            </div>
-            <div>Modifier</div>
-          </div>
-        {:else}
-          Modifier
-        {/if}
-      </button>
-    </div>
+        <path
+          d="M10.707 2.293a1 1 0 00-1.414 0l-7 7a1 1 0 001.414 1.414L4 10.414V17a1 1 0 001 1h2a1 1 0 001-1v-2a1 1 0 011-1h2a1 1 0 011 1v2a1 1 0 001 1h2a1 1 0 001-1v-6.586l.293.293a1 1 0 001.414-1.414l-7-7z"
+        />
+      </svg>
+      Tableau de bord
+    </button>
+    <span>/</span>
+    <span class="text-gray-800">Liste des dossiers</span>
+    <!-- Nom de la page actuelle -->
   </div>
+</div>
+<br />
+
+{#if isLoading}
+  <main style="padding-top: 8px" class="pb-0">
+    <section class="iletisim-form-alani">
+      <SkeletonLoader {activeTab} />
+    </section>
+  </main>
+{:else}
+  <main class="pb-0">
+    <section class="iletisim-form-alani">
+      <!-- <form class="form one_customer" method="post"> -->
+      <div class="w-full mx-auto p-4 content-sec">
+        <!-- Tabs Navigation -->
+        <div class="mb-4 border-b border-gray-200">
+          <ul
+            class="flex flex-wrap -mb-px text-3xl font-medium text-center border border-gray-200 bg-white"
+          >
+            <li class="mr-[0.5px] border-2 border-r-white">
+              <button
+                class="inline-block p-4 btn-tabs {activeTab === 'step2'
+                  ? 'text-white-600 border-b-2 border-blue-600 bg-blue-400 '
+                  : 'hover:text-gray-600 hover:border-gray-300'}"
+                on:click={() => (activeTab = "step2")}
+              >
+                Informations Personnelles
+              </button>
+            </li>
+            <li class="mr-[0.5px] border-2 border-r-white">
+              <button
+                class="inline-block p-4 btn-tabs {activeTab === 'step3'
+                  ? 'text-white border-b-2 border-blue-600 bg-blue-400'
+                  : 'hover:text-gray-600 hover:border-gray-300'}"
+                on:click={() => (activeTab = "step3")}
+              >
+                Informations Professionnelles
+              </button>
+            </li>
+            <li class="mx-[0.5px] border-2 border-r-white">
+              <button
+                class="inline-block p-4 btn-tabs {activeTab === 'step4'
+                  ? 'text-white border-b-2 border-blue-600 bg-blue-400'
+                  : 'hover:text-gray-600 hover:border-gray-300'}"
+                on:click={() => (activeTab = "step4")}
+              >
+                Documents
+              </button>
+            </li>
+          </ul>
+        </div>
+
+        <!-- Tab Contents -->
+        <div class="mt-1">
+          <!-- Step 2: Informations Personnelles -->
+          {#if activeTab === "step2"}
+            <div
+              class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-2 gap-4 mb-4"
+            >
+              <TextInput
+                type="text"
+                label="Email"
+                bind:value={formData.email}
+                placeholder="Entrez votre email"
+                error={errors.email}
+                onInput={saveFormState}
+                step={2}
+              />
+             
+              {#if formData.typePersonne.libelle == "PHYSIQUE"}
+               <div  class="form__grup">
+                      <label class="form_label">Nom*</label>
+                      <input
+                        on:input={(e: any) =>
+                          updateField('nom', e.target.value)}
+                        type="text"
+                        class="form__input"
+                        bind:value={formData.nom}
+                        placeholder="Nom"
+                      />
+                      {#if errors.nom}<p class="error">
+                          {errors.nom}
+                        </p>{/if}
+                    </div>
+
+                    <!-- Champ contactEntreprise -->
+
+                    <div  class="form__grup">
+                      <label class="form_label">Prenoms *</label>
+                      <input
+                        on:input={(e: any) =>
+                          updateField('prenoms', e.target.value)}
+                        type="text"
+                        class="form__input"
+                        bind:value={formData.prenoms}
+                        placeholder="Prenoms"
+                      />
+                      {#if errors.prenoms}<p class="error">
+                          {errors.prenoms}
+                        </p>{/if}
+                    </div>
+
+                    <div  class="form__grup">
+                      <label class="form_label">Telephone *</label>
+                      <input
+                        on:input={(e: any) =>
+                          updateField('telephone', e.target.value)}
+                        type="text"
+                        class="form__input"
+                        bind:value={formData.telephone}
+                        placeholder="Telephone"
+                      />
+                      {#if errors.telephone}<p class="error">
+                          {errors.telephone}
+                        </p>{/if}
+                    </div>
+
+                    <!-- Champ Type -->
+                    <div  class="form__grup">
+                      <label class="form_label">Boite Postale *</label>
+                      <input
+                        on:input={(e: any) => updateField('bp', e.target.value)}
+                        type="text"
+                        class="form__input"
+                        bind:value={formData.bp}
+                        placeholder="Boite Postale"
+                      />
+                      {#if errors.bp}<p class="error">
+                          {errors.bp}
+                        </p>{/if}
+                    </div>
+
+                    <!-- Champ gpsEntreprise -->
+
+                    <div  class="form__grup">
+                      <label class="form_label">Autre E-mail *</label>
+                      <input
+                        on:input={(e: any) =>
+                          updateField('emailAutre', e.target.value)}
+                        type="email"
+                        class="form__input"
+                        bind:value={formData.emailAutre}
+                        placeholder="Autre E-mail"
+                      />
+                      {#if errors.emailAutre}<p class="error">
+                          {errors.emailAutre}
+                        </p>{/if}
+                    </div>
+              {/if}
+              {#if formData.typePersonne.libelle == "MORALE"}
+               <div  class="form__grup">
+                      <label class="form_label">Adresse *</label>
+                      <input
+                        on:input={(e: any) =>
+                          updateField('adresse', e.target.value)}
+                        type="text"
+                        class="form__input"
+                        bind:value={formData.adresse}
+                        placeholder="Adresse"
+                      />
+                      {#if errors.adresse}<p class="error">
+                          {errors.adresse}
+                        </p>{/if}
+                    </div>
+                    <!-- Champ Nom de l'entreprise -->
+
+                    <!-- Champ Email de l'entreprise -->
+
+                    <div  class="form__grup">
+                      <label class="form_label">Nom du representant *</label>
+                      <input
+                        on:input={(e: any) =>
+                          updateField('nomRepresentant', e.target.value)}
+                        type="text"
+                        class="form__input"
+                        bind:value={formData.nomRepresentant}
+                        placeholder="Nom du representant"
+                      />
+                      {#if errors.nomRepresentant}<p class="error">
+                          {errors.nomRepresentant}
+                        </p>{/if}
+                    </div>
+
+                    <!-- Champ Espace -->
+                    <div  class="form__grup">
+                      <label class="form_label">Dénomination *</label>
+                      <input
+                        on:input={(e: any) =>
+                          updateField('denomination', e.target.value)}
+                        type="text"
+                        class="form__input"
+                        bind:value={formData.denomination}
+                        placeholder="Denomination"
+                      />
+                      {#if errors.denomination}<p class="error">
+                          {errors.denomination}
+                        </p>{/if}
+                    </div>
+               {/if}
+            </div>
+          {/if}
+
+          <!-- Step 3: Informations Professionnelles -->
+          {#if activeTab === "step3"}
+            <div
+              class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 gap-12 p-8"
+            >
+              <TextInput
+                type="text"
+                label="Profession"
+                bind:value={formData.profession}
+                error={""}
+                step={3}
+                bind:formData
+                disabled={true}
+              />
+            </div>
+
+            <EtapeProfessionnelle
+              {formData}
+              {errors}
+              {values}
+              professions={[]}
+              {codeExisteError}
+              {updateField}
+              showTitle={false}
+            />
+          {/if}
+
+          <!-- Step 4: Documents -->
+          {#if activeTab === "step4"}
+            <div class="bg-white p-6 rounded-lg shadow-sm">
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                {#each ["photo", "cni", "casier", "diplomeFile", "certificat", "cv"] as field}
+                  <div class="space-y-2">
+                    <label class="block text-3xl font-medium text-black">
+                      {field == "diplomeFile"
+                        ? "Origine du diplôme"
+                        : field.toUpperCase()}
+                    </label>
+
+                    {#if formData[field] && formData[field].url}
+                      <div class="flex items-center mb-2">
+                        <span class="text-3xl text-gray-500">
+                          Fichier : {formData[field].alt}
+                        </span>
+                        <a
+                          on:click={() =>
+                            openModal(
+                              BASE_URL_API_UPLOAD + formData[field].url
+                            )}
+                          href="javascript:void(0)"
+                          download="document"
+                          class="ml-4 text-blue-600 hover:underline"
+                        >
+                          Télécharger
+                        </a>
+                      </div>
+                    {/if}
+
+                    <input
+                      type="file"
+                      on:change={(e) => (formData[field] = e.target.files[0])}
+                      class="w-full form__input"
+                    />
+                  </div>
+                {/each}
+              </div>
+            </div>
+          {/if}
+        </div>
+
+        <!-- Submit Button -->
+        <div class="mt-6 flex justify-end">
+          <button
+            type="button"
+            on:click={clickValidation}
+            class="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+          >
+            {#if authenticating}
+              <div class="grid grid-cols-2">
+                <div>
+                  <Spinner />
+                </div>
+                <div>Modifier</div>
+              </div>
+            {:else}
+              Modifier
+            {/if}
+          </button>
+        </div>
+      </div>
+      <!--  </form> -->
+      <br /><br /><br /><br />
+    </section>
+  </main>
 {/if}
 <Footer></Footer>
 
+<Modal isOpen={isModalOpen} {pdfUrl} onClose={closeModal} />
+
 <style>
+  .iletisim-form-alani {
+    padding: 20rem 157px 10rem !important;
+
+    background-color: white !important;
+  }
+  .entete {
+    width: 80% !important;
+  }
   .content-sec {
     margin-top: 160px;
   }
@@ -777,5 +843,22 @@
   .btn-tabs {
     color: black !important;
     font-size: 14px;
+  }
+
+  .file-ariane {
+    position: absolute;
+    width: 100%;
+    top: 96px;
+    background: #4292cecc;
+    padding: 22px;
+    color: white;
+    font-size: 14px;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .file-ariane span {
+    color: white;
+    margin: 0 5px;
   }
 </style>

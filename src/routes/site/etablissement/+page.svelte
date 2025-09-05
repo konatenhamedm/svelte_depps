@@ -675,7 +675,7 @@
                       bind:value={formData.niveauIntervention}
                       options={values.niveauIntervention.map(
                         (c: {id: number; libelle: string}) => ({
-                          id: String(c.libelle),
+                          id: String(c.id),
                           libelle: c.libelle,
                         })
                       )}

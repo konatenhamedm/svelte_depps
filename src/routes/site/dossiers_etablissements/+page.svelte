@@ -144,7 +144,7 @@
     isLoading = true;
     try {
       const userId = user?.personneId;
-      const response = await apiFetch(true, `/professionnel/get/one/${userId}`)
+      const response = await apiFetch(true, `/etablissement/get/one/${userId}`)
       
         .then((res) => {
           const apiData = res.data;
@@ -271,7 +271,7 @@
   }
 
   function navigateToDashboard() {
-    goto("/site/dashboard_etablissement");
+    goto("/site/dashboard");
   }
 
   function saveFormState() {
@@ -453,7 +453,7 @@
     if (reference) {
       formDatas.append("reference", reference);
     }
-    formDatas.append("type", "professionnel");
+    formDatas.append("type", "etablissement");
 
     // Append files from localStorage
     const selectedFilesFromStorage = JSON.parse(
@@ -511,7 +511,7 @@
 
   function sendFormData(formDatas: FormData) {
     console.log("FormData:", formDatas);
-    fetch(`${BASE_URL_API}/professionnel/update/${user?.personneId}`, {
+    fetch(`${BASE_URL_API}/etablissement/update/${user?.personneId}`, {
       method: "POST",
       body: formDatas,
     })
@@ -664,16 +664,7 @@
                 Documents
               </button>
             </li>
-            <!-- <li class="mx-[0.5px] border-2 border-rl-white">
-              <button
-                class="inline-block btn-tabs p-4 {activeTab === 'step5'
-                  ? 'text-white border-b-2 border-blue-600 bg-blue-400'
-                  : 'hover:text-gray-600 hover:border-gray-300'}"
-                on:click={() => (activeTab = "step5")}
-              >
-                Organisation
-              </button>
-            </li> -->
+          
           </ul>
         </div>
 
@@ -761,103 +752,7 @@
             </div>
           {/if}
 
-          <!-- Step 5: Organisation -->
-          {#if activeTab === "step5"}
-            <div class="bg-white p-6 rounded-lg shadow-sm">
-              <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div class="col-span-2 space-y-2">
-                  <label class="block text-3xl font-medium text-black"
-                    >Appartenez-vous à une organisation ?</label
-                  >
-                  <div class="flex space-x-4">
-                    <label class="inline-flex items-center">
-                      <input
-                        type="radio"
-                        bind:group={formData.appartenirOrganisation}
-                        value="oui"
-                        disabled
-                        class="form-radio text-white"
-                        checked={formData.appartenirOrganisation === "oui"}
-                      />
-                      <span class="ml-2">Oui</span>
-                    </label>
-                    <label class="inline-flex items-center">
-                      <input
-                        type="radio"
-                        bind:group={formData.appartenirOrganisation}
-                        value="non"
-                        disabled
-                        class="form-radio text-white"
-                        checked={formData.appartenirOrganisation === "non"}
-                      />
-                      <span class="ml-2">Non</span>
-                    </label>
-                  </div>
-                </div>
-
-                {#if formData.appartenirOrganisation == "oui"}
-                  <div class="space-y-2">
-                    <label class="block text-3xl font-medium text-black"
-                      >Nom de l'organisation</label
-                    >
-                    <input
-                      type="text"
-                      bind:value={formData.organisationNom}
-                      class="w-full form__input"
-                    />
-                  </div>
-
-                 
-                {/if}
-              </div>
-              <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div class="col-span-2 space-y-2">
-                  <label class="block text-3xl font-medium text-black"
-                    >Appartenez-vous à un ordre ?</label
-                  >
-                  <div class="flex space-x-4">
-                    <label class="inline-flex items-center">
-                      <input
-                        type="radio"
-                        bind:group={formData.appartenirOrdre}
-                        value="oui"
-                        disabled
-                        class="form-radio text-white"
-                        checked={formData.appartenirOrdre === "oui"}
-                      />
-                      <span class="ml-2">Oui</span>
-                    </label>
-                    <label class="inline-flex items-center">
-                      <input
-                        type="radio"
-                        bind:group={formData.appartenirOrdre}
-                        value="non"
-                        disabled
-                        class="form-radio text-white"
-                        checked={formData.appartenirOrdre === "non"}
-                      />
-                      <span class="ml-2">Non</span>
-                    </label>
-                  </div>
-                </div>
-
-                {#if formData.appartenirOrdre == "oui"}
-                  <div class="space-y-2">
-                    <label class="block text-3xl font-medium text-black"
-                      >Numéro d'inscription</label
-                    >
-                    <input
-                      type="text"
-                      bind:value={formData.numeroInscription}
-                      class="w-full form__input"
-                    />
-                  </div>
-
-                 
-                {/if}
-              </div>
-            </div>
-          {/if}
+        
         </div>
 
         <!-- Submit Button -->
