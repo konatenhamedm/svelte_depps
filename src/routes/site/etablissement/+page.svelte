@@ -1,27 +1,27 @@
 <script lang="ts">
-  import {onMount} from 'svelte';
-  import Footer from '$components/Footer.svelte';
-  import Header from '$components/Header.svelte';
-  import Slide from '$components/Slide.svelte';
-  import {BASE_URL_API} from '$lib/api';
+  import { onMount } from "svelte";
+  import Footer from "$components/Footer.svelte";
+  import Header from "$components/Header.svelte";
+  import Slide from "$components/Slide.svelte";
+  import { BASE_URL_API } from "$lib/api";
 
-  import {apiFetch} from '$lib/api';
+  import { apiFetch } from "$lib/api";
   import type {
     Civilite,
     Genre,
     Pays,
     Specialite,
     Ville,
-  } from '../../../types.js';
-  import {getProfessions} from '$lib/constants';
-  import MessageError from '$components/MessageError.svelte';
-  import {goto} from '$app/navigation';
-  import Spinner from '$components/_skeletons/Spinner.svelte';
-  import EtapeConnexion from '$components/site/EtapeConnexion.svelte';
-  import SelectInput from '$components/site/SelectInput.svelte';
-  import InputSelect from '$components/inputs/InputSelect.svelte';
-  import InputSelectTypePersonne from '$components/inputs/InputSelectTypePersonne.svelte';
-  import type { AnyAaaaRecord } from 'node:dns';
+  } from "../../../types.js";
+  import { getProfessions } from "$lib/constants";
+  import MessageError from "$components/MessageError.svelte";
+  import { goto } from "$app/navigation";
+  import Spinner from "$components/_skeletons/Spinner.svelte";
+  import EtapeConnexion from "$components/site/EtapeConnexion.svelte";
+  import SelectInput from "$components/site/SelectInput.svelte";
+  import InputSelect from "$components/inputs/InputSelect.svelte";
+  import InputSelectTypePersonne from "$components/inputs/InputSelectTypePersonne.svelte";
+  import type { AnyAaaaRecord } from "node:dns";
 
   const professions = getProfessions();
 
@@ -29,7 +29,7 @@
   let user = data?.user;
   let isPaiementProcessing = false;
   $: isPaiementDone = false;
-  $: message = '';
+  $: message = "";
   let step = 1;
   $: hideForPhysic = true;
   $: hideForOther = false;
@@ -41,17 +41,17 @@
 
   $: emailError =
     formData.email && !validateEmail(formData.email)
-      ? 'Veuillez entrer un email valide'
-      : '';
+      ? "Veuillez entrer un email valide"
+      : "";
   $: emailPassword =
     formData.email && !validatePassword(formData.password)
-      ? 'Le mot de passe doit contenir au moins 6 caractères, une majuscule, une minuscule et un chiffre.'
-      : '';
+      ? "Le mot de passe doit contenir au moins 6 caractères, une majuscule, une minuscule et un chiffre."
+      : "";
 
   $: emailAutreError =
     formData.emailAutre && !validateEmail(formData.emailAutre)
-      ? 'Veuillez entrer un email valide'
-      : '';
+      ? "Veuillez entrer un email valide"
+      : "";
 
   function validateEmail(email: string): boolean {
     const regex = /\S+@\S+\.\S+/;
@@ -63,22 +63,22 @@
     return regex.test(password);
   }
 
-  $: if (formData.typePersonne == 'PHYSIQUE') {
+  $: if (formData.typePersonne == "PHYSIQUE") {
     hideForOther = false;
     hideForPhysic = true;
     // Effacer les champs de la personne morale
-    formData.adresse = '';
-    formData.nomRepresentant = '';
-    formData.denomination = '';
-  } else if (formData.typePersonne == 'MORALE') {
+    formData.adresse = "";
+    formData.nomRepresentant = "";
+    formData.denomination = "";
+  } else if (formData.typePersonne == "MORALE") {
     hideForPhysic = false;
     hideForOther = true;
     // Effacer les champs de la personne physique
-    formData.nom = '';
-    formData.prenoms = '';
-    formData.telephone = '';
-    formData.bp = '';
-    formData.emailAutre = '';
+    formData.nom = "";
+    formData.prenoms = "";
+    formData.telephone = "";
+    formData.bp = "";
+    formData.emailAutre = "";
   } else {
     hideForPhysic = false;
     hideForOther = false;
@@ -89,7 +89,7 @@
     path: string; // chemin ou base64 du fichier
     libelleGroupe: string;
   }
-  let uploadedFiles: {[key: string]: string} = {}; // key: libelle+libelleGroupe, value: file name or base64
+  let uploadedFiles: { [key: string]: string } = {}; // key: libelle+libelleGroupe, value: file name or base64
 
   function handleDocumentChange(
     event: Event,
@@ -114,7 +114,7 @@
       uploadedFiles[libelle + libelleGroupe] = file.name;
 
       // Sauvegarde dans localStorage si besoin
-      localStorage.setItem('formData', JSON.stringify(formData));
+      localStorage.setItem("formData", JSON.stringify(formData));
     };
     reader.readAsDataURL(file);
   }
@@ -136,41 +136,41 @@
     denomination: string;
     documents: DocumentItem[];
   } = {
-    password: '',
-    confirmPassword: '',
-    email: '',
-    niveauIntervention: '',
-    typePersonne: '',
-    nom: '',
-    prenoms: '',
-    telephone: '',
-    bp: '',
-    emailAutre: '',
-    adresse: '',
-    nomRepresentant: '',
-    denomination: '',
+    password: "",
+    confirmPassword: "",
+    email: "",
+    niveauIntervention: "",
+    typePersonne: "",
+    nom: "",
+    prenoms: "",
+    telephone: "",
+    bp: "",
+    emailAutre: "",
+    adresse: "",
+    nomRepresentant: "",
+    denomination: "",
     documents: [],
   };
 
   // Définition des erreurs
   let errors = {
-    email: '',
-    password: '',
-    confirmPassword: '',
+    email: "",
+    password: "",
+    confirmPassword: "",
     // Informations générales
     // Informations generales ( à update en fonction du type)
-    typePersonne: '',
-    niveauIntervention: '',
-    nom: '',
-    prenoms: '',
-    telephone: '',
-    bp: '',
-    emailAutre: '',
-    adresse: '',
-    nomRepresentant: '',
-    denomination: '',
+    typePersonne: "",
+    niveauIntervention: "",
+    nom: "",
+    prenoms: "",
+    telephone: "",
+    bp: "",
+    emailAutre: "",
+    adresse: "",
+    nomRepresentant: "",
+    denomination: "",
     // Pour la derniere step
-    documents: '',
+    documents: "",
   };
   let emailCheck = false;
   async function checkEmail(email: any) {
@@ -184,7 +184,7 @@
       return data.data; // Assurez-vous que l'API renvoie un objet avec une clé `valid`
     } catch (error) {
       console.error(
-        'Erreur lors de la vérification de la transaction :',
+        "Erreur lors de la vérification de la transaction :",
         error
       );
       return false;
@@ -196,7 +196,7 @@
       emailCheck = resultat;
 
       if (emailCheck == true) {
-        emailError = 'Cet email existe deja';
+        emailError = "Cet email existe deja";
       }
     });
   }
@@ -205,12 +205,12 @@
   function validateStep() {
     let valid = true;
     if (step === 1) {
-      errors.email = formData.email ? '' : "L'e-mail est requis";
-      errors.password = formData.password ? '' : 'Le mot de passe est requis';
+      errors.email = formData.email ? "" : "L'e-mail est requis";
+      errors.password = formData.password ? "" : "Le mot de passe est requis";
       errors.confirmPassword =
         formData.confirmPassword === formData.password
-          ? ''
-          : 'Les mots de passe ne correspondent pas';
+          ? ""
+          : "Les mots de passe ne correspondent pas";
 
       valid =
         !errors.password &&
@@ -223,38 +223,38 @@
 
     if (step === 2) {
       // Champ obligatoire pour tous
-      errors.typePersonne = formData.typePersonne ? '' : 'Le type est requis';
+      errors.typePersonne = formData.typePersonne ? "" : "Le type est requis";
 
       // Champs pour Personne Physique
       if (!hideForOther) {
-        errors.nom = formData.nom ? '' : 'Le nom est requis';
-        errors.prenoms = formData.prenoms ? '' : 'Les prénoms sont requis';
-        errors.telephone = formData.telephone ? '' : 'Le téléphone est requis';
-        errors.bp = formData.bp ? '' : 'La boîte postale est requise';
-        errors.emailAutre = formData.emailAutre ? '' : "L'email est requis";
-        errors.adresse = '';
-        errors.nomRepresentant = '';
-        errors.denomination = '';
+        errors.nom = formData.nom ? "" : "Le nom est requis";
+        errors.prenoms = formData.prenoms ? "" : "Les prénoms sont requis";
+        errors.telephone = formData.telephone ? "" : "Le téléphone est requis";
+        errors.bp = formData.bp ? "" : "La boîte postale est requise";
+        errors.emailAutre = formData.emailAutre ? "" : "L'email est requis";
+        errors.adresse = "";
+        errors.nomRepresentant = "";
+        errors.denomination = "";
       }
 
       // Champs pour Personne Morale
       if (!hideForPhysic) {
-        errors.adresse = formData.adresse ? '' : "L'adresse est requise";
+        errors.adresse = formData.adresse ? "" : "L'adresse est requise";
         errors.nomRepresentant = formData.nomRepresentant
-          ? ''
-          : 'Le nom du représentant est requis';
+          ? ""
+          : "Le nom du représentant est requis";
         errors.denomination = formData.denomination
-          ? ''
-          : 'La dénomination est requise';
-        errors.nom = '';
-        errors.prenoms = '';
-        errors.telephone = '';
-        errors.bp = '';
-        errors.emailAutre = '';
+          ? ""
+          : "La dénomination est requise";
+        errors.nom = "";
+        errors.prenoms = "";
+        errors.telephone = "";
+        errors.bp = "";
+        errors.emailAutre = "";
       }
 
       // Déterminer si tout est valide
-      valid = Object.values(errors).every((errorMsg) => errorMsg === '');
+      valid = Object.values(errors).every((errorMsg) => errorMsg === "");
     }
 
     if (step === 3) {
@@ -281,7 +281,7 @@
       }
     } else {
       console.error(
-        'Erreur lors de la récupération des données:',
+        "Erreur lors de la récupération des données:",
         res.statusText
       );
     }
@@ -289,30 +289,30 @@
 
   // 🔹 Fonction pour sauvegarder l'état actuel du formulaire
   async function saveFormState() {
-    if (typeof window !== 'undefined' && typeof localStorage !== 'undefined') {
-      localStorage.setItem('formData', JSON.stringify(formData));
-      localStorage.setItem('step', step.toString());
+    if (typeof window !== "undefined" && typeof localStorage !== "undefined") {
+      localStorage.setItem("formData", JSON.stringify(formData));
+      localStorage.setItem("step", step.toString());
       await getTypeDoc();
 
-      console.log('formData sauvegardé:', formData.typePersonne);
+      console.log("formData sauvegardé:", formData.typePersonne);
       ///recuperer les informations du type de document lorsque le type de personne est selectionné
       if (formData.typePersonne > 0) {
         getTypeDoc();
       }
-      if (formData.typePersonne == 'MORALE') {
-        formData.documents =  [];
-        formData.nom = '';
-        formData.prenoms = '';
-        formData.telephone = '';
-        formData.bp = '';
-        formData.emailAutre = '';
-        localStorage.setItem('formData', JSON.stringify(formData));
-      } else if (formData.typePersonne == 'PHYSIQUE') {
-        formData.documents =  [];
-        formData.adresse = '';
-        formData.nomRepresentant = '';
-        formData.denomination = '';
-        localStorage.setItem('formData', JSON.stringify(formData));
+      if (formData.typePersonne == "MORALE") {
+        formData.documents = [];
+        formData.nom = "";
+        formData.prenoms = "";
+        formData.telephone = "";
+        formData.bp = "";
+        formData.emailAutre = "";
+        localStorage.setItem("formData", JSON.stringify(formData));
+      } else if (formData.typePersonne == "PHYSIQUE") {
+        formData.documents = [];
+        formData.adresse = "";
+        formData.nomRepresentant = "";
+        formData.denomination = "";
+        localStorage.setItem("formData", JSON.stringify(formData));
       }
     }
   }
@@ -326,14 +326,14 @@
         // Ajouter le fichier à selectedFiles
         selectedFiles = {
           ...selectedFiles,
-          [fieldName]: {name: file.name, data: reader.result},
+          [fieldName]: { name: file.name, data: reader.result },
         };
 
         // Stocker dans le localStorage
-        localStorage.setItem('selectedFiles', JSON.stringify(selectedFiles));
+        localStorage.setItem("selectedFiles", JSON.stringify(selectedFiles));
 
         // Mettre à jour les noms de fichiers affichés
-        fileNames = {...fileNames, [fieldName]: file.name};
+        fileNames = { ...fileNames, [fieldName]: file.name };
       };
     }
   }
@@ -346,9 +346,9 @@
   // 🔹 Fonction pour restaurer le formulaire après un retour
   // Restaurer les données et l'étape depuis localStorage
   async function restoreFormState() {
-    if (typeof window !== 'undefined' && typeof localStorage !== 'undefined') {
-      const savedFormData = localStorage.getItem('formData');
-      const savedStep = localStorage.getItem('step');
+    if (typeof window !== "undefined" && typeof localStorage !== "undefined") {
+      const savedFormData = localStorage.getItem("formData");
+      const savedStep = localStorage.getItem("step");
 
       if (savedFormData) {
         formData = JSON.parse(savedFormData);
@@ -357,7 +357,7 @@
       if (savedStep) {
         step = parseInt(savedStep);
       } else {
-        localStorage.setItem('step', step.toString());
+        localStorage.setItem("step", step.toString());
       }
     }
   }
@@ -365,7 +365,7 @@
   // ✅ Vérifier si on revient après un paiements
   onMount(async () => {
     const urlParams = new URLSearchParams(window.location.search);
-    if (urlParams.has('return')) {
+    if (urlParams.has("return")) {
       restoreFormState();
     }
     await getTypeDoc();
@@ -373,28 +373,28 @@
 
   // Lire la valeur de `step` depuis localStorage, sinon initialiser à 1
 
-  let messagefile = '';
+  let messagefile = "";
   // Fonction pour changer d'étape et sauvegarder dans localStorage
   function nextStep() {
     if (validateStep()) {
       step += 1;
-      localStorage.setItem('step', step.toString());
+      localStorage.setItem("step", step.toString());
       return;
     } else {
-      messagefile = 'Veuillez remplir tous les champs obligatoires.';
+      messagefile = "Veuillez remplir tous les champs obligatoires.";
     }
   }
 
   function prevStep() {
     if (step > 1) {
       step -= 1;
-      localStorage.setItem('step', step.toString());
+      localStorage.setItem("step", step.toString());
     }
   }
 
   // 🔹 Gestion du paiements
   function clickPaiement() {
-    console.log('click payment');
+    console.log("click payment");
     isPaiementProcessing = true;
     saveFormState(); // 🔥 Sauvegarder avant de partir
 
@@ -404,24 +404,24 @@
   let authenticating = false;
   async function initPaiement() {
     authenticating = true;
-    console.log('formdata', formData);
+    console.log("formdata", formData);
 
     let formDatas = new FormData();
 
     const simpleFields = [
-      'password',
-      'confirmPassword',
-      'email',
-      'niveauIntervention',
-      'typePersonne',
-      'nom',
-      'prenoms',
-      'telephone',
-      'bp',
-      'emailAutre',
-      'adresse',
-      'nomRepresentant',
-      'denomination',
+      "password",
+      "confirmPassword",
+      "email",
+      "niveauIntervention",
+      "typePersonne",
+      "nom",
+      "prenoms",
+      "telephone",
+      "bp",
+      "emailAutre",
+      "adresse",
+      "nomRepresentant",
+      "denomination",
     ];
 
     simpleFields.forEach((key) => {
@@ -432,8 +432,7 @@
 
     // Ajouter les documents dans le format souhaité
     if (formData.documents && Array.isArray(formData.documents)) {
-
-      console.log('formData.documents', formData.documents);
+      console.log("formData.documents", formData.documents);
       formData.documents.forEach((doc, index) => {
         formDatas.append(`documents[${index}][libelle]`, doc.libelle);
         formDatas.append(`documents[${index}][path]`, doc.path);
@@ -447,21 +446,21 @@
     }
 
     // Ajouter la référence et le type
-    const reference = localStorage.getItem('reference');
+    const reference = localStorage.getItem("reference");
     if (reference) {
-      formDatas.append('reference', reference);
+      formDatas.append("reference", reference);
     }
-    formDatas.append('type', 'etablissement');
+    formDatas.append("type", "etablissement");
 
     const selectedFilesFromStorage = JSON.parse(
-      localStorage.getItem('selectedFiles') || '{}'
+      localStorage.getItem("selectedFiles") || "{}"
     );
 
     if (selectedFilesFromStorage) {
       Object.keys(selectedFilesFromStorage).forEach((fieldName) => {
         const fileData = selectedFilesFromStorage[fieldName];
         if (fileData && fileData.data) {
-          const base64Data = fileData.data.split(',')[1];
+          const base64Data = fileData.data.split(",")[1];
           const byteCharacters = atob(base64Data);
           const byteArrays = [];
 
@@ -475,57 +474,56 @@
           }
 
           const blob = new Blob(byteArrays, {
-            type: fileData.type || 'application/octet-stream',
+            type: fileData.type || "application/octet-stream",
           });
           formDatas.append(fieldName, blob, fileData.name);
         }
       });
     }
 
-    console.log('Contenu de formDatas:');
+    console.log("Contenu de formDatas:");
     for (let [key, value] of formDatas.entries()) {
       if (value instanceof Blob) {
         console.log(
           key,
-          `[Fichier: ${value.name || 'sans nom'}, type: ${value.type}, taille: ${value.size} octets]`
+          `[Fichier: ${value.name || "sans nom"}, type: ${value.type}, taille: ${value.size} octets]`
         );
       } else {
         console.log(key, value);
       }
     }
 
-    console.log('formDatas', formDatas);
+    console.log("formDatas", formDatas);
 
     try {
       const response = await fetch(`${BASE_URL_API}/etablissement/create`, {
-        method: 'POST',
+        method: "POST",
         body: formDatas,
-       
       });
 
       const result = await response.json();
-      console.log('Réponse du serveur:', result);
+      console.log("Réponse du serveur:", result);
 
       authenticating = false;
 
       if (result.data && result.data.url) {
-        localStorage.setItem('reference', result.data.reference);
-        window.location.href = result.data.url + '?return=1';
+        localStorage.setItem("reference", result.data.reference);
+        window.location.href = result.data.url + "?return=1";
       }
     } catch (error) {
-      console.error('Erreur lors du paiement:', error);
+      console.error("Erreur lors du paiement:", error);
       isPaiementProcessing = false;
       authenticating = false;
     }
   }
   function connexion() {
-    goto('/site/connexion');
+    goto("/site/connexion");
     localStorage.clear(); // Nettoyer les données du localStorage
   }
 
   // Déclenche la vérification de façon réactive dès que transactionID change
-  $: if (typeof window !== 'undefined' && localStorage.getItem('reference')) {
-    const reference = localStorage.getItem('reference').toString();
+  $: if (typeof window !== "undefined" && localStorage.getItem("reference")) {
+    const reference = localStorage.getItem("reference").toString();
     if (reference) {
     }
   }
@@ -534,9 +532,13 @@
    * @type {any[]}
    */
   let objects = [
-    {name: 'typePersonne', url: '/typePersonne'},
-    {name: 'niveauIntervention', url: '/niveauIntervention'},
-    {name: 'typeDocument', url: '/libelleGroupe/all', id: formData.typePersonne},
+    { name: "typePersonne", url: "/typePersonne" },
+    { name: "niveauIntervention", url: "/niveauIntervention" },
+    {
+      name: "typeDocument",
+      url: "/libelleGroupe/all",
+      id: formData.typePersonne,
+    },
   ];
 
   let values: {
@@ -577,13 +579,13 @@
           }
         } else {
           console.error(
-            'Erreur lors de la récupération des données:',
+            "Erreur lors de la récupération des données:",
             res.statusText
           );
         }
       });
     } catch (error) {
-      console.error('Erreur lors de la récupération des données:', error);
+      console.error("Erreur lors de la récupération des données:", error);
     }
   }
 
@@ -592,32 +594,32 @@
   });
   onMount(() => {
     //localStorage.clear();
-    const savedStep = localStorage.getItem('step');
+    const savedStep = localStorage.getItem("step");
     if (savedStep) {
       step = parseInt(savedStep);
     }
 
-    const savedData = localStorage.getItem('formData');
+    const savedData = localStorage.getItem("formData");
 
     if (savedStep) step = parseInt(savedStep);
     if (savedData) formData = JSON.parse(savedData);
 
     if (savedData) {
-      formData = {...formData, ...JSON.parse(savedData)};
+      formData = { ...formData, ...JSON.parse(savedData) };
     }
 
-    const savedFiles = localStorage.getItem('fileNames');
+    const savedFiles = localStorage.getItem("fileNames");
     if (savedFiles) {
       fileNames = JSON.parse(savedFiles);
     }
 
-    console.log('fileNames:', localStorage.getItem('reference'));
+    console.log("fileNames:", localStorage.getItem("reference"));
   });
 
   // Sauvegarder les données du formulaire dans localStorage à chaque modification
   function updateField(field: any, value: any) {
     formData[field] = value;
-    localStorage.setItem('formData', JSON.stringify(formData));
+    localStorage.setItem("formData", JSON.stringify(formData));
   }
 </script>
 
@@ -674,7 +676,7 @@
                       label="Niveau d'Intervention"
                       bind:value={formData.niveauIntervention}
                       options={values.niveauIntervention.map(
-                        (c: {id: number; libelle: string}) => ({
+                        (c: { id: number; libelle: string }) => ({
                           id: String(c.id),
                           libelle: c.libelle,
                         })
@@ -690,7 +692,7 @@
                       label="Entité juridique *"
                       bind:value={formData.typePersonne}
                       options={values.typePersonne.map(
-                        (c: {id: number; libelle: string}) => ({
+                        (c: { id: number; libelle: string }) => ({
                           id: String(c.libelle),
                           libelle: c.libelle,
                         })
@@ -707,7 +709,7 @@
                       <label class="form_label">Nom*</label>
                       <input
                         on:input={(e: any) =>
-                          updateField('nom', e.target.value)}
+                          updateField("nom", e.target.value)}
                         type="text"
                         class="form__input"
                         bind:value={formData.nom}
@@ -724,7 +726,7 @@
                       <label class="form_label">Prenoms *</label>
                       <input
                         on:input={(e: any) =>
-                          updateField('prenoms', e.target.value)}
+                          updateField("prenoms", e.target.value)}
                         type="text"
                         class="form__input"
                         bind:value={formData.prenoms}
@@ -739,7 +741,7 @@
                       <label class="form_label">Telephone *</label>
                       <input
                         on:input={(e: any) =>
-                          updateField('telephone', e.target.value)}
+                          updateField("telephone", e.target.value)}
                         type="text"
                         class="form__input"
                         bind:value={formData.telephone}
@@ -754,7 +756,7 @@
                     <div hidden={hideForOther} class="form__grup">
                       <label class="form_label">Boite Postale *</label>
                       <input
-                        on:input={(e: any) => updateField('bp', e.target.value)}
+                        on:input={(e: any) => updateField("bp", e.target.value)}
                         type="text"
                         class="form__input"
                         bind:value={formData.bp}
@@ -771,7 +773,7 @@
                       <label class="form_label">Autre E-mail *</label>
                       <input
                         on:input={(e: any) =>
-                          updateField('emailAutre', e.target.value)}
+                          updateField("emailAutre", e.target.value)}
                         type="email"
                         class="form__input"
                         bind:value={formData.emailAutre}
@@ -787,7 +789,7 @@
                       <label class="form_label">Adresse *</label>
                       <input
                         on:input={(e: any) =>
-                          updateField('adresse', e.target.value)}
+                          updateField("adresse", e.target.value)}
                         type="text"
                         class="form__input"
                         bind:value={formData.adresse}
@@ -805,7 +807,7 @@
                       <label class="form_label">Nom du representant *</label>
                       <input
                         on:input={(e: any) =>
-                          updateField('nomRepresentant', e.target.value)}
+                          updateField("nomRepresentant", e.target.value)}
                         type="text"
                         class="form__input"
                         bind:value={formData.nomRepresentant}
@@ -821,7 +823,7 @@
                       <label class="form_label">Dénomination *</label>
                       <input
                         on:input={(e: any) =>
-                          updateField('denomination', e.target.value)}
+                          updateField("denomination", e.target.value)}
                         type="text"
                         class="form__input"
                         bind:value={formData.denomination}
@@ -844,60 +846,67 @@
               <div class="tablo">
                 <div class="tablo--1h-ve-2">
                   {#each values.typeDocument as document}
-  <div style="margin-top: 20px;"></div>
-  <h2 class="h2-baslik-anasayfa-ozel h-yazi-margin-kucuk">
-    {document.libelle}
-  </h2>
-  <div class="grid grid-cols-2">
-    {#each document.typeDocuments as requiredFile, index}
-      <div class="form__grup">
-        <label class="form_label">{requiredFile.libelle} *</label>
-        <div class="flex items-center">
-          {#if uploadedFiles[requiredFile.libelle + document.libelle]}
-            <span class="file-preview" style="margin-right:8px;">
-              {#if formData.documents
-                .find((d) => d.libelle === requiredFile.libelle && d.libelleGroupe === document.libelle)
-                ?.path.startsWith('data:image')}
-                <!-- Affiche la miniature de l'image -->
-                <img
-                  src={formData.documents.find(
-                    (d) =>
-                      d.libelle === requiredFile.libelle &&
-                      d.libelleGroupe === document.libelle
-                  )?.path}
-                  alt="miniature"
-                  style="width:70px;height:70px;object-fit:cover;border-radius:4px;border:1px solid #ccc;"
-                />
-              {:else}
-                <!-- Affiche le nom du fichier si ce n'est pas une image -->
-                <span style="font-size:12px;color:#555;">
-                  {uploadedFiles[requiredFile.libelle + document.libelle]}
-                </span>
-              {/if}
-            </span>
-          {/if}
+                    <div style="margin-top: 20px;"></div>
+                    <h2 class="h2-baslik-anasayfa-ozel h-yazi-margin-kucuk">
+                      {document.libelle}
+                    </h2>
+                    <div class="grid grid-cols-2">
+                      {#each document.typeDocuments as requiredFile, index}
+                        <div class="form__grup">
+                          <label class="form_label"
+                            >{requiredFile.libelle} *</label
+                          >
+                          <div class="flex items-center">
+                            {#if uploadedFiles[requiredFile.libelle + document.libelle]}
+                              <span
+                                class="file-preview"
+                                style="margin-right:8px;"
+                              >
+                                {#if formData.documents
+                                  .find((d) => d.libelle === requiredFile.libelle && d.libelleGroupe === document.libelle)
+                                  ?.path.startsWith("data:image")}
+                                  <!-- Affiche la miniature de l'image -->
+                                  <img
+                                    src={formData.documents.find(
+                                      (d) =>
+                                        d.libelle === requiredFile.libelle &&
+                                        d.libelleGroupe === document.libelle
+                                    )?.path}
+                                    alt="miniature"
+                                    style="width:70px;height:70px;object-fit:cover;border-radius:4px;border:1px solid #ccc;"
+                                  />
+                                {:else}
+                                  <!-- Affiche le nom du fichier si ce n'est pas une image -->
+                                  <span style="font-size:12px;color:#555;">
+                                    {uploadedFiles[
+                                      requiredFile.libelle + document.libelle
+                                    ]}
+                                  </span>
+                                {/if}
+                              </span>
+                            {/if}
 
-          <input
-            accept="image/*, .pdf"
-            type="file"
-            class="form__input"
-            on:change={(e) =>
-              handleDocumentChange(
-                e,
-                requiredFile.libelle,
-                document.libelle
-              )}
-            placeholder="Documents à fournir"
-          />
+                            <input
+                              accept="image/*, .pdf"
+                              type="file"
+                              class="form__input"
+                              on:change={(e) =>
+                                handleDocumentChange(
+                                  e,
+                                  requiredFile.libelle,
+                                  document.libelle
+                                )}
+                              placeholder="Documents à fournir"
+                            />
 
-          {#if errors.documents}
-            <p class="error">{errors.documents}</p>
-          {/if}
-        </div>
-      </div>
-    {/each}
-  </div>
-{/each}
+                            {#if errors.documents}
+                              <p class="error">{errors.documents}</p>
+                            {/if}
+                          </div>
+                        </div>
+                      {/each}
+                    </div>
+                  {/each}
                 </div>
               </div>
             {/if}
@@ -983,7 +992,7 @@
 
               <br />
               <br />
-              {#if message !== ''}
+              {#if message !== ""}
                 <div
                   class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative"
                   role="alert"

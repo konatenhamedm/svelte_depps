@@ -113,12 +113,12 @@
       const userId = user?.personneId;
       const response = await apiFetch(true, `/etablissement/get/one/${userId}`);
       const apiData: Etablissement2 = response.data;
-
+      values.typeDocument = apiData.personne.documents || [];
       formData = {
         password: "",
         confirmPassword: "",
         email: apiData.email || "",
-        // niveauIntervention: apiData.personne.niveauIntervention || "",
+        niveauIntervention: "",
         typePersonne: apiData.personne.typePersonne || "",
         code: apiData.personne.code || "",
         nom: apiData.personne.nom || "",
@@ -220,6 +220,7 @@
     lieuObtentionDiplome: Pays[];
     typeDiplome: Pays[];
     statusPro: Pays[];
+    typeDocument: any[];
     situationProfessionnelle: Pays[];
   } = {
     civilite: [],
@@ -231,6 +232,7 @@
     ville: [],
     region: [],
     district: [],
+    typeDocument: [],
     commune: [],
   };
 
@@ -555,7 +557,7 @@
                 Informations Personnelles
               </button>
             </li>
-            <li class="mr-[0.5px] border-2 border-r-white">
+            <!-- <li class="mr-[0.5px] border-2 border-r-white">
               <button
                 class="inline-block p-4 btn-tabs {activeTab === 'step3'
                   ? 'text-white border-b-2 border-blue-600 bg-blue-400'
@@ -564,7 +566,7 @@
               >
                 Informations Professionnelles
               </button>
-            </li>
+            </li> -->
             <li class="mx-[0.5px] border-2 border-r-white">
               <button
                 class="inline-block p-4 btn-tabs {activeTab === 'step4'
@@ -594,141 +596,140 @@
                 onInput={saveFormState}
                 step={2}
               />
-             
+
               {#if formData.typePersonne.libelle == "PHYSIQUE"}
-               <div  class="form__grup">
-                      <label class="form_label">Nom*</label>
-                      <input
-                        on:input={(e: any) =>
-                          updateField('nom', e.target.value)}
-                        type="text"
-                        class="form__input"
-                        bind:value={formData.nom}
-                        placeholder="Nom"
-                      />
-                      {#if errors.nom}<p class="error">
-                          {errors.nom}
-                        </p>{/if}
-                    </div>
+                <div class="form__grup">
+                  <label class="form_label">Nom*</label>
+                  <input
+                    on:input={(e: any) => updateField("nom", e.target.value)}
+                    type="text"
+                    class="form__input"
+                    bind:value={formData.nom}
+                    placeholder="Nom"
+                  />
+                  {#if errors.nom}<p class="error">
+                      {errors.nom}
+                    </p>{/if}
+                </div>
 
-                    <!-- Champ contactEntreprise -->
+                <!-- Champ contactEntreprise -->
 
-                    <div  class="form__grup">
-                      <label class="form_label">Prenoms *</label>
-                      <input
-                        on:input={(e: any) =>
-                          updateField('prenoms', e.target.value)}
-                        type="text"
-                        class="form__input"
-                        bind:value={formData.prenoms}
-                        placeholder="Prenoms"
-                      />
-                      {#if errors.prenoms}<p class="error">
-                          {errors.prenoms}
-                        </p>{/if}
-                    </div>
+                <div class="form__grup">
+                  <label class="form_label">Prenoms *</label>
+                  <input
+                    on:input={(e: any) =>
+                      updateField("prenoms", e.target.value)}
+                    type="text"
+                    class="form__input"
+                    bind:value={formData.prenoms}
+                    placeholder="Prenoms"
+                  />
+                  {#if errors.prenoms}<p class="error">
+                      {errors.prenoms}
+                    </p>{/if}
+                </div>
 
-                    <div  class="form__grup">
-                      <label class="form_label">Telephone *</label>
-                      <input
-                        on:input={(e: any) =>
-                          updateField('telephone', e.target.value)}
-                        type="text"
-                        class="form__input"
-                        bind:value={formData.telephone}
-                        placeholder="Telephone"
-                      />
-                      {#if errors.telephone}<p class="error">
-                          {errors.telephone}
-                        </p>{/if}
-                    </div>
+                <div class="form__grup">
+                  <label class="form_label">Telephone *</label>
+                  <input
+                    on:input={(e: any) =>
+                      updateField("telephone", e.target.value)}
+                    type="text"
+                    class="form__input"
+                    bind:value={formData.telephone}
+                    placeholder="Telephone"
+                  />
+                  {#if errors.telephone}<p class="error">
+                      {errors.telephone}
+                    </p>{/if}
+                </div>
 
-                    <!-- Champ Type -->
-                    <div  class="form__grup">
-                      <label class="form_label">Boite Postale *</label>
-                      <input
-                        on:input={(e: any) => updateField('bp', e.target.value)}
-                        type="text"
-                        class="form__input"
-                        bind:value={formData.bp}
-                        placeholder="Boite Postale"
-                      />
-                      {#if errors.bp}<p class="error">
-                          {errors.bp}
-                        </p>{/if}
-                    </div>
+                <!-- Champ Type -->
+                <div class="form__grup">
+                  <label class="form_label">Boite Postale *</label>
+                  <input
+                    on:input={(e: any) => updateField("bp", e.target.value)}
+                    type="text"
+                    class="form__input"
+                    bind:value={formData.bp}
+                    placeholder="Boite Postale"
+                  />
+                  {#if errors.bp}<p class="error">
+                      {errors.bp}
+                    </p>{/if}
+                </div>
 
-                    <!-- Champ gpsEntreprise -->
+                <!-- Champ gpsEntreprise -->
 
-                    <div  class="form__grup">
-                      <label class="form_label">Autre E-mail *</label>
-                      <input
-                        on:input={(e: any) =>
-                          updateField('emailAutre', e.target.value)}
-                        type="email"
-                        class="form__input"
-                        bind:value={formData.emailAutre}
-                        placeholder="Autre E-mail"
-                      />
-                      {#if errors.emailAutre}<p class="error">
-                          {errors.emailAutre}
-                        </p>{/if}
-                    </div>
+                <div class="form__grup">
+                  <label class="form_label">Autre E-mail *</label>
+                  <input
+                    on:input={(e: any) =>
+                      updateField("emailAutre", e.target.value)}
+                    type="email"
+                    class="form__input"
+                    bind:value={formData.emailAutre}
+                    placeholder="Autre E-mail"
+                  />
+                  {#if errors.emailAutre}<p class="error">
+                      {errors.emailAutre}
+                    </p>{/if}
+                </div>
               {/if}
               {#if formData.typePersonne.libelle == "MORALE"}
-               <div  class="form__grup">
-                      <label class="form_label">Adresse *</label>
-                      <input
-                        on:input={(e: any) =>
-                          updateField('adresse', e.target.value)}
-                        type="text"
-                        class="form__input"
-                        bind:value={formData.adresse}
-                        placeholder="Adresse"
-                      />
-                      {#if errors.adresse}<p class="error">
-                          {errors.adresse}
-                        </p>{/if}
-                    </div>
-                    <!-- Champ Nom de l'entreprise -->
+                <div class="form__grup">
+                  <label class="form_label">Adresse *</label>
+                  <input
+                    on:input={(e: any) =>
+                      updateField("adresse", e.target.value)}
+                    type="text"
+                    class="form__input"
+                    bind:value={formData.adresse}
+                    placeholder="Adresse"
+                  />
+                  {#if errors.adresse}<p class="error">
+                      {errors.adresse}
+                    </p>{/if}
+                </div>
+                <!-- Champ Nom de l'entreprise -->
 
-                    <!-- Champ Email de l'entreprise -->
+                <!-- Champ Email de l'entreprise -->
 
-                    <div  class="form__grup">
-                      <label class="form_label">Nom du representant *</label>
-                      <input
-                        on:input={(e: any) =>
-                          updateField('nomRepresentant', e.target.value)}
-                        type="text"
-                        class="form__input"
-                        bind:value={formData.nomRepresentant}
-                        placeholder="Nom du representant"
-                      />
-                      {#if errors.nomRepresentant}<p class="error">
-                          {errors.nomRepresentant}
-                        </p>{/if}
-                    </div>
+                <div class="form__grup">
+                  <label class="form_label">Nom du representant *</label>
+                  <input
+                    on:input={(e: any) =>
+                      updateField("nomRepresentant", e.target.value)}
+                    type="text"
+                    class="form__input"
+                    bind:value={formData.nomRepresentant}
+                    placeholder="Nom du representant"
+                  />
+                  {#if errors.nomRepresentant}<p class="error">
+                      {errors.nomRepresentant}
+                    </p>{/if}
+                </div>
 
-                    <!-- Champ Espace -->
-                    <div  class="form__grup">
-                      <label class="form_label">Dénomination *</label>
-                      <input
-                        on:input={(e: any) =>
-                          updateField('denomination', e.target.value)}
-                        type="text"
-                        class="form__input"
-                        bind:value={formData.denomination}
-                        placeholder="Denomination"
-                      />
-                      {#if errors.denomination}<p class="error">
-                          {errors.denomination}
-                        </p>{/if}
-                    </div>
-               {/if}
+                <!-- Champ Espace -->
+                <div class="form__grup">
+                  <label class="form_label">Dénomination *</label>
+                  <input
+                    on:input={(e: any) =>
+                      updateField("denomination", e.target.value)}
+                    type="text"
+                    class="form__input"
+                    bind:value={formData.denomination}
+                    placeholder="Denomination"
+                  />
+                  {#if errors.denomination}<p class="error">
+                      {errors.denomination}
+                    </p>{/if}
+                </div>
+              {/if}
             </div>
           {/if}
 
-          <!-- Step 3: Informations Professionnelles -->
+          <!-- Step 3: Informations Professionnelles
           {#if activeTab === "step3"}
             <div
               class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 gap-12 p-8"
@@ -753,10 +754,10 @@
               {updateField}
               showTitle={false}
             />
-          {/if}
+          {/if} -->
 
           <!-- Step 4: Documents -->
-          {#if activeTab === "step4"}
+          <!-- {#if activeTab === "step4"}
             <div class="bg-white p-6 rounded-lg shadow-sm">
               <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                 {#each ["photo", "cni", "casier", "diplomeFile", "certificat", "cv"] as field}
@@ -791,6 +792,71 @@
                       on:change={(e) => (formData[field] = e.target.files[0])}
                       class="w-full form__input"
                     />
+                  </div>
+                {/each}
+              </div>
+            </div>
+          {/if} -->
+          {#if activeTab === "step4"}
+            <div class="tablo">
+              <div class="tablo--1h-ve-2">
+                {#each values.typeDocument as document}
+                  <!-- <div style="margin-top: 20px;"></div> -->
+                  <!-- <h2 class="h2-baslik-anasayfa-ozel h-yazi-margin-kucuk">
+                      {document.libelle}
+                    </h2> -->
+                  <div class="grid grid-cols-2">
+                    <!-- {#each document.typeDocuments as requiredFile, index} -->
+                    <div class="form__grup">
+                      <label class="h2-baslik-anasayfa-ozel h-yazi-margin-kucuk">{document.libelle} *</label>
+                      <div class="flex items-center">
+                        {#if formData.documents.length > 0}
+                          <span class="file-preview" style="margin-right:8px;">
+                            {#if formData.documents
+                              .find((d) => d.libelle === document.libelle && d.libelleGroupe === document.libelle)
+                              ?.path.startsWith("data:image")}
+                              <!-- Affiche la miniature de l'image -->
+                              <img
+                                src={formData.documents.find(
+                                  (d) =>
+                                    d.libelle === document.libelle &&
+                                    d.libelleGroupe === document.libelle
+                                )?.path}
+                                alt="miniature"
+                                style="width:70px;height:70px;object-fit:cover;border-radius:4px;border:1px solid #ccc;"
+                              />
+                            {:else}
+                              <!-- Affiche le nom du fichier si ce n'est pas une image -->
+                              <span style="font-size:12px;color:#555;">
+                                
+                                <!-- {uploadedFiles[
+                                      requiredFile.libelle + document.libelle
+                                    ]} -->
+                              </span>
+                            {/if}
+                          </span>
+                          {:else}
+                           <img
+                                src={document.path}
+                                alt="miniature"
+                                style="width:70px;height:70px;object-fit:cover;border-radius:4px;border:1px solid #ccc;"
+                              />
+
+                        {/if}
+
+                        <input
+                          accept="image/*, .pdf"
+                          type="file"
+                          class="form__input"
+                          placeholder="Documents à fournir"
+                        />
+
+                        {#if errors.documents}
+                          <p class="error">{errors.documents}</p>
+                        {/if}
+                      </div>
+                    </div>
+                    <!-- {/each} -->
                   </div>
                 {/each}
               </div>
