@@ -743,3 +743,54 @@ export interface TypePersonneEtablissement2 {
   libelle: string;
   id: number;
 }
+
+
+export interface GetEtablissementData {
+  username: string;
+  id: number;
+  email: string;
+  typeUser: string;
+  personne: PersonneGetEtablissementData;
+}
+
+interface PersonneGetEtablissementData {
+  id: number;
+  code: null;
+  type: string;
+  status: string;
+  createdAt: null;
+  dateExamenRapport: null;
+  rapportExamen: null;
+  niveauIntervention: NiveauInterventionGetEtablissementData;
+  dateVisite: null;
+  typePersonne: NiveauInterventionGetEtablissementData;
+  imputationData: null;
+  denomination: null;
+  typeSociete: null;
+  nomRepresentant: null;
+  adresse: null;
+  telephone: string;
+  emailAutre: string;
+  bp: string;
+  nom: string;
+  prenoms: string;
+  documents: DocumentGetEtablissementData[];
+}
+
+interface DocumentGetEtablissementData {
+  id: number;
+  libelle: string;
+  libelleGroupe: NiveauInterventionGetEtablissementData;
+  path: PathGetEtablissementData;
+}
+
+interface PathGetEtablissementData {
+  path: string;
+  alt: string;
+  url: string;
+}
+
+interface NiveauInterventionGetEtablissementData {
+  libelle: string;
+  id: number;
+}

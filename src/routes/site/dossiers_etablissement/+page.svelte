@@ -14,6 +14,7 @@
     Civilite,
     District,
     Etablissement2,
+    GetEtablissementData,
     Pays,
   } from "../../../types";
   import Step2Form from "$components/site/Step2Form.svelte";
@@ -22,485 +23,104 @@
 
   export let data;
   let user = data?.user;
-  let activeTab = "step2";
+////Variable pour stocker le profil
+  let profile:GetEtablissementData;
+/// Variable pour stocker les nouvelles données du profil
+  let newProfile:GetEtablissementData;
+
+  // Fonction pour naviguer vers le tableau de bord 
+ function navigateToDashboard () {
+  goto('/site/dashboard')
+ }
+
+ ///Fonction pour recuperer le profil
+ async function fetchProfile() {
+  try {
+    const response = await apiFetch(true,`/etablissement/get/one/${user.personneId}`);
+
+    if (!response.code || response.code !== 200) {
+     console.log("Erreur lors de la récupération du profil :", response);  
+     alert("Il y a une erreur")
+    }
+    console.log("Réponse de l'API :", response);
+    const data = await response.data;
+    profile = data as GetEtablissementData;
+    newProfile = { ...profile }; // Copier les données dans newProfile pour les modifications
+    // console.log("Profil récupéré :", profile);
+  } catch (error) {
+    console.error("Erreur lors de la récupération du profil :", error);
+  }
+ }
+
+ onMount(() => {
+    // console.log("Données reçues :", data);
+    if (!data || !data.user) {
+      goto("/site/login");
+    } else {
+      user = data.user;
+      // console.log("Utilisateur connecté :", user);
+      fetchProfile().then(() => {
+        isLoading = false; // Mettre à jour l'état de chargement une fois les données récupérées
+      });
+    }
+  });
+
   let isLoading = true;
-
-  interface DocumentItem {
-    libelle: string;
-    path: string; // chemin ou base64 du fichier
-    libelleGroupe: string;
-  }
-  let formData: {
-    password: string;
-    confirmPassword: string;
-    email: string;
-    niveauIntervention: any;
-    typePersonne: any;
-    code: any;
-    nom: string;
-    prenoms: string;
-    telephone: string;
-    bp: string;
-    emailAutre: string;
-    adresse: string;
-    nomRepresentant: string;
-    denomination: string;
-    documents: any[];
-  } = {
-    password: "",
-    confirmPassword: "",
-    email: "",
-    code: "",
-    niveauIntervention: "",
-    typePersonne: "",
-    nom: "",
-    prenoms: "",
-    telephone: "",
-    bp: "",
-    emailAutre: "",
-    adresse: "",
-    nomRepresentant: "",
-    denomination: "",
-    documents: [],
-  };
-
-  // Définition des erreurs
-  let errors = {
-    email: "",
-    password: "",
-    confirmPassword: "",
-    // Informations générales
-    // Informations generales ( à update en fonction du type)
-    typePersonne: "",
-    niveauIntervention: "",
-    nom: "",
-    prenoms: "",
-    telephone: "",
-    bp: "",
-    emailAutre: "",
-    adresse: "",
-    nomRepresentant: "",
-    denomination: "",
-    code: "",
-    // Pour la derniere step
-    documents: "",
-  };
-  let civilites: any = [];
-  let situationProfessionnelles: any = [];
-  let pays: any = [];
-
-  let openShow: boolean = false;
-  let current_data: any = {};
-
-  const situations = ["Célibataire", "Marié(e)", "Divorcé(e)", "Veuf(ve)"];
-  const situationsPro = ["Salarié", "Indépendant", "Sans emploi", "Étudiant"];
   let authenticating = false;
-
-  function formatDateForInput(dateString: string) {
-    if (!dateString) return "";
-    try {
-      const date = new Date(dateString);
-      return date.toISOString().split("T")[0];
-    } catch (e) {
-      console.error("Erreur de formatage de date:", e);
-      return "";
-    }
-  }
-
-  async function getUserInfos() {
-    isLoading = true;
-    try {
-      const userId = user?.personneId;
-      const response = await apiFetch(true, `/etablissement/get/one/${userId}`);
-      const apiData: Etablissement2 = response.data;
-      values.typeDocument = apiData.personne.documents || [];
-      formData = {
-        password: "",
-        confirmPassword: "",
-        email: apiData.email || "",
-        niveauIntervention: "",
-        typePersonne: apiData.personne.typePersonne || "",
-        code: apiData.personne.code || "",
-        nom: apiData.personne.nom || "",
-        prenoms: apiData.personne.prenoms || "",
-        telephone: apiData.personne.telephone || "",
-        bp: apiData.personne.bp || "",
-        emailAutre: apiData.personne.emailAutre || "",
-        adresse: apiData.personne.adresse || "",
-        nomRepresentant: apiData.personne.nomRepresentant || "",
-        denomination: apiData.personne.denomination || "",
-        documents: apiData.personne.documents || [],
-      };
-    } catch (error) {
-      console.error("Erreur de récupération des données", error);
-    } finally {
-      isLoading = false;
-    }
-  }
-  async function loadReferenceData() {
-    try {
-      const civilitesResponse = await apiFetch(true, "/civilite");
-      if (civilitesResponse.code === 200) {
-        civilites = civilitesResponse.data || [];
-      }
-      const paysResponse = await apiFetch(true, "/pays");
-      if (paysResponse.code === 200) {
-        pays = paysResponse.data || [];
-      }
-      const situationProfessionnellesResponse = await apiFetch(
-        true,
-        "/situationProfessionnelle"
-      );
-      if (situationProfessionnellesResponse.code === 200) {
-        situationProfessionnelles =
-          situationProfessionnellesResponse.data || [];
-      }
-    } catch (error) {
-      console.error("Erreur lors du chargement des références:", error);
-    }
-  }
-
+  let activeTab: string = "step2"; // Onglet actif par défaut
   let isModalOpen = false;
   let pdfUrl = "";
 
-  function openModal(url: any) {
-    pdfUrl = url; // ✅ Met à jour la variable réactive
-    isModalOpen = true;
-  }
+ function clickValidation () {
+ 
+  authenticating = true;
+  //// ON SEND NOTRE FORMULAIRE MAINTENANT AVEC LA REQUETE API POST
+  apiFetch(true,`/etablissement/update/${user.personneId}`, 'PUT', newProfile).then((response) => {
+    authenticating = false;
+    if (!response.code || response.code !== 200) {
+      console.log("Erreur lors de la modification du profil :", response);  
+      alert("Il y a une erreur")
+     } else {
+      console.log("Profil modifié avec succès :", response);
+      alert("Profil modifié avec succès !");
 
-  function closeModal() {
-    isModalOpen = false;
-  }
-
-  let professions: any[] = [];
-
-  async function getAllProfessions() {
-    await apiFetch(true, "/typeProfession").then((response) => {
-      if (response.code === 200) {
-        professions = response.data;
-      }
-    });
-  }
-
-  function navigateToDashboard() {
-    goto("/site/dashboard");
-  }
-
-  function saveFormState() {
-    if (typeof window !== "undefined" && typeof localStorage !== "undefined") {
-      localStorage.setItem("formData", JSON.stringify(formData));
-      /* localStorage.setItem("step", step.toString()); */
-    }
-  }
-
-  /**
-   * @type {any[]}
-   */
-  let objects = [
-    { name: "civilite", url: "/civilite" },
-    { name: "region", url: "/region" },
-    { name: "ville", url: "/ville" },
-    { name: "district", url: "/district" },
-    { name: "commune", url: "/commune" },
-    { name: "nationate", url: "/pays" },
-    { name: "nationate", url: "/pays" },
-    { name: "statusPro", url: "/statusPro" },
-    { name: "typeDiplome", url: "/typeDiplome" },
-    { name: "lieuObtentionDiplome", url: "/lieuDiplome" },
-    { name: "situationProfessionnelle", url: "/situationProfessionnelle" },
-  ];
-
-  let values: {
-    civilite: Civilite[];
-    region: Civilite[];
-    district: District[];
-    ville: Civilite[];
-    commune: Civilite[];
-    nationate: Pays[];
-    lieuObtentionDiplome: Pays[];
-    typeDiplome: Pays[];
-    statusPro: Pays[];
-    typeDocument: any[];
-    situationProfessionnelle: Pays[];
-  } = {
-    civilite: [],
-    nationate: [],
-    lieuObtentionDiplome: [],
-    statusPro: [],
-    typeDiplome: [],
-    situationProfessionnelle: [],
-    ville: [],
-    region: [],
-    district: [],
-    typeDocument: [],
-    commune: [],
-  };
-
-  async function fetchData() {
-    try {
-      let res = null;
-      objects.forEach(async (element) => {
-        res = await apiFetch(true, element.url);
-        if (res) {
-          if (Object.keys(values).includes(element.name)) {
-            values[element.name as keyof typeof values] = res.data;
-          } else {
-            console.error(`Invalid key: ${element.name}`);
-          }
-        } else {
-          console.error(
-            "Erreur lors de la récupération des données:",
-            res.statusText
-          );
-        }
-      });
-    } catch (error) {
-      console.error("Erreur lors de la récupération des données:", error);
-    }
-  }
-
-  // Fonction pour charger les données depuis une API
-  async function fetchDataChange(url: string) {
-    const response = await apiFetch(true, url);
-    if (!response) {
-      console.error("Erreur lors de la récupération des données:", url);
-      return [];
-    }
-    const data = response.data;
-    return data;
-  }
-
-  async function applyFilters() {
-    if (formData.region) {
-      await updateDistricts();
-    }
-    /* if (formData.district) {
-      await updateVilles();
-    }
-    if (formData.ville) {
-      await updateCommunes();
-    } */
-  }
-
-  const situationsMatrimoniales = [
-    { value: "Célibataire", label: "Célibataire" },
-    { value: "Marié(e)", label: "Marié(e)" },
-    { value: "Divorcé(e)", label: "Divorcé(e)" },
-    { value: "Veuf (Veuve)", label: "Veuf (Veuve)" },
-  ];
-
-  // Fonction pour charger les données nécessaires lors de l'initialisation
-  async function loadData() {
-    for (let obj of objects) {
-      const data = await fetchDataChange(obj.url);
-      values[obj.name] = data;
-    }
-
-    await applyFilters();
-  }
-
-  // Fonction pour mettre à jour les districts en fonction de la région
-  async function updateDistricts() {
-    const selectedRegion = values.region.find(
-      (region) => region.id === +formData.region
-    );
-    /* if (selectedRegion) {
-      // Charger les districts de la région sélectionnée
-      formData.district ? formData.district : "";
-      formData.ville ? formData.ville : "";
-      formData.commune ? formData.commune : "";
-
-      values.district = await fetchDataChange(`/district/${formData.region}`);
-      values.ville = [];
-      values.commune = [];
-    } */
-  }
-
-  // Fonction pour mettre à jour les villes en fonction du district
-  async function updateVilles() {
-    const selectedDistrict = values.district.find(
-      (district) => district.id === +formData.district
-    );
-    if (selectedDistrict) {
-      // Charger les villes du district sélectionné
-      formData.ville ? formData.ville : "";
-      formData.commune ? formData.commune : "";
-      values.ville = await fetchDataChange(`/ville/${formData.district}`);
-      values.commune = [];
-    }
-  }
-
-  // Fonction pour mettre à jour les communes en fonction de la ville
-  async function updateCommunes() {
-    const selectedVille = values.ville.find(
-      (ville) => ville.id === +formData.ville
-    );
-    if (selectedVille) {
-      // Charger les communes de la ville sélectionnée
-
-      formData.commune ? formData.commune : "";
-      values.commune = await fetchDataChange(`/commune/${formData.ville}`);
-    }
-  }
-
-  onMount(() => {
-    fetchData();
-    loadReferenceData();
-
-    getUserInfos();
-
-    getAllProfessions();
-
-    loadData();
+      // Mettre à jour le profil avec les nouvelles données
+      profile = { ...newProfile };
+     }
+  }).catch((error) => {
+    authenticating = false;
+    console.error("Erreur lors de la modification du profil :", error);
+    alert("Il y a une erreur")
   });
+ }
+///////////// Function pour mettre à jour les champs du formulaire
+ function updateField(field: keyof GetEtablissementData, value: any) {
+  newProfile = { ...newProfile, [field]: value };
+  console.log(`Champ ${field} mis à jour :`, value);
+ }
 
-  function initValidation() {
-    authenticating = true;
+ // Fonction pour sauvegarder l'état du formulaire (exemple simple)
+ function saveFormState() {
+  console.log("État du formulaire sauvegardé :", newProfile);
+ }
 
-    const formDatas = new FormData();
+ // Fonction pour ouvrir la modale avec le PDF
+ function openModalWithPdf(url: string) {
+  pdfUrl = url;
+  isModalOpen = true;
+ }
 
-    // Append form data fields
-    appendFormDataFields(formDatas, formData);
+ // Fonction pour fermer la modale
+ function closeModal() {
+  isModalOpen = false;
+ }  
 
-    // Append reference if available
-    const reference = localStorage.getItem("reference");
-    if (reference) {
-      formDatas.append("reference", reference);
-    }
-    formDatas.append("type", "etablissement");
 
-    // Append files from localStorage
-    const selectedFilesFromStorage = JSON.parse(
-      localStorage.getItem("selectedFiles") || "{}"
-    );
-    appendFilesToFormData(formDatas, selectedFilesFromStorage);
 
-    // Debugging: Log FormData
-    for (const pair of formDatas.entries()) {
-      console.log(`${pair[0]}: ${pair[1]}`);
-    }
 
-    // Send the request
-    sendFormData(formDatas);
-  }
-
-  function appendFormDataFields(
-    formDatas: FormData,
-    formData: Record<string, any>
-  ) {
-    for (const [key, value] of Object.entries(formData)) {
-      if (value !== undefined && value !== null) {
-        formDatas.append(key, value);
-      }
-    }
-  }
-
-  function appendFilesToFormData(
-    formDatas: FormData,
-    selectedFiles: Record<string, any>
-  ) {
-    for (const [fieldName, fileData] of Object.entries(selectedFiles)) {
-      if (fileData && fileData.data) {
-        const blob = base64ToBlob(fileData.data, "application/octet-stream");
-        formDatas.append(fieldName, blob, fileData.name);
-      }
-    }
-  }
-
-  function base64ToBlob(base64: string, mimeType: string): Blob {
-    const byteCharacters = atob(base64.split(",")[1]);
-    const byteArrays = [];
-
-    for (let offset = 0; offset < byteCharacters.length; offset += 512) {
-      const slice = byteCharacters.slice(offset, offset + 512);
-      const byteNumbers = new Array(slice.length);
-      for (let i = 0; i < slice.length; i++) {
-        byteNumbers[i] = slice.charCodeAt(i);
-      }
-      byteArrays.push(new Uint8Array(byteNumbers));
-    }
-
-    return new Blob(byteArrays, { type: mimeType });
-  }
-
-  function sendFormData(formDatas: FormData) {
-    console.log("FormData:", formDatas);
-    fetch(`${BASE_URL_API}/etablissement/update/${user?.personneId}`, {
-      method: "POST",
-      body: formDatas,
-    })
-      .then((response) => response.json())
-      .then((result) => {
-        authenticating = false;
-        console.log("Success:", result);
-      })
-      .catch((error) => {
-        console.error("Error during submission:", error);
-        authenticating = false;
-      });
-  }
-
-  function clickValidation() {
-    saveFormState();
-    initValidation();
-  }
-  async function checkCodeVerification(code: any) {
-    if (!code) return false;
-
-    try {
-      const res = await fetch(
-        `https://depps.leadagro.net/api/professionnel/existe/code/${code}`
-      );
-      const data = await res.json();
-      return data.data;
-      return data.data; // Assurez-vous que l'API renvoie un objet avec une clé `valid`
-    } catch (error) {
-      console.error(
-        "Erreur lors de la vérification de la transaction :",
-        error
-      );
-      return false;
-    }
-  }
-  let codeVericationStatus = false;
-
-  let codeExisteError: any;
-  $: if (formData.code) {
-    checkCodeVerification(formData.code).then((resultat) => {
-      codeVericationStatus = resultat;
-
-      if (
-        resultat.exsiteInProfessionnel == true &&
-        resultat.exsiteInCodeGenerateur == true
-      ) {
-        codeExisteError =
-          "l'utilisateur de ce code de vérification existe deja";
-      } else if (
-        resultat.exsiteInCodeGenerateur == true &&
-        resultat.exsiteInProfessionnel == false
-      ) {
-        codeExisteError = "";
-      } else if (
-        resultat.exsiteInProfessionnel == false &&
-        resultat.exsiteInCodeGenerateur == false
-      ) {
-        codeExisteError = "Ce code de vérification n'existe pas";
-      } else if (
-        resultat.exsiteInProfessionnel == true &&
-        resultat.exsiteInCodeGenerateur == false
-      ) {
-        codeExisteError = "";
-      } else {
-        codeExisteError = "";
-      }
-    });
-  } else {
-    codeExisteError = "";
-  }
-  function updateField(field: any, value: any) {
-    formData[field] = value;
-    localStorage.setItem("formData", JSON.stringify(formData));
-  }
+  ////Gestion d'erreurs
+  let errors: Record<string, string> = {};
+ 
 </script>
 
 <Slide {user} />
@@ -557,16 +177,7 @@
                 Informations Personnelles
               </button>
             </li>
-            <!-- <li class="mr-[0.5px] border-2 border-r-white">
-              <button
-                class="inline-block p-4 btn-tabs {activeTab === 'step3'
-                  ? 'text-white border-b-2 border-blue-600 bg-blue-400'
-                  : 'hover:text-gray-600 hover:border-gray-300'}"
-                on:click={() => (activeTab = "step3")}
-              >
-                Informations Professionnelles
-              </button>
-            </li> -->
+           
             <li class="mx-[0.5px] border-2 border-r-white">
               <button
                 class="inline-block p-4 btn-tabs {activeTab === 'step4'
@@ -582,29 +193,34 @@
 
         <!-- Tab Contents -->
         <div class="mt-1">
-          <!-- Step 2: Informations Personnelles -->
-          {#if activeTab === "step2"}
+           {#if activeTab === "step2"}
             <div
               class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-2 gap-4 mb-4"
             >
               <TextInput
                 type="text"
                 label="Email"
-                bind:value={formData.email}
+                bind:value={newProfile.email}
                 placeholder="Entrez votre email"
                 error={errors.email}
-                onInput={saveFormState}
+                disabled={true}
                 step={2}
               />
 
-              {#if formData.typePersonne.libelle == "PHYSIQUE"}
+              {#if newProfile.personne.typePersonne.libelle == "PHYSIQUE"}
                 <div class="form__grup">
                   <label class="form_label">Nom*</label>
                   <input
-                    on:input={(e: any) => updateField("nom", e.target.value)}
+                    on:input={(e: any) => {
+                      newProfile = {
+                        ...newProfile,
+                        personne: { ...newProfile.personne, nom: e.target.value }
+                      };
+                      saveFormState();
+                    }}
                     type="text"
                     class="form__input"
-                    bind:value={formData.nom}
+                    bind:value={newProfile.personne.nom}
                     placeholder="Nom"
                   />
                   {#if errors.nom}<p class="error">
@@ -617,11 +233,16 @@
                 <div class="form__grup">
                   <label class="form_label">Prenoms *</label>
                   <input
-                    on:input={(e: any) =>
-                      updateField("prenoms", e.target.value)}
+                    on:input={(e: any) => {
+                      newProfile = {
+                        ...newProfile,
+                        personne: { ...newProfile.personne, prenoms: e.target.value }
+                      };
+                      saveFormState();
+                    }}
                     type="text"
                     class="form__input"
-                    bind:value={formData.prenoms}
+                    bind:value={newProfile.personne.prenoms}
                     placeholder="Prenoms"
                   />
                   {#if errors.prenoms}<p class="error">
@@ -632,11 +253,16 @@
                 <div class="form__grup">
                   <label class="form_label">Telephone *</label>
                   <input
-                    on:input={(e: any) =>
-                      updateField("telephone", e.target.value)}
+                    on:input={(e: any) => {
+                      newProfile = {
+                        ...newProfile,
+                        personne: { ...newProfile.personne, telephone: e.target.value }
+                      };
+                      saveFormState();
+                    }}
                     type="text"
                     class="form__input"
-                    bind:value={formData.telephone}
+                    bind:value={newProfile.personne.telephone}
                     placeholder="Telephone"
                   />
                   {#if errors.telephone}<p class="error">
@@ -648,10 +274,16 @@
                 <div class="form__grup">
                   <label class="form_label">Boite Postale *</label>
                   <input
-                    on:input={(e: any) => updateField("bp", e.target.value)}
+                    on:input={(e: any) => {
+                      newProfile = {
+                        ...newProfile,
+                        personne: { ...newProfile.personne, bp: e.target.value }
+                      };
+                      saveFormState();
+                    }}
                     type="text"
                     class="form__input"
-                    bind:value={formData.bp}
+                    bind:value={newProfile.personne.bp}
                     placeholder="Boite Postale"
                   />
                   {#if errors.bp}<p class="error">
@@ -664,11 +296,16 @@
                 <div class="form__grup">
                   <label class="form_label">Autre E-mail *</label>
                   <input
-                    on:input={(e: any) =>
-                      updateField("emailAutre", e.target.value)}
+                    on:input={(e: any) => {
+                      newProfile = {
+                        ...newProfile,
+                        personne: { ...newProfile.personne, emailAutre: e.target.value }
+                      };
+                      saveFormState();
+                    }}
                     type="email"
                     class="form__input"
-                    bind:value={formData.emailAutre}
+                    bind:value={newProfile.personne.emailAutre}
                     placeholder="Autre E-mail"
                   />
                   {#if errors.emailAutre}<p class="error">
@@ -676,15 +313,20 @@
                     </p>{/if}
                 </div>
               {/if}
-              {#if formData.typePersonne.libelle == "MORALE"}
+              {#if newProfile.personne.typePersonne.libelle == "MORALE"}
                 <div class="form__grup">
                   <label class="form_label">Adresse *</label>
                   <input
-                    on:input={(e: any) =>
-                      updateField("adresse", e.target.value)}
+                    on:input={(e: any) => {
+                      newProfile = {
+                        ...newProfile,
+                        personne: { ...newProfile.personne, adresse: e.target.value }
+                      };
+                      saveFormState();
+                    }}
                     type="text"
                     class="form__input"
-                    bind:value={formData.adresse}
+                    bind:value={newProfile.personne.adresse}
                     placeholder="Adresse"
                   />
                   {#if errors.adresse}<p class="error">
@@ -698,11 +340,16 @@
                 <div class="form__grup">
                   <label class="form_label">Nom du representant *</label>
                   <input
-                    on:input={(e: any) =>
-                      updateField("nomRepresentant", e.target.value)}
+                    on:input={(e: any) => {
+                      newProfile = {
+                        ...newProfile,
+                        personne: { ...newProfile.personne, nomRepresentant: e.target.value }
+                      };
+                      saveFormState();
+                    }}
                     type="text"
                     class="form__input"
-                    bind:value={formData.nomRepresentant}
+                    bind:value={newProfile.personne.nomRepresentant}
                     placeholder="Nom du representant"
                   />
                   {#if errors.nomRepresentant}<p class="error">
@@ -714,11 +361,16 @@
                 <div class="form__grup">
                   <label class="form_label">Dénomination *</label>
                   <input
-                    on:input={(e: any) =>
-                      updateField("denomination", e.target.value)}
+                    on:input={(e: any) => {
+                      newProfile = {
+                        ...newProfile,
+                        personne: { ...newProfile.personne, denomination: e.target.value }
+                      };
+                      saveFormState();
+                    }}
                     type="text"
                     class="form__input"
-                    bind:value={formData.denomination}
+                    bind:value={newProfile.personne.denomination}
                     placeholder="Denomination"
                   />
                   {#if errors.denomination}<p class="error">
@@ -728,140 +380,55 @@
               {/if}
             </div>
           {/if}
-
-          <!-- Step 3: Informations Professionnelles
-          {#if activeTab === "step3"}
-            <div
-              class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 gap-12 p-8"
-            >
-              <TextInput
-                type="text"
-                label="Profession"
-                bind:value={formData.profession}
-                error={""}
-                step={3}
-                bind:formData
-                disabled={true}
-              />
-            </div>
-
-            <EtapeProfessionnelle
-              {formData}
-              {errors}
-              {values}
-              professions={[]}
-              {codeExisteError}
-              {updateField}
-              showTitle={false}
-            />
-          {/if} -->
-
-          <!-- Step 4: Documents -->
-          <!-- {#if activeTab === "step4"}
-            <div class="bg-white p-6 rounded-lg shadow-sm">
-              <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                {#each ["photo", "cni", "casier", "diplomeFile", "certificat", "cv"] as field}
-                  <div class="space-y-2">
-                    <label class="block text-3xl font-medium text-black">
-                      {field == "diplomeFile"
-                        ? "Origine du diplôme"
-                        : field.toUpperCase()}
-                    </label>
-
-                    {#if formData[field] && formData[field].url}
-                      <div class="flex items-center mb-2">
-                        <span class="text-3xl text-gray-500">
-                          Fichier : {formData[field].alt}
-                        </span>
-                        <a
-                          on:click={() =>
-                            openModal(
-                              BASE_URL_API_UPLOAD + formData[field].url
-                            )}
-                          href="javascript:void(0)"
-                          download="document"
-                          class="ml-4 text-blue-600 hover:underline"
-                        >
-                          Télécharger
-                        </a>
-                      </div>
-                    {/if}
-
-                    <input
-                      type="file"
-                      on:change={(e) => (formData[field] = e.target.files[0])}
-                      class="w-full form__input"
-                    />
-                  </div>
-                {/each}
-              </div>
-            </div>
-          {/if} -->
           {#if activeTab === "step4"}
-            <div class="tablo">
-              <div class="tablo--1h-ve-2">
-                {#each values.typeDocument as document}
-                  <!-- <div style="margin-top: 20px;"></div> -->
-                  <!-- <h2 class="h2-baslik-anasayfa-ozel h-yazi-margin-kucuk">
-                      {document.libelle}
-                    </h2> -->
-                  <div class="grid grid-cols-2">
-                    <!-- {#each document.typeDocuments as requiredFile, index} -->
-                    <div class="form__grup">
-                      <label class="h2-baslik-anasayfa-ozel h-yazi-margin-kucuk">{document.libelle} *</label>
-                      <div class="flex items-center">
-                        {#if formData.documents.length > 0}
-                          <span class="file-preview" style="margin-right:8px;">
-                            {#if formData.documents
-                              .find((d) => d.libelle === document.libelle && d.libelleGroupe === document.libelle)
-                              ?.path.startsWith("data:image")}
-                              <!-- Affiche la miniature de l'image -->
-                              <img
-                                src={formData.documents.find(
-                                  (d) =>
-                                    d.libelle === document.libelle &&
-                                    d.libelleGroupe === document.libelle
-                                )?.path}
-                                alt="miniature"
-                                style="width:70px;height:70px;object-fit:cover;border-radius:4px;border:1px solid #ccc;"
-                              />
-                            {:else}
-                              <!-- Affiche le nom du fichier si ce n'est pas une image -->
-                              <span style="font-size:12px;color:#555;">
-                                
-                                <!-- {uploadedFiles[
-                                      requiredFile.libelle + document.libelle
-                                    ]} -->
-                              </span>
-                            {/if}
-                          </span>
-                          {:else}
-                           <img
-                                src={document.path}
-                                alt="miniature"
-                                style="width:70px;height:70px;object-fit:cover;border-radius:4px;border:1px solid #ccc;"
-                              />
+            On fait notre boucle pour afficher les documents
+            {#each profile.personne.documents as doc}
+              <div class="mb-4 p-4 border border-gray-200 rounded-lg">
+                <div class=" justify-between items-center">
+                  <div>
+                    <label class="h2-baslik-anasayfa-ozel h-yazi-margin-kucuk">{doc.libelle} *</label>
 
-                        {/if}
-
-                        <input
+                  </div>
+                   <div class="flex items-center"> 
+                    
+                    <input
                           accept="image/*, .pdf"
                           type="file"
+                          on:input={(e: any) => {
+                            const file = e.target.files[0];
+                            if (file) {
+                              // Mettre à jour le document dans le profil
+                              newProfile.personne.documents = newProfile.personne.documents.map((d) =>
+                                d.id === doc.id ? { ...d, file: file } : d
+                              );
+                              saveFormState();
+                            }
+                          }}
                           class="form__input"
                           placeholder="Documents à fournir"
                         />
-
-                        {#if errors.documents}
-                          <p class="error">{errors.documents}</p>
+                        {#if doc.path != null}
+                         <img
+                                    src="{BASE_URL_API_UPLOAD}/{doc.path.url}"
+                                    alt="{doc.path.alt}"  
+                                    style="width:70px;height:70px;object-fit:cover;border-radius:4px;border:1px solid #ccc;"
+                                  />
                         {/if}
-                      </div>
-                    </div>
-                    <!-- {/each} -->
-                  </div>
-                {/each}
+                    
+                   </div>
+                  <button
+                    on:click={() => {doc.path != null ? openModalWithPdf(`${BASE_URL_API_UPLOAD}/${doc.path.url}`) : alert("Aucun document disponible")}}
+                    class="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+                  >
+                    Voir le document
+                  </button>
+                </div>
               </div>
-            </div>
+            {/each}
           {/if}
+        
+          
+         
         </div>
 
         <!-- Submit Button -->
