@@ -9,17 +9,10 @@
   import DocShow from "./DocShow.svelte";
   import Modal from "$components/Modal.svelte";
   import TextInput from "$components/site/TextInput.svelte";
-  import SelectInput from "$components/site/SelectInput.svelte";
   import type {
-    Civilite,
-    District,
-    Etablissement2,
     GetEtablissementData,
-    Pays,
   } from "../../../types";
-  import Step2Form from "$components/site/Step2Form.svelte";
-  import EtapeProfessionnelle from "$components/site/EtapeProfessionnelle.svelte";
-  import { is } from "date-fns/locale";
+
 
   export let data;
   let user = data?.user;
@@ -75,7 +68,7 @@
  
   authenticating = true;
   //// ON SEND NOTRE FORMULAIRE MAINTENANT AVEC LA REQUETE API POST
-  apiFetch(true,`/etablissement/update/${user.personneId}`, 'PUT', newProfile).then((response) => {
+  apiFetch(true,`/etablissement/update/${user.personneId}`, 'POST', newProfile).then((response) => {
     authenticating = false;
     if (!response.code || response.code !== 200) {
       console.log("Erreur lors de la modification du profil :", response);  

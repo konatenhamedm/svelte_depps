@@ -54,8 +54,7 @@
       : "";
 
   function validateEmail(email: string): boolean {
-    const regex = /\S+@\S+\.\S+/;
-
+    const regex = /^[\w\-.]+@([\w-]+\.)+(com|fr|net|org|ci)$/i;
     return regex.test(email);
   }
   function validatePassword(password: string): boolean {
@@ -202,6 +201,17 @@
   }
 
   // Fonction de validation des étapes
+  function validatePhone(phone: string): boolean {
+    // Exemple : commence par 0, puis 9 chiffres (français), adapte selon ton besoin
+    const regex = /^(07|05|01)\d{8}$/;
+    return regex.test(phone);
+  }
+
+  function validateEmail2(email: string): boolean {
+    // Doit se terminer par .com, .fr, .net, .org ou .ci (insensible à la casse)
+    const regex = /^[\w\-.]+@([\w-]+\.)+(com|fr|net|org|ci)$/i;
+    return regex.test(email);
+  }
   function validateStep() {
     let valid = true;
     if (step === 1) {
@@ -229,9 +239,17 @@
       if (!hideForOther) {
         errors.nom = formData.nom ? "" : "Le nom est requis";
         errors.prenoms = formData.prenoms ? "" : "Les prénoms sont requis";
-        errors.telephone = formData.telephone ? "" : "Le téléphone est requis";
+        errors.telephone = !formData.telephone
+          ? "Le téléphone est requis"
+          : !validatePhone(formData.telephone)
+            ? "Numéro de téléphone invalide"
+            : "";
         errors.bp = formData.bp ? "" : "La boîte postale est requise";
-        errors.emailAutre = formData.emailAutre ? "" : "L'email est requis";
+        errors.emailAutre = !formData.emailAutre
+          ? "L'email est requis"
+          : !validateEmail2(formData.emailAutre)
+            ? "Email invalide"
+            : "";
         errors.adresse = "";
         errors.nomRepresentant = "";
         errors.denomination = "";
