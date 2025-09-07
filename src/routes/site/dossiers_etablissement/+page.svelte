@@ -382,6 +382,7 @@
           {/if}
           {#if activeTab === "step4"}
             On fait notre boucle pour afficher les documents
+            <div class="grid grid-cols-2">
             {#each profile.personne.documents as doc}
               <div class="mb-4 p-4 border border-gray-200 rounded-lg">
                 <div class=" justify-between items-center">
@@ -418,13 +419,14 @@
                    </div>
                   <button
                     on:click={() => {doc.path != null ? openModalWithPdf(`${BASE_URL_API_UPLOAD}/${doc.path.url}`) : alert("Aucun document disponible")}}
-                    class="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+                    class="px-4 py-2 bg-blue-600 m-5 text-white rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
                   >
                     Voir le document
                   </button>
                 </div>
               </div>
             {/each}
+            </div>
           {/if}
         
           
