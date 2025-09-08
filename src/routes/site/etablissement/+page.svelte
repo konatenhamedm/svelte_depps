@@ -370,6 +370,7 @@
 
       if (savedFormData) {
         formData = JSON.parse(savedFormData);
+        console.log("formData restauré:", savedFormData);
       }
 
       if (savedStep) {
@@ -384,8 +385,9 @@
   onMount(async () => {
     const urlParams = new URLSearchParams(window.location.search);
     if (urlParams.has("return")) {
-      restoreFormState();
+     await restoreFormState();
     }
+    console.log("formData.typePersonne onMount", formData.typePersonne);
     await getTypeDoc();
   });
 
@@ -514,7 +516,7 @@
     console.log("formDatas", formDatas);
 
     try {
-      const response = await fetch(`${BASE_URL_API}/etablissement/create`, {
+      const response = await fetch(`${BASE_URL_API}/paiement/paiement`, {
         method: "POST",
         body: formDatas,
       });
@@ -525,6 +527,7 @@
       authenticating = false;
 
       if (result.data && result.data.url) {
+        alert(result.data.url);
         localStorage.setItem("reference", result.data.reference);
         window.location.href = result.data.url + "?return=1";
       }

@@ -43,7 +43,7 @@
   let openAdd: boolean = false;
   let openShow: boolean = false;
   let current_data: any = {};
-  let activeTab = "all"; // Valeur par défaut : "En attente"
+  let activeTab = "acp_attente_dossier_depot_service_courrier"; // Valeur par défaut : "En attente"
 
   // Données et pagination
   let currentPage = 1;
@@ -77,7 +77,6 @@
 
   // Liste des onglets avec leur label et couleur
   const tabs = [
-    { key: "all", label: "Tous" },
     { key: "acp_attente_dossier_depot_service_courrier", label: "ACP de dépôt de dossier" },
     { key: "acp_dossier_attente_validation_directrice", label: "ACP validation directrice" },
     { key: "acp_dossier_valide_directrice", label: "ACP Validé par la directrice" },
@@ -202,7 +201,7 @@
               <TableHead
                 class="border-y border-gray-200 bg-gray-100 dark:border-gray-700"
               >
-                {#each ["Nom entreprise", "Nature entreprise", "Contact", "email", "imputer", "Action"] as title}
+                {#each [ "Nature entreprise", "Contact", "email", "imputer"] as title}
                   <TableHeadCell class="ps-4 font-normal border border-gray-300"
                     >{title}</TableHeadCell
                   >
@@ -250,9 +249,9 @@
                 {:else}
                   {#each paginatedProducts as item}
                     <TableBodyRow class="text-base border border-gray-300">
-                      <TableBodyCell class="p-4 border border-gray-300"
-                        >{item.personne.denomination ||item.personne.nomRepresentant}</TableBodyCell
-                      >
+                      <!-- <TableBodyCell class="p-4 border border-gray-300"
+                        >{item.personne.denomination ||item.personne.nomRepresentant}</TableBodyCell -->
+                      <!-- > -->
                       <TableBodyCell class="p-4 border border-gray-300"
                         >{item.personne.typePersonne.libelle}</TableBodyCell
                       >
