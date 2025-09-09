@@ -27,7 +27,7 @@
 
   async function SaveFunction() {
     isLoad = true;
-
+    
     try {
       const res = await fetch(BASE_URL_API + "/etablissement/update/imputation/" + data?.personne?.id, {
         method: "POST",

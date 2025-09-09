@@ -88,17 +88,17 @@
 
   // Liste des onglets avec leur label et couleur
   const tabs = [
-  { key: "acp_attente_dossier_depot_service_courrier", label: "ACP de dépôt de dossier" },
-    { key: "acp_dossier_attente_validation_directrice", label: "ACP validation directrice" },
-    { key: "acp_dossier_valide_directrice", label: "ACP Validé par la directrice" },
+  { key: "acp_attente_dossier_depot_service_courrier", label: "Attente dossier" },
+    { key: "acp_dossier_attente_validation_directrice", label: "Attente validation Dr" },
+    { key: "acp_dossier_valide_directrice", label: "ACP dossier validé" },
     { key: "oep_demande_initie", label: "OEP initié" },
-    { key: "oep_dossier_imputer", label: "OEP dossier imputer" },
-    { key: "oep_dossier_imputer_conforme_attente_planification_visite", label: "OEP dossier conforme en attente" },
-    { key: "oep_dossier_imputer_non_conforme", label: "OEP imputer non conforme" },
-    { key: "oep_dossier_visite_programme", label: "OEP visite programmé" },
-    { key: "oep_visite_effectue_attente_validation_directrice", label: "OEP visite effectuée en attente de validation directrice" },
-    { key: "oep_dossier_valide", label: "OEP Validé" },
-    { key: "oep_dossier_rejette", label: "OEP Rejeté" },
+    { key: "oep_dossier_imputer", label: "Attente Imputation" },
+    { key: "oep_dossier_imputer_conforme_attente_planification_visite", label: "Dossier attente planification visite" },
+    { key: "oep_dossier_imputer_non_conforme", label: "Dossier non conforme" },
+    { key: "oep_dossier_visite_programme", label: "Visite programmée" },
+    { key: "oep_visite_effectue_attente_validation_directrice", label: "Visite effectuée, attente de validation Dr" },
+    { key: "oep_dossier_valide", label: "Dossier Validé" },
+    { key: "oep_dossier_rejette", label: "Dossier Rejeté" },
   ];
   let statusCounts: {[key: string]: number} = {};
   // Filtrage des données selon l'onglet actif

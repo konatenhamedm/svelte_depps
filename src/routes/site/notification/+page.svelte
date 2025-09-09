@@ -4,6 +4,9 @@
     import Header from "$components/Header.svelte";
     import Slide from "$components/Slide.svelte";
     import NotificationSkeleton from "$components/NotificationSkeleton.svelte";
+    
+  
+    import {apiFetch, BASE_URL_API} from '$lib/api';
   import { goto } from "$app/navigation";
 
     let notifications:any = [];
@@ -75,7 +78,7 @@
 
     async function fetchData() {
         try {
-            const response = await fetch(`https://depps.leadagro.net/api/notification/by/${user.id}`);
+            const response = await fetch(`${BASE_URL_API}/notification/by/${user.id}`);
             if (response.ok) {
                 const result = await response.json();
                 if (result.code === 200 && result.data) {
@@ -104,7 +107,7 @@
 
     async function deleteNotification(id) {
         try {
-            const response = await fetch(`https://depps.leadagro.net/api/notification/delete/${id}`, {
+            const response = await fetch(`${BASE_URL_API}/notification/delete/${id}`, {
                 method: 'DELETE',
                 headers: {
                     'Content-Type': 'application/json',
@@ -126,7 +129,7 @@
 
     async function markAsRead(id) {
         try {
-            const response = await fetch(`https://depps.leadagro.net/api/notification/read/${id}`, {
+            const response = await fetch(`${BASE_URL_API}/notification/read/${id}`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

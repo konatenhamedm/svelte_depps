@@ -56,25 +56,26 @@
   </button>
 
   {#if isOpen}
-    <div class="menu-dropdown">
-      <!-- {#if user.type != "SOUS-DIRECTEUR"} -->
+  <div class="menu-dropdown">
+      <!-- {#if item.personne.status != "acp_dossier_valide_directrice"} -->
+
       <button class="menu-item  hover:text-white"
         on:click={() => {onAction('view', item); isOpen = false;}}>
         <EyeOutline size="sm" class="mr-2" /> Traiter
       </button>
-  <!-- {:else if user.type == "SOUS-DIRECTEUR"  } -->
 
-    <!-- {#if item?.personne?.status == "attente" } -->
  <button class="menu-item  hover:text-white"
       on:click={() => {onAction('details', item); isOpen = false;}}>
       <EditOutline size="sm" class="mr-2" /> Détails
     </button>
+   
     {#if item?.personne?.status == "oep_demande_initie"}
  <button class="menu-item  hover:text-white"
       on:click={() => {onAction('imputation', item); isOpen = false;}}>
       <EditOutline size="sm" class="mr-2" /> Imputation
     </button>
     {/if}
+    
     <!-- {:else} -->
     <!-- <button class="menu-item  hover:text-white"
     on:click={() => {onAction('details', item); isOpen = false;}}>
@@ -86,6 +87,12 @@
   <!-- {/if} -->
      
      
+  <!-- {:else if item.personne.status == "acp_dossier_valide_directrice"}
+   <button class="menu-item  hover:text-white"
+    on:click={() => {onAction('details', item); isOpen = false;}}>
+    <EditOutline size="sm" class="mr-2" /> Détails
+  </button> -->
+   <!-- {/if} -->
     </div>
   {/if}
 </div>

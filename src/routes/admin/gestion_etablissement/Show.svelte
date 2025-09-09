@@ -83,24 +83,39 @@
     const formdata = new FormData();
 
     formdata.append("status", etat);
+    formdata.append("email", data?.email);
+    formdata.append("userUpdate", userUpdateId);
     formdata.append("raison", raison ? raison : "");
-    formdata.append("dateSisite", dateSisite ? dateSisite : "");
+    formdata.append("dateVisite", dateSisite ? dateSisite : "");
     formdata.append("rapportExamen", rapportExamen ? rapportExamen : "");
     try {
-      if (data.personne.status == "acp_dossier_attente_validation_directrice" || data.personne.status == "oep_dossier_imputer" || data.personne.status == "oep_visite_effectue_attente_validation_directrice") {
-        if(!dateSisite || !rapportExamen || !raison){
-          alert("Veuillez remplir la date de la visite et le rapport de l'examen.");
+      if (
+        data.personne.status == "oep_dossier_imputer" ||
+        data.personne.status ==
+          "oep_visite_effectue_attente_validation_directrice"
+      ) {
+        if (!dateSisite || !raison) {
+          alert(
+            "Veuillez remplir la date de la visite et le rapport de l'examen."
+          );
+          isLoad = false;
+          return;
+        }
+      } else if (
+        data.personne.status == "acp_dossier_attente_validation_directrice"
+      ) {
+        if (!raison) {
+          alert(
+            "Veuillez remplir la date de la visite et le rapport de l'examen."
+          );
           isLoad = false;
           return;
         }
       }
-        const res = await fetch(
-        BASE_URL_API + "/etablissement/active/" + data.personne?.id,
+      const res = await fetch(
+        `${BASE_URL_API}/etablissement/active/${data.personne?.id}`,
         {
           method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
           body: formdata,
         }
       );
@@ -113,16 +128,13 @@
         notificationType = "success";
         showNotification = true;
         dispatch("changeStatus");
-      }else {
+      } else {
         const errorData = await res.json();
         console.error("Error response:", errorData);
-        alert("Erreur lors du traitement: " + (  errorData.errors[0]));
+        alert("Erreur lors du traitement: " + errorData.errors[0]);
         // isLoad = false;
       }
-      
-      
     } catch (error) {
-     
       console.error("Error saving:", error);
     }
   }
@@ -296,16 +308,16 @@
           </div>
         {/each}
       </div>
-      {#if data.personne.status == "acp_dossier_attente_validation_directrice" || data.personne.status == "oep_dossier_imputer" || data.personne.status == "oep_visite_effectue_attente_validation_directrice"}
-        <label
-          style="color: black; font-weight: bold; margin-top: 15px;font-size: x-large;"
-          >Raison du rejet</label
-        >
-        <textarea
-          bind:value={raison}
-          placeholder="Observation"
-          class="w-full border border-gray-300 rounded-md p-2"
-        ></textarea>
+      <label
+        style="color: black; font-weight: bold; margin-top: 15px;font-size: x-large;"
+        >Raison</label
+      >
+      <textarea
+        bind:value={raison}
+        placeholder="Raison"
+        class="w-full border border-gray-300 rounded-md p-2"
+      ></textarea>
+      {#if data.personne.status == "oep_dossier_imputer" || data.personne.status == "oep_visite_effectue_attente_validation_directrice"}
         <label
           style="color: black; font-weight: bold; margin-top: 15px;font-size: x-large;"
           >Date de la visite</label
@@ -324,6 +336,7 @@
           placeholder="Rapport de l'examen"
           class="w-full border border-gray-300 rounded-md p-2"
         ></textarea>
+       =
       {/if}
     </form>
   </div>
@@ -352,47 +365,44 @@
             on:click={() => SaveFunctionSingleMethode("rejet_directrice")}
             type="submit">Rejet directeur/rice</Button
           >
-
         {:else if data.personne.status == "acp_dossier_valide_directrice"}
           <Button
             color="alternative"
             style="background-color: green !important; color: white;"
-            on:click={() => SaveFunctionSingleMethode("initiation_demande_exploitation")}
+            on:click={() =>
+              SaveFunctionSingleMethode("initiation_demande_exploitation")}
             type="submit">Initier OEP</Button
           >
-
-           {:else if data.personne.status == "oep_demande_initie"}
+        {:else if data.personne.status == "oep_demande_initie"}
           <Button
             color="alternative"
             style="background-color: green !important; color: white;"
             on:click={() => SaveFunctionSingleMethode("imputation_dossier")}
             type="submit">Initier OEP</Button
           >
-
-           {:else if data.personne.status == "oep_dossier_imputer"}
+        {:else if data.personne.status == "oep_dossier_imputer"}
           <Button
             color="alternative"
             style="background-color: green !important; color: white;"
-            on:click={() => SaveFunctionSingleMethode("imputation_non_conforme")}
+            on:click={() =>
+              SaveFunctionSingleMethode("imputation_non_conforme")}
             type="submit">Imputation Non Conforme</Button
           >
-
-          
-           {:else if data.personne.status == "oep_dossier_imputer_conforme_attente_planification_visite"}
+        {:else if data.personne.status == "oep_dossier_imputer_conforme_attente_planification_visite"}
           <Button
             color="alternative"
             style="background-color: green !important; color: white;"
             on:click={() => SaveFunctionSingleMethode("programmation_visite")}
             type="submit">Programmation Visite</Button
           >
-           {:else if data.personne.status == "oep_dossier_visite_programme"}
+        {:else if data.personne.status == "oep_dossier_visite_programme"}
           <Button
             color="alternative"
             style="background-color: green !important; color: white;"
             on:click={() => SaveFunctionSingleMethode("visite_effectuee")}
             type="submit">Visite Effectuée</Button
           >
-          {:else if data.personne.status == "oep_visite_effectue_attente_validation_directrice"}
+        {:else if data.personne.status == "oep_visite_effectue_attente_validation_directrice"}
           <Button
             color="alternative"
             style="background-color: green !important; color: white;"
