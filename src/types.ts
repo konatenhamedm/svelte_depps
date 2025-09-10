@@ -54,6 +54,7 @@ export interface User {
   payement: string;
   personneId: string;
   nom?: string;
+  typePersonne?: string;
 }
 
 export interface Civilite {

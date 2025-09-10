@@ -4,26 +4,13 @@
   import Header from "$components/Header.svelte";
   import Slide from "$components/Slide.svelte";
   import { BASE_URL_API } from "$lib/api";
-
   import { apiFetch } from "$lib/api";
-  import type {
-    Civilite,
-    Genre,
-    Pays,
-    Specialite,
-    Ville,
-  } from "../../../types.js";
   import { getProfessions } from "$lib/constants";
-  import MessageError from "$components/MessageError.svelte";
   import { goto } from "$app/navigation";
   import Spinner from "$components/_skeletons/Spinner.svelte";
-  import EtapeConnexion from "$components/site/EtapeConnexion.svelte";
-  import SelectInput from "$components/site/SelectInput.svelte";
-  import InputSelect from "$components/inputs/InputSelect.svelte";
-  import InputSelectTypePersonne from "$components/inputs/InputSelectTypePersonne.svelte";
-  import type { AnyAaaaRecord } from "node:dns";
 
-  const professions = getProfessions();
+
+
 
   export let data; // Récupérer les données du layout
   let user = data?.user;
@@ -31,57 +18,17 @@
   $: isPaiementDone = false;
   $: message = "";
   let step = 1;
-  $: hideForPhysic = true;
-  $: hideForOther = false;
+
 
   //////Nouvelle variable
 
   let showPassword = false;
   let showPasswordConfirm = false;
 
-  $: emailError =
-    formData.email && !validateEmail(formData.email)
-      ? "Veuillez entrer un email valide"
-      : "";
-  $: emailPassword =
-    formData.email && !validatePassword(formData.password)
-      ? "Le mot de passe doit contenir au moins 6 caractères, une majuscule, une minuscule et un chiffre."
-      : "";
 
-  $: emailAutreError =
-    formData.emailAutre && !validateEmail(formData.emailAutre)
-      ? "Veuillez entrer un email valide"
-      : "";
 
-  function validateEmail(email: string): boolean {
-    const regex = /^[\w\-.]+@([\w-]+\.)+(com|fr|net|org|ci)$/i;
-    return regex.test(email);
-  }
-  function validatePassword(password: string): boolean {
-    const regex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{6,}$/;
-    return regex.test(password);
-  }
 
-  $: if (formData.typePersonne == "PHYSIQUE") {
-    hideForOther = false;
-    hideForPhysic = true;
-    // Effacer les champs de la personne morale
-    formData.adresse = "";
-    formData.nomRepresentant = "";
-    formData.denomination = "";
-  } else if (formData.typePersonne == "MORALE") {
-    hideForPhysic = false;
-    hideForOther = true;
-    // Effacer les champs de la personne physique
-    formData.nom = "";
-    formData.prenoms = "";
-    formData.telephone = "";
-    formData.bp = "";
-    formData.emailAutre = "";
-  } else {
-    hideForPhysic = false;
-    hideForOther = false;
-  }
+ 
   /////fin
   interface DocumentItem {
     libelle: string;
@@ -155,23 +102,7 @@
   }
 
   ////Fonction asynchrone pour recuperer le groupe de documents pour le type de personne
-  async function getTypeDoc() {
-    let res = null;
-    // alert("hello world, " + formData.typePersonne);
-    res = await apiFetch(true, `${objects[2].url}/${formData.typePersonne}`);
-    if (res) {
-      if (Object.keys(values).includes(objects[2].name)) {
-        values[objects[2].name as keyof typeof values] = res.data;
-      } else {
-        console.error(`Invalid key: ${objects[2].name}`);
-      }
-    } else {
-      console.error(
-        "Erreur lors de la récupération des données:",
-        res.statusText
-      );
-    }
-  }
+
 
   // 🔹 Fonction pour sauvegarder l'état actuel du formulaire
   async function saveFormState() {
@@ -233,6 +164,7 @@
 
   // ✅ Vérifier si on revient après un paiements
   onMount(async () => {
+    console.log("Mounted component, checking for return param...",data);
     const urlParams = new URLSearchParams(window.location.search);
     if (urlParams.has("return")) {
       await restoreFormState();
@@ -276,7 +208,9 @@
 
     let formDatas = new FormData();
 
-
+    formDatas.append("etablissement", values.userData.personne.typePersonne.libelle);
+    formDatas.append("perdsonneId", user.personneId);
+    formDatas.append("niveauIntervention", values.userData.personne.niveauIntervention.id);
 
     // Ajouter les documents dans le format souhaité
     if (formData.documents && Array.isArray(formData.documents)) {
@@ -344,7 +278,7 @@
     console.log("formDatas", formDatas);
 
     try {
-      const response = await fetch(`${BASE_URL_API}/paiement/paiement`, {
+      const response = await fetch(`${BASE_URL_API}/paiement/inite/ope`, {
         method: "POST",
         body: formDatas,
       });
@@ -383,16 +317,21 @@
   let objects = [
     {
       name: "typeDocument",
-      url: "libelleGroupe/all/oep",
+      url: "/libelleGroupe/all/oep",
       id: 2,
+    },
+     {
+      name: "userData",
+      url: "/etablissement/get/one",
+      id: user.personneId,
     },
   ];
 
   let values: {
-  
+    userData: any;
     typeDocument: any[];
   } = {
-   
+    userData: {},
     typeDocument: [],
   };
 
@@ -405,7 +344,7 @@
         } else {
           res = await apiFetch(true, element.url);
         }
-
+        console.log(element.name, res)
         if (res) {
           if (Object.keys(values).includes(element.name)) {
             values[element.name as keyof typeof values] = res.data;
@@ -482,7 +421,7 @@
           >
             {#if step === 1}
               <h2 class="h2-baslik-anasayfa-ozel h-yazi-margin-kucuk">
-                Documents de l'établissement (étape 1/2)
+                Documents de l'établissement 
               </h2>
               <div class="tablo">
                 <div class="tablo--1h-ve-2">
@@ -550,61 +489,37 @@
                   {/each}
                 </div>
               </div>
-            {/if}
-
-            <!-- Étape 1 -->
-            {#if step === 2}
-              <h2 class="h2-baslik-anasayfa-ozel h-yazi-margin-kucuk">
-                VEUILLEZ PROCéDER AU PAIEMENT
-              </h2>
-              <div class="tablo">
+              {#if isPaiementDone == true}
+               <div class="tablo">
                 <div class="tablo--1h-ve-2">
                   <!-- on:click={clickPaiement} -->
                   <div class="grid grid-cols-1 gap-20 flex justify-center">
                     <div class="">
-                      {#if isPaiementDone == false}
+                     
+                      
                         <p>
-                          Veillez vous rendre sur le site de votre banque et
-                          effectuer le paiement.
+                          Votre dossier est en cours de validation, Merci pour votre paiement.
                         </p>
                         <br />
-                      {/if}
-                      {#if isPaiementDone == true}
-                        <p>
-                          Votre inscription à été effectué avec success,veillez
-                          vous connecter.
-                        </p>
-                        <br />
-                      {/if}
+                    
 
                       <br />
                     </div>
                   </div>
                 </div>
               </div>
+                {/if}
             {/if}
+
+            <!-- Étape 1 -->
+            
 
           
            
 
             <!-- Boutons de navigation -->
             <div class="form__grup">
-              {#if step > 1}
-                <button
-                  disabled={authenticating == true || isPaiementDone == true}
-                  type="button"
-                  class="buton buton--kirmizi"
-                  on:click={prevStep}>← RETOUR</button
-                >
-              {/if}
-
-              {#if step < 2}
-                <button
-                  type="button"
-                  class="buton buton--kirmizi"
-                  on:click={() => nextStep()}>SUIVANT →</button
-                >
-              {:else}
+           
                 {#if isPaiementDone == false}
                   <button
                     type="button"
@@ -632,7 +547,7 @@
                     Connectez vous
                   </button>
                 {/if}
-              {/if}
+              
 
               <br />
               <br />

@@ -20,11 +20,11 @@ export async function login(username_field: string, password: string) {
           throw new Error(jsonData.message || 'Erreur lors de la connexion');
       }
 
-      const { token, data: { id, username, role, type, status, payement, avatar,personneId,nom,finRenouvellement,expire } } = jsonData;
+      const { token, data: { id, username, role, type, status, payement, avatar,personneId,nom,finRenouvellement,expire,typePersonne } } = jsonData;
 
       // Stocker l'objet utilisateur dans un cookie accessible côté client
       document.cookie = `auth=${encodeURIComponent(JSON.stringify({
-          id, username, role, token, type, status, payement, avatar,personneId,nom,finRenouvellement,expire
+          id, username, role, token, type, status, payement, avatar,personneId,nom,finRenouvellement,expire,typePersonne
       }))}; path=/; max-age=${60 * 60 * 24}; secure=${location.protocol === 'https:' ? 'true' : 'false'}`;
 
       return jsonData;
@@ -49,11 +49,11 @@ export async function loginloginUserFront(username_field: string, password: stri
           throw new Error(jsonData.message || 'Erreur lors de la connexion');
       }
 
-      const { token, data: { id, username, role, type, status, payement, avatar,personneId,nom,finRenouvellement,expire } } = jsonData;
+      const { token, data: { id, username, role, type, status, payement, avatar,personneId,nom,finRenouvellement,expire,typePersonne } } = jsonData;
 
       // Stocker l'objet utilisateur dans un cookie accessible côté client
       document.cookie = `auth=${encodeURIComponent(JSON.stringify({
-          id, username, role, token, type, status, payement, avatar,personneId,nom,finRenouvellement,expire
+          id, username, role, token, type, status, payement, avatar,personneId,nom,finRenouvellement,expire,typePersonne
       }))}; path=/; max-age=${60 * 60 * 24}; secure=${location.protocol === 'https:' ? 'true' : 'false'}`;
 
       return jsonData;
@@ -130,6 +130,7 @@ export function getAuthCookie(): User | null {
           avatar: auth.avatar || "",
           personneId : auth.personneId || "",
           nom : auth.nom || "",
+          typePersonne : auth.typePersonne || "",
       };
   } catch (error) {
       console.error("Erreur lors de la récupération du cookie d'auth:", error);
@@ -164,7 +165,8 @@ export function getAuthCookie_(): User | null {
           payement: auth.payement || "",
           avatar: auth.avatar || "",
           personneId : auth.personneId || "",
-          nom : auth.nom || ""
+          nom : auth.nom || "",
+          typePersonne : auth.typePersonne || "",
 
 
       };
