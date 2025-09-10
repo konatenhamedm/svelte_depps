@@ -310,11 +310,11 @@
       </div>
       <label
         style="color: black; font-weight: bold; margin-top: 15px;font-size: x-large;"
-        >Raison</label
+        >Observation</label
       >
       <textarea
         bind:value={raison}
-        placeholder="Raison"
+        placeholder="Observation"
         class="w-full border border-gray-300 rounded-md p-2"
       ></textarea>
       {#if data.personne.status == "oep_dossier_imputer" || data.personne.status == "oep_visite_effectue_attente_validation_directrice"}

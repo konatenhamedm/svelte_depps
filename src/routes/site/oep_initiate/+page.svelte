@@ -119,172 +119,37 @@
   }
 
   let formData: {
-    password: string;
-    confirmPassword: string;
-    email: string;
-    niveauIntervention: any;
-    typePersonne: any;
-
-    nom: string;
-    prenoms: string;
-    telephone: string;
-    bp: string;
-    emailAutre: string;
-    adresse: string;
-    nomRepresentant: string;
-    denomination: string;
+   
     documents: DocumentItem[];
   } = {
-    password: "",
-    confirmPassword: "",
-    email: "",
-    niveauIntervention: "",
-    typePersonne: "",
-    nom: "",
-    prenoms: "",
-    telephone: "",
-    bp: "",
-    emailAutre: "",
-    adresse: "",
-    nomRepresentant: "",
-    denomination: "",
+    
     documents: [],
   };
 
   // Définition des erreurs
   let errors = {
-    email: "",
-    password: "",
-    confirmPassword: "",
-    // Informations générales
-    // Informations generales ( à update en fonction du type)
-    typePersonne: "",
-    niveauIntervention: "",
-    nom: "",
-    prenoms: "",
-    telephone: "",
-    bp: "",
-    emailAutre: "",
-    adresse: "",
-    nomRepresentant: "",
-    denomination: "",
-    // Pour la derniere step
+   
     documents: "",
   };
   let emailCheck = false;
-  async function checkEmail(email: any) {
-    if (!email) return false;
+ 
 
-    try {
-      const res = await fetch(
-        BASE_URL_API + `/user/check/email/existe/${email}`
-      );
-      const data = await res.json();
-      return data.data; // Assurez-vous que l'API renvoie un objet avec une clé `valid`
-    } catch (error) {
-      console.error(
-        "Erreur lors de la vérification de la transaction :",
-        error
-      );
-      return false;
-    }
-  }
 
-  $: if (formData.email) {
-    if (validateEmail(formData.email)) {
-      checkEmail(formData.email).then((resultat) => {
-        emailCheck = resultat;
 
-        if (emailCheck == true) {
-          emailError = "Cet email existe deja";
-        }
-      });
-    }
-  }
-
-  // Fonction de validation des étapes
-  function validatePhone(phone: string): boolean {
-    // Exemple : commence par 0, puis 9 chiffres (français), adapte selon ton besoin
-    const regex = /^(07|05|01)\d{8}$/;
-    return regex.test(phone);
-  }
-
-  function validateEmail2(email: string): boolean {
-    // Doit se terminer par .com, .fr, .net, .org ou .ci (insensible à la casse)
-    const regex = /^[\w\-.]+@([\w-]+\.)+(com|fr|net|org|ci)$/i;
-    return regex.test(email);
-  }
   function validateStep() {
     let valid = true;
     if (step === 1) {
    
-      errors.email = formData.email ? "" : "L'e-mail est requis";
-      errors.password = formData.password ? "" : "Le mot de passe est requis";
-      errors.confirmPassword =
-        formData.confirmPassword === formData.password
-          ? ""
-          : "Les mots de passe ne correspondent pas";
-
-      valid =
-        !errors.password &&
-        !errors.confirmPassword &&
-        !errors.email &&
-        !emailError &&
-        !emailCheck &&
-        !emailPassword;
+   valid = Object.values(errors).every((errorMsg) => errorMsg === "");
     }
 
     if (step === 2) {
-      // Champ obligatoire pour tous
-      errors.typePersonne = formData.typePersonne ? "" : "Le type est requis";
-
-      // Champs pour Personne Physique
-      if (!hideForOther) {
-        errors.nom = formData.nom ? "" : "Le nom est requis";
-        errors.prenoms = formData.prenoms ? "" : "Les prénoms sont requis";
-        errors.telephone = !formData.telephone
-          ? "Le téléphone est requis"
-          : !validatePhone(formData.telephone)
-            ? "Numéro de téléphone invalide"
-            : "";
-        errors.bp = formData.bp ? "" : "La boîte postale est requise";
-        errors.emailAutre = !formData.emailAutre
-          ? "L'email est requis"
-          : !validateEmail2(formData.emailAutre)
-            ? "Email invalide"
-            : "";
-        errors.adresse = "";
-        errors.nomRepresentant = "";
-        errors.denomination = "";
-      }
-
-      // Champs pour Personne Morale
-      if (!hideForPhysic) {
-        errors.adresse = formData.adresse ? "" : "L'adresse est requise";
-        errors.nomRepresentant = formData.nomRepresentant
-          ? ""
-          : "Le nom du représentant est requis";
-        errors.denomination = formData.denomination
-          ? ""
-          : "La dénomination est requise";
-        errors.nom = "";
-        errors.prenoms = "";
-        errors.telephone = "";
-        errors.bp = "";
-        errors.emailAutre = "";
-      }
-
+     
+    
       // Déterminer si tout est valide
       valid = Object.values(errors).every((errorMsg) => errorMsg === "");
     }
 
-    if (step === 3) {
-      valid = true;
-    }
-
-    if (step === 4) {
-      valid = isPaiementDone;
-    }
 
     return valid;
   }
@@ -311,30 +176,12 @@
   // 🔹 Fonction pour sauvegarder l'état actuel du formulaire
   async function saveFormState() {
     if (typeof window !== "undefined" && typeof localStorage !== "undefined") {
-      localStorage.setItem("formData", JSON.stringify(formData));
-      localStorage.setItem("step", step.toString());
-      await getTypeDoc();
+      localStorage.setItem("formDataOep", JSON.stringify(formData));
+      localStorage.setItem("stepOep", step.toString());
+  
 
-      console.log("formData sauvegardé:", formData.typePersonne);
+      console.log("formData sauvegardé:", formData);
       ///recuperer les informations du type de document lorsque le type de personne est selectionné
-      if (formData.typePersonne > 0) {
-        getTypeDoc();
-      }
-      if (formData.typePersonne == "MORALE") {
-        formData.documents = [];
-        formData.nom = "";
-        formData.prenoms = "";
-        formData.telephone = "";
-        formData.bp = "";
-        formData.emailAutre = "";
-        localStorage.setItem("formData", JSON.stringify(formData));
-      } else if (formData.typePersonne == "PHYSIQUE") {
-        formData.documents = [];
-        formData.adresse = "";
-        formData.nomRepresentant = "";
-        formData.denomination = "";
-        localStorage.setItem("formData", JSON.stringify(formData));
-      }
     }
   }
 
@@ -351,7 +198,7 @@
         };
 
         // Stocker dans le localStorage
-        localStorage.setItem("selectedFiles", JSON.stringify(selectedFiles));
+        localStorage.setItem("selectedFilesOep", JSON.stringify(selectedFiles));
 
         // Mettre à jour les noms de fichiers affichés
         fileNames = { ...fileNames, [fieldName]: file.name };
@@ -368,8 +215,8 @@
   // Restaurer les données et l'étape depuis localStorage
   async function restoreFormState() {
     if (typeof window !== "undefined" && typeof localStorage !== "undefined") {
-      const savedFormData = localStorage.getItem("formData");
-      const savedStep = localStorage.getItem("step");
+      const savedFormData = localStorage.getItem("formDataOep");
+      const savedStep = localStorage.getItem("stepOep");
 
       if (savedFormData) {
         formData = JSON.parse(savedFormData);
@@ -379,7 +226,7 @@
       if (savedStep) {
         step = parseInt(savedStep);
       } else {
-        localStorage.setItem("step", step.toString());
+        localStorage.setItem("stepOep", step.toString());
       }
     }
   }
@@ -390,8 +237,6 @@
     if (urlParams.has("return")) {
       await restoreFormState();
     }
-    console.log("formData.typePersonne onMount", formData.typePersonne);
-    await getTypeDoc();
   });
 
   // Lire la valeur de `step` depuis localStorage, sinon initialiser à 1
@@ -401,7 +246,7 @@
   function nextStep() {
     if (validateStep()) {
       step += 1;
-      localStorage.setItem("step", step.toString());
+      localStorage.setItem("stepOep", step.toString());
       return;
     } else {
       messagefile = "Veuillez remplir tous les champs obligatoires.";
@@ -411,7 +256,7 @@
   function prevStep() {
     if (step > 1) {
       step -= 1;
-      localStorage.setItem("step", step.toString());
+      localStorage.setItem("stepOep", step.toString());
     }
   }
 
@@ -431,27 +276,7 @@
 
     let formDatas = new FormData();
 
-    const simpleFields = [
-      "password",
-      "confirmPassword",
-      "email",
-      "niveauIntervention",
-      "typePersonne",
-      "nom",
-      "prenoms",
-      "telephone",
-      "bp",
-      "emailAutre",
-      "adresse",
-      "nomRepresentant",
-      "denomination",
-    ];
 
-    simpleFields.forEach((key) => {
-      if (formData[key] !== undefined && formData[key] !== null) {
-        formDatas.append(key, formData[key]);
-      }
-    });
 
     // Ajouter les documents dans le format souhaité
     if (formData.documents && Array.isArray(formData.documents)) {
@@ -530,6 +355,7 @@
       authenticating = false;
 
       if (result.data && result.data.url) {
+        alert(result.data.url);
         localStorage.setItem("reference", result.data.reference);
         window.location.href = result.data.url + "?return=1";
       }
@@ -555,32 +381,18 @@
    * @type {any[]}
    */
   let objects = [
-    { name: "typePersonne", url: "/typePersonne" },
-    { name: "niveauIntervention", url: "/niveauIntervention" },
     {
       name: "typeDocument",
-      url: "/libelleGroupe/all",
-      id: formData.typePersonne,
+      url: "libelleGroupe/all/oep",
+      id: 2,
     },
   ];
 
   let values: {
-    genre: Genre[];
-    civilite: Civilite[];
-    nationate: Pays[];
-    specialite: Specialite[];
-    typePersonne: any;
-    niveauIntervention: any;
-    ville: Ville[];
+  
     typeDocument: any[];
   } = {
-    genre: [],
-    civilite: [],
-    nationate: [],
-    specialite: [],
-    ville: [],
-    typePersonne: [],
-    niveauIntervention: [],
+   
     typeDocument: [],
   };
 
@@ -617,12 +429,12 @@
   });
   onMount(() => {
     //localStorage.clear();
-    const savedStep = localStorage.getItem("step");
+    const savedStep = localStorage.getItem("stepOep");
     if (savedStep) {
       step = parseInt(savedStep);
     }
 
-    const savedData = localStorage.getItem("formData");
+    const savedData = localStorage.getItem("formDataOep");
 
     if (savedStep) step = parseInt(savedStep);
     if (savedData) formData = JSON.parse(savedData);
@@ -651,10 +463,10 @@
   <Slide {user} />
   <section class="text-center pb-20" style="padding-top:150px">
     <h2 class="h2-baslik-anasayfa-ozel pb-10 text-uppercase">
-      Inscription en tant que etablissement de santé
+     Initialisation de l'OEP
     </h2>
     <p class="text-center paragraf">
-      Veuillez renseigner vos informations afin de procéder à l'inscription
+      Veuillez renseigner vos informations afin de procéder à l'ouverture de votre dossier OEP.
     </p>
   </section>
 
@@ -669,202 +481,8 @@
             on:submit|preventDefault={clickPaiement}
           >
             {#if step === 1}
-              <EtapeConnexion
-                bind:formData
-                {errors}
-                {emailError}
-                {emailPassword}
-                {saveFormState}
-                {showPassword}
-                {showPasswordConfirm}
-                togglePassword={() => (showPassword = !showPassword)}
-                toggleConfirmPassword={() =>
-                  (showPasswordConfirm = !showPasswordConfirm)}
-              />
-            {/if}
-
-            <!-- Étape 1 -->
-            {#if step === 2}
               <h2 class="h2-baslik-anasayfa-ozel h-yazi-margin-kucuk">
-                Etablissement de Sante (étape 2/3)
-              </h2>
-              <div class="tablo">
-                <div class="tablo--1h-ve-2">
-                  <div class="grid grid-cols-2">
-                    <!-- Champ natureEntreprise -->
-
-                    <!-- <div class="form__grup"> -->
-                    <!-- <label class="form_label">Personne Physique *</label> -->
-                    <SelectInput
-                      label="Niveau d'Intervention"
-                      bind:value={formData.niveauIntervention}
-                      options={values.niveauIntervention.map(
-                        (c: { id: number; libelle: string }) => ({
-                          id: String(c.id),
-                          libelle: c.libelle,
-                        })
-                      )}
-                      placeholder="Sélectionnez le type de personne "
-                      error={errors.typePersonne}
-                      onInput={saveFormState}
-                      on:change={saveFormState}
-                      step={2}
-                      bind:formData
-                    />
-                    <SelectInput
-                      label="Entité juridique *"
-                      bind:value={formData.typePersonne}
-                      options={values.typePersonne.map(
-                        (c: { id: number; libelle: string }) => ({
-                          id: String(c.libelle),
-                          libelle: c.libelle,
-                        })
-                      )}
-                      placeholder="Sélectionnez le type de personne "
-                      error={errors.typePersonne}
-                      onInput={saveFormState}
-                      on:change={saveFormState}
-                      step={2}
-                      bind:formData
-                    />
-
-                    <div hidden={hideForOther} class="form__grup">
-                      <label class="form_label">Nom*</label>
-                      <input
-                        on:input={(e: any) =>
-                          updateField("nom", e.target.value)}
-                        type="text"
-                        class="form__input"
-                        bind:value={formData.nom}
-                        placeholder="Nom"
-                      />
-                      {#if errors.nom}<p class="error">
-                          {errors.nom}
-                        </p>{/if}
-                    </div>
-
-                    <!-- Champ contactEntreprise -->
-
-                    <div hidden={hideForOther} class="form__grup">
-                      <label class="form_label">Prenoms *</label>
-                      <input
-                        on:input={(e: any) =>
-                          updateField("prenoms", e.target.value)}
-                        type="text"
-                        class="form__input"
-                        bind:value={formData.prenoms}
-                        placeholder="Prenoms"
-                      />
-                      {#if errors.prenoms}<p class="error">
-                          {errors.prenoms}
-                        </p>{/if}
-                    </div>
-
-                    <div hidden={hideForOther} class="form__grup">
-                      <label class="form_label">Telephone *</label>
-                      <input
-                        on:input={(e: any) =>
-                          updateField("telephone", e.target.value)}
-                        type="text"
-                        class="form__input"
-                        bind:value={formData.telephone}
-                        placeholder="Telephone"
-                      />
-                      {#if errors.telephone}<p class="error">
-                          {errors.telephone}
-                        </p>{/if}
-                    </div>
-
-                    <!-- Champ Type -->
-                    <div hidden={hideForOther} class="form__grup">
-                      <label class="form_label">Boite Postale *</label>
-                      <input
-                        on:input={(e: any) => updateField("bp", e.target.value)}
-                        type="text"
-                        class="form__input"
-                        bind:value={formData.bp}
-                        placeholder="Boite Postale"
-                      />
-                      {#if errors.bp}<p class="error">
-                          {errors.bp}
-                        </p>{/if}
-                    </div>
-
-                    <!-- Champ gpsEntreprise -->
-
-                    <div hidden={hideForOther} class="form__grup">
-                      <label class="form_label">Autre E-mail *</label>
-                      <input
-                        on:input={(e: any) =>
-                          updateField("emailAutre", e.target.value)}
-                        type="email"
-                        class="form__input"
-                        bind:value={formData.emailAutre}
-                        placeholder="Autre E-mail"
-                      />
-                      {#if errors.emailAutre}<p class="error">
-                          {errors.emailAutre}
-                        </p>{/if}
-                    </div>
-
-                    <!-- Champ niveauEntreprise -->
-                    <div hidden={hideForPhysic} class="form__grup">
-                      <label class="form_label">Adresse *</label>
-                      <input
-                        on:input={(e: any) =>
-                          updateField("adresse", e.target.value)}
-                        type="text"
-                        class="form__input"
-                        bind:value={formData.adresse}
-                        placeholder="Adresse"
-                      />
-                      {#if errors.adresse}<p class="error">
-                          {errors.adresse}
-                        </p>{/if}
-                    </div>
-                    <!-- Champ Nom de l'entreprise -->
-
-                    <!-- Champ Email de l'entreprise -->
-
-                    <div hidden={hideForPhysic} class="form__grup">
-                      <label class="form_label">Nom du representant *</label>
-                      <input
-                        on:input={(e: any) =>
-                          updateField("nomRepresentant", e.target.value)}
-                        type="text"
-                        class="form__input"
-                        bind:value={formData.nomRepresentant}
-                        placeholder="Nom du representant"
-                      />
-                      {#if errors.nomRepresentant}<p class="error">
-                          {errors.nomRepresentant}
-                        </p>{/if}
-                    </div>
-
-                    <!-- Champ Espace -->
-                    <div hidden={hideForPhysic} class="form__grup">
-                      <label class="form_label">Dénomination *</label>
-                      <input
-                        on:input={(e: any) =>
-                          updateField("denomination", e.target.value)}
-                        type="text"
-                        class="form__input"
-                        bind:value={formData.denomination}
-                        placeholder="Denomination"
-                      />
-                      {#if errors.denomination}<p class="error">
-                          {errors.denomination}
-                        </p>{/if}
-                    </div>
-                  </div>
-                </div>
-              </div>
-            {/if}
-
-            <!-- Étape 2 -->
-            {#if step === 3}
-              <h2 class="h2-baslik-anasayfa-ozel h-yazi-margin-kucuk">
-                Documents de l'établissement (étape 3/3)
+                Documents de l'établissement (étape 1/2)
               </h2>
               <div class="tablo">
                 <div class="tablo--1h-ve-2">
@@ -873,60 +491,69 @@
                     <h2 class="h2-baslik-anasayfa-ozel h-yazi-margin-kucuk">
                       {document.libelle}
                     </h2>
-                    <div class="documents-grid">
-  {#each document.typeDocuments as requiredFile, index}
-    <div class="document-item">
-      <label class="form_label">{requiredFile.libelle} *</label>
-      <div class="flex items-center">
-        {#if uploadedFiles[requiredFile.libelle + document.libelle]}
-          <span class="file-preview" style="margin-right:8px;">
-            {#if formData.documents
-              .find((d) => d.libelle === requiredFile.libelle && d.libelleGroupe === document.libelle)
-              ?.path.startsWith("data:image")}
-              <img
-                src={formData.documents.find(
-                  (d) =>
-                    d.libelle === requiredFile.libelle &&
-                    d.libelleGroupe === document.libelle
-                )?.path}
-                alt="miniature"
-                class="doc-miniature"
-              />
-            {:else}
-              <span class="doc-filename">
-                {uploadedFiles[requiredFile.libelle + document.libelle]}
-              </span>
-            {/if}
-          </span>
-        {/if}
+                    <div class="grid grid-cols-2">
+                      {#each document.typeDocuments as requiredFile, index}
+                        <div class="form__grup">
+                          <label class="form_label"
+                            >{requiredFile.libelle} *</label
+                          >
+                          <div class="flex items-center">
+                            {#if uploadedFiles[requiredFile.libelle + document.libelle]}
+                              <span
+                                class="file-preview"
+                                style="margin-right:8px;"
+                              >
+                                {#if formData.documents
+                                  .find((d) => d.libelle === requiredFile.libelle && d.libelleGroupe === document.libelle)
+                                  ?.path.startsWith("data:image")}
+                                  <!-- Affiche la miniature de l'image -->
+                                  <img
+                                    src={formData.documents.find(
+                                      (d) =>
+                                        d.libelle === requiredFile.libelle &&
+                                        d.libelleGroupe === document.libelle
+                                    )?.path}
+                                    alt="miniature"
+                                    style="width:70px;height:70px;object-fit:cover;border-radius:4px;border:1px solid #ccc;"
+                                  />
+                                {:else}
+                                  <!-- Affiche le nom du fichier si ce n'est pas une image -->
+                                  <span style="font-size:12px;color:#555;">
+                                    {uploadedFiles[
+                                      requiredFile.libelle + document.libelle
+                                    ]}
+                                  </span>
+                                {/if}
+                              </span>
+                            {/if}
 
-        <input
-          accept="image/*, .pdf"
-          type="file"
-          class="form__input"
-          on:change={(e) =>
-            handleDocumentChange(
-              e,
-              requiredFile.libelle,
-              document.libelle
-            )}
-          placeholder="Documents à fournir"
-        />
+                            <input
+                              accept="image/*, .pdf"
+                              type="file"
+                              class="form__input"
+                              on:change={(e) =>
+                                handleDocumentChange(
+                                  e,
+                                  requiredFile.libelle,
+                                  document.libelle
+                                )}
+                              placeholder="Documents à fournir"
+                            />
 
-        {#if errors.documents}
-          <p class="error">{errors.documents}</p>
-        {/if}
-      </div>
-    </div>
-  {/each}
-</div>
+                            {#if errors.documents}
+                              <p class="error">{errors.documents}</p>
+                            {/if}
+                          </div>
+                        </div>
+                      {/each}
+                    </div>
                   {/each}
                 </div>
               </div>
             {/if}
 
-            <!-- Étape 4 : Paiement -->
-            {#if step === 4}
+            <!-- Étape 1 -->
+            {#if step === 2}
               <h2 class="h2-baslik-anasayfa-ozel h-yazi-margin-kucuk">
                 VEUILLEZ PROCéDER AU PAIEMENT
               </h2>
@@ -957,6 +584,9 @@
               </div>
             {/if}
 
+          
+           
+
             <!-- Boutons de navigation -->
             <div class="form__grup">
               {#if step > 1}
@@ -968,7 +598,7 @@
                 >
               {/if}
 
-              {#if step < 4}
+              {#if step < 2}
                 <button
                   type="button"
                   class="buton buton--kirmizi"
@@ -1085,53 +715,6 @@
       align-items: center;
       color: #e53e3e; /* red for PDF, change as needed */
     }
-
-
-
-    .documents-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-  gap: 2rem;
-  width: 100%;
-}
-
-.document-item {
-  background: #f9f9f9;
-  border-radius: 8px;
-  padding: 1.2rem 1rem;
-  box-shadow: 0 1px 4px rgba(0,0,0,0.04);
-  min-width: 0;
-  max-width: 100%;
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-start;
-}
-
-.doc-miniature {
-  width: 60px;
-  height: 60px;
-  object-fit: cover;
-  border-radius: 4px;
-  border: 1px solid #ccc;
-  margin-right: 10px;
-}
-
-.doc-filename {
-  font-size: 13px;
-  color: #555;
-  margin-right: 8px;
-  word-break: break-all;
-}
-
-@media (max-width: 767px) {
-  .documents-grid {
-    grid-template-columns: 1fr;
-    gap: 1rem;
-  }
-  .document-item {
-    padding: 1rem 0.5rem;
-  }
-}
   </style>
   <Footer />
 </div>

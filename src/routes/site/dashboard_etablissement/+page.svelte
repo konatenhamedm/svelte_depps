@@ -30,6 +30,27 @@
     goto("/");
   }
 
+  async function getUserStatus() {
+    try {
+      const response = await fetch(BASE_URL_API + "/etablissement/get/one/" + user.personneId);
+      if (response.ok) {
+        const result = await response.json();
+        if (result.code === 200 && result.data) {
+          console.log("result data", result.data);
+          user.status = result.data.personne.status;
+          console.log("user status", user.status);
+        } else {
+          console.error("Erreur dans la réponse de l'API:", result.message);
+        }
+      } else {
+        console.error("Erreur de récupération:", response.statusText);
+      }
+    } catch (error) {
+      console.error("Erreur API:", error);
+    } finally {
+    }
+  } 
+
   async function fetchData() {
     try {
       const response = await fetch(
@@ -69,9 +90,11 @@
   }
 
   onMount(async () => {
+    console.log("user", user);
     isLoad = true;
     await fetchData();
     await fetchDataInfo();
+    await getUserStatus();
 
     if (user.type == "PROFESSIONNEL") {
       cards = [
@@ -265,33 +288,55 @@
         class="tablo--1-ve-2 masqueur effet-revelation wow animated"
         style="visibility: visible;"
       >
-        <div class="row align-items-center">
-          <div class="col-lg-8 col-md-12 text-center text-lg-start">
-            <h1 class="h2-baslik-anasayfa-ozel h-yazi-margin-kucuk fw-bold">
-              Bienvenue sur la<br />
-              plateforme MyDEPPS
-            </h1>
-          </div>
+      <div class="row align-items-center">
+  <div class="col-lg-4 col-md-12 text-center text-lg-start">
+    <h1 class="h2-baslik-anasayfa-ozel h-yazi-margin-kucuk fw-bold">
+      Bienvenue sur la<br />
+      plateforme MyDEPPS
+    </h1>
+  </div>
 
-          <div
-            class="col-lg-4 col-md-8 mx-auto p-3 shadow-sm border rounded bg-light cursor-pointer"
+  {#if user.status == "acp_dossier_valide_directrice"}
+  <div class="col-lg-4 col-md-12 d-flex justify-content-center align-items-center my-3">
+    <button
+      class="btn btn-primary px-4 py-2 fw-bold"
+      on:click={() =>window.location.href = '/site/oep_initiate'}
+      style="font-size: 1.1rem;"
+    >
+      Passer à L'initialisation OEP
+    </button>
+  </div>
+  {:else}
+   <div class="col-lg-4 col-md-12 d-flex justify-content-center align-items-center my-3">
+     <button
+      class="btn btn-primary px-4 py-2 fw-bold"
+      on:click={() => alert('Bouton central cliqué !')}
+      style="font-size: 1.1rem;"
+    >
+     
+    </button> 
+  </div>
+
+  {/if}
+
+  <div
+    class="col-lg-4 col-md-8 mx-auto p-3 shadow-sm border rounded bg-light cursor-pointer"
+  >
+    <div class="grid grid-cols-5">
+      <a
+        href="/site/notification"
+        class="relative text-blue-500 hover:text-blue-700 flex items-center"
+      >
+        <i class="fas fa-bell text-5xl"></i>
+        {#if notificationCount > 0}
+          <span
+            class="absolute inline-flex items-center justify-center px-2 py-1
+                   text-xs font-bold text-white bg-red-600 rounded-full transform -translate-y-1/2 translate-x-1/2"
           >
-            <div class="grid grid-cols-5">
-              <!--   <li class="relative mr-4"> -->
-              <a
-                href="/site/notification"
-                class="relative text-blue-500 hover:text-blue-700 flex items-center"
-              >
-                <i class="fas fa-bell text-5xl"></i>
-                {#if notificationCount > 0}
-                  <span
-                    class="absolute inline-flex items-center justify-center px-2 py-1
-                           text-xs font-bold text-white bg-red-600 rounded-full transform -translate-y-1/2 translate-x-1/2"
-                  >
-                    {notificationCount}
-                  </span>
-                {/if}
-              </a>
+            {notificationCount}
+          </span>
+        {/if}
+      </a>
               <!--  </li> -->
 
               <div
