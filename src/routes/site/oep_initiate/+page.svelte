@@ -60,7 +60,7 @@
       uploadedFiles[libelle + libelleGroupe] = file.name;
 
       // Sauvegarde dans localStorage si besoin
-      localStorage.setItem("formData", JSON.stringify(formData));
+      localStorage.setItem("formDataOep", JSON.stringify(formData));
     };
     reader.readAsDataURL(file);
   }
@@ -137,10 +137,6 @@
     }
   }
 
-  function handleFileChange(event: any, fieldName: any) {
-    const file = event.target.files[0] || null;
-    updateFormData(fieldName, file);
-  }
 
   // 🔹 Fonction pour restaurer le formulaire après un retour
   // Restaurer les données et l'étape depuis localStorage
@@ -208,9 +204,9 @@
 
     let formDatas = new FormData();
 
-    formDatas.append("etablissement", values.userData.personne.typePersonne.libelle);
-    formDatas.append("perdsonneId", user.personneId);
+    formDatas.append("etablissement", user.personneId);
     formDatas.append("niveauIntervention", values.userData.personne.niveauIntervention.id);
+    formDatas.append("email", values.userData.email);
 
     // Ajouter les documents dans le format souhaité
     if (formData.documents && Array.isArray(formData.documents)) {
@@ -226,7 +222,7 @@
         }
       });
     }
-
+console.log("formDatas avant fichiers", formDatas);
     // Ajouter la référence et le type
     const reference = localStorage.getItem("reference");
     if (reference) {
@@ -287,11 +283,11 @@
       console.log("Réponse du serveur:", result);
 
       authenticating = false;
-
-      if (result.data && result.data.url) {
-        alert(result.data.url);
-        localStorage.setItem("reference", result.data.reference);
-        window.location.href = result.data.url + "?return=1";
+      
+      if (result && result.url) {
+        alert(result.url);
+        localStorage.setItem("reference", result.reference);
+        window.location.href = result.url + "?return=1";
       }
     } catch (error) {
       console.error("Erreur lors du paiement:", error);
@@ -314,18 +310,7 @@
   /**
    * @type {any[]}
    */
-  let objects = [
-    {
-      name: "typeDocument",
-      url: "/libelleGroupe/all/oep",
-      id: 2,
-    },
-     {
-      name: "userData",
-      url: "/etablissement/get/one",
-      id: user.personneId,
-    },
-  ];
+ 
 
   let values: {
     userData: any;
@@ -334,6 +319,20 @@
     userData: {},
     typeDocument: [],
   };
+
+   let objects = [
+    
+     {
+      name: "userData",
+      url: "/etablissement/get/one",
+      id: user.personneId,
+    },
+    {
+      name: "typeDocument",
+      url: "/libelleGroupe/all/oep",
+      id: user.typePersonne,
+    },
+  ];
 
   async function fetchData() {
     try {
@@ -365,6 +364,7 @@
 
   onMount(async () => {
     fetchData();
+    // localStorage.clear();
   });
   onMount(() => {
     //localStorage.clear();
@@ -393,7 +393,7 @@
   // Sauvegarder les données du formulaire dans localStorage à chaque modification
   function updateField(field: any, value: any) {
     formData[field] = value;
-    localStorage.setItem("formData", JSON.stringify(formData));
+    localStorage.setItem("formDataOep", JSON.stringify(formData));
   }
 </script>
 
@@ -474,7 +474,7 @@
                                 handleDocumentChange(
                                   e,
                                   requiredFile.libelle,
-                                  document.libelle
+                                  document.id
                                 )}
                               placeholder="Documents à fournir"
                             />
