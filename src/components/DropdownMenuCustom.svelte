@@ -1,18 +1,23 @@
 <script>
-  import { EditOutline, EyeOutline, TrashBinSolid } from "flowbite-svelte-icons";
+  import {
+    EditOutline,
+    EyeOutline,
+    TrashBinSolid,
+  } from "flowbite-svelte-icons";
   import { openMenu } from "../menuStore"; // Store global pour gérer un seul menu ouvert
- 
-  export let user ;
+  import { Button } from "flowbite-svelte";
+
+  export let user;
   export let item;
   export let onAction;
   let isOpen = false;
   let menuPosition = { top: "0px", left: "0px" };
   let buttonRef;
 
- console.log("UUUUU",user); 
+  console.log("UUUUU", user);
 
   const toggleMenu = (event) => {
-    openMenu.update(current => {
+    openMenu.update((current) => {
       if (current === item.id) {
         isOpen = false;
         return null;
@@ -31,71 +36,69 @@
     // Ajuster la position du menu
     menuPosition = {
       top: spaceBelow < 150 ? `${rect.top - 120}px` : `${rect.bottom + 5}px`, // 120px = approx. hauteur du menu
-      left: `${rect.left}px`
+      left: `${rect.left}px`,
     };
   };
 
   // Fermer le menu si un autre est ouvert
-  $: openMenu.subscribe(id => {
+  $: openMenu.subscribe((id) => {
     if (id !== item.id) {
       isOpen = false;
     }
   });
 </script>
 
-<div class="relative">
-  <!-- Bouton déclencheur -->
-  <button
-    bind:this={buttonRef}
-    class="p-2 hover:bg-gray-200 rounded-full transition-colors list-none cursor-pointer"
-    on:click={toggleMenu}
+
+<Button
+  color="green"
+  style="background-color: blue"
+  size="sm"
+  class="gap-2 px-3 bg-green-800"
+ on:click={() => {
+    onAction("details", item);
+    isOpen = false;
+  }}
+>
+  <EditOutline size="sm" class="mr-2" /> Détails
+</Button>
+
+{#if item?.personne?.status == "oep_demande_initie"}
+  <Button
+    color="green"
+    style="background-color: orange"
+    size="sm"
+    class="gap-2 px-3 bg-green-800"
+    on:click={() => {
+      onAction("imputation", item);
+      isOpen = false;
+    }}
   >
-    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 5v.01M12 12v.01M12 19v.01M12 6a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2z" />
-    </svg>
-  </button>
+    <EditOutline size="sm" class="mr-2" /> Imputation
+  </Button>
+  {:else}
+  <Button
+  color="green"
+  style="background-color: orange"
+  size="sm"
+  class="gap-2 px-3 bg-green-800"
+  on:click={() => {
+    onAction("view", item);
+    isOpen = false;
+  }}
+>
+  <EyeOutline size="sm" class="mr-2" /> Traiter
+</Button>
 
-  {#if isOpen}
-  <div class="menu-dropdown">
-      <!-- {#if item.personne.status != "acp_dossier_valide_directrice"} -->
-
-      <button class="menu-item  hover:text-white"
-        on:click={() => {onAction('view', item); isOpen = false;}}>
-        <EyeOutline size="sm" class="mr-2" /> Traiter
-      </button>
-
- <button class="menu-item  hover:text-white"
-      on:click={() => {onAction('details', item); isOpen = false;}}>
-      <EditOutline size="sm" class="mr-2" /> Détails
-    </button>
-   
-    {#if item?.personne?.status == "oep_demande_initie"}
- <button class="menu-item  hover:text-white"
-      on:click={() => {onAction('imputation', item); isOpen = false;}}>
-      <EditOutline size="sm" class="mr-2" /> Imputation
-    </button>
-    {/if}
-    
-    <!-- {:else} -->
-    <!-- <button class="menu-item  hover:text-white"
-    on:click={() => {onAction('details', item); isOpen = false;}}>
-    <EditOutline size="sm" class="mr-2" /> Détails
-  </button> -->
-    <!-- {/if} -->
+{/if}
 
 
-  <!-- {/if} -->
-     
-     
-  <!-- {:else if item.personne.status == "acp_dossier_valide_directrice"}
-   <button class="menu-item  hover:text-white"
-    on:click={() => {onAction('details', item); isOpen = false;}}>
-    <EditOutline size="sm" class="mr-2" /> Détails
-  </button> -->
-   <!-- {/if} -->
-    </div>
-  {/if}
-</div>
+
+
+
+
+
+
+
 
 <style>
   .menu-dropdown {

@@ -416,7 +416,7 @@
                 name="profil"
                 value="acceptation"
                 bind:group={valid_endUser.status}
-                checked
+                
               />
               <label for="conforme" class="text-gray-700 mt-2">Accepter</label>
             </div>

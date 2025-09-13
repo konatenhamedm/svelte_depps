@@ -639,7 +639,7 @@
                 name="profil"
                 value="acceptation"
                 bind:group={valid_endUser.status}
-                checked
+                
               />
               <label for="conforme" class="text-black mt-2 text-3xl"
                 >Accepter</label
@@ -678,7 +678,7 @@
                 name="profil"
                 value="validation"
                 bind:group={valid_endUser.status}
-                checked
+                
               />
               <label for="conforme" class="text-black mt-2 text-3xl"
                 >Valider</label
@@ -795,43 +795,6 @@
       <div class="col-span-2">
       </div>
       {/if}
-        <!-- <div class="col-span-2">
-          {#if status == "accepte" /* || status == "valide" */ || status == "renouvellement"}
-            {#if isLoad}
-              <Button
-                disabled={true}
-                color="alternative"
-                style="background-color: green !important; color: white;"
-                type="submit"
-              >
-                <div class="flex flex-row gap-2">
-                  <div
-                    class="w-3 h-3 rounded-full bg-white animate-bounce [animation-delay:.7s]"
-                  ></div>
-                  <div
-                    class="w-3 h-3 rounded-full bg-white animate-bounce [animation-delay:.3s]"
-                  ></div>
-                  <div
-                    class="w-3 h-3 rounded-full bg-white animate-bounce [animation-delay:.7s]"
-                  ></div>
-                </div>
-              </Button>
-            {:else}
-              <Button
-                color="alternative"
-                style="background-color: green !important; color: white;"
-                on:click={() =>
-                  status === "accepte"
-                    ? SaveFunctionSingleMethode("validation")
-                      : SaveFunctionSingleMethode("mis_a_jour")}
-                type="submit"
-                >{#if status === "accepte"}{"Valider l'inscription"}{:else if status === "renouvellement"}{"Mise au jour de l'inscription"}{/if}</Button
-              >
-            {/if}
-          {/if}
-        </div>
-      {/if} -->
-
       <div class="flex justify-end item-end">
         <Button
           color="alternative"
