@@ -908,7 +908,7 @@
             handleDocumentChange(
               e,
               requiredFile.libelle,
-              document.libelle
+              document.id
             )}
           placeholder="Documents à fournir"
         />
