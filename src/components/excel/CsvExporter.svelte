@@ -29,6 +29,18 @@
     return new Date(dateString).toLocaleDateString('fr-FR', options);
   }
 
+function formatDateFR(dateString:any) {
+  if (!dateString) return "";
+  const date = new Date(dateString);
+  if (isNaN(date.getTime())) return "";
+  const day = String(date.getDate()).padStart(2, "0");
+  const month = String(date.getMonth() + 1).padStart(2, "0");
+  const year = date.getFullYear();
+  return `${day}/${month}/${year}`;
+}
+
+
+
   function exportToCSV() {
     let rows = [];
 
@@ -52,15 +64,24 @@
         montant: item.montant,
         createdAt: item.createdAt,
       }));
-    } else {
-
-        console.log(dataP)
+    } 
+    else if (type === 'professionnel' || type === 'pro') {
       dataP = data.map((item: any) => ({
-        nom: item.personne.nom,
-        prenom: item.personne.prenoms,
-        email: item.personne.email,
-        telephone: item.personne.number,
-        profession: item.personne.profession ? item.personne.profession.libelle : ''
+        nom: item.nom,
+        prenom: item.prenoms,
+        email: item.email,
+        telephone: item.number,
+        profession: item.profession ? item.profession.libelle : ''
+      }));
+    }
+    
+    else {
+
+      dataP = data.map((item: any) => ({
+     entity:item.personne?.typePersonne?.libelle || "N/A",
+     Email: item.email || "N/A",
+     Imputation: item.personne?.imputationData?.username  || "N/A",
+     cree: item.personne?.createdAt ? formatDatePaiement(item.personne?.createdAt) : "N/A",
       }));
     }
 
@@ -101,11 +122,12 @@
           item.profession || 'N/A' 
         ]);
       } else {
+        console.log("dans csv",item)
         rows.push([
-          item.nomEtablissement || 'N/A',
-          item.responsable || 'N/A',
-          item.email || 'N/A',
-          item.telephone || 'N/A',
+           item.entity || 'N/A',
+           item.Email || 'N/A',
+           item.Imputation || 'N/A',
+           item.cree || 'N/A',
         ]);
       }
     });

@@ -89,8 +89,8 @@ $: showNotification = false
   function updateFilteredData() {
     if (professionnels.length > 0) {
       console.log(
-        "Structure d'un professionnel:",
-        JSON.stringify(professionnels[0], null, 2)
+        "Structure d'un établissement:",
+        JSON.stringify(etablissements[0], null, 2)
       );
     }
 
@@ -408,7 +408,7 @@ $: showNotification = false
                   : 'Liste des professionnels à jour'}
             headers={activeTab === 'professionnel' || activeTab === 'pro'
               ? ['Nom', 'Prénoms', 'Téléphone', 'Email', 'Profession']
-              : ['Nom', 'Adresse', 'Téléphone', 'Email', 'Profession']}
+              : ['Entité Juridique','Email','Imputation', 'Créé le ']}
             data={activeTab === 'professionnel'
               ? filteredProfessionnels
               : activeTab === 'etablissement'
@@ -439,14 +439,14 @@ $: showNotification = false
                   'Téléphone',
                   'Profession'
                 ]
-              : ['Nom', 'Adresse', 'Téléphone', 'Email', 'Profession']}
-            data={activeTab === 'professionnel'
+              : ['Entité Juridique','Email','Imputation', 'Créé le']}
+            data={activeTab === 'professionnel' || activeTab === 'pro'
               ? filteredProfessionnels
               : activeTab === 'etablissement'
                 ? filteredEtablissements
                 : filteredProfessionnelsAjour}
             typeUser={activeTab}
-            type = 'professionnel'
+           type={activeTab}
           />
         </div>
       </div>
@@ -537,9 +537,7 @@ $: showNotification = false
         <TableHead
           class="border-y border-gray-200 bg-gray-100 dark:border-gray-700"
         >
-
-       
-          {#each ['Nom', 'Adresse', 'Téléphone', 'Email', 'Entité Juridique'] as title}
+          {#each ['Entité Juridique','Email','Imputer'] as title}
             <TableHeadCell class="ps-4 font-normal border border-gray-300"
               >{title}</TableHeadCell
             >
@@ -567,32 +565,20 @@ $: showNotification = false
           {:else}
             {#each filteredEtablissements.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage) as item}
               <TableBodyRow class="text-base border border-gray-300">
-                <TableBodyCell class="p-4 border border-gray-300"
-                  >{item.personne.denomination ?? item.personne.nom ?? 'N/A'}</TableBodyCell
-                >
-                <TableBodyCell class="p-4 border border-gray-300"
-                  >{item.adresse ?? 'N/A'}</TableBodyCell
-                >
-                <TableBodyCell class="p-4 border border-gray-300"
-                  >{item.personne.telephone ?? 'N/A'}</TableBodyCell
+                
+                  <TableBodyCell class="p-4 border border-gray-300"
+                  >{item.personne?.typePersonne?.libelle ??
+                    'N/A'}</TableBodyCell
                 >
                 <TableBodyCell class="p-4 border border-gray-300"
                   >{item.email ?? 'N/A'}</TableBodyCell
                 >
+                
                 <TableBodyCell class="p-4 border border-gray-300"
-                  >{item.personne?.typePersonne?.libelle ??
+                  >{item.personne?.imputationData?.username ??
                     'N/A'}</TableBodyCell
                 >
-                <!-- <TableBodyCell class="p-4 border border-gray-300"
-                  >
-                  <button  class="button-33" type="button" on:click={()=>{
-                   handleChangeStatus(item.id,"validate")
-                  }}> Valider</button>
-                  <button class="button-34" on:click={()=>{
-                    handleChangeStatus(item.id,"cancelled")
-                  }}> Annuler</button>
-                  </TableBodyCell
-                > -->
+               
               </TableBodyRow>
             {/each}
           {/if}

@@ -42,7 +42,7 @@
   let filteredProfessionnels: any[] = [];
   let filteredProfessionnelsAjour: any[] = [];
   let filteredEtablissements: any[] = [];
-
+  let dossierFilter = "all"; // "all", "accepted", "rejected"
   // Filtre par statut
   let selectedStatus: string = '';
   let statusOptions = [
@@ -136,7 +136,7 @@
       }
 
       if (listeProfessionnels) {
-        console.log('Professionnels:', listeProfessionnels.data);
+        console.log('Professionnels Edited:', listeProfessionnels.data);
         professionnels = listeProfessionnels.data || [];
         //  professionnelsAjour = professionnels.filter(p => p.personne?.status === 'a_jour');
       }
@@ -166,6 +166,27 @@
     let tempProfessionnels = professionnels;
     let tempProfessionnelsAjour = professionnelsAjour;
     let tempEtablissements = etablissements;
+    console.log("DOssier filter", dossierFilter)
+    if (dossierFilter) {
+      tempProfessionnels = tempProfessionnels.filter((p) =>
+        dossierFilter === 'all'
+          ? true
+          : dossierFilter === 'accepted'
+          ? p.personne?.status === 'accepte'
+          : dossierFilter === 'rejected'
+          ? p.personne?.status === 'rejete'
+          : dossierFilter === 'attente'
+          ? p.personne?.status === 'en_attente'
+          : dossierFilter === 'validated'
+          ? p.personne?.status === 'valide'
+          : dossierFilter === 'a_jour'
+          ? p.personne?.status === 'a_jour'
+          : dossierFilter === 'refuse'
+          ? p.personne?.status === 'refuse'
+          : true
+      );
+    }
+
 
     if (selectedProfession) {
       const selectedProfessionId = Number(selectedProfession);
@@ -212,8 +233,9 @@ filteredEtablissements = tempEtablissements; */
     currentPage = 1;
   }
 
-  function handleCardClick(type: 'professionnel' | 'etablissement' | 'pro') {
-    activeTab = type;
+  function handleCardClick(type:any) {
+    // activeTab = type;
+    dossierFilter = type;
     currentPage = 1;
     updateFilteredData();
   }
@@ -258,9 +280,41 @@ $: endRange = Math.min(currentPage + itemsPerPage, totalPages);
 <div class="p-4">
   <section class="content">
     <div class="grid grid-cols-5 lg:grid-cols-5 gap-4 mb-6">
+       <!-- Tous les dossiers -->
+      <button
+            on:click={() => handleCardClick("all")}
+        class={`text-left bg-white rounded-lg shadow p-4 border transition-all flex flex-col
+          ${dossierFilter === "all" ? 'border-blue-500' : 'border-gray-100 hover:border-blue-300'}`}
+      >
+        <div class="flex items-center justify-between">
+          <div class="text-sm font-medium text-gray-500">
+          Tous les dossiers
+          </div>
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            class="h-4 w-4 text-gray-400"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
+            />
+          </svg>
+        </div>
+        <div class="text-xs text-gray-400 mt-1">Statistique actuelle</div>
+        <div class="text-lg font-semibold mt-2 text-blue-500">
+          {stats.atttente}
+        </div>
+      </button>
       <!-- En attente -->
-      <div
-        class="bg-white rounded-lg shadow p-4 border border-gray-100 flex flex-col"
+      <button
+            on:click={() => handleCardClick("attente")}
+        class={`text-left bg-white rounded-lg shadow p-4 border transition-all flex flex-col
+          ${dossierFilter === "attente" ? 'border-blue-500' : 'border-gray-100 hover:border-blue-300'}`}
       >
         <div class="flex items-center justify-between">
           <div class="text-sm font-medium text-gray-500">
@@ -285,14 +339,17 @@ $: endRange = Math.min(currentPage + itemsPerPage, totalPages);
         <div class="text-lg font-semibold mt-2 text-blue-500">
           {stats.atttente}
         </div>
-      </div>
+      </button>
 
       <!-- Acceptés -->
-      <div
-        class="bg-white rounded-lg shadow p-4 border border-gray-100 flex flex-col"
+     <button
+            on:click={() =>handleCardClick("accepted")}
+
+        class={`text-left bg-white rounded-lg shadow p-4 border transition-all flex flex-col
+          ${dossierFilter === "accepted" ? 'border-blue-500' : 'border-gray-100 hover:border-blue-300'}`}
       >
         <div class="flex items-center justify-between">
-          <div class="text-sm font-medium text-gray-500">Dossiers acceptés</div>
+          <label class="text-sm font-medium text-gray-500">Dossiers acceptés</label>
           <svg
             xmlns="http://www.w3.org/2000/svg"
             class="h-4 w-4 text-green-400"
@@ -312,11 +369,14 @@ $: endRange = Math.min(currentPage + itemsPerPage, totalPages);
         <div class="text-lg font-semibold mt-2 text-green-500">
           {stats.accepte}
         </div>
-      </div>
+      </button>
 
       <!-- Rejetés -->
-      <div
-        class="bg-white rounded-lg shadow p-4 border border-gray-100 flex flex-col"
+      <button
+            on:click={() => handleCardClick("rejected")}
+        class={`text-left bg-white rounded-lg shadow p-4 border transition-all flex flex-col
+          ${dossierFilter === "rejected" ? 'border-blue-500' : 'border-gray-100 hover:border-blue-300'}`}
+        
       >
         <div class="flex items-center justify-between">
           <div class="text-sm font-medium text-gray-500">Dossiers rejetés</div>
@@ -339,11 +399,13 @@ $: endRange = Math.min(currentPage + itemsPerPage, totalPages);
         <div class="text-lg font-semibold mt-2 text-red-500">
           {stats.rejete}
         </div>
-      </div>
+      </button>
 
       <!-- Validés -->
-      <div
-        class="bg-white rounded-lg shadow p-4 border border-gray-100 flex flex-col"
+      <button
+            on:click={() => handleCardClick("validated")}
+        class={`text-left bg-white rounded-lg shadow p-4 border transition-all flex flex-col
+          ${dossierFilter === "validated" ? '  border-blue-500' : ' border-gray-100 hover:border-blue-300'}`}
       >
         <div class="flex items-center justify-between">
           <div class="text-sm font-medium text-gray-500">Dossiers validés</div>
@@ -366,11 +428,13 @@ $: endRange = Math.min(currentPage + itemsPerPage, totalPages);
         <div class="text-lg font-semibold mt-2 text-green-500">
           {stats.valide}
         </div>
-      </div>
+      </button>
 
       <!-- À jour -->
-      <div
-        class="bg-white rounded-lg shadow p-4 border border-gray-100 flex flex-col"
+      <button
+            on:click={() => handleCardClick("a_jour")}
+        class={`text-left bg-white rounded-lg shadow p-4 border transition-all flex flex-col
+          ${dossierFilter === "a_jour" ? 'border-blue-500' : 'border-gray-100 hover:border-blue-300'}`}
       >
         <div class="flex items-center justify-between">
           <div class="text-sm font-medium text-gray-500">Dossiers à jour</div>
@@ -393,7 +457,34 @@ $: endRange = Math.min(currentPage + itemsPerPage, totalPages);
         <div class="text-lg font-semibold mt-2 text-blue-500">
           {stats.a_jour}
         </div>
-      </div>
+      </button>
+      <!-- <button
+            on:click={() => handleCardClick("renew")}
+        class={`text-left bg-white rounded-lg shadow p-4 border transition-all flex flex-col
+          ${dossierFilter === "renew" ? 'border-blue-500' : 'border-gray-100 hover:border-blue-300'}`}
+      >
+        <div class="flex items-center justify-between">
+          <div class="text-sm font-medium text-gray-500">Renouvellement</div>
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            class="h-4 w-4 text-blue-400"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M5 13l4 4L19 7"
+            />
+          </svg>
+        </div>
+        <div class="text-xs text-gray-400 mt-1">Statistique actuelle</div>
+        <div class="text-lg font-semibold mt-2 text-blue-500">
+          {stats.renouvelle}
+        </div>
+      </button> -->
     </div>
 
     <div class="bg-white rounded-lg shadow overflow-hidden">
@@ -649,7 +740,7 @@ $: endRange = Math.min(currentPage + itemsPerPage, totalPages);
             <tr>
               <th
                 class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase"
-                >Nomnjhh</th
+                >Nom</th
               >
               <th
                 class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase"
@@ -736,3 +827,5 @@ $: endRange = Math.min(currentPage + itemsPerPage, totalPages);
     {/if}
   </section>
 </div>
+
+

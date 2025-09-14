@@ -52,9 +52,21 @@
   function formatMontantPerso(montant) {
   return montant.toLocaleString('fr-FR') + ' FCFA';
 }
+
+function formatDateFR(dateString) {
+  if (!dateString) return "";
+  const date = new Date(dateString);
+  if (isNaN(date.getTime())) return "";
+  const day = String(date.getDate()).padStart(2, "0");
+  const month = String(date.getMonth() + 1).padStart(2, "0");
+  const year = date.getFullYear();
+  return `${day}/${month}/${year}`;
+}
+
+
   function exportToPDF() {
     const doc = new jsPDF();
-
+    console.log('type selected', type);
     getImageFromLocalPath("/_files/depps.png", (logoImage) => {
       addHeader(doc, logoImage);
 
@@ -81,7 +93,13 @@
            
           ];
         } else {
-          // ... (garder la logique existante)
+            return [
+            item.personne?.typePersonne?.libelle || "N/A",
+            item.email || "N/A",
+            item.personne?.imputationData?.username  || "N/A",
+            item.personne.createdAt ? formatDateFR(item.personne.createdAt) : "N/A",
+           
+          ];
         }
       });
 
