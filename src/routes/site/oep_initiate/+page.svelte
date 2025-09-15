@@ -32,38 +32,25 @@
   /////fin
   interface DocumentItem {
     libelle: string;
-    path: string; // chemin ou base64 du fichier
+    path: any; // chemin ou base64 du fichier
     libelleGroupe: string;
   }
   let uploadedFiles: { [key: string]: string } = {}; // key: libelle+libelleGroupe, value: file name or base64
 
-  function handleDocumentChange(
-    event: Event,
-    libelle: string,
-    libelleGroupe: any
-  ) {
-    const target = event.target as HTMLInputElement;
-    const file = target.files?.[0];
+ function handleDocumentChange(event: Event, libelle: string, libelleGroupe: any) {
+  const target = event.target as HTMLInputElement;
+  const file = target.files?.[0];
+  if (!file) return;
 
-    if (!file) return;
+  formData.documents.push({
+    libelle,
+    path: file, // on garde le File brut
+    libelleGroupe,
+  });
 
-    const reader = new FileReader();
-    reader.onload = () => {
-      const base64 = reader.result as string;
-
-      // On ajoute l'objet formaté dans formData.documents
-      formData.documents.push({
-        libelle: libelle,
-        path: base64, // ou file.name si tu veux juste le nom
-        libelleGroupe: libelleGroupe,
-      });
-      uploadedFiles[libelle + libelleGroupe] = file.name;
-
-      // Sauvegarde dans localStorage si besoin
-      localStorage.setItem("formDataOep", JSON.stringify(formData));
-    };
-    reader.readAsDataURL(file);
-  }
+  uploadedFiles[libelle + libelleGroupe] = file.name;
+  localStorage.setItem("formDataOep", JSON.stringify(formData));
+}
 
   let formData: {
    
@@ -207,6 +194,7 @@
     formDatas.append("etablissement", user.personneId);
     formDatas.append("niveauIntervention", values.userData.personne.niveauIntervention.id);
     formDatas.append("email", values.userData.email);
+    formDatas.append("user", user.id);
 
     // Ajouter les documents dans le format souhaité
     if (formData.documents && Array.isArray(formData.documents)) {
@@ -274,7 +262,7 @@ console.log("formDatas avant fichiers", formDatas);
     console.log("formDatas", formDatas);
 
     try {
-      const response = await fetch(`${BASE_URL_API}/paiement/inite/ope`, {
+      const response = await fetch(`${BASE_URL_API}/paiement/inite/oep`, {
         method: "POST",
         body: formDatas,
       });
@@ -364,7 +352,7 @@ console.log("formDatas avant fichiers", formDatas);
 
   onMount(async () => {
     fetchData();
-    // localStorage.clear();
+    localStorage.removeItem("formDataOep");
   });
   onMount(() => {
     //localStorage.clear();

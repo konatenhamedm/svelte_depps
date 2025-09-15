@@ -37,6 +37,7 @@
   let professionnels: any[] = [];
   let professionnelsAjour: any[] = [];
   let etablissements: any[] = [];
+  let allEtab2: any[] = [];
   let professions: any[] = [];
   let selectedProfession: string = '';
   let filteredProfessionnels: any[] = [];
@@ -116,15 +117,13 @@
         statsUrl = `/statistique/info-dashboard/by/typeuser/${userType}/${userId}`;
       }
 
-      const [statsRes, listeProfessionnels, profRes] = await Promise.all([
+      const [statsRes, listeProfessionnels, profRes, allEtab] = await Promise.all([
         apiFetch(true, statsUrl),
         apiFetch(true, `/professionnel/`),
-        /*   apiFetch(true, `/professionnel/`), */
-        /*  apiFetch(true, `/professionnel/imputation/list/${userId}`),
-                apiFetch(true, `/professionnel/imputation/list/${userId}`), */
         apiFetch(true, '/profession/'),
+        apiFetch(true, '/etablissement/'),
       ]);
-
+      allEtab2 = allEtab.data || [];
       if (statsRes) {
         if (statsRes.data) {
           stats = {
@@ -168,7 +167,11 @@
     let tempEtablissements = etablissements;
     console.log("DOssier filter", dossierFilter)
     if (dossierFilter) {
-      tempProfessionnels = tempProfessionnels.filter((p) =>
+      if(dossierFilter === 'etablissement') {
+        tempProfessionnels = allEtab2;
+      
+      } else {
+        tempProfessionnels = tempProfessionnels.filter((p) =>
         dossierFilter === 'all'
           ? true
           : dossierFilter === 'accepted'
@@ -187,6 +190,8 @@
           ? p.personne?.status === 'renouvellement'
           : true
       );
+      }
+     
     }
 
 
@@ -309,7 +314,7 @@ $: endRange = Math.min(currentPage + itemsPerPage, totalPages);
         </div>
         <div class="text-xs text-gray-400 mt-1">Statistique actuelle</div>
         <div class="text-lg font-semibold mt-2 text-blue-500">
-          {stats.atttente + stats.accepte + stats.rejete + stats.valide + stats.refuse + stats.renouvelle + stats.a_jour}
+          {stats.atttente + stats.accepte + stats.rejete + stats.valide + stats.refuse + stats.renouvelle + stats.a_jour + allEtab2.length}
         </div>
       </button>
       <!-- En attente -->
@@ -460,13 +465,13 @@ $: endRange = Math.min(currentPage + itemsPerPage, totalPages);
           {stats.a_jour}
         </div>
       </button>
-      <!-- <button
-            on:click={() => handleCardClick("renew")}
+      <button
+            on:click={() => handleCardClick("etablissement")}
         class={`text-left bg-white rounded-lg shadow p-4 border transition-all flex flex-col
-          ${dossierFilter === "renew" ? 'border-blue-500' : 'border-gray-100 hover:border-blue-300'}`}
+          ${dossierFilter === "etablissement" ? 'border-blue-500' : 'border-gray-100 hover:border-blue-300'}`}
       >
         <div class="flex items-center justify-between">
-          <div class="text-sm font-medium text-gray-500">Renouvellement</div>
+          <div class="text-sm font-medium text-gray-500">Etablissement</div>
           <svg
             xmlns="http://www.w3.org/2000/svg"
             class="h-4 w-4 text-blue-400"
@@ -484,9 +489,9 @@ $: endRange = Math.min(currentPage + itemsPerPage, totalPages);
         </div>
         <div class="text-xs text-gray-400 mt-1">Statistique actuelle</div>
         <div class="text-lg font-semibold mt-2 text-blue-500">
-          {stats.renouvelle}
+          {allEtab2.length}
         </div>
-      </button> -->
+      </button>
     </div>
 
     <div class="bg-white rounded-lg shadow overflow-hidden">

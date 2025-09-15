@@ -308,13 +308,7 @@
   </div>
   {:else}
    <div class="col-lg-4 col-md-12 d-flex justify-content-center align-items-center my-3">
-     <button
-      class="btn btn-primary px-4 py-2 fw-bold"
-      on:click={() => alert('Bouton central cliqué !')}
-      style="font-size: 1.1rem;"
-    >
      
-    </button> 
   </div>
 
   {/if}

@@ -253,7 +253,7 @@
               >
                 {#if user.type == 'ADMINISTRATEUR'}
 
-                  {#each ['email',"Niveau d'Intervention", 'Téléphone/Autre email',  'Entité Juridique',  'imputation'] as title}
+                  {#each ['email', 'Téléphone/Autre email',  'Entité Juridique',  'imputation'] as title}
                     {#if title}
                       <TableHeadCell
                         class="ps-4 font-normal border border-gray-300"
@@ -268,7 +268,7 @@
                   {#if activeTab === 'valide'}
 
                   {#if user.type === "SOUS-DIRECTEUR"  }
-                  {#each ['email',"Niveau d'Intervention", 'Téléphone/Autre email',  'Entité Juridique',  'Imputation', 'Action'] as title}
+                  {#each ['email','Téléphone/Autre email',  'Entité Juridique',  'Imputation', 'Action'] as title}
                   {#if title}
                     <TableHeadCell
                       class="ps-4 font-normal border border-gray-300"
@@ -290,7 +290,7 @@
                   {/if}
                     
                   {:else}
-                    {#each ['email',"Niveau d'Intervention", 'Téléphone/Autre email',  'Entité Juridique',  'Imputation', 'Action'] as title}
+                    {#each ['email', 'Téléphone/Autre email',  'Entité Juridique',  'Imputation', 'Action'] as title}
                       {#if title}
                         <TableHeadCell
                           class="ps-4 font-normal border border-gray-300"
@@ -350,11 +350,11 @@
                        <TableBodyCell class="p-4 border border-gray-300"
                         >{item.email}</TableBodyCell
                       >
-                        <TableBodyCell class="p-4 border border-gray-300"
-                        >{item.personne.niveauIntervention.libelle}</TableBodyCell
-                      >
+                        <!-- <TableBodyCell class="p-4 border border-gray-300"
+                        >{item.personne.niveauIntervention.libelle ?? "N/A"}</TableBodyCell
+                      > -->
                       <TableBodyCell class="p-4 border border-gray-300"
-                        >{item.personne.telephone ?? item.personne.emailAutre}</TableBodyCell
+                        >{item.personne.telephone || item.personne.emailAutre}</TableBodyCell
                       >
                      
                        <TableBodyCell class="p-4 border border-gray-300"
