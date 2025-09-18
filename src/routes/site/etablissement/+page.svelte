@@ -878,23 +878,23 @@
     <div class="document-item">
       <label class="form_label">{requiredFile.libelle} *</label>
       <div class="flex items-center">
-        {#if uploadedFiles[requiredFile.libelle + document.libelle]}
+        {#if uploadedFiles[requiredFile.libelle + document.id]}
           <span class="file-preview" style="margin-right:8px;">
             {#if formData.documents
-              .find((d) => d.libelle === requiredFile.libelle && d.libelleGroupe === document.libelle)
+              .find((d) => d.libelle === requiredFile.libelle && d.libelleGroupe === document.id)
               ?.path.startsWith("data:image")}
               <img
                 src={formData.documents.find(
                   (d) =>
                     d.libelle === requiredFile.libelle &&
-                    d.libelleGroupe === document.libelle
+                    d.libelleGroupe === document.id
                 )?.path}
                 alt="miniature"
                 class="doc-miniature"
               />
             {:else}
               <span class="doc-filename">
-                {uploadedFiles[requiredFile.libelle + document.libelle]}
+                {uploadedFiles[requiredFile.libelle + document.id]}
               </span>
             {/if}
           </span>
@@ -1090,7 +1090,7 @@
 
     .documents-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(500px, 1fr));
   gap: 2rem;
   width: 100%;
 }
