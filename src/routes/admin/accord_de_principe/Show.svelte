@@ -366,13 +366,13 @@
             type="submit">Rejet directeur/rice</Button
           >
         {:else if data.personne.status == "acp_dossier_valide_directrice"}
-          <Button
+          <!-- <Button
             color="alternative"
             style="background-color: green !important; color: white;"
             on:click={() =>
               SaveFunctionSingleMethode("initiation_demande_exploitation")}
             type="submit">Initier OEP</Button
-          >
+          > -->
         {:else if data.personne.status == "oep_demande_initie"}
           <Button
             color="alternative"

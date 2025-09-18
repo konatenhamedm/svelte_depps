@@ -80,7 +80,7 @@
     { key: "acp_attente_dossier_depot_service_courrier", label: "ACP de dépôt de dossier" },
     { key: "acp_dossier_attente_validation_directrice", label: "ACP validation directrice" },
     { key: "acp_dossier_valide_directrice", label: "ACP Validé par la directrice" },
-    { key: "oep_demande_initie", label: "OEP initié" },
+    { key: "oep_demande_initie", label: "Initié" },
     { key: "oep_dossier_imputer", label: "OEP dossier imputer" },
     { key: "oep_dossier_imputer_conforme_attente_planification_visite", label: "OEP dossier conforme en attente" },
     { key: "oep_dossier_imputer_non_conforme", label: "OEP imputer non conforme" },

@@ -89,8 +89,8 @@
   // Liste des onglets avec leur label et couleur
   const tabs = [
   { key: "acp_attente_dossier_depot_service_courrier", label: "Attente dossier" },
-    { key: "acp_dossier_attente_validation_directrice", label: "Attente validation Dr" },
-    { key: "acp_dossier_valide_directrice", label: "ACP dossier validé" },
+    { key: "acp_dossier_attente_validation_directrice", label: "Attente validation" },
+    { key: "acp_dossier_valide_directrice", label: 'Dossier validé' },
    
   ];
   let statusCounts: {[key: string]: number} = {};
@@ -364,6 +364,8 @@
                         <TableBodyCell class="p-4 border border-gray-300"
                         >{item.personne.imputationData ? item.personne.imputationData.username : 'Non assigné'}</TableBodyCell
                       >
+
+             
                       <!-- {#if activeTab === 'valide'}
                         <TableBodyCell class="p-4 border border-gray-300"
                           >{item.personne.code}</TableBodyCell
@@ -440,13 +442,13 @@
 <Add
   bind:open={openAdd}
   data={current_data}
-  sizeModal="full"
+  sizeModal="xl"
   userUpdateId={user?.id}
 />
 <Edit
   bind:open={openEdit}
   data={current_data}
-  sizeModal="full"
+  sizeModal="xl"
   userUpdateId={user?.id}
 />
 
@@ -454,7 +456,7 @@
   <Show
     bind:open={openShow}
     data={current_data}
-    sizeModal="full"
+    sizeModal="xl"
     userUpdateId={user.id}
   />
 {/if}
@@ -462,7 +464,7 @@
   <ShowDetails
     bind:open={openShowDetails}
     data={current_data}
-    sizeModal="full"
+    sizeModal="xl"
     userUpdateId={user.id}
   />
 {/if}
@@ -470,7 +472,7 @@
   <Imputation
     bind:open={openImputation}
     data={current_data}
-    sizeModal="full"
+    sizeModal="xs"
     userUpdateId={user.id}
   />
 {/if}

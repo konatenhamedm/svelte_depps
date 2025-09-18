@@ -48,13 +48,12 @@
   });
 </script>
 
-
 <Button
   color="green"
   style="background-color: blue"
   size="sm"
   class="gap-2 px-3 bg-green-800"
- on:click={() => {
+  on:click={() => {
     onAction("details", item);
     isOpen = false;
   }}
@@ -75,30 +74,20 @@
   >
     <EditOutline size="sm" class="mr-2" /> Imputation
   </Button>
-  {:else}
+{:else if item?.personne?.status != "acp_dossier_valide_directrice" && item?.personne?.status != "oep_dossier_conforme" && item?.personne?.status != "oep_dossier_non_conforme"}
   <Button
-  color="green"
-  style="background-color: orange"
-  size="sm"
-  class="gap-2 px-3 bg-green-800"
-  on:click={() => {
-    onAction("view", item);
-    isOpen = false;
-  }}
->
-  <EyeOutline size="sm" class="mr-2" /> Traiter
-</Button>
-
+    color="green"
+    style="background-color: orange"
+    size="sm"
+    class="gap-2 px-3 bg-green-800"
+    on:click={() => {
+      onAction("view", item);
+      isOpen = false;
+    }}
+  >
+    <EyeOutline size="sm" class="mr-2" /> Traiter
+  </Button>
 {/if}
-
-
-
-
-
-
-
-
-
 
 <style>
   .menu-dropdown {
