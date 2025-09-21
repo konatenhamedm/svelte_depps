@@ -622,7 +622,7 @@ $: endRange = Math.min(currentPage + itemsPerPage, totalPages);
         >
 
         
-          {#each ['N°', 'Nom', 'Prénoms','Téléphone', 'Email', 'Profession','Statut'] as title}
+          {#each ['N°', 'Nom & Prénoms','Téléphone/Adresse', 'Email', 'Profession / Entité Juridique','Statut'] as title}
             <TableHeadCell class="ps-4 font-normal border border-gray-300"
               >{title}</TableHeadCell
             >
@@ -653,20 +653,20 @@ $: endRange = Math.min(currentPage + itemsPerPage, totalPages);
                   >{key + 1}</TableBodyCell
                 >
                 <TableBodyCell class="p-4 border border-gray-300"
-                  >{item.personne?.nom ?? 'N/A'}</TableBodyCell
+                  >{item.personne?.nom ? item.personne.nom + ' ' + item.personne?.prenoms: item.personne.denomination}</TableBodyCell
                 >
-                <TableBodyCell class="p-4 border border-gray-300"
+                <!-- <TableBodyCell class="p-4 border border-gray-300"
                   >{item.personne?.prenoms ?? 'N/A'}</TableBodyCell
+                > -->
+                <TableBodyCell class="p-4 border border-gray-300"
+                  >{item.personne?.telephone ? item.personne.telephone : item.personne.adresse ? item.personne.adresse : item.personne.number}</TableBodyCell
                 >
                 <TableBodyCell class="p-4 border border-gray-300"
-                  >{item.personne?.number ?? 'N/A'}</TableBodyCell
-                >
-                <TableBodyCell class="p-4 border border-gray-300"
-                  >{item.personne?.email ?? 'N/A'}</TableBodyCell
+                  >{item.personne?.email ?? item.email}</TableBodyCell
                 >
                 <TableBodyCell class="p-4 border border-gray-300"
                   >{item.personne?.profession?.libelle ??
-                    'N/A'}</TableBodyCell
+                    item.personne.typePersonne.libelle}</TableBodyCell
                 >
                 <TableBodyCell class="p-4 border border-gray-300"
                   >{item.personne?.status ??
