@@ -58,7 +58,7 @@
 
     {#if item?.personne?.status == "attente" }
  <Button  color="blue"
-  style="background-color: blue"
+  style="background-color: blue-800"
   size="sm"
   class="gap-2 px-3 bg-green-800"
       on:click={() => {onAction('details', item); isOpen = false;}}>

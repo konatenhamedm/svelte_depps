@@ -132,7 +132,8 @@
         const errorData = await res.json();
         console.error("Error response:", errorData);
         alert("Erreur lors du traitement: " + errorData.errors[0]);
-        // isLoad = false;
+        isLoad = false;
+        open = false;
       }
     } catch (error) {
       console.error("Error saving:", error);
@@ -315,7 +316,7 @@
       <textarea
         bind:value={raison}
         placeholder="Observation"
-        class="w-full border border-gray-300 rounded-md p-2"
+        class="w-full border border-gray-300 rounded-md p-2 text-black"
       ></textarea>
       {#if data.personne.status == "oep_dossier_imputer" || data.personne.status == "oep_visite_effectue_attente_validation_directrice"}
         <label
@@ -334,7 +335,7 @@
         <textarea
           bind:value={rapportExamen}
           placeholder="Rapport de l'examen"
-          class="w-full border border-gray-300 rounded-md p-2"
+          class="w-full border border-gray-300 rounded-md p-2 text-black"
         ></textarea>
        =
       {/if}

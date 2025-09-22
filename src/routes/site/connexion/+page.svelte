@@ -55,7 +55,7 @@
   }
   onMount(() => {
     localStorage.clear();
-   
+    sessionStorage.clear();
   });
 </script>
 

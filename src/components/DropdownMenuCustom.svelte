@@ -50,7 +50,7 @@
 
 <Button
   color="green"
-  style="background-color: blue"
+  style="background-color: #318ce7"
   size="sm"
   class="gap-2 px-3 bg-green-800"
   on:click={() => {
@@ -64,7 +64,7 @@
 {#if item?.personne?.status == "oep_demande_initie"}
   <Button
     color="green"
-    style="background-color: orange"
+    style="background-color: #d5c043"
     size="sm"
     class="gap-2 px-3 bg-green-800"
     on:click={() => {
@@ -77,7 +77,7 @@
 {:else if item?.personne?.status != "acp_dossier_valide_directrice" && item?.personne?.status != "oep_dossier_conforme" && item?.personne?.status != "oep_dossier_non_conforme"}
   <Button
     color="green"
-    style="background-color: orange"
+    style="background-color: #E1B941"
     size="sm"
     class="gap-2 px-3 bg-green-800"
     on:click={() => {

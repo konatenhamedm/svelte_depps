@@ -425,20 +425,20 @@ console.log("formDatas avant fichiers", formDatas);
                             >{requiredFile.libelle} *</label
                           >
                           <div class="flex items-center">
-                            {#if uploadedFiles[requiredFile.libelle + document.libelle]}
+                            {#if uploadedFiles[requiredFile.libelle + document.id]}
                               <span
                                 class="file-preview"
                                 style="margin-right:8px;"
                               >
                                 {#if formData.documents
-                                  .find((d) => d.libelle === requiredFile.libelle && d.libelleGroupe === document.libelle)
+                                  .find((d) => d.libelle === requiredFile.libelle && d.libelleGroupe === document.id)
                                   ?.path.startsWith("data:image")}
                                   <!-- Affiche la miniature de l'image -->
                                   <img
                                     src={formData.documents.find(
                                       (d) =>
                                         d.libelle === requiredFile.libelle &&
-                                        d.libelleGroupe === document.libelle
+                                        d.libelleGroupe === document.id
                                     )?.path}
                                     alt="miniature"
                                     style="width:70px;height:70px;object-fit:cover;border-radius:4px;border:1px solid #ccc;"
@@ -447,7 +447,7 @@ console.log("formDatas avant fichiers", formDatas);
                                   <!-- Affiche le nom du fichier si ce n'est pas une image -->
                                   <span style="font-size:12px;color:#555;">
                                     {uploadedFiles[
-                                      requiredFile.libelle + document.libelle
+                                      requiredFile.libelle + document.id
                                     ]}
                                   </span>
                                 {/if}
