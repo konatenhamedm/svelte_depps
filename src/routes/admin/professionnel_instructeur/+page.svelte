@@ -1,7 +1,7 @@
 <script lang="ts">
   import Entete from "$components/_includes/Entete.svelte";
   import {
-    Button,
+    
     Input,
     Table,
     TableBody,
@@ -10,22 +10,13 @@
     TableHead,
     TableHeadCell
   } from "flowbite-svelte";
-  import {
-    EditOutline,
-    TrashBinSolid,
-    EyeOutline,
-    LockOpenOutline,
-    LockOutline,
-    CheckCircleOutline
-  } from "flowbite-svelte-icons";
   import Pagination from "$components/_includes/Pagination.svelte";
   import { pageSize } from "../../../store";
   import { get } from "svelte/store";
-  import { onMount, onDestroy } from "svelte";
-  import MessageError from "$components/MessageError.svelte";
+  import { onMount } from "svelte";
 
-  import { apiFetch, BASE_URL_API } from "$lib/api";
-  import type { EndUser, professionnel } from "../../../types";
+  import { apiFetch } from "$lib/api";
+  import type {  professionnel } from "../../../types";
   import Add from "./Add.svelte";
   import Edit from "./Edit.svelte";
   import Show from "./Show.svelte";

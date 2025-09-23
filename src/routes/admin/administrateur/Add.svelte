@@ -36,6 +36,10 @@
       libelle: "INSTRUCTEUR"
     },
     {
+      id: "INSTRUCTEUR-SECOND",
+      libelle: "INSTRUCTEUR-SECOND"
+    },
+    {
       id: "SOUS-DIRECTEUR",
       libelle: "SOUS-DIRECTEUR"
     },

@@ -21,6 +21,9 @@
       goto("/admin/sous-directeur-dashboard");
     }else if (user.type === "COMPTABLE") {
       goto("/admin/comptable-dashboard");
+    }
+     else if (user.type === "INSTRUCTEUR-SECOND") {
+      goto("/admin/instructeur-second-dashboard");
     } else {
       goto("/unauthorized");
     }
