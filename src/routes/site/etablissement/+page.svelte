@@ -13,17 +13,15 @@
     Specialite,
     Ville,
   } from "../../../types.js";
-  import { getProfessions } from "$lib/constants";
-  import MessageError from "$components/MessageError.svelte";
+
+ 
   import { goto } from "$app/navigation";
   import Spinner from "$components/_skeletons/Spinner.svelte";
   import EtapeConnexion from "$components/site/EtapeConnexion.svelte";
   import SelectInput from "$components/site/SelectInput.svelte";
-  import InputSelect from "$components/inputs/InputSelect.svelte";
-  import InputSelectTypePersonne from "$components/inputs/InputSelectTypePersonne.svelte";
-  import type { AnyAaaaRecord } from "node:dns";
+ import Modal from './Modal.svelte';
 
-  const professions = getProfessions();
+
 
   export let data; // Récupérer les données du layout
   let user = data?.user;
@@ -33,7 +31,7 @@
   let step = 1;
   $: hideForPhysic = true;
   $: hideForOther = false;
-
+  $: isModalOpen = false;
   //////Nouvelle variable
 
   let showPassword = false;
@@ -615,6 +613,33 @@
     }
   }
 
+
+   async function checkTransactionID(idtransaction: any) {
+    if (!idtransaction) return false;
+    console.log("idtransaction", idtransaction);
+    try {
+      const res = await fetch(
+        BASE_URL_API + `/paiement/info/transaction/${idtransaction}`
+      );
+      const data = await res.json();
+      isPaiementDone = data.data.state;
+
+      console.log("data.data", data.data);
+      if (data.data.state == true) {
+       openModal(idtransaction);
+        
+      } else {
+        message = "Le paiement n'a pas été effectué. Veuillez réessayer.";
+      }
+      return data.data; // Assurez-vous que l'API renvoie un objet avec une clé `valid`
+    } catch (error) {
+      console.error(
+        'Erreur lors de la vérification de la transaction :',
+        error
+      );
+      return false;
+    }
+  }
   onMount(async () => {
     fetchData();
   });
@@ -642,8 +667,7 @@
     console.log("fileNames:", localStorage.getItem("reference"));
     ////EN attendant de faire la validation du paiement
      if (localStorage.getItem("reference")) {
-   
-        isPaiementDone = true;
+      checkTransactionID(localStorage.getItem("reference"));
       }
   });
 
@@ -654,6 +678,16 @@
   }
 
   let totalstep = 3;
+  let pdfUrl:any;
+   function openModal(reference: any) {
+    pdfUrl = reference; // ✅ Met à jour la variable réactive
+    isModalOpen = true;
+  }
+
+  function closeModal() {
+    isModalOpen = false;
+  }
+
 </script>
 
 <div id="">
@@ -1034,7 +1068,9 @@
       </div>
     </section>
   </main>
-
+{#if isModalOpen == true}
+  <Modal isOpen={isModalOpen} {pdfUrl} onClose={closeModal} />
+{/if}
   <style>
     button:disabled {
       opacity: 0.5;
