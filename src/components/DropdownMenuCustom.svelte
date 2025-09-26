@@ -74,7 +74,7 @@
   >
     <EditOutline size="sm" class="mr-2" /> Imputation
   </Button>
-{:else if item?.personne?.status != "acp_dossier_valide_directrice" && item?.personne?.status != "oep_dossier_conforme" && item?.personne?.status != "oep_dossier_non_conforme"}
+{:else if item?.personne?.status != "acp_dossier_valide_directrice"  && item?.personne?.status != "oep_dossier_conforme" && item?.personne?.status != "oep_dossier_non_conforme"}
   <Button
     color="green"
     style="background-color: #E1B941"

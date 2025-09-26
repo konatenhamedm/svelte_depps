@@ -8,6 +8,7 @@
     export let showPassword;
     export let showPasswordConfirm;
     export let togglePassword;
+    export let totalstep = 6;
     export let toggleConfirmPassword;
 
     function saveFormStateComponent() {
@@ -20,7 +21,7 @@
   </script>
   
   <h2 class="text-3xl h2-baslik-anasayfa-ozel font-semibold mb-4 text-center md:text-left">
-    Informations de connexion (étape 1/6)
+    Informations de connexion (étape 1/{totalstep})
   </h2>
   <br /><br />
   

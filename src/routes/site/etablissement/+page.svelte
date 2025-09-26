@@ -370,11 +370,12 @@
     if (typeof window !== "undefined" && typeof localStorage !== "undefined") {
       const savedFormData = localStorage.getItem("formData");
       const savedStep = localStorage.getItem("step");
-
+      
       if (savedFormData) {
         formData = JSON.parse(savedFormData);
         console.log("formData restauré:", savedFormData);
       }
+     
 
       if (savedStep) {
         step = parseInt(savedStep);
@@ -392,6 +393,8 @@
     }
     console.log("formData.typePersonne onMount", formData.typePersonne);
     await getTypeDoc();
+   
+
   });
 
   // Lire la valeur de `step` depuis localStorage, sinon initialiser à 1
@@ -637,6 +640,11 @@
     }
 
     console.log("fileNames:", localStorage.getItem("reference"));
+    ////EN attendant de faire la validation du paiement
+     if (localStorage.getItem("reference")) {
+   
+        isPaiementDone = true;
+      }
   });
 
   // Sauvegarder les données du formulaire dans localStorage à chaque modification
@@ -644,6 +652,8 @@
     formData[field] = value;
     localStorage.setItem("formData", JSON.stringify(formData));
   }
+
+  let totalstep = 3;
 </script>
 
 <div id="">
@@ -673,10 +683,12 @@
                 bind:formData
                 {errors}
                 {emailError}
+                
                 {emailPassword}
                 {saveFormState}
                 {showPassword}
                 {showPasswordConfirm}
+                {totalstep}
                 togglePassword={() => (showPassword = !showPassword)}
                 toggleConfirmPassword={() =>
                   (showPasswordConfirm = !showPasswordConfirm)}
@@ -704,7 +716,7 @@
                           libelle: c.libelle,
                         })
                       )}
-                      placeholder="Sélectionnez le type de personne "
+                      placeholder="Sélectionnez le niveau d'intervention "
                       error={errors.typePersonne}
                       onInput={saveFormState}
                       on:change={saveFormState}
@@ -720,7 +732,7 @@
                           libelle: c.libelle,
                         })
                       )}
-                      placeholder="Sélectionnez le type de personne "
+                      placeholder="Sélectionnez le type d'entité "
                       error={errors.typePersonne}
                       onInput={saveFormState}
                       on:change={saveFormState}
@@ -901,6 +913,7 @@
         {/if}
 
         <input
+        
           accept="image/*, .pdf"
           type="file"
           class="form__input"
@@ -999,7 +1012,7 @@
                     on:click={connexion}
                     class="buton buton--kirmizi bg-green-500"
                   >
-                    Connectez vous
+                    Connectez-vous
                   </button>
                 {/if}
               {/if}

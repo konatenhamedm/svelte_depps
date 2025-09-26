@@ -48,9 +48,10 @@
   onMount(() => {
     console.log("Data on mount:", data);
   });
-
+  let errorMessage: string = "";
   let openShow: boolean = false;
   let openShowDoc: boolean = false;
+  let showErrorMessage = false;
   let current_data: any = {};
   let pdfUrl: any;
   let showNotification = false;
@@ -95,9 +96,9 @@
           "oep_visite_effectue_attente_validation_directrice"
       ) {
         if (!dateSisite || !raison) {
-          alert(
-            "Veuillez remplir la date de la visite et le rapport de l'examen."
-          );
+          showErrorMessage = true;
+          errorMessage="Veuillez remplir la date de la visite et le rapport de l'examen."
+          
           isLoad = false;
           return;
         }
@@ -105,9 +106,10 @@
         data.personne.status == "acp_dossier_attente_validation_directrice"
       ) {
         if (!raison) {
-          alert(
-            "Veuillez remplir la date de la visite et le rapport de l'examen."
-          );
+          
+           showErrorMessage = true;
+          errorMessage= "Veuillez remplir l'observation svp.";
+          
           isLoad = false;
           return;
         }
@@ -130,12 +132,23 @@
         dispatch("changeStatus");
       } else {
         const errorData = await res.json();
-        console.error("Error response:", errorData);
-        alert("Erreur lors du traitement: " + errorData.errors[0]);
-        isLoad = false;
-        open = false;
+
+        showErrorMessage = true;
+        // alert("Erreur lors du traitement: " + errorData.errors[0]);
+        if(errorData.errors && Array.isArray(errorData.errors) && errorData.errors.length > 0){
+          console.error("Error response:", errorData);
+          errorMessage = "Merci de bien vouloir verifier les champs saisis";
+        }else{
+        console.error("Error secondaire:", errorData);
+
+          isLoad = false;
+          open = false;
+        }
+        
       }
     } catch (error) {
+      showErrorMessage = true;
+      errorMessage = "Erreur lors du traitement. Veuillez signaler l'erreur a un administrateur.";
       console.error("Error saving:", error);
     }
   }
@@ -309,6 +322,26 @@
           </div>
         {/each}
       </div>
+      {#if showErrorMessage}
+        <div
+          class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mt-5"
+          role="alert"
+        >
+          <strong class="font-bold">OOUPS</strong>
+          <span class="block sm:inline">{errorMessage}</span>
+          <!-- <span class="absolute top-0 bottom-0 right-0 px-4 py-3">
+            <svg
+              class="fill-current h-6 w-6 text-red-500"
+              role="button"
+              xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 20 20"
+              ><title>Fer</title><path
+                d="M14.348 14.849a1.2 1.2 0 0 1-1.697 0L10 11.819l-2.651 3.029a1.2 1.2 0 1 1-1.697-1.697l2.758-3.15-2.759-3.152a1.2 1.2 0 1 1 1.697-1.697L10 8.183l2.651-3.031a1.2 1.2 0 1 1 1.697 1.697l-2.758 3.152 2.758 3.15a1.2 1.2 0 0 1 0 1.698z"
+              /></svg
+            >
+          </span> -->
+        </div>
+      {/if}
       <label
         style="color: black; font-weight: bold; margin-top: 15px;font-size: x-large;"
         >Observation</label

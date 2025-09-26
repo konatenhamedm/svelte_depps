@@ -102,7 +102,7 @@ let libelleType: any = [{
         ></InputSimple>
         <div class="grid grid-cols-1 gap-6">
         <InputSelect2
-          label="Type utilisateur"
+          label="Le type"
           bind:selectedId={icons.type}
           datas={libelleType}
           id="type"

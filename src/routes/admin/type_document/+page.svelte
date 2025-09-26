@@ -167,7 +167,7 @@
               <TableHead
                 class="border-y border-gray-200 bg-gray-100 dark:border-gray-700"
               >
-                {#each ["nombre", "libelle", "Type persoone", "Action"] as title}
+                {#each ["nombre", "libelle", "Type personne", "Action"] as title}
                   <TableHeadCell class="ps-4 font-normal border border-gray-300"
                     >{title}</TableHeadCell
                   >

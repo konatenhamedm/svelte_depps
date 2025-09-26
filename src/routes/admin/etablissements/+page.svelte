@@ -47,7 +47,7 @@
 
   // Données et pagination
   let currentPage = 1;
-  let main_data: Etablissement2[] = [];
+  let main_data: any[] = [];
   let loading = false;
   $: searchQuery = "";
 
@@ -57,7 +57,7 @@
     try {
       const res = await apiFetch(true, "/etablissement/");
       if (res) {
-        main_data = res.data as Etablissement2[];
+        main_data = res.data as any[];
       } else {
         console.error(
           "Erreur lors de la récupération des données:",
@@ -263,17 +263,17 @@
                       >
                       <!-- Mettre la data pour l'imputation -->
                        <TableBodyCell class="p-4 border border-gray-300"
-                        ></TableBodyCell
+                        >{item.personne?.imputationData?.username || "N/A"}</TableBodyCell
                       >
                       <!-- <TableBodyCell class="p-4 border border-gray-300"
                         >{item.personne.nom + " " + item.personne.prenoms}</TableBodyCell
                       > -->
                       
 
-                      <TableBodyCell class="p-2 w-8 border border-gray-300">
+                      <!-- <TableBodyCell class="p-2 w-8 border border-gray-300">
                         <DropdownMenuShow {item}  onAction={handleAction} {user} />
 
-                      </TableBodyCell>
+                      </TableBodyCell> -->
 
                       <!-- <Button
                           color="green"

@@ -93,7 +93,7 @@
             class="w-full"
           ></InputSimple>
             <InputSelect2
-          label="Type utilisateur"
+          label="Le type"
           bind:selectedId={type}
           datas={libelleType}
           id="typeUser"

@@ -123,7 +123,7 @@
       </div>
       <div class="grid grid-cols-1 gap-6">
         <InputSelect
-          label="Type personne"
+          label="L'entité"
           bind:selectedId={typeDoc.typePersonne}
           datas={typePersonnes}
           id="typePersonne"
