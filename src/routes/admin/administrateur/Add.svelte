@@ -46,6 +46,14 @@
     {
       id: "COMPTABLE",
       libelle: "COMPTABLE"
+    },
+    {
+      id: "SOUS-DIRECTEUR-SECOND",
+      libelle: "SOUS-DIRECTEUR-SECOND"
+    },
+    {
+      id: "INSPECTEUR",
+      libelle: "INSPECTEUR"
     }
   ];
 

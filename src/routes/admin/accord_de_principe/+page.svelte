@@ -371,7 +371,7 @@
                           >{item.personne.code}</TableBodyCell
                         >
                       {/if} -->
-                      {#if user.type == 'SOUS-DIRECTEUR' || user.type == 'DIRECTEUR'}
+                      {#if  user.type == 'DIRECTEUR' || user.type == 'SOUS-DIRECTEUR-SECOND' }
                         <TableBodyCell class="p-2 w-8 border border-gray-300">
                           <DropdownMenuCustom
                             {item}

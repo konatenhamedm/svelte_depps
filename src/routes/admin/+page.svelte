@@ -19,10 +19,13 @@
       goto("/admin/instructeur-dashboard");
     } else if (user.type === "SOUS-DIRECTEUR") {
       goto("/admin/sous-directeur-dashboard");
-    }else if (user.type === "COMPTABLE") {
+    } else if (user.type === "SOUS-DIRECTEUR-SECOND") {
+      goto("/admin/sous-directeur-second-dashboard");
+    } else if (user.type === "INSPECTEUR") {
+      goto("/admin/inspecteur-dashboard");
+    } else if (user.type === "COMPTABLE") {
       goto("/admin/comptable-dashboard");
-    }
-     else if (user.type === "INSTRUCTEUR-SECOND") {
+    } else if (user.type === "INSTRUCTEUR-SECOND") {
       goto("/admin/instructeur-second-dashboard");
     } else {
       goto("/unauthorized");

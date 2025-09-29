@@ -44,8 +44,6 @@
   let pdfUrl: any;
   let showNotification = false;
   let notificationMessage = "";
-  let errorMessage = "";
-  let showErrorMessage = false; 
   let notificationType = "info";
 
   /*   let openShow: boolean = false; */
@@ -71,20 +69,32 @@
 
   let uploadedFiles: { [key: string]: string } = {}; // key: libelle+libelleGroupe, value: file name or base64
 
- function handleDocumentChange(event: Event, libelle: string, libelleGroupe: any) {
-  const target = event.target as HTMLInputElement;
-  const file = target.files?.[0];
-  if (!file) return;
+  function handleDocumentChange(
+    event: Event,
+    libelle: string,
+    libelleGroupe: any
+  ) {
+    const target = event.target as HTMLInputElement;
+    const file = target.files?.[0];
 
-  formData.documents.push({
-    libelle,
-    path: file, // on garde le File brut
-    libelleGroupe,
-  });
+    if (!file) return;
 
-  uploadedFiles[libelle + libelleGroupe] = file.name;
-  localStorage.setItem("formDataOep", JSON.stringify(formData));
-}
+    const reader = new FileReader();
+    reader.onload = () => {
+      const base64 = reader.result as string;
+
+      // On ajoute l'objet formaté dans formData.documents
+      formData.documents.push({
+        libelle: libelle,
+        path: base64, // ou file.name si tu veux juste le nom
+        libelleGroupe: libelleGroupe,
+      });
+      uploadedFiles[libelle + libelleGroupe] = file.name;
+
+      // Sauvegarde dans localStorage si besoin
+    };
+    reader.readAsDataURL(file);
+  }
 
   let formData: {
     documents: any[];
@@ -122,8 +132,7 @@
           "oep_visite_effectue_attente_validation_directrice"
       ) {
         if (!raison) {
-             showErrorMessage = true;
-          errorMessage="Veuillez renseigner les documents svp."
+          alert("Veuillez remplir les differents champs svp");
           isLoad = false;
           return;
         }
@@ -131,10 +140,9 @@
         data.personne.status == "acp_dossier_attente_validation_directrice"
       ) {
         if (!raison) {
-          
-          showErrorMessage = true;
-          errorMessage="Veuillez mettre une observation."
-          
+          alert(
+            "Veuillez remplir la date de la visite et le rapport de l'examen."
+          );
           isLoad = false;
           return;
         }
@@ -145,16 +153,14 @@
         "oep_dossier_imputer_conforme_attente_planification_visite"
       ) {
         if (!dateSisite || !raison) {
-          showErrorMessage = true;
-          errorMessage = "Veuillez remplir la date de la visite svp";
+          alert("Veuillez remplir la date de la visite svp");
           isLoad = false;
           return;
         }
       }
       if (data.personne.status == "oep_dossier_visite_programme") {
         if (formData.documents.length < 1) {
-          showErrorMessage = true;
-          errorMessage = "Veuillez remplir le rapport de l'examen svp";
+          alert("Veuillez remplir le rapport de l'examen svp");
           isLoad = false;
           return;
         }
@@ -177,19 +183,11 @@
         dispatch("changeStatus");
       } else {
         const errorData = await res.json();
-       if(errorData.errors && Array.isArray(errorData.errors) && errorData.errors.length > 0){
-          console.error("Error response:", errorData);
-          showErrorMessage = true;
-          errorMessage = "Merci de bien vouloir verifier les champs saisis";
-        }else{
-        console.error("Error secondaire:", errorData);
-        
-          isLoad = false;
-          open = false;
-        }}
+        console.error("Error response:", errorData);
+        alert("Erreur lors du traitement: " + errorData.errors[0]);
+        // isLoad = false;
+      }
     } catch (error) {
-      showErrorMessage = true;
-      errorMessage = "Une erreur s'est produite lors de l'enregistrement";
       console.error("Error saving:", error);
     }
   }
@@ -363,26 +361,6 @@
           </div>
         {/each}
       </div>
-      {#if showErrorMessage}
-        <div
-          class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mt-5"
-          role="alert"
-        >
-          <strong class="font-bold">OOUPS</strong>
-          <span class="block sm:inline">{errorMessage}</span>
-          <!-- <span class="absolute top-0 bottom-0 right-0 px-4 py-3">
-            <svg
-              class="fill-current h-6 w-6 text-red-500"
-              role="button"
-              xmlns="http://www.w3.org/2000/svg"
-              viewBox="0 0 20 20"
-              ><title>Fer</title><path
-                d="M14.348 14.849a1.2 1.2 0 0 1-1.697 0L10 11.819l-2.651 3.029a1.2 1.2 0 1 1-1.697-1.697l2.758-3.15-2.759-3.152a1.2 1.2 0 1 1 1.697-1.697L10 8.183l2.651-3.031a1.2 1.2 0 1 1 1.697 1.697l-2.758 3.152 2.758 3.15a1.2 1.2 0 0 1 0 1.698z"
-              /></svg
-            >
-          </span> -->
-        </div>
-      {/if}
       <label
         style="color: black; font-weight: bold; margin-top: 15px;font-size: x-large;"
         >Observation</label
@@ -390,7 +368,7 @@
       <textarea
         bind:value={raison}
         placeholder="Observation"
-        class="w-full border border-gray-300 rounded-md p-2 text-black"
+        class="w-full border border-gray-300 rounded-md p-2"
       ></textarea>
       {#if data.personne.status == "oep_dossier_imputer_conforme_attente_planification_visite"}
         <label
@@ -406,7 +384,7 @@
       {#if data.personne.status == "oep_dossier_imputer" || data.personne.status == "oep_visite_effectue_attente_validation_directrice" || data.personne.status == "oep_dossier_visite_programme"}
         <label
           style="color: black; font-weight: bold; margin-top: 15px;font-size: x-large;"
-          >Rapport de la visite</label
+          >Rapport de l'examen</label
         >
         <input
           accept="image/*, .pdf, .doc, .docx"
@@ -425,7 +403,6 @@
       <div class="col-span-2">
         {#if data.personne.status == "acp_attente_dossier_depot_service_courrier"}
           <Button
-          
             color="alternative"
             style="background-color: green !important; color: white;"
             on:click={() => SaveFunctionSingleMethode("soumission_validation")}
@@ -461,7 +438,7 @@
             on:click={() => SaveFunctionSingleMethode("imputation_dossier")}
             type="submit">Initier OEP</Button
           >
-        <!-- {:else if data.personne.status == "oep_dossier_imputer"}
+        {:else if data.personne.status == "oep_dossier_imputer"}
           <Button
             color="alternative"
             style="background-color: red !important; color: white; font-size:15px;"
@@ -474,7 +451,7 @@
             style="background-color: green !important; color: white; font-size:15px;"
             on:click={() => SaveFunctionSingleMethode("imputation_conforme")}
             type="submit">Imputation Conforme</Button
-          > -->
+          >
         {:else if data.personne.status == "oep_dossier_imputer_conforme_attente_planification_visite"}
           <Button
             color="alternative"
@@ -498,7 +475,7 @@
           >
           <Button
             color="alternative"
-            style="background-color: red !important; color: white;"
+            style="background-color: green !important; color: white;"
             on:click={() => SaveFunctionSingleMethode("rejet_final")}
             type="submit">Rejet complet</Button
           >

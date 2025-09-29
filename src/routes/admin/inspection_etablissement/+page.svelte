@@ -38,7 +38,7 @@
   import DropdownMenuShow from "$components/DropdownMenuShow.svelte";
   import Imputation from "./Imputation.svelte";
   import ShowDetails from "./ShowDetails.svelte";
-  import DropdownMenuCustom from "$components/DropdownMenuCustom.svelte";
+  import DropdownMenuInspecteurCustom from "$components/DropdownMenuInspecteurCustom.svelte";
   export let data;
   let user = data.user;
 
@@ -54,7 +54,7 @@
   let openShowDetails: boolean = false;
   let openImputation: boolean = false;
   let current_data: any = {};
-  let activeTab = "oep_demande_initie"; // Valeur par défaut : "En attente"
+  let activeTab = "oep_dossier_visite_programme"; // Valeur par défaut : "En attente"
 
   // Données et pagination
   let currentPage = 1;
@@ -92,13 +92,8 @@
 
   // Liste des onglets avec leur label et couleur
   const tabs = [
-    { key: "oep_demande_initie", label: "Initié" },
-    { key: "oep_dossier_imputer", label: "Imputation" },
-    {
-      key: "oep_dossier_imputer_conforme_attente_planification_visite",
-      label: "Planification visite",
-    },
-    { key: "oep_dossier_imputer_non_conforme", label: "Non conforme" },
+    
+    
     { key: "oep_dossier_visite_programme", label: "Visite programmée" },
     {
       key: "oep_visite_effectue_attente_validation_directrice",
@@ -396,9 +391,9 @@
                           : "N/A"}</TableBodyCell
                       >
                     
-                      {#if user.type == "SOUS-DIRECTEUR-SECOND" || user.type == "DIRECTEUR"}
+                      {#if user.type == "INSPECTEUR" || user.type == "DIRECTEUR"}
                         <TableBodyCell class="p-2 w-8 border border-gray-300">
-                          <DropdownMenuCustom
+                          <DropdownMenuInspecteurCustom
                             {item}
                             onAction={handleAction}
                             {user}

@@ -62,7 +62,7 @@
         </li> -->
 
         <li class="path1">
-          <a href="/admin/ouverture_exploitation_instructeur">
+          <a href="/admin/inspection_etablissement">
             <svg
               xmlns="http://www.w3.org/2000/svg"
               width="24"
@@ -112,7 +112,7 @@
             <span class="pull-right-container"> </span>
           </a>
         </li> -->
-        <li class="path1">
+        <!-- <li class="path1">
           <a href="/admin/historique_paiement">
             <svg
               fill="none"
@@ -142,9 +142,9 @@
             <span>Historique paiement</span>
             <span class="pull-right-container"> </span>
           </a>
-        </li>
+        </li> -->
 
-        <li
+        <!-- <li
           class="header fs-10 m-0 text-uppercase text-3xl"
           style="text-transform: uppercase; color:white ! important;font-weight: bold"
         >
@@ -169,7 +169,7 @@
             <span>Générales</span>
             <span class="pull-right-container"> </span>
           </a>
-        </li>
+        </li> -->
         <!-- <li class="path1">
           <a href="/admin/statistique/genre">
             <svg
