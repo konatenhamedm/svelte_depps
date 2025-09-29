@@ -59,11 +59,12 @@
   async function fetchData() {
     loading = true; // Active le spinner de chargement
     try {
-      const res = await apiFetch(true, '/paiement/historique/professionnel');
+      const res = await apiFetch(true, '/paiement/historique/etablissement');
       console.log(res);
       if (res) {
-        main_data = res.data;
-        console.log('content main', main_data);
+        main_data = res.data as Transaction[];
+       /*  console.log('content main', main_data);
+        console.log('content main', main_data); */
       } else {
         console.error(
           'Erreur lors de la récupération des données:',
@@ -103,18 +104,11 @@
 
   $: filteredData = main_data.filter((item) => {
     // Filtre par recherche texte
-    // console.log("ITEMMMMMMMMM =====", item.user.profession.libelle);
+    // console.log("ITEMMMMMMMMM =====", item.personne.profession.libelle);
     const textMatch =
       item.reference.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      item.user?.nom.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      item.user?.prenoms
-        .toLowerCase()
-        .includes(searchQuery.toLowerCase()) ||
       item.email.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      item.type.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      item.user?.profession?.libelle
-        .toLowerCase()
-        .includes(searchQuery.toLowerCase());
+      item.type.toLowerCase().includes(searchQuery.toLowerCase()) ;
 
     // Filtre par montant
     let amountMatch = true;
@@ -248,9 +242,8 @@
                 <CsvExporter
                 title="Historique_Paiements"
                 headers={[
-                  'Nom et prénoms',
+                  'Identité',
                   'Contact',
-                  'Profession',
                   'Reference',
                   'Type',
                   'Email',
@@ -269,9 +262,8 @@
               <PdfPaiement
               title="Historique_Paiements"
               headers={[
-                'Nom et Prénoms',
+                'Identité',
                 'Contact',
-                'Profession',
                 'Reference',
                 'Type',
                 'Email',
@@ -287,9 +279,8 @@
               <CsvExporter
               title="Historique_Paiements"
               headers={[
-                'Nom et prénoms',
+                'Identité',
                 'Contact',
-                'Profession',
                 'Reference',
                 'Type',
                 'Email',
@@ -351,14 +342,14 @@
                 class="border-y border-gray-200 bg-gray-100 dark:border-gray-700"
               >
                 {#if !['INSTRUCTEUR', 'SOUS-DIRECTEUR'].includes(user.type)}
-                  {#each ['Nom', 'Prénoms', 'Profession', 'Contacts', 'Reference', 'type', 'moyens de paiement', 'email', 'Etat paiement', 'Montant', 'Date', 'Action'] as title}
+                  {#each [ 'Contacts', 'Reference', 'type', 'moyens de paiement', 'email', 'Etat paiement', 'Montant', 'Date', 'Action'] as title}
                     <TableHeadCell
                       class="ps-4 font-normal border border-gray-300"
                       >{title}</TableHeadCell
                     >
                   {/each}
                 {:else}
-                  {#each ['Nom', 'Prénoms', 'Profession', 'Contacts', 'Reference', 'type', 'moyens de paiement', 'email', 'Etat paiement', 'Date', 'Action'] as title}
+                  {#each ['Contacts', 'Reference', 'type', 'moyens de paiement', 'email', 'Etat paiement', 'Date', 'Action'] as title}
                     <TableHeadCell
                       class="ps-4 font-normal border border-gray-300"
                       >{title}</TableHeadCell
@@ -408,17 +399,9 @@
                 {:else}
                   {#each paginatedProducts as item}
                     <TableBodyRow class="text-base border border-gray-300">
+                     
                       <TableBodyCell class="p-4 border border-gray-300"
-                        >{item?.user?.nom}</TableBodyCell
-                      >
-                      <TableBodyCell class="p-4 border border-gray-300"
-                        >{item?.user?.prenoms}</TableBodyCell
-                      >
-                      <TableBodyCell class="p-4 border border-gray-300"
-                        >{item?.user?.profession?.libelle}</TableBodyCell
-                      >
-                      <TableBodyCell class="p-4 border border-gray-300"
-                        >{item?.user?.number}</TableBodyCell
+                        >{item?.user?.data?.numTel}</TableBodyCell
                       >
                       <TableBodyCell class="p-4 border border-gray-300"
                         >{item?.reference}</TableBodyCell

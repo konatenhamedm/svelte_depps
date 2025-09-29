@@ -33,7 +33,7 @@
     receiptNumber: '',
     amount: '',
     footerText: 'Ce document ne tient pas lieu d’autorisation d’exercice',
-    profession: '',
+
   };
 
   // Mise à jour réactive du titre dès que `titre` change
@@ -66,20 +66,18 @@
       { label: "Date d'édition:", value: formatDate(data.createdAt) },
       {
         label: "Nom complet:",
-        value: data.typeUser == "PROFESSIONNEL"
+        value: data.typePersonne == "PHYSIQUE"
           ? `${data.user?.nom} ${data.user?.prenoms}`
-          : data.user?.nomEntreprise
+          : data.user?.denomination
       },
       { label: "Mode de paiement:", value: data.channel },
       {
         label: "Numéro de téléphone:",
-        value: data.typeUser == "PROFESSIONNEL"
-          ? data.user?.number
-          : data.user?.contactEntreprise
+        value: data.user?.data.numTel
       },
       { label: "Réference paiement:", value: `N° ${data.reference}` },
       { label: "Paiement:", value: `${data.montant}` },
-      { label: "Profession:", value: `${data.user?.profession?.libelle}` }
+     /*  { label: "Profession:", value: `${data.user?.profession?.libelle}` } */
     ];
 
     let yPos = startY;

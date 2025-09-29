@@ -23,9 +23,9 @@
         nom: "",
         prenoms: "",
         denomination: "",
-  
         email: "",
-             data : []
+       
+        data : []
     };
     let createdAt = "";
 
@@ -45,7 +45,6 @@
         user.denomination = data?.personne?.denomination || "";
         user.typeUser = data?.user?.typeUser || "";
         user.email = data?.user?.email || "";
-       
         createdAt = data?.createdAt || "";
         user.data = data?.user?.data || [];
     }
@@ -58,10 +57,15 @@
                 <div class="space-y-6">
                     {#if user.typeUser == "PROFESSIONNEL"}
 
-                    <InputSimple fieldName="username" label="Nom et prénoms utilisateur" field={user.nom + " " + user.prenoms} disabled={true} />
+                    <InputSimple fieldName="username" label="Identité" field={user.nom + " " + user.prenoms} disabled={true} />
                     {:else}
-                    <InputSimple fieldName="username" label="Nom utilisateur" field={user.username} disabled={true} />
 
+                    {#if  user.typePersonne  == "PHYSIQUE"}
+                    <InputSimple fieldName="username" label="Identité" field={user.nom + " " + user.prenoms} disabled={true} />
+                    {:else}
+                    <InputSimple fieldName="username" label="Nom utilisateur" field={user.denomination} disabled={true} />
+
+                    {/if}
                     {/if}
                     <InputSimple fieldName="email" label="Email" field={user.email} disabled={true} />
                     <InputSimple fieldName="typeUser" label="Type d'utilisateur" field={user.typeUser} disabled={true} />

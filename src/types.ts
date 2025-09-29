@@ -19,7 +19,9 @@ export interface Ville {
 export interface Transaction {
   id: number;
   montant: string;
+  email: string;
   reference: string;
+  data:any
   channel: string;
   state: string;
   type: string;

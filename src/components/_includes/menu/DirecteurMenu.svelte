@@ -163,7 +163,7 @@
           </a>
         </li> -->
         <li class="path1">
-          <a href="/admin/historique_paiement">
+          <a href="/admin/historique_paiement_etablissement">
             <svg
               fill="none"
               stroke="currentColor"
