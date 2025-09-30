@@ -61,6 +61,7 @@
   }
 
   function exportToPDF() {
+    console.log('Exporting to PDF...',data);
     const doc = new jsPDF({ orientation: 'landscape', unit: 'mm', format: 'a4' });
 
     getImageFromLocalPath('/_files/depps.png', (logoImage) => {
@@ -71,9 +72,9 @@
       const body = data.map((item) => {
         if (type === 'paiement') {
           return [
-            item.personne?.nom + " " + item.personne?.nom  || 'N/A',
-            item.personne?.number || 'N/A',
-            item.personne?.profession?.libelle || 'N/A',
+            item.user?.nom ?item.user?.nom + " " + item.user?.prenoms  : item.user.denomination,
+            item.user.data?.no_transation || 'N/A',
+            item.user?.typePersonne || 'N/A',
             item.reference || 'N/A',
             item.type || 'N/A',
             item.email || 'N/A',

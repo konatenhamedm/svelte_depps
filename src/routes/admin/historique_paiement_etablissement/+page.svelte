@@ -224,7 +224,7 @@
               <PdfPaiement
                 title="Historique_Paiements"
                 headers={[
-                  'Nom et Prénoms',
+                  'Nom et Prénoms / Denominations',
                   'Contact',
                   'Profession',
                   'Reference',

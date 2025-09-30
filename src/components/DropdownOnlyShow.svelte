@@ -1,6 +1,7 @@
 <script>
   import { EditOutline, EyeOutline, PrinterOutline, TrashBinSolid } from "flowbite-svelte-icons";
   import { openMenu } from "../menuStore"; // Store global pour gérer un seul menu ouvert
+  import { Button } from "flowbite-svelte";
 
   export let item;
   export let onAction;
@@ -40,33 +41,23 @@
   });
 </script>
 
-<div class="relative">
-  <!-- Bouton déclencheur -->
-  <button
-    bind:this={buttonRef}
-    class="p-2 hover:bg-gray-200 rounded-full transition-colors list-none cursor-pointer"
-    on:click={toggleMenu}
-  >
-    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 5v.01M12 12v.01M12 19v.01M12 6a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2z" />
-    </svg>
-  </button>
 
-  {#if isOpen}
-    <div class="menu-dropdown">
-      <button class="menu-item  hover:text-white"
-        on:click={() => {onAction('view', item); isOpen = false;}}>
+<Button
+  color="green"
+  style="background-color: #318ce7"
+  size="sm"
+  class="gap-2 px-3 bg-green-800"
+on:click={() => {onAction('view', item); isOpen = false;}}>
         <EyeOutline size="sm" class="mr-2" /> Voir
-      </button>
-      <button class="menu-item  hover:text-white"
-        on:click={() => {onAction('edit', item); isOpen = false;}}>
+</Button>
+<Button
+  color="green"
+  style="background-color: #318ce7"
+  size="sm"
+  class="gap-2 px-3 bg-green-800"
+  on:click={() => {onAction('edit', item); isOpen = false;}}>
         <PrinterOutline size="sm" class="mr-2" /> Réçu
-      </button>
-     
-    </div>
-  {/if}
-</div>
-
+</Button>
 <style>
   .menu-dropdown {
     position: fixed; /* Fixe le menu à l'écran */

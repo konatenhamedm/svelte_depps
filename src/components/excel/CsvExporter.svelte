@@ -54,9 +54,9 @@ function formatDateFR(dateString:any) {
                 'Date', */
     if (type === 'paiement') {
       dataP = data.map((item: any) => ({
-        nom: item.personne.nom + ' ' +item.personne.prenoms,
-        contact:item.personne.number ,
-        profession: item.personne.profession ? item.personne.profession.libelle : '',
+        nom: item.user?.nom ?item.user?.nom + " " + item.user?.prenoms  : item.user.denomination,
+        contact: item.user.data?.no_transation || 'N/A',
+        profession: item.user?.typePersonne || 'N/A',
         reference: item.reference,
         email: item.email,
         type: item.type,
@@ -78,10 +78,10 @@ function formatDateFR(dateString:any) {
     else {
 
       dataP = data.map((item: any) => ({
-     entity:item.personne?.typePersonne?.libelle || "N/A",
+     entity:item.user?.typeuser?.libelle || "N/A",
      Email: item.email || "N/A",
-     Imputation: item.personne?.imputationData?.username  || "N/A",
-     cree: item.personne?.createdAt ? formatDatePaiement(item.personne?.createdAt) : "N/A",
+     Imputation: item.user?.imputationData?.username  || "N/A",
+     cree: item.user?.createdAt ? formatDatePaiement(item.user?.createdAt) : "N/A",
       }));
     }
 

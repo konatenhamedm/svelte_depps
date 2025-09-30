@@ -44,7 +44,7 @@
         user.prenoms = data?.user?.prenoms || "";
         user.denomination = data?.personne?.denomination || "";
         user.typeUser = data?.user?.typeUser || "";
-        user.email = data?.user?.email || "";
+        user.email = data?.email || "";
         createdAt = data?.createdAt || "";
         user.data = data?.user?.data || [];
     }
