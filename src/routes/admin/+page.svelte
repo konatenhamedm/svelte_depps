@@ -15,17 +15,21 @@
     // Redirection selon le rôle
     if (user.type === "ADMINISTRATEUR") {
       goto("/admin/main");
-    } else if (user.type === "INSTRUCTEUR") {
+    } else if (user.type === "INSTRUCTEUR-PROF") {
       goto("/admin/instructeur-dashboard");
-    } else if (user.type === "SOUS-DIRECTEUR") {
-      goto("/admin/sous-directeur-dashboard");
-    } else if (user.type === "SOUS-DIRECTEUR-SECOND") {
-      goto("/admin/sous-directeur-second-dashboard");
-    } else if (user.type === "INSPECTEUR") {
+    }else if (user.type === "INSTRUCTEUR-ETAB") {
+      goto("/admin/instructeur-dashboard");
+    } else if (user.type === "DIRECTEUR") {
+      goto("/admin/directeur-dashboard");
+    } else if (user.type === "SOUS-DIRECTEUR-ETAB") {
+      goto("/admin/sous-directeur-etab-dashboard");
+    } else if (user.type === "SOUS-DIRECTEUR-PROF") {
+      goto("/admin/sous-directeur-prof-dashboard");
+    } else if (user.type === "INSPECTEUR-ETAB") {
       goto("/admin/inspecteur-dashboard");
     } else if (user.type === "COMPTABLE") {
       goto("/admin/comptable-dashboard");
-    } else if (user.type === "INSTRUCTEUR-SECOND") {
+    } else if (user.type === "INSTRUCTEUR-SECOND-PROF") {
       goto("/admin/instructeur-second-dashboard");
     } else {
       goto("/unauthorized");

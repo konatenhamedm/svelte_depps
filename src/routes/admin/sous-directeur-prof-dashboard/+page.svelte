@@ -122,6 +122,8 @@
         apiFetch(true, `/professionnel/`),
         apiFetch(true, '/profession/'),
         apiFetch(true, '/etablissement/'),
+
+
       ]);
       allEtab2 = allEtab.data || [];
       if (statsRes) {
@@ -465,7 +467,7 @@ $: endRange = Math.min(currentPage + itemsPerPage, totalPages);
           {stats.a_jour}
         </div>
       </button>
-      <button
+      <!-- <button
             on:click={() => handleCardClick("etablissement")}
         class={`text-left bg-white rounded-lg shadow p-4 border transition-all flex flex-col
           ${dossierFilter === "etablissement" ? 'border-blue-500' : 'border-gray-100 hover:border-blue-300'}`}
@@ -491,7 +493,7 @@ $: endRange = Math.min(currentPage + itemsPerPage, totalPages);
         <div class="text-lg font-semibold mt-2 text-blue-500">
           {allEtab2.length}
         </div>
-      </button>
+      </button> -->
     </div>
 
     <div class="bg-white rounded-lg shadow overflow-hidden">

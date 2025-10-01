@@ -32,28 +32,40 @@
       libelle: "ADMINISTRATEUR"
     },
     {
-      id: "INSTRUCTEUR",
-      libelle: "INSTRUCTEUR"
+     id: "DIRECTEUR",
+     libelle: "DIRECTEUR"
     },
     {
-      id: "INSTRUCTEUR-SECOND",
-      libelle: "INSTRUCTEUR-SECOND"
+      id: "SOUS-DIRECTEUR-PROF",
+      libelle: "SOUS-DIRECTEUR-PROF"
     },
     {
-      id: "SOUS-DIRECTEUR",
-      libelle: "SOUS-DIRECTEUR"
+      id: "SOUS-DIRECTEUR-ETAB",
+      libelle: "SOUS-DIRECTEUR-ETAB"
+    },
+    {
+      id: "INSTRUCTEUR-ETAB",
+      libelle: "INSTRUCTEUR-ETAB"
+    },
+    {
+      id: "INSTRUCTEUR-SECOND-ETAB",
+      libelle: "INSTRUCTEUR-SECOND-ETAB"
+    },
+    {
+      id: "INSTRUCTEUR-PROF",
+      libelle: "INSTRUCTEUR-PROF"
+    },
+    {
+      id: "INSTRUCTEUR-SECOND-PROF",
+      libelle: "INSTRUCTEUR-SECOND-PROF"
     },
     {
       id: "COMPTABLE",
       libelle: "COMPTABLE"
     },
     {
-      id: "SOUS-DIRECTEUR-SECOND",
-      libelle: "SOUS-DIRECTEUR-SECOND"
-    },
-    {
-      id: "INSPECTEUR",
-      libelle: "INSPECTEUR"
+      id: "INSPECTEUR-ETAB",
+      libelle: "INSPECTEUR-ETAB"
     }
   ];
 
