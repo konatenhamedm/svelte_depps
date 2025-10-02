@@ -46,7 +46,7 @@
 
 
  
-      {#if user.type != "SOUS-DIRECTEUR"}
+      {#if user.type != "SOUS-DIRECTEUR-ETAB" || user.type != "SOUS-DIRECTEUR-PROF" || user.type != 'DIRECTEUR' }
       <Button  color="green"
   style="background-color: orange"
   size="sm"
@@ -54,7 +54,7 @@
         on:click={() => {onAction('view', item); isOpen = false;}}>
         <EyeOutline size="sm" class="mr-2" /> Traiter
       </Button>
-  {:else if user.type == "SOUS-DIRECTEUR"  }
+  {:else if user.type == "SOUS-DIRECTEUR-ETAB" || user.type == "SOUS-DIRECTEUR-PROF" || user.type == 'DIRECTEUR' }
 
     {#if item?.personne?.status == "attente" }
  <Button  color="blue"

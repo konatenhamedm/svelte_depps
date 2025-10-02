@@ -296,7 +296,7 @@
                   <!-- fin first -->
                 {:else}
                   {#if activeTab === "valide"}
-                    {#if user.type === "SOUS-DIRECTEUR"}
+                    {#if user.type == "SOUS-DIRECTEUR-ETAB" || user.type == "SOUS-DIRECTEUR-PROF" || user.type == 'DIRECTEUR' }
                       {#each ["nom", "prénoms", "Téléphone", "email", "professionnel de santé", "Code", "imputation", "Action"] as title}
                         {#if title}
                           <TableHeadCell
@@ -405,7 +405,7 @@
                         {/if}
                       </TableBodyCell>
 
-                      {#if user.type == "SOUS-DIRECTEUR"}
+                      {#if user.type == "SOUS-DIRECTEUR-ETAB" || user.type == "SOUS-DIRECTEUR-PROF" || user.type == 'DIRECTEUR' }
                         <TableBodyCell class="p-2 w-8 border border-gray-300">
                           <DropdownMenuShow
                             {item}

@@ -267,7 +267,7 @@
                 {:else}
                   {#if activeTab === 'valide'}
 
-                  {#if user.type === "SOUS-DIRECTEUR"  }
+                  {#if user.type == "SOUS-DIRECTEUR-ETAB" || user.type == "SOUS-DIRECTEUR-PROF" || user.type == 'DIRECTEUR'  }
                   {#each ['email','Téléphone/Adresse',  'Entité Juridique',  'Imputation', 'Action'] as title}
                   {#if title}
                     <TableHeadCell
@@ -371,7 +371,7 @@
                           >{item.personne.code}</TableBodyCell
                         >
                       {/if} -->
-                      {#if  user.type == 'DIRECTEUR' || user.type == 'SOUS-DIRECTEUR-SECOND' }
+                      {#if  user.type == "SOUS-DIRECTEUR-ETAB" || user.type == "SOUS-DIRECTEUR-PROF" || user.type == 'DIRECTEUR' }
                         <TableBodyCell class="p-2 w-8 border border-gray-300">
                           <DropdownMenuCustom
                             {item}
