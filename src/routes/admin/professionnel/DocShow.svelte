@@ -29,7 +29,7 @@
     integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN"
     crossorigin="anonymous"
   />
-  <div class="space-y-6 p-0">
+  <div class="space-y-6 p-0"> 
     <form action="#" use:init>
       {#if pdfUrl != null }
    {#if pdfUrl.includes(".pdf")}

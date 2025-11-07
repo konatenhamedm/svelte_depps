@@ -442,13 +442,13 @@
 <Add
   bind:open={openAdd}
   data={current_data}
-  sizeModal="xl"
+  sizeModal="lg"
   userUpdateId={user?.id}
 />
 <Edit
   bind:open={openEdit}
   data={current_data}
-  sizeModal="xl"
+  sizeModal="lg"
   userUpdateId={user?.id}
 />
 
@@ -456,7 +456,7 @@
   <Show
     bind:open={openShow}
     data={current_data}
-    sizeModal="xl"
+    sizeModal="lg"
     userUpdateId={user.id}
   />
 {/if}
@@ -464,7 +464,7 @@
   <ShowDetails
     bind:open={openShowDetails}
     data={current_data}
-    sizeModal="xl"
+    sizeModal="lg"
     userUpdateId={user.id}
   />
 {/if}
@@ -472,7 +472,7 @@
   <Imputation
     bind:open={openImputation}
     data={current_data}
-    sizeModal="xs"
+    sizeModal="lg"
     userUpdateId={user.id}
   />
 {/if}

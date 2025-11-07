@@ -1,13 +1,11 @@
 <script lang="ts">
-	import Imputation from './Imputation.svelte';
-  import Spinner from "$components/_skeletons/Spinner.svelte";
-  import InputSimple from "$components/inputs/InputSimple.svelte";
+
   import { BASE_URL_API } from "$lib/api";
   import { Button, Input, Label, Modal, Textarea } from "flowbite-svelte";
-  import InputTextArea from "$components/inputs/InputTextArea.svelte";
-  import InputSelect from "$components/inputs/InputSelect.svelte";
+
   import { onMount } from "svelte";
   import InputSelectUser from '$components/inputs/InputSelectUser.svelte';
+  
 
   export let open: boolean = false; // modal control
   let isLoad = false;
