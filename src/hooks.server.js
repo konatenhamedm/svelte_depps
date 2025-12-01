@@ -104,7 +104,7 @@ export async function handle({ event, resolve }) {
     return redirect(302, "/site/dossiers");
   }
 
-  // ✅ Attacher l’utilisateur dans locals
+  // ✅ Attacher l’utilisateur dans localsmmm
   event.locals.user = user;
   const response = await resolve(event);
   return response;
